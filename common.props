@@ -1,0 +1,42 @@
+<Project>
+    <PropertyGroup>
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+        <Version>7.0.10</Version>
+        <Authors>damon</Authors>
+        <Company>Nerosoft Co., Ltd.</Company>
+        <Product>Euonia</Product>
+        <Copyright>© 2018-2022 Nerosoft. All Rights Reserved.</Copyright>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <LangVersion>latest</LangVersion>
+        <Description>Euonia development framework and toolkit library for .NET application/service. Powered by Nerosoft.</Description>
+        <Configurations>Debug;Release;Product</Configurations>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)'=='Debug' ">
+        <DebugType>full</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+        <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)'=='Release' ">
+        <DebugType>pdbonly</DebugType>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <NoWarn>1591</NoWarn>
+    </PropertyGroup>
+    
+    <PropertyGroup Condition=" '$(Configuration)'=='Product' ">
+        <DebugType>pdbonly</DebugType>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <NoWarn>1591</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Using Include="System" />
+        <Using Include="System.Collections" />
+        <Using Include="System.Threading" />
+        <Using Include="System.Threading.Tasks" />
+    </ItemGroup>
+</Project>
