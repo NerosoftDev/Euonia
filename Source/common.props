@@ -1,6 +1,7 @@
 <Project>
     <PropertyGroup>
         <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+		<RootNamespace>Nerosoft.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
         <Version>7.2.0</Version>
         <Authors>damon</Authors>
         <Company>Nerosoft Co., Ltd.</Company>
