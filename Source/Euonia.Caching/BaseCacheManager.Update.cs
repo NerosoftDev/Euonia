@@ -49,9 +49,7 @@ public partial class BaseCacheManager<TValue>
             }
 
             TValue returnValue;
-            var updated = string.IsNullOrWhiteSpace(item.Region) ?
-                TryUpdate(item.Key, updateValue, maxRetries, out returnValue) :
-                TryUpdate(item.Key, item.Region, updateValue, maxRetries, out returnValue);
+            var updated = string.IsNullOrWhiteSpace(item.Region) ? TryUpdate(item.Key, updateValue, maxRetries, out returnValue) : TryUpdate(item.Key, item.Region, updateValue, maxRetries, out returnValue);
 
             if (updated)
             {
@@ -108,8 +106,7 @@ public partial class BaseCacheManager<TValue>
         Check.EnsureNotNull(updateValue, nameof(updateValue));
         Check.Ensure(maxRetries >= 0, "Maximum number of retries must be greater than or equal to zero.");
 
-        var value = default(TValue);
-        UpdateInternal(_cacheHandles, key, updateValue, maxRetries, true, out value);
+        UpdateInternal(_cacheHandles, key, updateValue, maxRetries, true, out var value);
 
         return value;
     }
@@ -122,28 +119,26 @@ public partial class BaseCacheManager<TValue>
         Check.EnsureNotNull(updateValue, nameof(updateValue));
         Check.Ensure(maxRetries >= 0, "Maximum number of retries must be greater than or equal to zero.");
 
-        var value = default(TValue);
-        UpdateInternal(_cacheHandles, key, region, updateValue, maxRetries, true, out value);
+        UpdateInternal(_cacheHandles, key, region, updateValue, maxRetries, true, out var value);
 
         return value;
     }
 
     private bool UpdateInternal(BaseCacheHandle<TValue>[] handles,
-        string key,
-        Func<TValue, TValue> updateValue,
-        int maxRetries,
-        bool throwOnFailure,
-        out TValue value) =>
+                                string key,
+                                Func<TValue, TValue> updateValue,
+                                int maxRetries,
+                                bool throwOnFailure,
+                                out TValue value) =>
         UpdateInternal(handles, key, null, updateValue, maxRetries, throwOnFailure, out value);
 
-    private bool UpdateInternal(
-        BaseCacheHandle<TValue>[] handles,
-        string key,
-        string region,
-        Func<TValue, TValue> updateValue,
-        int maxRetries,
-        bool throwOnFailure,
-        out TValue value)
+    private bool UpdateInternal(BaseCacheHandle<TValue>[] handles,
+                                string key,
+                                string region,
+                                Func<TValue, TValue> updateValue,
+                                int maxRetries,
+                                bool throwOnFailure,
+                                out TValue value)
     {
         CheckDisposed();
 
@@ -160,57 +155,58 @@ public partial class BaseCacheManager<TValue>
         var handleIndex = handles.Length - 1;
         var handle = handles[handleIndex];
 
-        var result = string.IsNullOrWhiteSpace(region) ?
-            handle.Update(key, updateValue, maxRetries) :
-            handle.Update(key, region, updateValue, maxRetries);
+        var result = string.IsNullOrWhiteSpace(region) ? handle.Update(key, updateValue, maxRetries) : handle.Update(key, region, updateValue, maxRetries);
 
-        if (result.UpdateState == CacheItemUpdateResultState.Success)
+        switch (result.UpdateState)
         {
-            // only on success, the returned value will not be null
-            value = result.Value.Value;
-            handle.Stats.OnUpdate(key, region, result);
+            case CacheItemUpdateResultState.Success:
+                // only on success, the returned value will not be null
+                value = result.Value.Value;
+                handle.Stats.OnUpdate(key, region, result);
 
-            // evict others, we don't know if the update on other handles could actually
-            // succeed... There is a risk the update on other handles could create a
-            // different version than we created with the first successful update... we can
-            // safely add the item to handles below us though.
-            EvictFromHandlesAbove(key, region, handleIndex);
+                // evict others, we don't know if the update on other handles could actually
+                // succeed... There is a risk the update on other handles could create a
+                // different version than we created with the first successful update... we can
+                // safely add the item to handles below us though.
+                EvictFromHandlesAbove(key, region, handleIndex);
 
-            // optimizing - not getting the item again from cache. We already have it
-            // var item = string.IsNullOrWhiteSpace(region) ? handle.GetCacheItem(key) : handle.GetCacheItem(key, region);
-            AddToHandlesBelow(result.Value, handleIndex);
-            TriggerOnUpdate(key, region);
-        }
-        else if (result.UpdateState == CacheItemUpdateResultState.FactoryReturnedNull)
-        {
-            if (throwOnFailure)
-            {
+                // optimizing - not getting the item again from cache. We already have it
+                // var item = string.IsNullOrWhiteSpace(region) ? handle.GetCacheItem(key) : handle.GetCacheItem(key, region);
+                AddToHandlesBelow(result.Value, handleIndex);
+                TriggerOnUpdate(key, region);
+                break;
+            case CacheItemUpdateResultState.FactoryReturnedNull when throwOnFailure:
                 throw new InvalidOperationException($"Update failed on '{region}:{key}' because value factory returned null.");
-            }
-        }
-        else if (result.UpdateState == CacheItemUpdateResultState.TooManyRetries)
-        {
-            // if we had too many retries, this basically indicates an
-            // invalid state of the cache: The item is there, but we couldn't update it and
-            // it most likely has a different version
-            EvictFromOtherHandles(key, region, handleIndex);
-
-            if (throwOnFailure)
+            case CacheItemUpdateResultState.TooManyRetries:
             {
-                throw new InvalidOperationException($"Update failed on '{region}:{key}' because of too many retries: {result.NumberOfTriesNeeded}.");
-            }
-        }
-        else if (result.UpdateState == CacheItemUpdateResultState.ItemDidNotExist)
-        {
-            // If update fails because item doesn't exist AND the current handle is backplane source or the lowest cache handle level,
-            // remove the item from other handles (if exists).
-            // Otherwise, if we do not exit here, calling update on the next handle might succeed and would return a misleading result.
-            EvictFromOtherHandles(key, region, handleIndex);
+                // if we had too many retries, this basically indicates an
+                // invalid state of the cache: The item is there, but we couldn't update it and
+                // it most likely has a different version
+                EvictFromOtherHandles(key, region, handleIndex);
 
-            if (throwOnFailure)
-            {
-                throw new InvalidOperationException($"Update failed on '{region}:{key}' because the region/key did not exist.");
+                if (throwOnFailure)
+                {
+                    throw new InvalidOperationException($"Update failed on '{region}:{key}' because of too many retries: {result.NumberOfTriesNeeded}.");
+                }
+
+                break;
             }
+            case CacheItemUpdateResultState.ItemDidNotExist:
+            {
+                // If update fails because item doesn't exist AND the current handle is backplane source or the lowest cache handle level,
+                // remove the item from other handles (if exists).
+                // Otherwise, if we do not exit here, calling update on the next handle might succeed and would return a misleading result.
+                EvictFromOtherHandles(key, region, handleIndex);
+
+                if (throwOnFailure)
+                {
+                    throw new InvalidOperationException($"Update failed on '{region}:{key}' because the region/key did not exist.");
+                }
+
+                break;
+            }
+            default:
+                throw new ArgumentOutOfRangeException();
         }
 
         // update backplane
@@ -224,6 +220,9 @@ public partial class BaseCacheManager<TValue>
             {
                 _cacheBackplane.NotifyChange(key, region, CacheItemChangedEventAction.Update);
             }
+        }
+
+        {
         }
 
         return result.UpdateState == CacheItemUpdateResultState.Success;
