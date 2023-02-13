@@ -18,9 +18,6 @@
 		<PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="8.0.0"/>
 		<PackageVersion Include="Autofac.Extras.DynamicProxy" Version="6.0.1"/>
 		<PackageVersion Include="AutoMapper" Version="12.0.1"/>
-		<PackageVersion Include="CacheManager.Core" Version="1.2.0"/>
-		<PackageVersion Include="CacheManager.Serialization.Json" Version="1.2.0"/>
-		<PackageVersion Include="CacheManager.StackExchange.Redis" Version="1.2.0"/>
 		<PackageVersion Include="Castle.Core" Version="5.1.1"/>
 		<PackageVersion Include="Consul" Version="1.6.10.8"/>
 		<PackageVersion Include="FluentValidation" Version="11.4.0"/>
