@@ -24,8 +24,15 @@
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 	</ItemGroup>
+	
+	<ItemGroup>
+		<None Update="appsettings.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\Source\Euonia.Caching\Euonia.Caching.csproj" />
 		<ProjectReference Include="..\..\Source\Euonia.Core\Euonia.Core.csproj" />
 	</ItemGroup>
 

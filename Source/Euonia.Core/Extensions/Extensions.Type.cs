@@ -117,4 +117,38 @@ public static partial class Extensions
 
         return propertyType;
     }
+
+    /// <summary>
+    /// Detect whether the specified type is extends the target type.
+    /// </summary>
+    /// <param name="type"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static bool IsExtends<T>(this Type type)
+    {
+        return type.IsExtends(typeof(T));
+    }
+
+    /// <summary>
+    /// Detect whether the specified type is extends the target type.
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="targetType"></param>
+    /// <returns></returns>
+    public static bool IsExtends(this Type type, Type targetType)
+    {
+        var baseType = type.BaseType;
+
+        while (baseType != typeof(object))
+        {
+            if (baseType == targetType)
+            {
+                return true;
+            }
+
+            baseType = type.BaseType;
+        }
+
+        return false;
+    }
 }

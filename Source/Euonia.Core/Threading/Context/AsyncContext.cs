@@ -227,18 +227,14 @@ public sealed partial class AsyncContext : IDisposable
     [EditorBrowsable(EditorBrowsableState.Never)]
     public TaskScheduler Scheduler => _taskScheduler;
 
-#pragma warning disable CA1200 // Avoid using cref tags with a prefix
     /// <summary>
     /// Gets the <see cref="TaskFactory"/> for this <see cref="AsyncContext"/>. Note that this factory has the <see cref="TaskCreationOptions.HideScheduler"/> option set. Be careful with async delegates; you may need to call <see cref="M:System.Threading.SynchronizationContext.OperationStarted"/> and <see cref="M:System.Threading.SynchronizationContext.OperationCompleted"/> to prevent early termination of this <see cref="AsyncContext"/>.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-#pragma warning restore CA1200 // Avoid using cref tags with a prefix
     public TaskFactory Factory => _taskFactory;
 
     [DebuggerNonUserCode]
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes
     internal sealed class DebugView
-#pragma warning restore CA1812 // Avoid uninstantiated internal classes
     {
         private readonly AsyncContext _context;
 

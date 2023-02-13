@@ -33,6 +33,7 @@
 		<PackageVersion Include="mongocsharpdriver" Version="2.19.0"/>
 		<PackageVersion Include="Newtonsoft.Json" Version="13.0.2"/>
 		<PackageVersion Include="Polly" Version="7.2.3"/>
+		<PackageVersion Include="protobuf-net" Version="3.1.33" />
 		<PackageVersion Include="Quartz" Version="3.6.0"/>
 		<PackageVersion Include="RabbitMQ.Client" Version="6.4.0"/>
 		<PackageVersion Include="Refit" Version="6.3.2"/>
@@ -47,15 +48,20 @@
 		<PackageVersion Include="StackExchange.Redis" Version="2.6.90"/>
 		<PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0" />
 		<PackageVersion Include="System.Collections.Immutable" Version="7.0.0"/>
+		<PackageVersion Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
 		<PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0"/>
 		<PackageVersion Include="System.Interactive" Version="6.0.1"/>
+		<PackageVersion Include="System.Diagnostics.PerformanceCounter" Version="7.0.0" />
 		<PackageVersion Include="System.Reactive" Version="5.0.0"/>
+		<PackageVersion Include="System.Runtime.Caching" Version="7.0.0" />
 		<PackageVersion Include="System.Runtime.Loader" Version="4.3.0"/>
+		<PackageVersion Include="System.Text.Json" Version="7.0.1" />
 		<PackageVersion Include="Winton.Extensions.Configuration.Consul" Version="3.2.0"/>
 	</ItemGroup>
 
 	<!-- Microsoft.Extensions -->
 	<ItemGroup>
+		<PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="$(MicrosoftExtensionsPackageVersion)" />
 		<PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="$(MicrosoftExtensionsPackageVersion)"/>
 		<PackageVersion Include="Microsoft.Extensions.Configuration.CommandLine" Version="$(MicrosoftExtensionsPackageVersion)"/>
 		<PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="$(MicrosoftExtensionsPackageVersion)"/>

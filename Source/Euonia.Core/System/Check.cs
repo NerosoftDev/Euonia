@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.ComponentModel.DataAnnotations;
-using Nerosoft.Euonia;
+using System.Globalization;
 
 /// <summary>
 /// Exposes static methods for check value.
@@ -10,6 +10,28 @@ using Nerosoft.Euonia;
 [DebuggerStepThrough]
 public static class Check
 {
+    public static bool Ensure(Func<bool> condition, string message, params object[] args)
+    {
+        if (!condition())
+        {
+            throw new InvalidOperationException(
+                string.Format(CultureInfo.InvariantCulture, message, args));
+        }
+
+        return true;
+    }
+
+    public static bool Ensure(bool condition, string message, params object[] args)
+    {
+        if (!condition)
+        {
+            throw new InvalidOperationException(
+                string.Format(CultureInfo.InvariantCulture, message, args));
+        }
+
+        return true;
+    }
+
     /// <summary>
     /// Ensure the given value is match the condition.
     /// </summary>
