@@ -32,11 +32,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Caching", "Caching", "{5266
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{5DC17AB4-46C2-4004-93CB-1446201C3AEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euonia.Caching.Runtime", "Source\Euonia.Caching.Runtime\Euonia.Caching.Runtime.csproj", "{F3C31683-EF08-4683-AFD0-C58688D95038}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Caching.Runtime", "Source\Euonia.Caching.Runtime\Euonia.Caching.Runtime.csproj", "{F3C31683-EF08-4683-AFD0-C58688D95038}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euonia.Caching.Memory", "Source\Euonia.Caching.Memory\Euonia.Caching.Memory.csproj", "{4C7DD1F7-62DD-4D4E-8BA2-2CB73E52D654}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Caching.Memory", "Source\Euonia.Caching.Memory\Euonia.Caching.Memory.csproj", "{4C7DD1F7-62DD-4D4E-8BA2-2CB73E52D654}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euonia.Caching.Tests", "Tests\Euonia.Caching.Tests\Euonia.Caching.Tests.csproj", "{F827303E-92C2-46D3-BD8A-50DB8885E6CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Caching.Tests", "Tests\Euonia.Caching.Tests\Euonia.Caching.Tests.csproj", "{F827303E-92C2-46D3-BD8A-50DB8885E6CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euonia.Linq", "Source\Euonia.Linq\Euonia.Linq.csproj", "{3D60F886-5D04-4CC4-9DD4-720132392B22}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,6 +101,12 @@ Global
 		{F827303E-92C2-46D3-BD8A-50DB8885E6CE}.Product|Any CPU.Build.0 = Debug|Any CPU
 		{F827303E-92C2-46D3-BD8A-50DB8885E6CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F827303E-92C2-46D3-BD8A-50DB8885E6CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D60F886-5D04-4CC4-9DD4-720132392B22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D60F886-5D04-4CC4-9DD4-720132392B22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D60F886-5D04-4CC4-9DD4-720132392B22}.Product|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D60F886-5D04-4CC4-9DD4-720132392B22}.Product|Any CPU.Build.0 = Debug|Any CPU
+		{3D60F886-5D04-4CC4-9DD4-720132392B22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D60F886-5D04-4CC4-9DD4-720132392B22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -115,6 +123,7 @@ Global
 		{F3C31683-EF08-4683-AFD0-C58688D95038} = {5266A26B-DA74-4A22-B660-3BB7F56BE138}
 		{4C7DD1F7-62DD-4D4E-8BA2-2CB73E52D654} = {5266A26B-DA74-4A22-B660-3BB7F56BE138}
 		{F827303E-92C2-46D3-BD8A-50DB8885E6CE} = {E048931D-EC51-448A-A737-3C62CF100813}
+		{3D60F886-5D04-4CC4-9DD4-720132392B22} = {5DC17AB4-46C2-4004-93CB-1446201C3AEA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {84CDDCF4-F3D0-45FC-87C5-557845F58F55}
