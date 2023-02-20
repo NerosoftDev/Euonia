@@ -170,6 +170,64 @@ public static class Reflect
 
         return memberExpr.Member;
     }
+
+    /// <summary>
+    /// Sets the value to property.
+    /// </summary>
+    /// <typeparam name="T">The item type.</typeparam>
+    /// <typeparam name="TValue">The type of the value.</typeparam>
+    /// <param name="item">The item.</param>
+    /// <param name="value">The value.</param>
+    /// <param name="property">The property.</param>
+    /// <exception cref="ArgumentNullException">property</exception>
+    public static void SetValue<T, TValue>(T item, TValue value, Expression<Func<T, TValue>> property)
+    {
+        if (property == null)
+        {
+            throw new ArgumentNullException(nameof(property));
+        }
+
+        var propertyInfo = GetProperty(property);
+
+        propertyInfo.SetValue(item, value);
+    }
+
+    /// <summary>
+    /// Gets the value.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="item">The item.</param>
+    /// <param name="property">The property.</param>
+    /// <returns>System.Object.</returns>
+    /// <exception cref="ArgumentNullException">property</exception>
+    public static object GetValue<T>(T item, Expression<Func<T, object>> property)
+    {
+        if (property == null)
+        {
+            throw new ArgumentNullException(nameof(property));
+        }
+
+        var propertyInfo = GetProperty(property);
+
+        return propertyInfo.GetValue(item);
+    }
+
+    /// <summary>
+    /// Gets the property.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TValue">The type of the t value.</typeparam>
+    /// <param name="property">The property.</param>
+    /// <returns>PropertyInfo.</returns>
+    //private static PropertyInfo GetProperty<T, TValue>(Expression<Func<T, TValue>> property)
+    //{
+    //    if (property.Body.NodeType == ExpressionType.Convert)
+    //    {
+    //        return ((MemberExpression)((UnaryExpression)property.Body).Operand).Member as PropertyInfo;
+    //    }
+
+    //    return ((MemberExpression)property.Body).Member as PropertyInfo;
+    //}
 }
 
 /// <summary>
@@ -262,5 +320,46 @@ public static class Reflect<TTarget>
             throw new ArgumentException("Member is not a field");
 
         return info;
+    }
+
+    /// <summary>
+    /// Sets the value to property.
+    /// </summary>
+    /// <typeparam name="T">The item type.</typeparam>
+    /// <typeparam name="TValue">The type of the value.</typeparam>
+    /// <param name="item">The item.</param>
+    /// <param name="value">The value.</param>
+    /// <param name="property">The property.</param>
+    /// <exception cref="ArgumentNullException">property</exception>
+    public static void SetValue<TValue>(TTarget item, TValue value, Expression<Func<TTarget, TValue>> property)
+    {
+        if (property == null)
+        {
+            throw new ArgumentNullException(nameof(property));
+        }
+
+        var propertyInfo = GetProperty(property);
+
+        propertyInfo.SetValue(item, value);
+    }
+
+    /// <summary>
+    /// Gets the value.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="item">The item.</param>
+    /// <param name="property">The property.</param>
+    /// <returns>System.Object.</returns>
+    /// <exception cref="ArgumentNullException">property</exception>
+    public static object GetValue(TTarget item, Expression<Func<TTarget, object>> property)
+    {
+        if (property == null)
+        {
+            throw new ArgumentNullException(nameof(property));
+        }
+
+        var propertyInfo = GetProperty(property);
+
+        return propertyInfo.GetValue(item);
     }
 }
