@@ -12,7 +12,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Euonia.Core\Euonia.Core.csproj" />
+		<ProjectReference Include="..\Euonia.Core\Euonia.Core.csproj" />
 	</ItemGroup>
 
 </Project>
