@@ -14,6 +14,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{CC
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{E57A56F3-7BAB-4DB5-9CE8-EC91985A6586}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Caching", "Caching", "{5266A26B-DA74-4A22-B660-3BB7F56BE138}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{5DC17AB4-46C2-4004-93CB-1446201C3AEA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DDD", "DDD", "{31F25250-7CF1-4D9B-B2DF-0B7050D88E54}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E048931D-EC51-448A-A737-3C62CF100813}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Core", "Source\Euonia.Core\Euonia.Core.csproj", "{C4935163-9EE3-453A-9937-8F8DC4B8C4C0}"
@@ -28,10 +34,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Validation", "Source
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Caching.Redis", "Source\Euonia.Caching.Redis\Euonia.Caching.Redis.csproj", "{A3342C19-82CD-4FA1-A3FE-E873341B06CB}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Caching", "Caching", "{5266A26B-DA74-4A22-B660-3BB7F56BE138}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{5DC17AB4-46C2-4004-93CB-1446201C3AEA}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Caching.Runtime", "Source\Euonia.Caching.Runtime\Euonia.Caching.Runtime.csproj", "{F3C31683-EF08-4683-AFD0-C58688D95038}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Caching.Memory", "Source\Euonia.Caching.Memory\Euonia.Caching.Memory.csproj", "{4C7DD1F7-62DD-4D4E-8BA2-2CB73E52D654}"
@@ -44,7 +46,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Pipeline", "Source\E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Grpc", "Source\Euonia.Grpc\Euonia.Grpc.csproj", "{A87228E8-6FA1-47FC-A70C-5A1519A81032}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euonia.Modularity", "Source\Euonia.Modularity\Euonia.Modularity.csproj", "{D8B88CAB-7B7F-4766-86BC-5F91E6CB1EC9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Modularity", "Source\Euonia.Modularity\Euonia.Modularity.csproj", "{D8B88CAB-7B7F-4766-86BC-5F91E6CB1EC9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euonia.Domain", "Source\Euonia.Domain\Euonia.Domain.csproj", "{02B77A60-9CCD-4DC4-9A8D-02981E8DA730}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -131,6 +135,12 @@ Global
 		{D8B88CAB-7B7F-4766-86BC-5F91E6CB1EC9}.Product|Any CPU.Build.0 = Debug|Any CPU
 		{D8B88CAB-7B7F-4766-86BC-5F91E6CB1EC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8B88CAB-7B7F-4766-86BC-5F91E6CB1EC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02B77A60-9CCD-4DC4-9A8D-02981E8DA730}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02B77A60-9CCD-4DC4-9A8D-02981E8DA730}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02B77A60-9CCD-4DC4-9A8D-02981E8DA730}.Product|Any CPU.ActiveCfg = Debug|Any CPU
+		{02B77A60-9CCD-4DC4-9A8D-02981E8DA730}.Product|Any CPU.Build.0 = Debug|Any CPU
+		{02B77A60-9CCD-4DC4-9A8D-02981E8DA730}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02B77A60-9CCD-4DC4-9A8D-02981E8DA730}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -151,6 +161,8 @@ Global
 		{7F94AEA4-3A16-45FF-BF11-5D1218FFC70C} = {5DC17AB4-46C2-4004-93CB-1446201C3AEA}
 		{A87228E8-6FA1-47FC-A70C-5A1519A81032} = {5DC17AB4-46C2-4004-93CB-1446201C3AEA}
 		{D8B88CAB-7B7F-4766-86BC-5F91E6CB1EC9} = {5DC17AB4-46C2-4004-93CB-1446201C3AEA}
+		{31F25250-7CF1-4D9B-B2DF-0B7050D88E54} = {E57A56F3-7BAB-4DB5-9CE8-EC91985A6586}
+		{02B77A60-9CCD-4DC4-9A8D-02981E8DA730} = {31F25250-7CF1-4D9B-B2DF-0B7050D88E54}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {84CDDCF4-F3D0-45FC-87C5-557845F58F55}
