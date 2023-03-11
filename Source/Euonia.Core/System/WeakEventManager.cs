@@ -6,7 +6,7 @@ namespace System;
 /// <summary>
 /// From <c>https://github.com/xamarin/Xamarin.Forms/blob/main/Xamarin.Forms.Core/WeakEventManager.cs</c>
 /// </summary>
-public class WeakEventManager
+public sealed class WeakEventManager
 {
     private readonly Dictionary<string, List<Subscription>> _eventHandlers = new();
 
@@ -36,6 +36,132 @@ public class WeakEventManager
     /// <summary>
     /// Add event handler
     /// </summary>
+    /// <param name="handler"></param>
+    /// <param name="eventName"></param>
+    /// <exception cref="ArgumentNullException"></exception>
+    public void AddEventHandler(Delegate handler, [CallerMemberName] string eventName = "")
+    {
+        if (string.IsNullOrEmpty(eventName))
+        {
+            throw new ArgumentNullException(nameof(eventName));
+        }
+
+        if (handler == null)
+        {
+            throw new ArgumentNullException(nameof(handler));
+        }
+
+        AddEventHandler(eventName, handler.Target, handler.GetMethodInfo());
+    }
+
+    /// <summary>
+    /// Raise up event.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="args"></param>
+    /// <param name="eventName"></param>
+    public void HandleEvent(object sender, object args, string eventName)
+    {
+        var handlers = GetEventHandler(eventName);
+
+        foreach (var (subscriber, handler) in handlers)
+        {
+            handler.Invoke(subscriber, new[] { sender, args });
+        }
+    }
+
+    /// <summary>
+    /// Remove event handler.
+    /// </summary>
+    /// <param name="handler"></param>
+    /// <param name="eventName"></param>
+    /// <typeparam name="TEventArgs"></typeparam>
+    /// <exception cref="ArgumentNullException"></exception>
+    public void RemoveEventHandler<TEventArgs>(EventHandler<TEventArgs> handler, [CallerMemberName] string eventName = null)
+        where TEventArgs : EventArgs
+    {
+        if (string.IsNullOrEmpty(eventName))
+        {
+            throw new ArgumentNullException(nameof(eventName));
+        }
+
+        if (handler == null)
+        {
+            throw new ArgumentNullException(nameof(handler));
+        }
+
+        RemoveEventHandler(eventName, handler.Target, handler.GetMethodInfo());
+    }
+
+    /// <summary>
+    /// Remove event handler.
+    /// </summary>
+    /// <param name="handler"></param>
+    /// <param name="eventName"></param>
+    /// <exception cref="ArgumentNullException"></exception>
+    public void RemoveEventHandler(Delegate handler, [CallerMemberName] string eventName = "")
+    {
+        if (string.IsNullOrEmpty(eventName))
+        {
+            throw new ArgumentNullException(nameof(eventName));
+        }
+
+        if (handler == null)
+        {
+            throw new ArgumentNullException(nameof(handler));
+        }
+
+        RemoveEventHandler(eventName, handler.Target, handler.GetMethodInfo());
+    }
+
+    private void AddEventHandler(string eventName, object handlerTarget, MethodInfo methodInfo)
+    {
+        if (!_eventHandlers.TryGetValue(eventName, out var targets))
+        {
+            targets = new List<Subscription>();
+            _eventHandlers.Add(eventName, targets);
+        }
+
+        if (handlerTarget == null)
+        {
+            // This event handler is a static method
+            targets.Add(new Subscription(null, methodInfo));
+            return;
+        }
+
+        targets.Add(new Subscription(new WeakReference(handlerTarget), methodInfo));
+    }
+
+    private void RemoveEventHandler(string eventName, object handlerTarget, MemberInfo methodInfo)
+    {
+        if (!_eventHandlers.TryGetValue(eventName, out var subscriptions))
+        {
+            return;
+        }
+
+        for (var n = subscriptions.Count - 1; n >= 0; n--)
+        {
+            var current = subscriptions[n];
+
+            if (current.Subscriber != null && !current.Subscriber.IsAlive)
+            {
+                // If not alive, remove and continue
+                subscriptions.RemoveAt(n);
+                continue;
+            }
+
+            if (current.Subscriber?.Target == handlerTarget && current.Handler.Name == methodInfo.Name)
+            {
+                // Found the match, we can break
+                subscriptions.RemoveAt(n);
+                break;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Add event handler
+    /// </summary>
     /// <param name="handler">The event handler</param>
     /// <param name="eventName">The event name</param>
     /// <exception cref="ArgumentNullException"></exception>
@@ -53,6 +179,8 @@ public class WeakEventManager
 
         AddEventHandler(eventName, handler.Target, handler.GetMethodInfo());
     }
+
+    #region Extends
 
     /// <summary>
     /// Gets event handler for specified event.
@@ -173,43 +301,6 @@ public class WeakEventManager
     }
 
     /// <summary>
-    /// Raise up event.
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="args"></param>
-    /// <param name="eventName"></param>
-    public void HandleEvent(object sender, object args, string eventName)
-    {
-        var handlers = GetEventHandler(eventName);
-
-        foreach (var (subscriber, handler) in handlers)
-        {
-            handler.Invoke(subscriber, new[] { sender, args });
-        }
-    }
-
-    /// <summary>
-    /// Remove event handler.
-    /// </summary>
-    /// <param name="handler"></param>
-    /// <param name="eventName"></param>
-    /// <typeparam name="TEventArgs"></typeparam>
-    /// <exception cref="ArgumentNullException"></exception>
-    public void RemoveEventHandler<TEventArgs>(EventHandler<TEventArgs> handler, [CallerMemberName] string eventName = null)
-        where TEventArgs : EventArgs
-    {
-        if (string.IsNullOrEmpty(eventName))
-        {
-            throw new ArgumentNullException(nameof(eventName));
-        }
-
-        if (handler == null)
-            throw new ArgumentNullException(nameof(handler));
-
-        RemoveEventHandler(eventName, handler.Target, handler.GetMethodInfo());
-    }
-
-    /// <summary>
     /// Remove event handler.
     /// </summary>
     /// <param name="handler"></param>
@@ -230,41 +321,6 @@ public class WeakEventManager
         RemoveEventHandler(eventName, handler.Target, handler.GetMethodInfo());
     }
 
-    private void AddEventHandler(string eventName, object handlerTarget, MethodInfo methodInfo)
-    {
-        if (!_eventHandlers.TryGetValue(eventName, out var targets))
-        {
-            targets = new List<Subscription>();
-            _eventHandlers.Add(eventName, targets);
-        }
-
-        if (handlerTarget == null)
-        {
-            // This event handler is a static method
-            targets.Add(new Subscription(null, methodInfo));
-            return;
-        }
-
-        targets.Add(new Subscription(new WeakReference(handlerTarget), methodInfo));
-    }
-
-    private void RemoveEventHandler(string eventName, object handlerTarget, MemberInfo methodInfo)
-    {
-        if (!_eventHandlers.TryGetValue(eventName, out var subscriptions))
-            return;
-
-        for (var n = subscriptions.Count; n > 0; n--)
-        {
-            var current = subscriptions[n - 1];
-
-            if (current.Subscriber?.Target != handlerTarget || current.Handler.Name != methodInfo.Name)
-                continue;
-
-            subscriptions.Remove(current);
-            break;
-        }
-    }
-
     public void RemoveEventHandlers()
     {
         _eventHandlers.Clear();
@@ -280,7 +336,9 @@ public class WeakEventManager
         _eventHandlers.Remove(eventName);
     }
 
-    private struct Subscription
+    #endregion
+
+    private readonly struct Subscription : IEquatable<Subscription>
     {
         public Subscription(WeakReference subscriber, MethodInfo handler)
         {
@@ -290,5 +348,11 @@ public class WeakEventManager
 
         public readonly WeakReference Subscriber;
         public readonly MethodInfo Handler;
+
+        public bool Equals(Subscription other) => Subscriber == other.Subscriber && Handler == other.Handler;
+
+        public override bool Equals(object obj) => obj is Subscription other && Equals(other);
+
+        public override int GetHashCode() => Subscriber?.GetHashCode() ?? 0 ^ Handler.GetHashCode();
     }
 }
