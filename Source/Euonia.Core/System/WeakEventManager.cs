@@ -6,6 +6,9 @@ namespace System;
 /// <summary>
 /// From <c>https://github.com/xamarin/Xamarin.Forms/blob/main/Xamarin.Forms.Core/WeakEventManager.cs</c>
 /// </summary>
+/// <remarks>
+/// Patch <c>https://github.com/jonathanpeppers/maui/blob/d7b45739b0ffa6fb393321fdddc9317ffdaa1696/src/Core/src/WeakEventManager.cs</c>
+/// </remarks>
 public sealed class WeakEventManager
 {
     private readonly Dictionary<string, List<Subscription>> _eventHandlers = new();
