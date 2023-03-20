@@ -7,10 +7,6 @@
 		<Nullable>disable</Nullable>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="$(TargetFramework.Contains('netstandard'))">
-		<LangVersion>latest</LangVersion>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<PackageReference Include="MediatR.Contracts" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" />

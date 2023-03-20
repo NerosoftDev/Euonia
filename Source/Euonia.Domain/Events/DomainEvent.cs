@@ -22,9 +22,9 @@ public abstract class DomainEvent : Event, IDomainEvent
     public void Attach<TKey>(IAggregateRoot<TKey> aggregate)
         where TKey : IEquatable<TKey>
     {
-        Metadata[EventIntentMetadataKey] = aggregate.GetType().AssemblyQualifiedName;
-        Metadata[EventOriginatorId] = aggregate.Id;
-        Metadata[EventOriginTypeKey] = aggregate.GetType().FullName;
+        Metadata[Constants.EventIntentMetadataKey] = aggregate.GetType().AssemblyQualifiedName;
+        Metadata[Constants.EventOriginatorId] = aggregate.Id;
+        Metadata[Constants.EventOriginTypeKey] = aggregate.GetType().FullName;
         AggregatePayload = aggregate;
     }
 
