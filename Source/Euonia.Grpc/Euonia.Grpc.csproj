@@ -17,6 +17,7 @@
 		<PackageReference Include="Grpc.AspNetCore.Server.Reflection" />
 		<PackageReference Include="Grpc.Core" />
 		<PackageReference Include="Grpc.HealthCheck" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" />
 	</ItemGroup>
 
 </Project>
