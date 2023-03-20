@@ -22,11 +22,11 @@
 		<PackageVersion Include="IdentityModel" Version="6.0.0" />
 		<PackageVersion Include="IdentityModel.AspNetCore.OAuth2Introspection" Version="6.1.0" />
 		<PackageVersion Include="Mapster" Version="7.3.0" />
-		<PackageVersion Include="MediatR" Version="11.1.0" />
-		<PackageVersion Include="MediatR.Contracts" Version="1.0.1" />
+		<PackageVersion Include="MediatR" Version="12.0.1" />
+		<PackageVersion Include="MediatR.Contracts" Version="2.0.1" />
 		<PackageVersion Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
 		<PackageVersion Include="mongocsharpdriver" Version="2.19.0" />
-		<PackageVersion Include="Newtonsoft.Json" Version="13.0.2" />
+		<PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageVersion Include="Polly" Version="7.2.3" />
 		<PackageVersion Include="protobuf-net" Version="3.1.33" />
 		<PackageVersion Include="Quartz" Version="3.6.0" />
@@ -78,7 +78,7 @@
 	</ItemGroup>
 	<!-- Grpc -->
 	<ItemGroup>
-		<PackageVersion Include="Google.Protobuf" Version="3.22.0" />
+		<PackageVersion Include="Google.Protobuf" Version="3.22.1" />
 		<PackageVersion Include="Grpc" Version="2.46.6" />
 		<PackageVersion Include="Grpc.AspNetCore" Version="$(GrpcPackageVersion)" />
 		<PackageVersion Include="Grpc.AspNetCore.Server" Version="$(GrpcPackageVersion)" />
