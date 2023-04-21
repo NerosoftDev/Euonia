@@ -149,6 +149,18 @@ public abstract class ModularityApplicationBase : IModularityApplication
 
         foreach (var module in Modules)
         {
+            try
+            {
+                module.Instance.PostponeServices(context);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception($"An error occurred during {nameof(ModuleContextBase.PostponeServices)} phase of the module {module.Type.AssemblyQualifiedName}. See the inner exception for details.", exception);
+            }
+        }
+        
+        foreach (var module in Modules)
+        {
             if (module.Instance is ModuleContextBase moduleContext)
             {
                 moduleContext.ConfigurationContext = null;

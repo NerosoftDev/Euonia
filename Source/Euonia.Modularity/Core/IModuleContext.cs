@@ -18,6 +18,12 @@ public interface IModuleContext
     /// 
     /// </summary>
     /// <param name="context"></param>
+    void PostponeServices(ServiceConfigurationContext context);
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="context"></param>
     void OnApplicationInitialization(ApplicationInitializationContext context);
 
     /// <summary>

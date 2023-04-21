@@ -44,6 +44,11 @@ public abstract class ModuleContextBase : IModuleContext
     }
 
     /// <inheritdoc />
+    public virtual void PostponeServices(ServiceConfigurationContext context)
+    {
+    }
+
+    /// <inheritdoc />
     public virtual void OnApplicationInitialization(ApplicationInitializationContext context)
     {
     }
