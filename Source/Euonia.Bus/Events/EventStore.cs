@@ -1,4 +1,6 @@
-﻿namespace Nerosoft.Euonia.Domain;
+﻿using Nerosoft.Euonia.Domain;
+
+namespace Nerosoft.Euonia.Bus;
 
 /// <summary>
 /// The abstract implement of <see cref="IEventStore" />.
@@ -7,8 +9,6 @@
 /// <seealso cref="IEventStore" />
 public abstract class EventStore : IEventStore
 {
-    
-
     /// <summary>
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
     /// </summary>

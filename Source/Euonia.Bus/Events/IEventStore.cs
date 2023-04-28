@@ -1,4 +1,6 @@
-﻿namespace Nerosoft.Euonia.Domain;
+﻿using Nerosoft.Euonia.Domain;
+
+namespace Nerosoft.Euonia.Bus;
 
 /// <summary>
 /// Interface IEventStore

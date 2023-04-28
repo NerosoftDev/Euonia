@@ -16,14 +16,4 @@ internal static class Constants
     /// The event originator identifier
     /// </summary>
     public const string EventOriginatorId = "$nerosoft.euonia.event.originator.id";
-
-    /// <summary>
-    /// The minimal sequence value.
-    /// </summary>
-    public const long MinimalSequence = -1L;
-
-    /// <summary>
-    /// The maximum sequence value.
-    /// </summary>
-    public const long MaximumSequence = long.MaxValue;
 }

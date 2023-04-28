@@ -8,7 +8,7 @@ public abstract class Message : IMessage
     /// <summary>
     /// The message type key
     /// </summary>
-    protected const string MessageTypeKey = "$nerosoft.euonia:message.type";
+    public const string MessageTypeKey = "$nerosoft.euonia:message.type";
 
     /// <summary>
     /// Initializes a new instance of <see cref="Message"/>.
