@@ -6,7 +6,7 @@
 namespace Nerosoft.Euonia.Claims;
 
 /// <summary>
-/// 
+/// The user's identity and associated claims.
 /// </summary>
 public class UserPrincipal
 {
@@ -53,7 +53,7 @@ public class UserPrincipal
     /// <summary>
     /// Gets the user roles.
     /// </summary>
-    public IEnumerable<string> Roles => _claims?.FindAll(UserClaimTypes.Role)?.Select(t => t.Value);
+    public IEnumerable<string> Roles => _claims?.FindAll(UserClaimTypes.Role).Select(t => t.Value);
 
     /// <summary>
     /// Determines whether the user is authenticated or not.
