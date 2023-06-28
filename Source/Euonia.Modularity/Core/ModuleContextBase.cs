@@ -34,7 +34,7 @@ public abstract class ModuleContextBase : IModuleContext
     private ServiceConfigurationContext _configurationContext;
 
     /// <inheritdoc />
-    public virtual void PreparatoryServices(ServiceConfigurationContext context)
+    public virtual void AheadConfigureServices(ServiceConfigurationContext context)
     {
     }
 
@@ -44,7 +44,7 @@ public abstract class ModuleContextBase : IModuleContext
     }
 
     /// <inheritdoc />
-    public virtual void PostponeServices(ServiceConfigurationContext context)
+    public virtual void AfterConfigureServices(ServiceConfigurationContext context)
     {
     }
 

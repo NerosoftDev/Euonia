@@ -16,7 +16,7 @@ public abstract class AbstractValidator<TValue> : IObjectValidator<TValue>
     /// <summary>
     /// Initializes a new instance of the <see cref="AbstractValidator{TValue}"/> class.
     /// </summary>
-    public AbstractValidator()
+    protected AbstractValidator()
     {
     }
 
@@ -24,7 +24,7 @@ public abstract class AbstractValidator<TValue> : IObjectValidator<TValue>
     /// Initializes a new instance of the <see cref="AbstractValidator{TValue}"/> class.
     /// </summary>
     /// <param name="message">The error message.</param>
-    public AbstractValidator(string message)
+    protected AbstractValidator(string message)
         : this()
     {
         Message = message;

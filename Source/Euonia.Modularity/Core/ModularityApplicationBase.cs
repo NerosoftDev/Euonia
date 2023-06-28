@@ -122,11 +122,11 @@ public abstract class ModularityApplicationBase : IModularityApplication
         {
             try
             {
-                module.Instance.PreparatoryServices(context);
+                module.Instance.AheadConfigureServices(context);
             }
             catch (Exception exception)
             {
-                throw new Exception($"An error occurred during {nameof(ModuleContextBase.PreparatoryServices)} phase of the module {module.Type.AssemblyQualifiedName}. See the inner exception for details.", exception);
+                throw new Exception($"An error occurred during {nameof(ModuleContextBase.AheadConfigureServices)} phase of the module {module.Type.AssemblyQualifiedName}. See the inner exception for details.", exception);
             }
         }
 
@@ -151,11 +151,11 @@ public abstract class ModularityApplicationBase : IModularityApplication
         {
             try
             {
-                module.Instance.PostponeServices(context);
+                module.Instance.AfterConfigureServices(context);
             }
             catch (Exception exception)
             {
-                throw new Exception($"An error occurred during {nameof(ModuleContextBase.PostponeServices)} phase of the module {module.Type.AssemblyQualifiedName}. See the inner exception for details.", exception);
+                throw new Exception($"An error occurred during {nameof(ModuleContextBase.AfterConfigureServices)} phase of the module {module.Type.AssemblyQualifiedName}. See the inner exception for details.", exception);
             }
         }
         
