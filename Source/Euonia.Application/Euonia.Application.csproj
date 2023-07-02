@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\common.props" />
+
+	<PropertyGroup>
+		<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Authorization" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Euonia.Bus\Euonia.Bus.csproj" />
+		<ProjectReference Include="..\Euonia.Core\Euonia.Core.csproj" />
+		<ProjectReference Include="..\Euonia.Domain\Euonia.Domain.csproj" />
+		<ProjectReference Include="..\Euonia.Modularity\Euonia.Modularity.csproj" />
+		<ProjectReference Include="..\Euonia.Pipeline\Euonia.Pipeline.csproj" />
+	</ItemGroup>
+
+</Project>

@@ -24,8 +24,7 @@
 		<PackageVersion Include="Mapster" Version="7.3.0" />
 		<PackageVersion Include="MediatR" Version="12.0.1" />
 		<PackageVersion Include="MediatR.Contracts" Version="2.0.1" />
-		<PackageVersion Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-		<PackageVersion Include="mongocsharpdriver" Version="2.19.2" />
+		<PackageVersion Include="mongocsharpdriver" Version="2.20.0" />
 		<PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageVersion Include="Polly" Version="7.2.4" />
 		<PackageVersion Include="protobuf-net" Version="3.1.33" />
@@ -34,10 +33,10 @@
 		<PackageVersion Include="Refit" Version="6.3.2" />
 		<PackageVersion Include="Refit.HttpClientFactory" Version="6.3.2" />
 		<PackageVersion Include="Refit.Newtonsoft.Json" Version="6.3.2" />
-		<PackageVersion Include="Serilog" Version="2.12.0" />
+		<PackageVersion Include="Serilog" Version="3.0.1" />
 		<PackageVersion Include="Serilog.AspNetCore" Version="7.0.0" />
 		<PackageVersion Include="Serilog.Enrichers.Environment" Version="2.2.0" />
-		<PackageVersion Include="Serilog.Sinks.Elasticsearch" Version="9.0.2" />
+		<PackageVersion Include="Serilog.Sinks.Elasticsearch" Version="9.0.3" />
 		<PackageVersion Include="Serilog.Sinks.Email" Version="2.4.0" />
 		<PackageVersion Include="Serilog.Sinks.File" Version="5.0.0" />
 		<PackageVersion Include="StackExchange.Redis" Version="2.6.116" />
@@ -71,24 +70,24 @@
 	</ItemGroup>
 	<!-- Microsoft.EntityFrameworkCore -->
 	<ItemGroup>
-		<PackageVersion Include="Microsoft.EntityFrameworkCore" Version="7.0.7" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore" Version="7.0.8" />
 		<PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5" />
 		<PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.5" />
-		<PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.7">
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.8">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageVersion>
-		<PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.7" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.8" />
 	</ItemGroup>
 	<!-- Grpc -->
 	<ItemGroup>
 		<PackageVersion Include="Google.Protobuf" Version="3.23.3" />
 		<PackageVersion Include="Grpc" Version="2.46.6" />
-		<PackageVersion Include="Grpc.AspNetCore" Version="2.53.0" />
-		<PackageVersion Include="Grpc.AspNetCore.Server" Version="2.53.0" />
-		<PackageVersion Include="Grpc.AspNetCore.Server.Reflection" Version="2.53.0" />
+		<PackageVersion Include="Grpc.AspNetCore" Version="2.54.0" />
+		<PackageVersion Include="Grpc.AspNetCore.Server" Version="2.54.0" />
+		<PackageVersion Include="Grpc.AspNetCore.Server.Reflection" Version="2.54.0" />
 		<PackageVersion Include="Grpc.Core" Version="2.46.6" />
-		<PackageVersion Include="Grpc.HealthCheck" Version="2.53.0" />
+		<PackageVersion Include="Grpc.HealthCheck" Version="2.54.0" />
 		<PackageVersion Include="Grpc.Tools" Version="2.54.0" />
 	</ItemGroup>
 	<ItemGroup Condition="$(TargetFramework.Contains('netstandard'))">
@@ -101,9 +100,9 @@
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)'=='net7.0'">
 		<PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="7.0.5" />
-		<PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.7" />
-		<PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="7.0.7" />
-		<PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="7.0.5" />
+		<PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.8" />
+		<PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="7.0.8" />
+		<PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="7.0.8" />
 		<PackageVersion Include="Microsoft.AspNetCore.Connections.Abstractions" Version="7.0.5" />
 	</ItemGroup>
 	<!-- Tests -->
