@@ -16,11 +16,10 @@ jobs:
       with:
         dotnet-version: 7.0.x
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore Euonia.sln
     - name: Build
-      run: dotnet build --no-restore
-    - name: Publish NuGet Euonia.Core
-      uses: brandedoutcast/publish-nuget@v2.5.5
-      with:
-        PROJECT_FILE_PATH: Source/Euonia.Core/Euonia.Core.csproj
-        NUGET_KEY: ${{secrets.NUGET_API}}
+      run: dotnet build Euonia.sln --no-restore --configuration Release
+    - name: Pack
+      run: dotnet pack .\Euonia.sln -c Release -o artifacts/ 
+    - name: Publish NuGet
+      run: dotnet nuget push artifacts/*.nupkg --api-key ${{secrets.NUGET_API}} --source https://api.nuget.org/v3/index.json --skip-duplicate
