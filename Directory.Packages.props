@@ -14,7 +14,7 @@
 	<ItemGroup>
 		<PackageVersion Include="Autofac" Version="7.0.1" />
 		<PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
-		<PackageVersion Include="Autofac.Extras.DynamicProxy" Version="7.0.0" />
+		<PackageVersion Include="Autofac.Extras.DynamicProxy" Version="7.1.0" />
 		<PackageVersion Include="AutoMapper" Version="12.0.1" />
 		<PackageVersion Include="Castle.Core" Version="5.1.1" />
 		<PackageVersion Include="Consul" Version="1.6.10.9" />
@@ -22,6 +22,7 @@
 		<PackageVersion Include="IdentityModel" Version="6.1.0" />
 		<PackageVersion Include="IdentityModel.AspNetCore.OAuth2Introspection" Version="6.2.0" />
 		<PackageVersion Include="Mapster" Version="7.3.0" />
+		<PackageVersion Include="Mapster.DependencyInjection" Version="1.0.0" />
 		<PackageVersion Include="MediatR" Version="12.0.1" />
 		<PackageVersion Include="MediatR.Contracts" Version="2.0.1" />
 		<PackageVersion Include="mongocsharpdriver" Version="2.20.0" />
@@ -79,6 +80,23 @@
 		</PackageVersion>
 		<PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.8" />
 	</ItemGroup>
+	<!-- Microsoft.AspNetCore -->
+	<ItemGroup>
+		<PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="7.0.8" />
+		<PackageVersion Include="Microsoft.AspNetCore.Connections.Abstractions" Version="7.0.5" />
+	</ItemGroup>
+	<ItemGroup Condition="$(TargetFramework.Contains('netstandard'))">
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='net6.0'">
+		<PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.16" />
+		<PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.16" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='net7.0'">
+		<PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="7.0.5" />
+		<PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.8" />
+		<PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="7.0.8" />
+		
+	</ItemGroup>
 	<!-- Grpc -->
 	<ItemGroup>
 		<PackageVersion Include="Google.Protobuf" Version="3.23.3" />
@@ -90,25 +108,10 @@
 		<PackageVersion Include="Grpc.HealthCheck" Version="2.54.0" />
 		<PackageVersion Include="Grpc.Tools" Version="2.54.0" />
 	</ItemGroup>
-	<ItemGroup Condition="$(TargetFramework.Contains('netstandard'))">
-	</ItemGroup>
-	<ItemGroup Condition="'$(TargetFramework)'=='net6.0'">
-		<PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.16" />
-		<PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.16" />
-		<PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="6.0.16" />
-		<PackageVersion Include="Microsoft.AspNetCore.Connections.Abstractions" Version="6.0.16" />
-	</ItemGroup>
-	<ItemGroup Condition="'$(TargetFramework)'=='net7.0'">
-		<PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="7.0.5" />
-		<PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.8" />
-		<PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="7.0.8" />
-		<PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="7.0.8" />
-		<PackageVersion Include="Microsoft.AspNetCore.Connections.Abstractions" Version="7.0.5" />
-	</ItemGroup>
 	<!-- Tests -->
 	<ItemGroup>
 		<PackageVersion Include="BenchmarkDotNet" Version="0.13.4" />
-		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.6.2" />
+		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.6.3" />
 		<PackageVersion Include="xunit" Version="2.4.2" />
 		<PackageVersion Include="xunit.runner.visualstudio" Version="2.4.5" />
 		<PackageVersion Include="coverlet.collector" Version="6.0.0">
