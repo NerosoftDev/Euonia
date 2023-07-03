@@ -6,4 +6,10 @@
 		<ProjectReference Include="..\..\Source\Euonia.Core\Euonia.Core.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<None Update="appsettings.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
 </Project>
