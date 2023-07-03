@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\common.props" />
+
+	<PropertyGroup>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MediatR" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Euonia.Core\Euonia.Core.csproj" />
+		<ProjectReference Include="..\Euonia.Domain\Euonia.Domain.csproj" />
+		<ProjectReference Include="..\Euonia.Modularity\Euonia.Modularity.csproj" />
+	</ItemGroup>
+
+</Project>

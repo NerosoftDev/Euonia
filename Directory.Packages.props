@@ -1,0 +1,125 @@
+<Project>
+	<PropertyGroup>
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+		<EnablePackageVersionOverride>true</EnablePackageVersionOverride>
+	</PropertyGroup>
+	<PropertyGroup>
+		<LatestVersion>*</LatestVersion>
+		<MicrosoftAspNetCorePackageVersion7>7.0.2</MicrosoftAspNetCorePackageVersion7>
+		<MicrosoftAspNetCorePackageVersion6>6.0.13</MicrosoftAspNetCorePackageVersion6>
+		<MicrosoftExtensionsPackageVersion>7.0.0</MicrosoftExtensionsPackageVersion>
+		<EntityFrameworkCorePackageVersion>7.0.2</EntityFrameworkCorePackageVersion>
+		<GrpcPackageVersion>2.51.0</GrpcPackageVersion>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageVersion Include="Autofac" Version="7.0.1" />
+		<PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
+		<PackageVersion Include="Autofac.Extras.DynamicProxy" Version="7.1.0" />
+		<PackageVersion Include="AutoMapper" Version="12.0.1" />
+		<PackageVersion Include="Castle.Core" Version="5.1.1" />
+		<PackageVersion Include="Consul" Version="1.6.10.9" />
+		<PackageVersion Include="FluentValidation" Version="11.5.2" />
+		<PackageVersion Include="IdentityModel" Version="6.1.0" />
+		<PackageVersion Include="IdentityModel.AspNetCore.OAuth2Introspection" Version="6.2.0" />
+		<PackageVersion Include="Mapster" Version="7.3.0" />
+		<PackageVersion Include="Mapster.DependencyInjection" Version="1.0.0" />
+		<PackageVersion Include="MediatR" Version="12.0.1" />
+		<PackageVersion Include="MediatR.Contracts" Version="2.0.1" />
+		<PackageVersion Include="mongocsharpdriver" Version="2.20.0" />
+		<PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageVersion Include="Polly" Version="7.2.4" />
+		<PackageVersion Include="protobuf-net" Version="3.1.33" />
+		<PackageVersion Include="Quartz" Version="3.6.0" />
+		<PackageVersion Include="RabbitMQ.Client" Version="6.5.0" />
+		<PackageVersion Include="Refit" Version="6.3.2" />
+		<PackageVersion Include="Refit.HttpClientFactory" Version="6.3.2" />
+		<PackageVersion Include="Refit.Newtonsoft.Json" Version="6.3.2" />
+		<PackageVersion Include="Serilog" Version="3.0.1" />
+		<PackageVersion Include="Serilog.AspNetCore" Version="7.0.0" />
+		<PackageVersion Include="Serilog.Enrichers.Environment" Version="2.2.0" />
+		<PackageVersion Include="Serilog.Sinks.Elasticsearch" Version="9.0.3" />
+		<PackageVersion Include="Serilog.Sinks.Email" Version="2.4.0" />
+		<PackageVersion Include="Serilog.Sinks.File" Version="5.0.0" />
+		<PackageVersion Include="StackExchange.Redis" Version="2.6.116" />
+		<PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+		<PackageVersion Include="System.Collections.Immutable" Version="7.0.0" />
+		<PackageVersion Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
+		<PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
+		<PackageVersion Include="System.Interactive" Version="6.0.1" />
+		<PackageVersion Include="System.Diagnostics.PerformanceCounter" Version="7.0.0" />
+		<PackageVersion Include="System.Reactive" Version="5.0.0" />
+		<PackageVersion Include="System.Runtime.Caching" Version="7.0.0" />
+		<PackageVersion Include="System.Runtime.Loader" Version="4.3.0" />
+		<PackageVersion Include="System.Text.Json" Version="7.0.3" />
+		<PackageVersion Include="Winton.Extensions.Configuration.Consul" Version="3.2.0" />
+	</ItemGroup>
+	<!-- Microsoft.Extensions -->
+	<ItemGroup>
+		<PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="7.0.0" />
+		<PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
+		<PackageVersion Include="Microsoft.Extensions.Configuration.CommandLine" Version="7.0.0" />
+		<PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
+		<PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
+		<PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+		<PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+		<PackageVersion Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
+		<PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
+		<PackageVersion Include="Microsoft.Extensions.Http" Version="7.0.0" />
+		<PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
+		<PackageVersion Include="Microsoft.Extensions.Options" Version="7.0.1" />
+		<PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0" />
+	</ItemGroup>
+	<!-- Microsoft.EntityFrameworkCore -->
+	<ItemGroup>
+		<PackageVersion Include="Microsoft.EntityFrameworkCore" Version="7.0.8" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.5" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.8">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageVersion>
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.8" />
+	</ItemGroup>
+	<!-- Microsoft.AspNetCore -->
+	<ItemGroup>
+		<PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="7.0.8" />
+		<PackageVersion Include="Microsoft.AspNetCore.Connections.Abstractions" Version="7.0.5" />
+	</ItemGroup>
+	<ItemGroup Condition="$(TargetFramework.Contains('netstandard'))">
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='net6.0'">
+		<PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.16" />
+		<PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.16" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='net7.0'">
+		<PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="7.0.5" />
+		<PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.8" />
+		<PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="7.0.8" />
+		
+	</ItemGroup>
+	<!-- Grpc -->
+	<ItemGroup>
+		<PackageVersion Include="Google.Protobuf" Version="3.23.3" />
+		<PackageVersion Include="Grpc" Version="2.46.6" />
+		<PackageVersion Include="Grpc.AspNetCore" Version="2.54.0" />
+		<PackageVersion Include="Grpc.AspNetCore.Server" Version="2.54.0" />
+		<PackageVersion Include="Grpc.AspNetCore.Server.Reflection" Version="2.54.0" />
+		<PackageVersion Include="Grpc.Core" Version="2.46.6" />
+		<PackageVersion Include="Grpc.HealthCheck" Version="2.54.0" />
+		<PackageVersion Include="Grpc.Tools" Version="2.54.0" />
+	</ItemGroup>
+	<!-- Tests -->
+	<ItemGroup>
+		<PackageVersion Include="BenchmarkDotNet" Version="0.13.4" />
+		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.6.3" />
+		<PackageVersion Include="xunit" Version="2.4.2" />
+		<PackageVersion Include="xunit.runner.visualstudio" Version="2.4.5" />
+		<PackageVersion Include="coverlet.collector" Version="6.0.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageVersion>
+		<PackageVersion Include="Xunit.DependencyInjection" Version="8.7.1" />
+		<PackageVersion Include="Xunit.DependencyInjection.Logging" Version="8.0.1" />
+		<PackageVersion Include="Moq" Version="4.18.4" />
+	</ItemGroup>
+</Project>

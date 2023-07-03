@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\common.props" />
+
+	<PropertyGroup>
+		<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$(TargetFramework.Contains('netstandard'))">
+		<LangVersion>latest</LangVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Google.Protobuf" />
+		<PackageReference Include="Grpc.AspNetCore" />
+		<PackageReference Include="Grpc.AspNetCore.Server" />
+		<PackageReference Include="Grpc.AspNetCore.Server.Reflection" />
+		<PackageReference Include="Grpc.Core" />
+		<PackageReference Include="Grpc.HealthCheck" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" />
+	</ItemGroup>
+
+</Project>

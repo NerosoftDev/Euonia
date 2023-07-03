@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\common.props" />
+
+	<PropertyGroup>
+		<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MediatR.Contracts" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  	<ProjectReference Include="..\Euonia.Caching\Euonia.Caching.csproj" />
+	  	<ProjectReference Include="..\Euonia.Core\Euonia.Core.csproj" />
+	  	<ProjectReference Include="..\Euonia.Linq\Euonia.Linq.csproj" />
+	  	<ProjectReference Include="..\Euonia.Validation\Euonia.Validation.csproj" />
+	</ItemGroup>
+
+</Project>

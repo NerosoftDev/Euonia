@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\common.props" />
+
+	<PropertyGroup>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" />
+		<PackageReference Include="Polly" />
+		<PackageReference Include="RabbitMQ.Client" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Euonia.Bus\Euonia.Bus.csproj" />
+	</ItemGroup>
+
+</Project>
