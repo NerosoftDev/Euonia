@@ -10,11 +10,4 @@
 	<PropertyGroup Condition="$(TargetFramework.Contains('netstandard'))">
 		<LangVersion>latest</LangVersion>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<PackageReference Include="AutoMapper" />
-		<PackageReference Include="Mapster" />
-		<PackageReference Include="Google.Protobuf" />
-		<PackageReference Include="Newtonsoft.Json" />
-	</ItemGroup>
 </Project>
