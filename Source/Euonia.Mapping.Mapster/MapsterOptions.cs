@@ -17,19 +17,19 @@ public class MapsterOptions
 
     public TypeAdapterConfig Configuration { get; }
 
-    public void AddRegister<TRegister>()
+    public void AddProfile<TRegister>()
         where TRegister : IRegister, new()
     {
         Configuration.Apply(new TRegister());
     }
 
-    public void AddRegister<TRegister>(Func<TRegister> factory)
+    public void AddProfile<TRegister>(Func<TRegister> factory)
         where TRegister : IRegister
     {
         Configuration.Apply(factory());
     }
 
-    public void AddRegister(Type registerType)
+    public void AddProfile(Type registerType)
     {
         if (!typeof(IRegister).IsAssignableFrom(registerType))
         {
@@ -39,17 +39,17 @@ public class MapsterOptions
         Configuration.Apply((IRegister)Activator.CreateInstance(registerType));
     }
 
-    public void AddRegister(IRegister register)
+    public void AddProfile(IRegister register)
     {
         Configuration.Apply(register);
     }
 
-    public void AddRegisters(IEnumerable<IRegister> registers)
+    public void AddProfiles(IEnumerable<IRegister> registers)
     {
         Configuration.Apply(registers);
     }
 
-    public void AddRegisters(params Assembly[] assemblies)
+    public void AddProfiles(params Assembly[] assemblies)
     {
         Configuration.Scan(assemblies);
     }

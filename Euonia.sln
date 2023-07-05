@@ -42,7 +42,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Caching.Runtime", "S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Caching.Memory", "Source\Euonia.Caching.Memory\Euonia.Caching.Memory.csproj", "{4C7DD1F7-62DD-4D4E-8BA2-2CB73E52D654}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Caching.Tests", "Tests\Euonia.Caching.Tests\Euonia.Caching.Tests.csproj", "{F827303E-92C2-46D3-BD8A-50DB8885E6CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Caching.Memory.Tests", "Tests\Euonia.Caching.Memory.Tests\Euonia.Caching.Memory.Tests.csproj", "{F827303E-92C2-46D3-BD8A-50DB8885E6CE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Linq", "Source\Euonia.Linq\Euonia.Linq.csproj", "{3D60F886-5D04-4CC4-9DD4-720132392B22}"
 EndProject
@@ -66,7 +66,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Bus.InMemory", "Sour
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Bus.RabbitMq", "Source\Euonia.Bus.RabbitMq\Euonia.Bus.RabbitMq.csproj", "{0E214E08-A7C0-477D-96D3-0B7C637F9FFC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Mapping.Tests", "Tests\Euonia.Mapping.Tests\Euonia.Mapping.Tests.csproj", "{34B067D7-7126-4B02-A4E8-E1AFC77F3485}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Mapping.Automapper.Tests", "Tests\Euonia.Mapping.Automapper.Tests\Euonia.Mapping.Automapper.Tests.csproj", "{34B067D7-7126-4B02-A4E8-E1AFC77F3485}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Repository.EfCore", "Source\Euonia.Repository.EfCore\Euonia.Repository.EfCore.csproj", "{21CF6488-2099-4C54-8AF5-E36B04FB8689}"
 EndProject
@@ -78,9 +78,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Threading", "Threading", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mapping", "Mapping", "{EC2CD9F4-1B22-43D9-B6FB-45DF746F6445}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euonia.Mapping.Automapper", "Source\Euonia.Mapping.Automapper\Euonia.Mapping.Automapper.csproj", "{2A2C5AE9-0811-469D-8884-A50BE428AB7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Mapping.Automapper", "Source\Euonia.Mapping.Automapper\Euonia.Mapping.Automapper.csproj", "{2A2C5AE9-0811-469D-8884-A50BE428AB7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euonia.Mapping.Mapster", "Source\Euonia.Mapping.Mapster\Euonia.Mapping.Mapster.csproj", "{EB6CDFD4-47F5-4B1B-9A7C-EF7481B815FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Mapping.Mapster", "Source\Euonia.Mapping.Mapster\Euonia.Mapping.Mapster.csproj", "{EB6CDFD4-47F5-4B1B-9A7C-EF7481B815FF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Mapping.Mapster.Tests", "Tests\Euonia.Mapping.Mapster.Tests\Euonia.Mapping.Mapster.Tests.csproj", "{4C27EEEF-6837-47BA-BB5C-B0E96FA3504D}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Euonia.Mapping.Tests.Shared", "Tests\Euonia.Mapping.Tests.Shared\Euonia.Mapping.Tests.Shared.shproj", "{DE31E135-48A1-40D8-AFEF-768CEBB4819A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mapping", "Mapping", "{0A6E75E4-2AD5-49F3-9120-467A71B471B0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Caching", "Caching", "{2673555B-2E7C-417B-8D1A-25F3FE05A141}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Euonia.Caching.Tests.Shared", "Tests\Euonia.Caching.Tests.Shared\Euonia.Caching.Tests.Shared.shproj", "{4A28CD6B-0C75-4D39-B613-66DE6B693675}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euonia.Caching.Runtime.Tests", "Tests\Euonia.Caching.Runtime.Tests\Euonia.Caching.Runtime.Tests.csproj", "{EFA1CD9D-4B53-483C-BF9D-F21B9B2C6FDE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euonia.Caching.Default.Tests", "Tests\Euonia.Caching.Default.Tests\Euonia.Caching.Default.Tests.csproj", "{ACACF41C-B5CB-4C9F-B378-3F15ED15F1D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -239,6 +253,24 @@ Global
 		{EB6CDFD4-47F5-4B1B-9A7C-EF7481B815FF}.Product|Any CPU.Build.0 = Debug|Any CPU
 		{EB6CDFD4-47F5-4B1B-9A7C-EF7481B815FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB6CDFD4-47F5-4B1B-9A7C-EF7481B815FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C27EEEF-6837-47BA-BB5C-B0E96FA3504D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C27EEEF-6837-47BA-BB5C-B0E96FA3504D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C27EEEF-6837-47BA-BB5C-B0E96FA3504D}.Product|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C27EEEF-6837-47BA-BB5C-B0E96FA3504D}.Product|Any CPU.Build.0 = Debug|Any CPU
+		{4C27EEEF-6837-47BA-BB5C-B0E96FA3504D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C27EEEF-6837-47BA-BB5C-B0E96FA3504D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFA1CD9D-4B53-483C-BF9D-F21B9B2C6FDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFA1CD9D-4B53-483C-BF9D-F21B9B2C6FDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFA1CD9D-4B53-483C-BF9D-F21B9B2C6FDE}.Product|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFA1CD9D-4B53-483C-BF9D-F21B9B2C6FDE}.Product|Any CPU.Build.0 = Debug|Any CPU
+		{EFA1CD9D-4B53-483C-BF9D-F21B9B2C6FDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFA1CD9D-4B53-483C-BF9D-F21B9B2C6FDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACACF41C-B5CB-4C9F-B378-3F15ED15F1D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACACF41C-B5CB-4C9F-B378-3F15ED15F1D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACACF41C-B5CB-4C9F-B378-3F15ED15F1D1}.Product|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACACF41C-B5CB-4C9F-B378-3F15ED15F1D1}.Product|Any CPU.Build.0 = Debug|Any CPU
+		{ACACF41C-B5CB-4C9F-B378-3F15ED15F1D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACACF41C-B5CB-4C9F-B378-3F15ED15F1D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -255,7 +287,7 @@ Global
 		{A3342C19-82CD-4FA1-A3FE-E873341B06CB} = {5266A26B-DA74-4A22-B660-3BB7F56BE138}
 		{F3C31683-EF08-4683-AFD0-C58688D95038} = {5266A26B-DA74-4A22-B660-3BB7F56BE138}
 		{4C7DD1F7-62DD-4D4E-8BA2-2CB73E52D654} = {5266A26B-DA74-4A22-B660-3BB7F56BE138}
-		{F827303E-92C2-46D3-BD8A-50DB8885E6CE} = {E048931D-EC51-448A-A737-3C62CF100813}
+		{F827303E-92C2-46D3-BD8A-50DB8885E6CE} = {2673555B-2E7C-417B-8D1A-25F3FE05A141}
 		{3D60F886-5D04-4CC4-9DD4-720132392B22} = {5DC17AB4-46C2-4004-93CB-1446201C3AEA}
 		{7F94AEA4-3A16-45FF-BF11-5D1218FFC70C} = {5DC17AB4-46C2-4004-93CB-1446201C3AEA}
 		{A87228E8-6FA1-47FC-A70C-5A1519A81032} = {5DC17AB4-46C2-4004-93CB-1446201C3AEA}
@@ -267,7 +299,7 @@ Global
 		{95115BF6-F902-4F50-A8FA-6A0F10D1165A} = {273D1F47-F6AF-4ED5-AAB5-977BD9906B2E}
 		{C25CE636-1499-48AB-8A20-E6836C81D17B} = {273D1F47-F6AF-4ED5-AAB5-977BD9906B2E}
 		{0E214E08-A7C0-477D-96D3-0B7C637F9FFC} = {273D1F47-F6AF-4ED5-AAB5-977BD9906B2E}
-		{34B067D7-7126-4B02-A4E8-E1AFC77F3485} = {E048931D-EC51-448A-A737-3C62CF100813}
+		{34B067D7-7126-4B02-A4E8-E1AFC77F3485} = {0A6E75E4-2AD5-49F3-9120-467A71B471B0}
 		{21CF6488-2099-4C54-8AF5-E36B04FB8689} = {31F25250-7CF1-4D9B-B2DF-0B7050D88E54}
 		{B192D033-A8A2-4431-9486-949C9A1BA0FD} = {31F25250-7CF1-4D9B-B2DF-0B7050D88E54}
 		{DF98858F-104D-4AD8-B755-EDF6517E72B9} = {31F25250-7CF1-4D9B-B2DF-0B7050D88E54}
@@ -275,8 +307,23 @@ Global
 		{EC2CD9F4-1B22-43D9-B6FB-45DF746F6445} = {E57A56F3-7BAB-4DB5-9CE8-EC91985A6586}
 		{2A2C5AE9-0811-469D-8884-A50BE428AB7C} = {EC2CD9F4-1B22-43D9-B6FB-45DF746F6445}
 		{EB6CDFD4-47F5-4B1B-9A7C-EF7481B815FF} = {EC2CD9F4-1B22-43D9-B6FB-45DF746F6445}
+		{4C27EEEF-6837-47BA-BB5C-B0E96FA3504D} = {0A6E75E4-2AD5-49F3-9120-467A71B471B0}
+		{DE31E135-48A1-40D8-AFEF-768CEBB4819A} = {0A6E75E4-2AD5-49F3-9120-467A71B471B0}
+		{0A6E75E4-2AD5-49F3-9120-467A71B471B0} = {E048931D-EC51-448A-A737-3C62CF100813}
+		{2673555B-2E7C-417B-8D1A-25F3FE05A141} = {E048931D-EC51-448A-A737-3C62CF100813}
+		{4A28CD6B-0C75-4D39-B613-66DE6B693675} = {2673555B-2E7C-417B-8D1A-25F3FE05A141}
+		{EFA1CD9D-4B53-483C-BF9D-F21B9B2C6FDE} = {2673555B-2E7C-417B-8D1A-25F3FE05A141}
+		{ACACF41C-B5CB-4C9F-B378-3F15ED15F1D1} = {2673555B-2E7C-417B-8D1A-25F3FE05A141}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {84CDDCF4-F3D0-45FC-87C5-557845F58F55}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Tests\Euonia.Mapping.Tests.Shared\Euonia.Mapping.Tests.Shared.projitems*{34b067d7-7126-4b02-a4e8-e1afc77f3485}*SharedItemsImports = 5
+		Tests\Euonia.Caching.Tests.Shared\Euonia.Caching.Tests.Shared.projitems*{4a28cd6b-0c75-4d39-b613-66de6b693675}*SharedItemsImports = 13
+		Tests\Euonia.Mapping.Tests.Shared\Euonia.Mapping.Tests.Shared.projitems*{4c27eeef-6837-47ba-bb5c-b0e96fa3504d}*SharedItemsImports = 5
+		Tests\Euonia.Mapping.Tests.Shared\Euonia.Mapping.Tests.Shared.projitems*{de31e135-48a1-40d8-afef-768cebb4819a}*SharedItemsImports = 13
+		Tests\Euonia.Caching.Tests.Shared\Euonia.Caching.Tests.Shared.projitems*{efa1cd9d-4b53-483c-bf9d-f21b9b2c6fde}*SharedItemsImports = 5
+		Tests\Euonia.Caching.Tests.Shared\Euonia.Caching.Tests.Shared.projitems*{f827303e-92c2-46d3-bd8a-50db8885e6ce}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

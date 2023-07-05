@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>de31e135-48a1-40d8-afef-768cebb4819a</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Nerosoft.Euonia.Mapping.Tests</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Models\DestinationObject1.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\DestinationObject2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\SourceObject2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\SourceObject1.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test1.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test2.cs" />
+  </ItemGroup>
+</Project>

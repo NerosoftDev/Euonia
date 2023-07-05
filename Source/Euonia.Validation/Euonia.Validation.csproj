@@ -15,4 +15,8 @@
 		<PackageReference Include="FluentValidation" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  	<ProjectReference Include="..\Euonia.Modularity\Euonia.Modularity.csproj" />
+	</ItemGroup>
+
 </Project>
