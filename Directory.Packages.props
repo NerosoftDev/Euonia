@@ -16,6 +16,7 @@
 		<PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
 		<PackageVersion Include="Autofac.Extras.DynamicProxy" Version="7.1.0" />
 		<PackageVersion Include="AutoMapper" Version="12.0.1" />
+		<PackageVersion Include="Azure.Storage.Blobs" Version="12.16.0" />
 		<PackageVersion Include="Castle.Core" Version="5.1.1" />
 		<PackageVersion Include="Consul" Version="1.6.10.9" />
 		<PackageVersion Include="FluentValidation" Version="11.6.0" />
@@ -52,6 +53,7 @@
 		<PackageVersion Include="System.Runtime.Loader" Version="4.3.0" />
 		<PackageVersion Include="System.Text.Json" Version="7.0.3" />
 		<PackageVersion Include="Winton.Extensions.Configuration.Consul" Version="3.2.0" />
+		<PackageVersion Include="ZooKeeperNetEx" Version="3.4.12.4" />
 	</ItemGroup>
 	<!-- Microsoft.Extensions -->
 	<ItemGroup>
