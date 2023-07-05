@@ -89,8 +89,6 @@ public class RedisCacheService : ICacheService
     /// <inheritdoc />
     public TValue AddOrUpdate<TValue>(CacheItem<TValue> item)
     {
-        var key = RewriteKey(item.Key);
-
         return _manager.Instance<TValue>().AddOrUpdate(item, _ => item.Value);
     }
 
@@ -109,6 +107,7 @@ public class RedisCacheService : ICacheService
         {
             return value;
         }
+
         value = await factory();
         var result = _manager.Instance<TValue>().GetOrAdd(key, _ => GetCacheItem(key, value, timeout));
         return result.Value;
@@ -169,6 +168,7 @@ public class RedisCacheService : ICacheService
         {
             item = new CacheItem<TValue>(key, value);
         }
+
         return item;
     }
 }

@@ -20,7 +20,7 @@ namespace Nerosoft.Euonia.Caching.Redis;
 public sealed class RedisCacheBackplane : CacheBackplane
 {
     private const int HARD_LIMIT = 50000;
-    private readonly string _channelName;
+    private readonly RedisChannel _channelName;
     private readonly byte[] _identifier;
     private readonly RedisConnectionManager _connection;
     private readonly Timer _timer;
@@ -40,7 +40,7 @@ public sealed class RedisCacheBackplane : CacheBackplane
         : base(configuration)
     {
         Check.EnsureNotNull(configuration, nameof(configuration));
-        _channelName = configuration.BackplaneChannelName ?? "CacheManagerBackplane";
+        _channelName = new RedisChannel(configuration.BackplaneChannelName ?? "CacheManagerBackplane", RedisChannel.PatternMode.Auto);
         _identifier = Encoding.UTF8.GetBytes(Guid.NewGuid().ToString());
 
         var cfg = RedisConfigurations.GetConfiguration(ConfigurationKey, connectionString);
