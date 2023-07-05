@@ -21,6 +21,7 @@ public class HostingModule : ModuleContextBase
     {
         base.OnApplicationInitialization(context);
         var app = context.GetApplicationBuilder();
+        app.UseMiddleware<RequestTraceMiddleware>();
         app.Use(async (httpContext, next) =>
         {
             var accessor = httpContext.RequestServices.GetService<IServiceAccessor>();

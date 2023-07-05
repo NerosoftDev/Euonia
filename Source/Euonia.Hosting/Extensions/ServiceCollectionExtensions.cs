@@ -155,7 +155,7 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// 
+    /// Add <see cref="Serilog.ILogger"/> as logging provider.
     /// </summary>
     /// <param name="services"></param>
     /// <returns></returns>
@@ -174,7 +174,7 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// 
+    /// Get hosting environment from <see cref="IServiceCollection"/>.
     /// </summary>
     /// <param name="services"></param>
     /// <returns></returns>
