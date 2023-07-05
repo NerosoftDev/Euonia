@@ -130,7 +130,7 @@ internal class SnowflakeId
                 if (_sequence == 0)
                 {
                     //一微妙内产生的ID计数已达上限，等待下一微妙
-                    timestamp = GetNextTimestamp(SnowflakeId._lastTimestamp);
+                    timestamp = GetNextTimestamp(_lastTimestamp);
                 }
             }
             else

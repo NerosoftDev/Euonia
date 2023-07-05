@@ -12,7 +12,7 @@ public sealed class QueryCriteria<TEntity>
     public QueryCriteria(ISpecification<TEntity> specification, int offset, int size)
     {
         Specification = specification;
-        this.Offset = offset;
+        Offset = offset;
         Size = size;
     }
 

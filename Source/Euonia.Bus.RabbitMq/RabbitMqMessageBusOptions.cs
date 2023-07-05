@@ -30,7 +30,7 @@ public class RabbitMqMessageBusOptions
     /// Gets or sets the exchange type.
     /// Values: fanout, direct, headers, topic
     /// </summary>
-    public string ExchangeType { get; set; } = global::RabbitMQ.Client.ExchangeType.Fanout;
+    public string ExchangeType { get; set; } = RabbitMQ.Client.ExchangeType.Fanout;
 
     /// <summary>
     /// 
