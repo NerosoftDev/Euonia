@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\Euonia.Mapping.Tests.Shared\Euonia.Mapping.Tests.Shared.projitems" Label="Shared" />
+
+	<Import Project="..\common.props" />
+
+	<PropertyGroup>
+		<RootNamespace>Nerosoft.Euonia.Mapping.Tests</RootNamespace>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<ProjectReference Include="..\..\Source\Euonia.Mapping.Automapper\Euonia.Mapping.Automapper.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="appsettings.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+</Project>

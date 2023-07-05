@@ -1,9 +1,18 @@
-﻿namespace Nerosoft.Euonia.Mapping;
+﻿using MapsterMapper;
+
+namespace Nerosoft.Euonia.Mapping;
 
 public class MapsterTypeAdapterFactory : ITypeAdapterFactory
 {
+    private readonly IMapper _mapper;
+
+    public MapsterTypeAdapterFactory(IMapper mapper)
+    {
+        _mapper = mapper;
+    }
+
     public ITypeAdapter Create()
     {
-        throw new NotImplementedException();
+        return new MapsterTypeAdapter(_mapper);
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Nerosoft.Euonia.Mapping.Tests.Profiles;
 
 namespace Nerosoft.Euonia.Mapping.Tests;
 
@@ -26,15 +27,25 @@ public class Startup
     // ConfigureServices(HostBuilderContext hostBuilderContext, IServiceCollection services)
     public void ConfigureServices(IServiceCollection services, HostBuilderContext hostBuilderContext)
     {
+        services.Configure<AutomapperOptions>(options =>
+        {
+            options.AddProfile<Profile1>();
+            options.AddProfile<Profile2>();
+        });
+        services.AddAutomapper();
+        services.AddSingleton<ITypeAdapterFactory, AutomapperTypeAdapterFactory>();
     }
 
     //public void Configure(IServiceProvider applicationServices, IIdGenerator idGenerator)
     //{
-    //  InitData();
     //}
 
     public void Configure(IServiceProvider applicationServices)
     {
-        //var config = applicationServices.GetService<IConfiguration>();
+        var factory = applicationServices.GetService<ITypeAdapterFactory>();
+        if (factory != null)
+        {
+            TypeAdapterFactory.SetCurrent(factory);
+        }
     }
 }

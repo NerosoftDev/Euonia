@@ -66,7 +66,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Bus.InMemory", "Sour
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Bus.RabbitMq", "Source\Euonia.Bus.RabbitMq\Euonia.Bus.RabbitMq.csproj", "{0E214E08-A7C0-477D-96D3-0B7C637F9FFC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Mapping.Tests", "Tests\Euonia.Mapping.Tests\Euonia.Mapping.Tests.csproj", "{34B067D7-7126-4B02-A4E8-E1AFC77F3485}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Mapping.Automapper.Tests", "Tests\Euonia.Mapping.Automapper.Tests\Euonia.Mapping.Automapper.Tests.csproj", "{34B067D7-7126-4B02-A4E8-E1AFC77F3485}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Repository.EfCore", "Source\Euonia.Repository.EfCore\Euonia.Repository.EfCore.csproj", "{21CF6488-2099-4C54-8AF5-E36B04FB8689}"
 EndProject
@@ -78,9 +78,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Threading", "Threading", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mapping", "Mapping", "{EC2CD9F4-1B22-43D9-B6FB-45DF746F6445}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euonia.Mapping.Automapper", "Source\Euonia.Mapping.Automapper\Euonia.Mapping.Automapper.csproj", "{2A2C5AE9-0811-469D-8884-A50BE428AB7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Mapping.Automapper", "Source\Euonia.Mapping.Automapper\Euonia.Mapping.Automapper.csproj", "{2A2C5AE9-0811-469D-8884-A50BE428AB7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euonia.Mapping.Mapster", "Source\Euonia.Mapping.Mapster\Euonia.Mapping.Mapster.csproj", "{EB6CDFD4-47F5-4B1B-9A7C-EF7481B815FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Mapping.Mapster", "Source\Euonia.Mapping.Mapster\Euonia.Mapping.Mapster.csproj", "{EB6CDFD4-47F5-4B1B-9A7C-EF7481B815FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euonia.Mapping.Mapster.Tests", "Tests\Euonia.Mapping.Mapster.Tests\Euonia.Mapping.Mapster.Tests.csproj", "{4C27EEEF-6837-47BA-BB5C-B0E96FA3504D}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Euonia.Mapping.Tests.Shared", "Tests\Euonia.Mapping.Tests.Shared\Euonia.Mapping.Tests.Shared.shproj", "{DE31E135-48A1-40D8-AFEF-768CEBB4819A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -239,6 +243,12 @@ Global
 		{EB6CDFD4-47F5-4B1B-9A7C-EF7481B815FF}.Product|Any CPU.Build.0 = Debug|Any CPU
 		{EB6CDFD4-47F5-4B1B-9A7C-EF7481B815FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB6CDFD4-47F5-4B1B-9A7C-EF7481B815FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C27EEEF-6837-47BA-BB5C-B0E96FA3504D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C27EEEF-6837-47BA-BB5C-B0E96FA3504D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C27EEEF-6837-47BA-BB5C-B0E96FA3504D}.Product|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C27EEEF-6837-47BA-BB5C-B0E96FA3504D}.Product|Any CPU.Build.0 = Debug|Any CPU
+		{4C27EEEF-6837-47BA-BB5C-B0E96FA3504D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C27EEEF-6837-47BA-BB5C-B0E96FA3504D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -275,8 +285,15 @@ Global
 		{EC2CD9F4-1B22-43D9-B6FB-45DF746F6445} = {E57A56F3-7BAB-4DB5-9CE8-EC91985A6586}
 		{2A2C5AE9-0811-469D-8884-A50BE428AB7C} = {EC2CD9F4-1B22-43D9-B6FB-45DF746F6445}
 		{EB6CDFD4-47F5-4B1B-9A7C-EF7481B815FF} = {EC2CD9F4-1B22-43D9-B6FB-45DF746F6445}
+		{4C27EEEF-6837-47BA-BB5C-B0E96FA3504D} = {E048931D-EC51-448A-A737-3C62CF100813}
+		{DE31E135-48A1-40D8-AFEF-768CEBB4819A} = {E048931D-EC51-448A-A737-3C62CF100813}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {84CDDCF4-F3D0-45FC-87C5-557845F58F55}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Tests\Euonia.Mapping.Tests.Shared\Euonia.Mapping.Tests.Shared.projitems*{34b067d7-7126-4b02-a4e8-e1afc77f3485}*SharedItemsImports = 5
+		Tests\Euonia.Mapping.Tests.Shared\Euonia.Mapping.Tests.Shared.projitems*{4c27eeef-6837-47ba-bb5c-b0e96fa3504d}*SharedItemsImports = 5
+		Tests\Euonia.Mapping.Tests.Shared\Euonia.Mapping.Tests.Shared.projitems*{de31e135-48a1-40d8-afef-768cebb4819a}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

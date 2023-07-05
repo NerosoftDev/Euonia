@@ -1,16 +1,18 @@
-﻿namespace Nerosoft.Euonia.Mapping;
+﻿using AutoMapper;
+
+namespace Nerosoft.Euonia.Mapping;
 
 public class AutomapperTypeAdapterFactory : ITypeAdapterFactory
 {
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IMapper _mapper;
 
-    public AutomapperTypeAdapterFactory(IServiceProvider serviceProvider)
+    public AutomapperTypeAdapterFactory(IMapper mapper)
     {
-        _serviceProvider = serviceProvider;
+        _mapper = mapper;
     }
 
     public ITypeAdapter Create()
     {
-        return new AutomapperTypeAdapter(_serviceProvider);
+        return new AutomapperTypeAdapter(_mapper);
     }
 }
