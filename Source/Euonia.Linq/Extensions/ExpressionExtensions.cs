@@ -4,6 +4,9 @@ using System.Reflection;
 
 namespace Nerosoft.Euonia.Linq;
 
+/// <summary>
+/// Extension methods for <see cref="Expression"/>.
+/// </summary>
 public static class ExpressionExtensions
 {
     /// <summary>
@@ -89,10 +92,10 @@ public static class ExpressionExtensions
     #region Property(属性表达式)
 
     /// <summary>
-    /// 创建属性表达式
+    /// Creates a <see cref="MemberExpression"/> for the specified property.
     /// </summary>
-    /// <param name="expression">表达式</param>
-    /// <param name="propertyName">属性名,支持多级属性名，与句点分隔，范例：Customer.Name</param>
+    /// <param name="expression">The expression.</param>
+    /// <param name="propertyName">The property name. e.g: Name, Customer.Name</param>
     public static Expression Property(this Expression expression, string propertyName)
     {
         if (propertyName.All(t => t != '.'))
@@ -114,10 +117,10 @@ public static class ExpressionExtensions
     }
 
     /// <summary>
-    /// 创建属性表达式
+    /// Create a <see cref="MemberExpression"/> for the specified property.
     /// </summary>
-    /// <param name="expression">表达式</param>
-    /// <param name="member">属性</param>
+    /// <param name="expression">The expression.</param>
+    /// <param name="member">The property member.</param>
     public static Expression Property(this Expression expression, MemberInfo member)
     {
         return Expression.MakeMemberAccess(expression, member);
@@ -125,7 +128,7 @@ public static class ExpressionExtensions
 
     #endregion
 
-    #region And(与表达式)
+    #region And expression
     /// <summary>
     /// Combines the first predicate with the second using the logical "and".
     /// </summary>
@@ -151,7 +154,7 @@ public static class ExpressionExtensions
 
     #endregion
 
-    #region Or(或表达式)
+    #region Or expression
 
     /// <summary>
     /// Combines the first predicate with the second using the logical "or".
@@ -182,12 +185,12 @@ public static class ExpressionExtensions
     //*/
     #endregion
 
-    #region Value(获取lambda表达式的值)
+    #region Value
 
     /// <summary>
-    /// 获取lambda表达式的值
+    /// Gets value from a lambda expression.
     /// </summary>
-    /// <typeparam name="T">对象类型</typeparam>
+    /// <typeparam name="T">The target object type.</typeparam>
     public static object Value<T>(this Expression<Func<T, bool>> expression)
     {
         return Lambda.GetValue(expression);
@@ -195,23 +198,23 @@ public static class ExpressionExtensions
 
     #endregion
 
-    #region Equal(等于表达式)
+    #region Equal
 
     /// <summary>
-    /// 创建等于运算表达式
+    /// To be added.
     /// </summary>
-    /// <param name="left">左操作数</param>
-    /// <param name="right">右操作数</param>
+    /// <param name="left">To be added.</param>
+    /// <param name="right">To be added.</param>
     public static Expression Equal(this Expression left, Expression right)
     {
         return Expression.Equal(left, right);
     }
 
     /// <summary>
-    /// 创建等于运算表达式
+    /// To be added.
     /// </summary>
-    /// <param name="left">左操作数</param>
-    /// <param name="value">值</param>
+    /// <param name="left">To be added.</param>
+    /// <param name="value">To be added.</param>
     public static Expression Equal(this Expression left, object value)
     {
         return left.Equal(Lambda.Constant(left, value));
@@ -219,23 +222,23 @@ public static class ExpressionExtensions
 
     #endregion
 
-    #region NotEqual(不等于表达式)
+    #region NotEqual
 
     /// <summary>
-    /// 创建不等于运算表达式
+    /// To be added.
     /// </summary>
-    /// <param name="left">左操作数</param>
-    /// <param name="right">右操作数</param>
+    /// <param name="left">To be added.</param>
+    /// <param name="right">To be added.</param>
     public static Expression NotEqual(this Expression left, Expression right)
     {
         return Expression.NotEqual(left, right);
     }
 
     /// <summary>
-    /// 创建不等于运算表达式
+    /// To be added.
     /// </summary>
-    /// <param name="left">左操作数</param>
-    /// <param name="value">值</param>
+    /// <param name="left">To be added.</param>
+    /// <param name="value">To be added.</param>
     public static Expression NotEqual(this Expression left, object value)
     {
         return left.NotEqual(Lambda.Constant(left, value));
@@ -243,23 +246,23 @@ public static class ExpressionExtensions
 
     #endregion
 
-    #region Greater(大于表达式)
+    #region Greater
 
     /// <summary>
-    /// 创建大于运算表达式
+    /// To be added.
     /// </summary>
-    /// <param name="left">左操作数</param>
-    /// <param name="right">右操作数</param>
+    /// <param name="left">To be added.</param>
+    /// <param name="right">To be added.</param>
     public static Expression Greater(this Expression left, Expression right)
     {
         return Expression.GreaterThan(left, right);
     }
 
     /// <summary>
-    /// 创建大于运算表达式
+    /// To be added.
     /// </summary>
-    /// <param name="left">左操作数</param>
-    /// <param name="value">值</param>
+    /// <param name="left">To be added.</param>
+    /// <param name="value">To be added.</param>
     public static Expression Greater(this Expression left, object value)
     {
         return left.Greater(Lambda.Constant(left, value));
@@ -267,23 +270,23 @@ public static class ExpressionExtensions
 
     #endregion
 
-    #region GreaterEqual(大于等于表达式)
+    #region GreaterEqual
 
     /// <summary>
-    /// 创建大于等于运算表达式
+    /// To be added.
     /// </summary>
-    /// <param name="left">左操作数</param>
-    /// <param name="right">右操作数</param>
+    /// <param name="left">To be added.</param>
+    /// <param name="right">To be added.</param>
     public static Expression GreaterEqual(this Expression left, Expression right)
     {
         return Expression.GreaterThanOrEqual(left, right);
     }
 
     /// <summary>
-    /// 创建大于等于运算表达式
+    /// To be added.
     /// </summary>
-    /// <param name="left">左操作数</param>
-    /// <param name="value">值</param>
+    /// <param name="left">To be added.</param>
+    /// <param name="value">To be added.</param>
     public static Expression GreaterEqual(this Expression left, object value)
     {
         return left.GreaterEqual(Lambda.Constant(left, value));
@@ -291,23 +294,23 @@ public static class ExpressionExtensions
 
     #endregion
 
-    #region Less(小于表达式)
+    #region Less
 
     /// <summary>
-    /// 创建小于运算表达式
+    /// To be added.
     /// </summary>
-    /// <param name="left">左操作数</param>
-    /// <param name="right">右操作数</param>
+    /// <param name="left">To be added.</param>
+    /// <param name="right">To be added.</param>
     public static Expression Less(this Expression left, Expression right)
     {
         return Expression.LessThan(left, right);
     }
 
     /// <summary>
-    /// 创建小于运算表达式
+    /// To be added.
     /// </summary>
-    /// <param name="left">左操作数</param>
-    /// <param name="value">值</param>
+    /// <param name="left">To be added.</param>
+    /// <param name="value">To be added.</param>
     public static Expression Less(this Expression left, object value)
     {
         return left.Less(Lambda.Constant(left, value));
@@ -315,23 +318,23 @@ public static class ExpressionExtensions
 
     #endregion
 
-    #region LessEqual(小于等于表达式)
+    #region LessEqual
 
     /// <summary>
-    /// 创建小于等于运算表达式
+    /// To be added.
     /// </summary>
-    /// <param name="left">左操作数</param>
-    /// <param name="right">右操作数</param>
+    /// <param name="left">To be added.</param>
+    /// <param name="right">To be added.</param>
     public static Expression LessEqual(this Expression left, Expression right)
     {
         return Expression.LessThanOrEqual(left, right);
     }
 
     /// <summary>
-    /// 创建小于等于运算表达式
+    /// To be added.
     /// </summary>
-    /// <param name="left">左操作数</param>
-    /// <param name="value">值</param>
+    /// <param name="left">To be added.</param>
+    /// <param name="value">To be added.</param>
     public static Expression LessEqual(this Expression left, object value)
     {
         return left.LessEqual(Lambda.Constant(left, value));
@@ -339,13 +342,13 @@ public static class ExpressionExtensions
 
     #endregion
 
-    #region StartsWith(头匹配)
+    #region StartsWith
 
     /// <summary>
-    /// 头匹配
+    /// To be added.
     /// </summary>
-    /// <param name="left">左操作数</param>
-    /// <param name="value">值</param>
+    /// <param name="left">To be added.</param>
+    /// <param name="value">To be added.</param>
     public static Expression StartsWith(this Expression left, object value)
     {
         return left.Call("StartsWith", new[] { typeof(string) }, value);
@@ -384,11 +387,11 @@ public static class ExpressionExtensions
     #region Operation(操作)
 
     /// <summary>
-    /// 操作
+    /// To be added.
     /// </summary>
-    /// <param name="left">左操作数</param>
-    /// <param name="operator">运算符</param>
-    /// <param name="value">值</param>
+    /// <param name="left">To be added.</param>
+    /// <param name="operator">To be added.</param>
+    /// <param name="value">To be added.</param>
     public static Expression Operation(this Expression left, QueryOperator @operator, object value)
     {
         return @operator switch
@@ -415,11 +418,11 @@ public static class ExpressionExtensions
     #region Call(调用方法表达式)
 
     /// <summary>
-    /// 创建调用方法表达式
+    /// To be added.
     /// </summary>
-    /// <param name="instance">调用的实例</param>
-    /// <param name="methodName">方法名</param>
-    /// <param name="values">参数值列表</param>
+    /// <param name="instance">To be added.</param>
+    /// <param name="methodName">To be added.</param>
+    /// <param name="values">To be added.</param>
     public static Expression Call(this Expression instance, string methodName, params Expression[] values)
     {
         if (instance == null)
@@ -438,11 +441,11 @@ public static class ExpressionExtensions
     }
 
     /// <summary>
-    /// 创建调用方法表达式
+    /// To be added.
     /// </summary>
-    /// <param name="instance">调用的实例</param>
-    /// <param name="methodName">方法名</param>
-    /// <param name="values">参数值列表</param>
+    /// <param name="instance">To be added.</param>
+    /// <param name="methodName">To be added.</param>
+    /// <param name="values">To be added.</param>
     public static Expression Call(this Expression instance, string methodName, params object[] values)
     {
         if (instance == null)
@@ -466,12 +469,12 @@ public static class ExpressionExtensions
     }
 
     /// <summary>
-    /// 创建调用方法表达式
+    /// To be added.
     /// </summary>
-    /// <param name="instance">调用的实例</param>
-    /// <param name="methodName">方法名</param>
-    /// <param name="paramTypes">参数类型列表</param>
-    /// <param name="values">参数值列表</param>
+    /// <param name="instance">To be added.</param>
+    /// <param name="methodName">To be added.</param>
+    /// <param name="paramTypes">To be added.</param>
+    /// <param name="values">To be added.</param>
     public static Expression Call(this Expression instance, string methodName, Type[] paramTypes, params object[] values)
     {
         if (instance == null)
@@ -519,7 +522,7 @@ public static class ExpressionExtensions
     #region ToLambda(创建Lambda表达式)
 
     /// <summary>
-    /// 创建Lambda表达式
+    /// Creates a lambda expression from the specified expression and parameters.
     /// </summary>
     /// <typeparam name="TDelegate">委托类型</typeparam>
     /// <param name="body">表达式</param>
@@ -527,7 +530,9 @@ public static class ExpressionExtensions
     public static Expression<TDelegate> ToLambda<TDelegate>(this Expression body, params ParameterExpression[] parameters)
     {
         if (body == null)
+        {
             return null;
+        }
         return Expression.Lambda<TDelegate>(body, parameters);
     }
 
@@ -554,7 +559,4 @@ public static class ExpressionExtensions
     {
         return @operator == PredicateOperator.OrElse ? first.Or(second) : first.And(second);
     }
-
-    
-
 }

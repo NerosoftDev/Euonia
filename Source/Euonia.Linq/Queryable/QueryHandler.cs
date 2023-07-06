@@ -2,6 +2,10 @@
 
 namespace Nerosoft.Euonia.Linq;
 
+/// <summary>
+/// Handles queries for the specified entity type.
+/// </summary>
+/// <typeparam name="TEntity"></typeparam>
 public class QueryHandler<TEntity>
 {
     private readonly IList<Expression<Func<TEntity, bool>>> _predicates;
@@ -12,7 +16,7 @@ public class QueryHandler<TEntity>
     private int _size = int.MaxValue;
 
     /// <summary>
-    /// 
+    /// Initializes a new instance of the <see cref="QueryHandler{TEntity}"/> class.
     /// </summary>
     /// <param name="query"></param>
     public QueryHandler(IQueryable<TEntity> query)
@@ -22,7 +26,7 @@ public class QueryHandler<TEntity>
     }
 
     /// <summary>
-    /// 
+    /// Adds a predicate to the query.
     /// </summary>
     /// <param name="predicate"></param>
     /// <returns></returns>
@@ -33,7 +37,7 @@ public class QueryHandler<TEntity>
     }
 
     /// <summary>
-    /// 
+    /// Gets elements from the sequence.
     /// </summary>
     /// <returns></returns>
     public IList<TEntity> Query()
@@ -48,7 +52,7 @@ public class QueryHandler<TEntity>
     }
 
     /// <summary>
-    /// 
+    /// Gets number of elements in the sequence.
     /// </summary>
     /// <returns></returns>
     public int GetCount()
@@ -66,7 +70,7 @@ public class QueryHandler<TEntity>
     }
 
     /// <summary>
-    /// 
+    /// Gets elements from the sequence.
     /// </summary>
     /// <param name="action"></param>
     /// <returns></returns>
@@ -81,7 +85,7 @@ public class QueryHandler<TEntity>
     }
 
     /// <summary>
-    /// 
+    /// Gets number of elements in the sequence.
     /// </summary>
     /// <returns></returns>
     public async Task<int> GetCountAsync(Func<IQueryable<TEntity>, Task<int>> action)
@@ -92,18 +96,18 @@ public class QueryHandler<TEntity>
     }
 
     /// <summary>
-    /// 
+    /// Sets the non-zero based page number.
     /// </summary>
-    /// <param name="index"></param>
+    /// <param name="page"></param>
     /// <returns></returns>
-    public QueryHandler<TEntity> SetPage(int index)
+    public QueryHandler<TEntity> SetPage(int page)
     {
-        _page = index;
+        _page = page;
         return this;
     }
 
     /// <summary>
-    /// 
+    /// Sets the size of the page.
     /// </summary>
     /// <param name="size"></param>
     /// <returns></returns>
@@ -114,7 +118,7 @@ public class QueryHandler<TEntity>
     }
 
     /// <summary>
-    /// 
+    /// Sorts the elements of a sequence in ascending order according to a key.
     /// </summary>
     /// <typeparam name="TResult"></typeparam>
     /// <param name="keySelector"></param>
@@ -127,7 +131,7 @@ public class QueryHandler<TEntity>
     }
 
     /// <summary>
-    /// 
+    /// Sorts the query in descending order by using the specified key.
     /// </summary>
     /// <typeparam name="TResult"></typeparam>
     /// <param name="keySelector"></param>
@@ -139,7 +143,7 @@ public class QueryHandler<TEntity>
     }
 
     /// <summary>
-    /// 
+    /// Sets the collator.
     /// </summary>
     /// <param name="order"></param>
     /// <returns></returns>
@@ -152,7 +156,7 @@ public class QueryHandler<TEntity>
     }
 
     /// <summary>
-    /// 
+    /// Sets the collator.
     /// </summary>
     /// <param name="order"></param>
     /// <returns></returns>

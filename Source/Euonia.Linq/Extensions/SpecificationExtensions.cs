@@ -1,9 +1,12 @@
 ﻿namespace Nerosoft.Euonia.Linq;
 
+/// <summary>
+/// Exrensions methods to combines specifications.
+/// </summary>
 public static class SpecificationExtensions
 {
     /// <summary>
-    /// 
+    /// Combines two specifications using the logical AND operator.
     /// </summary>
     /// <param name="first"></param>
     /// <param name="second"></param>
@@ -18,7 +21,7 @@ public static class SpecificationExtensions
     }
 
     /// <summary>
-    /// 
+    /// Combines two specifications using the logical AND operator if the condition is true.
     /// </summary>
     /// <param name="first"></param>
     /// <param name="condition"></param>
@@ -33,7 +36,7 @@ public static class SpecificationExtensions
     }
 
     /// <summary>
-    /// 
+    /// Combines two specifications using the logical AND operator if the condition is true.
     /// </summary>
     /// <param name="first"></param>
     /// <param name="selector"></param>

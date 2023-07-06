@@ -4,14 +4,17 @@ using Nerosoft.Euonia.Reflection;
 
 namespace Nerosoft.Euonia.Linq;
 
+/// <summary>
+/// Extensions for <see cref="IQueryable{T}"/>.
+/// </summary>
 public static class QueryableExtensions
 {
     /// <summary>
-    /// 添加查询条件
+    /// Adds query criteria.
     /// </summary>
-    /// <typeparam name="TEntity">实体类型</typeparam>
-    /// <param name="source">数据源</param>
-    /// <param name="criteria">查询条件对象</param>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="source">The query source,</param>
+    /// <param name="criteria">The query criteria.</param>
     public static IQueryable<TEntity> Where<TEntity>(this IQueryable<TEntity> source, ISpecification<TEntity> criteria)
         where TEntity : class
     {
@@ -26,12 +29,12 @@ public static class QueryableExtensions
     }
 
     /// <summary>
-    /// 添加查询条件
+    /// Adds query criteria if meet the condition.
     /// </summary>
-    /// <typeparam name="TEntity">实体类型</typeparam>
-    /// <param name="source">数据源</param>
-    /// <param name="predicate">查询条件</param>
-    /// <param name="condition">该值为true时添加查询条件，否则忽略</param>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="source">The query source.</param>
+    /// <param name="predicate">The query criteria.</param>
+    /// <param name="condition">The criteria would be applied if <c><see langword="true"/></c>, or ignored if <c><see langword="false"/></c></param>
     public static IQueryable<TEntity> WhereIf<TEntity>(this IQueryable<TEntity> source, Expression<Func<TEntity, bool>> predicate, bool condition) where TEntity : class
     {
         if (source == null)
@@ -42,32 +45,42 @@ public static class QueryableExtensions
     }
 
     /// <summary>
-    /// 添加查询条件
+    /// Adds query criteria if the predicate argument is not <see langword="null"/>.
     /// </summary>
-    /// <typeparam name="TEntity">实体类型</typeparam>
-    /// <param name="source">数据源</param>
-    /// <param name="predicate">查询条件,如果参数值为空，则忽略该查询条件，范例：t => t.Name == ""，该查询条件被忽略。
-    /// 注意：一次仅能添加一个条件，范例：t => t.Name == "a" &amp;&amp; t.Mobile == "123"，不支持，将抛出异常</param>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="source">The query source.</param>
+    /// <param name="predicate">The query predicate.</param>
+    /// <remarks>
+    /// NOTE: Only one ctiteria property is allowd.
+    /// e.g.
+    /// <code>t => t.Name == "a"</code> -- YES
+    /// <code>t => t.Name == "a" &amp;&amp; t.Mobile == "123"</code> --NO
+    /// <code>t => t.Name == ""</code> -- IGNORED
+    /// </remarks>
     public static IQueryable<TEntity> WhereIfNotEmpty<TEntity>(this IQueryable<TEntity> source, Expression<Func<TEntity, bool>> predicate) where TEntity : class
     {
         if (source == null)
+        {
             throw new ArgumentNullException(nameof(source));
+        }
         predicate = GetWhereIfNotEmptyExpression(predicate);
         if (predicate == null)
+        {
             return source;
+        }
         return source.Where(predicate);
     }
 
     /// <summary>
-    /// 添加范围查询条件
+    /// Adds boundary query criteria.
     /// </summary>
-    /// <typeparam name="TEntity">实体类型</typeparam>
-    /// <param name="source">数据源</param>
-    /// <typeparam name="TProperty">属性类型</typeparam>
-    /// <param name="propertyExpression">属性表达式，范例：t => t.Age</param>
-    /// <param name="min">最小值</param>
-    /// <param name="max">最大值</param>
-    /// <param name="boundary">包含边界</param>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="source">The query source.</param>
+    /// <typeparam name="TProperty">The property type.</typeparam>
+    /// <param name="propertyExpression">The property expression. e.g. t => t.Age</param>
+    /// <param name="min">The minimum boundary value.</param>
+    /// <param name="max">The maximum boundary value.</param>
+    /// <param name="boundary">The value to indicate whether the boundary value should be included or not.</param>
     public static IQueryable<TEntity> Between<TEntity, TProperty>(this IQueryable<TEntity> source, Expression<Func<TEntity, TProperty>> propertyExpression, int? min, int? max, RangeBoundary boundary = RangeBoundary.Both) where TEntity : class
     {
         if (source == null)
@@ -76,15 +89,15 @@ public static class QueryableExtensions
     }
 
     /// <summary>
-    /// 添加范围查询条件
+    /// Adds boundary query criteria.
     /// </summary>
-    /// <typeparam name="TEntity">实体类型</typeparam>
-    /// <param name="source">数据源</param>
-    /// <typeparam name="TProperty">属性类型</typeparam>
-    /// <param name="propertyExpression">属性表达式，范例：t => t.Age</param>
-    /// <param name="min">最小值</param>
-    /// <param name="max">最大值</param>
-    /// <param name="boundary">包含边界</param>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="source">The query source.</param>
+    /// <typeparam name="TProperty">The property type.</typeparam>
+    /// <param name="propertyExpression">The property expression. e.g. t => t.Age</param>
+    /// <param name="min">The minimum boundary value.</param>
+    /// <param name="max">The maximum boundary value.</param>
+    /// <param name="boundary">The value to indicate whether the boundary value should be included or not.</param>
     public static IQueryable<TEntity> Between<TEntity, TProperty>(this IQueryable<TEntity> source, Expression<Func<TEntity, TProperty>> propertyExpression, double? min, double? max, RangeBoundary boundary = RangeBoundary.Both) where TEntity : class
     {
         if (source == null)
@@ -93,15 +106,15 @@ public static class QueryableExtensions
     }
 
     /// <summary>
-    /// 添加范围查询条件
+    /// Adds boundary query criteria.
     /// </summary>
-    /// <typeparam name="TEntity">实体类型</typeparam>
-    /// <param name="source">数据源</param>
-    /// <typeparam name="TProperty">属性类型</typeparam>
-    /// <param name="propertyExpression">属性表达式，范例：t => t.Age</param>
-    /// <param name="min">最小值</param>
-    /// <param name="max">最大值</param>
-    /// <param name="boundary">包含边界</param>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="source">The query source.</param>
+    /// <typeparam name="TProperty">The property type.</typeparam>
+    /// <param name="propertyExpression">The property expression. e.g. t => t.Price</param>
+    /// <param name="min">The minimum boundary value.</param>
+    /// <param name="max">The maximum boundary value.</param>
+    /// <param name="boundary">The value to indicate whether the boundary value should be included or not.</param>
     public static IQueryable<TEntity> Between<TEntity, TProperty>(this IQueryable<TEntity> source, Expression<Func<TEntity, TProperty>> propertyExpression, decimal? min, decimal? max, RangeBoundary boundary = RangeBoundary.Both) where TEntity : class
     {
         if (source == null)
@@ -110,16 +123,16 @@ public static class QueryableExtensions
     }
 
     /// <summary>
-    /// 添加范围查询条件
+    /// Adds boundary query criteria.
     /// </summary>
-    /// <typeparam name="TEntity">实体类型</typeparam>
-    /// <param name="source">数据源</param>
-    /// <typeparam name="TProperty">属性类型</typeparam>
-    /// <param name="propertyExpression">属性表达式，范例：t => t.Time</param>
-    /// <param name="min">最小值</param>
-    /// <param name="max">最大值</param>
-    /// <param name="includeTime">是否包含时间</param>
-    /// <param name="boundary">包含边界</param>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="source">The query source.</param>
+    /// <typeparam name="TProperty">The property type.</typeparam>
+    /// <param name="propertyExpression">The property expression. e.g. t => t.Time</param>
+    /// <param name="min">The minimum boundary value.</param>
+    /// <param name="max">The maximum boundary value.</param>
+    /// <param name="includeTime">The value to indicate whether the time part should be included or not.</param>
+    /// <param name="boundary">The value to indicate whether the boundary value should be included or not.</param>
     public static IQueryable<TEntity> Between<TEntity, TProperty>(this IQueryable<TEntity> source, Expression<Func<TEntity, TProperty>> propertyExpression, DateTime? min, DateTime? max, bool includeTime = true, RangeBoundary? boundary = null) where TEntity : class
     {
         if (source == null)
@@ -138,17 +151,23 @@ public static class QueryableExtensions
     public static Expression<Func<TEntity, bool>> GetWhereIfNotEmptyExpression<TEntity>(Expression<Func<TEntity, bool>> predicate) where TEntity : class
     {
         if (predicate == null)
+        {
             return null;
+        }
         if (Lambda.GetConditionCount(predicate) > 1)
-            throw new InvalidOperationException(string.Format("仅允许添加一个条件,条件：{0}", predicate));
+        {
+            throw new InvalidOperationException(string.Format("Ony one predicate is allowed: {0}", predicate));
+        }
         var value = predicate.Value();
         if (string.IsNullOrWhiteSpace(value?.ToString()))
+        {
             return null;
+        }
         return predicate;
     }
 
     /// <summary>
-    /// 
+    /// Sorts the elements of a sequence in ascending order according to the specified property.
     /// </summary>
     /// <param name="source"></param>
     /// <param name="propertyName"></param>
@@ -161,7 +180,7 @@ public static class QueryableExtensions
     }
 
     /// <summary>
-    /// 
+    /// Sorts the elements of a sequence in descending order according to the specified property.
     /// </summary>
     /// <param name="source"></param>
     /// <param name="propertyName"></param>
