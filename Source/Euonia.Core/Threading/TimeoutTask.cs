@@ -9,6 +9,11 @@ public readonly struct TimeoutTask : IDisposable
     private readonly CancellationTokenSource _cleanupTokenSource;
     private readonly CancellationTokenSource _linkedTokenSource;
 
+    /// <summary>
+    /// Initialize a new instance of <see cref="TimeoutTask"/> with the specified timeout value.
+    /// </summary>
+    /// <param name="timeout"></param>
+    /// <param name="cancellationToken"></param>
     public TimeoutTask(TimeoutValue timeout, CancellationToken cancellationToken)
     {
         _cleanupTokenSource = new CancellationTokenSource();
@@ -18,8 +23,12 @@ public readonly struct TimeoutTask : IDisposable
         Task = Task.Delay(timeout.TimeSpan, _linkedTokenSource?.Token ?? _cleanupTokenSource.Token);
     }
 
+    /// <summary>
+    /// Gets the underlying <see cref="Task"/>
+    /// </summary>
     public Task Task { get; }
 
+    /// <inheritdoc />
     public void Dispose()
     {
         try

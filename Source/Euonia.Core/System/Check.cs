@@ -10,23 +10,37 @@ using System.Globalization;
 [DebuggerStepThrough]
 public static class Check
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="condition"></param>
+    /// <param name="message"></param>
+    /// <param name="args"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
     public static bool Ensure(Func<bool> condition, string message, params object[] args)
     {
         if (!condition())
         {
-            throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, message, args));
+            throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, message, args));
         }
 
         return true;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="condition"></param>
+    /// <param name="message"></param>
+    /// <param name="args"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
     public static bool Ensure(bool condition, string message, params object[] args)
     {
         if (!condition)
         {
-            throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, message, args));
+            throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, message, args));
         }
 
         return true;
@@ -167,12 +181,11 @@ public static class Check
     }
 
     /// <summary>
-    /// 
+    /// Ensures the specified string value is not null, empty, or whitespace.
     /// </summary>
-    /// <param name="value"></param>
-    /// <param name="parameter"></param>
-    /// <param name="failsAction"></param>
-    /// <returns></returns>
+    /// <param name="value">The string value to check.</param>
+    /// <param name="parameter">The name of the parameter being checked.</param>
+    /// <param name="failsAction">The action to perform if the check fails.</param>
     public static void EnsureNotNullOrWhiteSpace(string value, [NotNull] string parameter, Action<string> failsAction)
     {
         if (value.IsNullOrWhiteSpace())
@@ -182,11 +195,11 @@ public static class Check
     }
 
     /// <summary>
-    /// 
+    /// Ensures that the specified string value is not null or empty.
     /// </summary>
-    /// <param name="value"></param>
-    /// <param name="parameter"></param>
-    /// <returns></returns>
+    /// <param name="value">The value to check.</param>
+    /// <param name="parameter">The name of the parameter being checked.</param>
+    /// <returns>The same string value that was passed in if it is not null or empty.</returns>
     /// <exception cref="ArgumentException"></exception>
     public static string EnsureNotNullOrEmpty(string value, [NotNull] string parameter)
     {
@@ -199,7 +212,7 @@ public static class Check
     }
 
     /// <summary>
-    /// 
+    /// Checks if the input string is null or empty and calls the failsAction delegate if it is.
     /// </summary>
     /// <param name="value"></param>
     /// <param name="parameter"></param>
@@ -214,12 +227,12 @@ public static class Check
     }
 
     /// <summary>
-    /// 
+    /// Ensure the given string value is matched the regular expression pattern.
     /// </summary>
-    /// <param name="value"></param>
-    /// <param name="parameter"></param>
-    /// <param name="pattern"></param>
-    /// <param name="options"></param>
+    /// <param name="value">The input value.</param>
+    /// <param name="parameter">The parameter name of the given value.</param>
+    /// <param name="pattern">The regular expression pattern.</param>
+    /// <param name="options">The regular expression options.</param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
     public static string EnsureIsMatch(string value, [NotNull] string parameter, string pattern, RegexOptions options = RegexOptions.None)
@@ -233,13 +246,13 @@ public static class Check
     }
 
     /// <summary>
-    /// 
+    /// Ensure the given string value is matched the regular expression pattern.
     /// </summary>
-    /// <param name="value"></param>
-    /// <param name="parameter"></param>
-    /// <param name="pattern"></param>
-    /// <param name="failsAction"></param>
-    /// <param name="options"></param>
+    /// <param name="value">The input value.</param>
+    /// <param name="parameter">The parameter name of the given value.</param>
+    /// <param name="pattern">The regular expression pattern.</param>
+    /// <param name="failsAction">Callback function while the given is not matches.</param>
+    /// <param name="options">The regular expression options.</param>
     /// <returns></returns>
     public static void EnsureIsMatch(string value, [NotNull] string parameter, string pattern, Action<string> failsAction, RegexOptions options = RegexOptions.None)
     {
@@ -268,12 +281,12 @@ public static class Check
     }
 
     /// <summary>
-    /// 
+    /// Ensure that the given type is assignable to a specified type base class.
     /// </summary>
-    /// <param name="type"></param>
-    /// <param name="parameter"></param>
-    /// <typeparam name="TBaseType"></typeparam>
-    /// <returns></returns>
+    /// <typeparam name="TBaseType">The base type the given type should be assignable to.</typeparam>
+    /// <param name="type">The type to check if it is assignable to the specified base type.</param>
+    /// <param name="parameter">The name of the parameter passed to the method.</param>
+    /// <returns>The original input type, if it is assignable to TBaseType, or else throws an ArgumentException.</returns>
     /// <exception cref="ArgumentException"></exception>
     public static Type EnsureAssignableTo<TBaseType>(Type type, [NotNull] string parameter)
     {
@@ -288,13 +301,13 @@ public static class Check
     }
 
     /// <summary>
-    /// 
+    /// Ensures that the length of the given input string is within the specified range.
     /// </summary>
-    /// <param name="value"></param>
-    /// <param name="parameter"></param>
-    /// <param name="maxLength"></param>
-    /// <param name="minLength"></param>
-    /// <returns></returns>
+    /// <param name="value">The input string to check.</param>
+    /// <param name="parameter">The name of the parameter that corresponds to the input string.</param>
+    /// <param name="maxLength">The maximum length of the input string.</param>
+    /// <param name="minLength">The minimum length of the input string. Defaults to 0.</param>
+    /// <returns>The input string.</returns>
     /// <exception cref="ArgumentException"></exception>
     public static string EnsureLengthInRange(string value, [NotNull] string parameter, int maxLength, int minLength = 0)
     {

@@ -1,5 +1,9 @@
 ﻿namespace Nerosoft.Euonia.Collections;
 
+/// <summary>
+/// To be added.
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public class ViewCollection<T> 
     where T : class, new()
 {

@@ -2,6 +2,9 @@
 
 namespace Nerosoft.Euonia;
 
+/// <summary>
+/// Represents errors that occur during application configuration.
+/// </summary>
 [Serializable]
 public class ConfigurationException : Exception
 {

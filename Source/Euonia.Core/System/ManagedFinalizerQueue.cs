@@ -2,6 +2,9 @@
 
 namespace System;
 
+/// <summary>
+/// This class represents a collection of registrations of objects for finalization purposes. <see cref="IAsyncDisposable"/> registration finalizer methods are called when a registered object is garbage collected.
+/// </summary>
 public sealed class ManagedFinalizerQueue
 {
     // 99% of the time, the finalizer will do nothing because people will dispose properly. The finalizer also must
@@ -16,7 +19,10 @@ public sealed class ManagedFinalizerQueue
 #endif
     );
 
-    public static readonly ManagedFinalizerQueue Instance = new ManagedFinalizerQueue();
+    /// <summary>
+    /// The default instance of <see cref="ManagedFinalizerQueue"/>.
+    /// </summary>
+    public static readonly ManagedFinalizerQueue Instance = new();
 
     private readonly ConcurrentDictionary<IAsyncDisposable, WeakReference> _items = new();
 

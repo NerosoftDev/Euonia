@@ -27,6 +27,9 @@ public static class TaskHelper
         return func();
     }
     
+    /// <summary>
+    /// Gets a value indicating whether the current thread is running synchronously
+    /// </summary>
     [field: ThreadStatic]
     public static bool IsSynchronous { get; private set; }
 
@@ -77,7 +80,7 @@ public static class TaskHelper
     }
 
     /// <summary>
-    /// A <see cref="SyncViaAsync"/>-compatible implementation of <see cref="Task.Delay(TimeSpan, CancellationToken)"/>.
+    /// A <see cref="TaskHelper"/>-compatible implementation of <see cref="Task.Delay(TimeSpan, CancellationToken)"/>.
     /// </summary>
     public static ValueTask Delay(TimeoutValue timeout, CancellationToken cancellationToken)
     {

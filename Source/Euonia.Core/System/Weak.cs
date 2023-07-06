@@ -1,9 +1,9 @@
 ﻿namespace System;
 
 /// <summary>
-/// Class Weak.
+/// Represents a weak reference to an object.
 /// </summary>
-/// <typeparam name="T"></typeparam>
+/// <typeparam name="T">The type of the target object.</typeparam>
 public class Weak<T>
 {
     /// <summary>

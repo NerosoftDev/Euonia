@@ -2,10 +2,13 @@
 
 namespace Nerosoft.Euonia.Reflection;
 
+/// <summary>
+/// The methods to perform enumeration operations.
+/// </summary>
 public static class EnumHelper
 {
     /// <summary>
-    /// 
+    /// Gets the enum values.
     /// </summary>
     /// <typeparam name="TEnum"></typeparam>
     /// <returns></returns>
@@ -26,7 +29,7 @@ public static class EnumHelper
     }
 
     /// <summary>
-    /// 
+    /// Gets the enum names.
     /// </summary>
     /// <typeparam name="TEnum"></typeparam>
     /// <returns></returns>
@@ -73,7 +76,7 @@ public static class EnumHelper
     }
 
     /// <summary>
-    /// 
+    /// Gets customer attribute of enum.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="value"></param>

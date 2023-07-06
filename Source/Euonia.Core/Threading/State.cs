@@ -41,6 +41,7 @@ public class State
         return otherState?._stateNum == _stateNum;
     }
 
+    /// <inheritdoc/>
     public override int GetHashCode()
     {
         return _stateNum.GetHashCode();

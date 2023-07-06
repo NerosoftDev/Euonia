@@ -8,6 +8,10 @@ public readonly struct EquatableReadOnlyList<T> : IReadOnlyList<T>, IEquatable<E
 {
     private readonly T[] _array;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EquatableReadOnlyList{T}"/> class.
+    /// </summary>
+    /// <param name="items"></param>
     public EquatableReadOnlyList(IEnumerable<T> items)
     {
         _array = items.ToArray();
@@ -27,20 +31,27 @@ public readonly struct EquatableReadOnlyList<T> : IReadOnlyList<T>, IEquatable<E
     /// <inheritdoc />
     public override bool Equals(object obj) => obj is EquatableReadOnlyList<T> that && Equals(that);
 
+    /// <inheritdoc />
     public override int GetHashCode()
     {
         return _array.Aggregate(0, (current, item) => (current, item).GetHashCode());
     }
 
+    /// <summary>
+    /// Returns an enumerator that iterates through the collection.
+    /// </summary>
+    /// <returns></returns>
     public IEnumerator<T> GetEnumerator() => _array.As<IEnumerable<T>>().GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+    /// <inheritdoc />
     public static bool operator ==(EquatableReadOnlyList<T> left, EquatableReadOnlyList<T> right)
     {
         return left.Equals(right);
     }
 
+    /// <inheritdoc />
     public static bool operator !=(EquatableReadOnlyList<T> left, EquatableReadOnlyList<T> right)
     {
         return !(left == right);

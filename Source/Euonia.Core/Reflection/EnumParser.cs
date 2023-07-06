@@ -4,6 +4,10 @@
 
 namespace Nerosoft.Euonia.Reflection;
 
+/// <summary>
+/// Methods to parse string value to enum type <typeparamref name="T"/>.
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public static class EnumParser<T>
 {
     private static readonly Dictionary<string, T> _dictionary = new();
@@ -26,7 +30,7 @@ public static class EnumParser<T>
     }
 
     /// <summary>
-    /// 
+    /// Try parse string value to enum type <typeparamref name="T"/>.
     /// </summary>
     /// <param name="name"></param>
     /// <param name="value"></param>
@@ -37,7 +41,7 @@ public static class EnumParser<T>
     }
 
     /// <summary>
-    /// 
+    /// Parse string value to enum type <typeparamref name="T"/>.
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>

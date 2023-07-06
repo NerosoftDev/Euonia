@@ -1,5 +1,8 @@
 ﻿namespace Nerosoft.Euonia;
 
+/// <summary>
+/// To be added.
+/// </summary>
 public interface IExceptionPrompt
 {
     /// <summary>

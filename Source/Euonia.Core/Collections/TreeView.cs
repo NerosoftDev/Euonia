@@ -1,5 +1,9 @@
 ﻿namespace Nerosoft.Euonia.Collections;
 
+/// <summary>
+/// A tree structural object.
+/// </summary>
+/// <typeparam name="TEntity"></typeparam>
 public class TreeView<TEntity>
 {
     /// <summary>

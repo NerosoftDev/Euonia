@@ -45,45 +45,55 @@ public readonly struct ObjectId
     /// </summary>
     public object Value { get; }
 
+    /// <inheritdoc />
     public static bool operator ==(ObjectId id1, ObjectId id2) => EqualityComparer<object>.Default.Equals(id1.Value, id2.Value);
 
+    /// <inheritdoc />
     public static bool operator !=(ObjectId id1, ObjectId id2) => !EqualityComparer<object>.Default.Equals(id1.Value, id2.Value);
 
+    /// <inheritdoc />
     public static implicit operator ObjectId(long id)
     {
         return new ObjectId(id);
     }
 
+    /// <inheritdoc />
     public static implicit operator long(ObjectId id)
     {
         return (long)id.Value;
     }
 
+    /// <inheritdoc />
     public static implicit operator ObjectId(int id)
     {
         return new ObjectId(id);
     }
 
+    /// <inheritdoc />
     public static implicit operator int(ObjectId id)
     {
         return (int)id.Value;
     }
 
+    /// <inheritdoc />
     public static implicit operator ObjectId(string id)
     {
         return new ObjectId(id);
     }
 
+    /// <inheritdoc />
     public static implicit operator string(ObjectId id)
     {
         return (string)id.Value;
     }
 
+    /// <inheritdoc />
     public static implicit operator ObjectId(Guid id)
     {
         return new ObjectId(id);
     }
 
+    /// <inheritdoc />
     public static implicit operator Guid(ObjectId id)
     {
         return (Guid)id.Value;
@@ -165,7 +175,7 @@ public readonly struct ObjectId
 }
 
 /// <summary>
-/// The object identifier with value of type <see cref="T"/>.
+/// The object identifier with value of type <typeparamref name="T"/>.
 /// </summary>
 /// <typeparam name="T"></typeparam>
 public readonly struct ObjectId<T>
@@ -185,15 +195,19 @@ public readonly struct ObjectId<T>
     /// </summary>
     public T Value { get; }
 
+    /// <inheritdoc />
     public static bool operator ==(ObjectId<T> id1, ObjectId<T> id2) => EqualityComparer<T>.Default.Equals(id1.Value, id2.Value);
 
+    /// <inheritdoc />
     public static bool operator !=(ObjectId<T> id1, ObjectId<T> id2) => !EqualityComparer<T>.Default.Equals(id1.Value, id2.Value);
 
+    /// <inheritdoc />
     public static implicit operator ObjectId<T>(T id)
     {
         return new ObjectId<T>(id);
     }
 
+    /// <inheritdoc />
     public static implicit operator T(ObjectId<T> id)
     {
         return id.Value;

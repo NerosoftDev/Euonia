@@ -3,13 +3,16 @@ using System.Runtime.Serialization;
 
 namespace Nerosoft.Euonia;
 
+/// <summary>
+/// Represents errors that occur if data is not found.
+/// </summary>
 [Serializable]
 public class DataNotFoundException : DataException
 {
     private const string DEFAULT_MESSAGE = "Data not found";
 
     /// <summary>
-    /// 
+    /// Initializes a new instance of the <see cref="DataNotFoundException"/> class.
     /// </summary>
     public DataNotFoundException()
         : base(DEFAULT_MESSAGE)
@@ -17,7 +20,7 @@ public class DataNotFoundException : DataException
     }
 
     /// <summary>
-    /// 
+    /// Initializes a new instance of the <see cref="DataNotFoundException"/> class with a specified error message.
     /// </summary>
     /// <param name="message"></param>
     public DataNotFoundException(string message)
@@ -26,7 +29,7 @@ public class DataNotFoundException : DataException
     }
 
     /// <summary>
-    /// 
+    /// Initializes a new instance of the <see cref="DataNotFoundException"/> class with a specified error message and a reference to the inner exception that is the cause of this exception.
     /// </summary>
     /// <param name="message"></param>
     /// <param name="innerException"></param>
