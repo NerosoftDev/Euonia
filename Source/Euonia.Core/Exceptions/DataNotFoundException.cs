@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using System.Runtime.Serialization;
 
-namespace Nerosoft.Euonia;
+namespace Nerosoft.Euonia.Core;
 
 /// <summary>
 /// Represents errors that occur if data is not found.

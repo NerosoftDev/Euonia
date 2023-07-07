@@ -1,4 +1,4 @@
-﻿namespace Nerosoft.Euonia;
+﻿namespace Nerosoft.Euonia.Core;
 
 /// <summary>
 /// Responsible for storing and returning exception prompts.

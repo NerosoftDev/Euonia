@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Nerosoft.Euonia;
+namespace Nerosoft.Euonia.Core;
 
 /// <summary>
 /// Represents the errors occurring when a value is invalid.
