@@ -34,12 +34,14 @@ public class ValidationException : Exception
         _errors = errors;
     }
 
+    /// <inheritdoc />
     protected ValidationException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {
         _errors = info.GetValue(nameof(Errors), typeof(IEnumerable<ValidationResult>)) as IEnumerable<ValidationResult>;
     }
 
+    /// <inheritdoc />
     public override void GetObjectData(SerializationInfo info, StreamingContext context)
     {
         base.GetObjectData(info, context);
