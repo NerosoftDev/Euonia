@@ -12,7 +12,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Euonia.Core\Euonia.Core.csproj" />
 		<ProjectReference Include="..\Euonia.Domain\Euonia.Domain.csproj" />
 		<ProjectReference Include="..\Euonia.Modularity\Euonia.Modularity.csproj" />
 	</ItemGroup>
