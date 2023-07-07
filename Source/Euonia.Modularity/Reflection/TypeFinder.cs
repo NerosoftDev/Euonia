@@ -2,12 +2,19 @@
 
 namespace Nerosoft.Euonia.Modularity;
 
+/// <summary>
+/// This class uses reflection to find types within assemblies
+/// </summary>
 public class TypeFinder : ITypeFinder
 {
     private readonly IAssemblyFinder _assemblyFinder;
 
     private readonly Lazy<IReadOnlyList<Type>> _types;
 
+    /// <summary>
+    /// Initialize a new instalce of <see cref="TypeFinder"/>.
+    /// </summary>
+    /// <param name="assemblyFinder"></param>
     public TypeFinder(IAssemblyFinder assemblyFinder)
     {
         _assemblyFinder = assemblyFinder;
@@ -15,8 +22,15 @@ public class TypeFinder : ITypeFinder
         _types = new Lazy<IReadOnlyList<Type>>(FindAll, LazyThreadSafetyMode.ExecutionAndPublication);
     }
 
+    /// <summary>
+    /// Gets the types list.
+    /// </summary>
     public IReadOnlyList<Type> Types => _types.Value;
 
+    /// <summary>
+    /// Finds all types within the assembly.
+    /// </summary>
+    /// <returns></returns>
     private IReadOnlyList<Type> FindAll()
     {
         var allTypes = new List<Type>();

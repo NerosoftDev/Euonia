@@ -16,13 +16,14 @@ public static class ServiceCollectionModularityExtensions
     /// Register a modularity application context.
     /// </summary>
     /// <param name="services"></param>
+    /// <param name="configuration"></param>
     /// <param name="optionsAction"></param>
     /// <typeparam name="TStartupModel"></typeparam>
     /// <returns></returns>
-    public static IApplicationWithServiceProvider AddModularityApplication<TStartupModel>(this IServiceCollection services, Action<ApplicationCreationOptions> optionsAction = null)
+    public static IApplicationWithServiceProvider AddModularityApplication<TStartupModel>(this IServiceCollection services, IConfiguration configuration = null, Action<ApplicationCreationOptions> optionsAction = null)
         where TStartupModel : class, IModuleContext
     {
-        return ApplicationFactory.Create<TStartupModel>(services, optionsAction);
+        return ApplicationFactory.Create<TStartupModel>(services, configuration, optionsAction);
     }
 
     internal static void AddCoreServices(this IServiceCollection services)
