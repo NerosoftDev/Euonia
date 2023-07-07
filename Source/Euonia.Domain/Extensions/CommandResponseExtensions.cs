@@ -1,4 +1,6 @@
-﻿namespace Nerosoft.Euonia.Domain;
+﻿using Nerosoft.Euonia.Core;
+
+namespace Nerosoft.Euonia.Domain;
 
 public static class CommandResponseExtensions
 {

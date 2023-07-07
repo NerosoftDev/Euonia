@@ -3,12 +3,19 @@ using System.Reflection;
 
 namespace Nerosoft.Euonia.Modularity;
 
+/// <summary>
+/// Finds all assemblies for the specified module container.
+/// </summary>
 public class AssemblyFinder : IAssemblyFinder
 {
     private readonly IModuleContainer _moduleContainer;
 
     private readonly Lazy<IReadOnlyList<Assembly>> _assemblies;
 
+    /// <summary>
+    /// Initialize a new instance of <see cref="AssemblyFinder"/>.
+    /// </summary>
+    /// <param name="moduleContainer"></param>
     public AssemblyFinder(IModuleContainer moduleContainer)
     {
         _moduleContainer = moduleContainer;
@@ -16,8 +23,13 @@ public class AssemblyFinder : IAssemblyFinder
         _assemblies = new Lazy<IReadOnlyList<Assembly>>(FindAll, LazyThreadSafetyMode.ExecutionAndPublication);
     }
 
+    /// <inheritdoc />
     public IReadOnlyList<Assembly> Assemblies => _assemblies.Value;
 
+    /// <summary>
+    /// Finds all assemblies for the specified module container.
+    /// </summary>
+    /// <returns></returns>
     public IReadOnlyList<Assembly> FindAll()
     {
         var assemblies = new List<Assembly>();

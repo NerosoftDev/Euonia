@@ -3,12 +3,15 @@ using System.Reflection;
 
 namespace Nerosoft.Euonia.Linq;
 
+/// <summary>
+/// Methods to perform lambda expression operations.
+/// </summary>
 public static class Lambda
 {
     #region GetMember(获取成员)
 
     /// <summary>
-    /// 获取成员
+    /// Gets the menber of the expression.
     /// </summary>
     /// <param name="expression">表达式,范例：t => t.Name</param>
     public static MemberInfo GetMember(Expression expression)

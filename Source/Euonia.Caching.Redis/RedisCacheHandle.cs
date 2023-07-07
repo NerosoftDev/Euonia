@@ -490,7 +490,7 @@ return result";
         return cacheItem;
     }
 
-    protected CacheItem<TValue> GetCacheItemInternalNoScript(string key, string region)
+    protected virtual CacheItem<TValue> GetCacheItemInternalNoScript(string key, string region)
     {
         return Retry(() =>
         {
@@ -619,7 +619,7 @@ return result";
     private void SubscribeKeyspaceNotifications()
     {
         _connection.Subscriber.Subscribe(
-            $"__keyevent@{_redisConfiguration.Database}__:expired",
+            new RedisChannel($"__keyevent@{_redisConfiguration.Database}__:expired", RedisChannel.PatternMode.Auto),
             (_, key) =>
             {
                 var tuple = ParseKey(key);
@@ -628,7 +628,7 @@ return result";
             });
 
         _connection.Subscriber.Subscribe(
-            $"__keyevent@{_redisConfiguration.Database}__:evicted",
+            new RedisChannel($"__keyevent@{_redisConfiguration.Database}__:evicted", RedisChannel.PatternMode.Auto),
             (_, key) =>
             {
                 var tuple = ParseKey(key);
@@ -638,7 +638,7 @@ return result";
             });
 
         _connection.Subscriber.Subscribe(
-            $"__keyevent@{_redisConfiguration.Database}__:del",
+            new RedisChannel($"__keyevent@{_redisConfiguration.Database}__:del", RedisChannel.PatternMode.Auto),
             (_, key) =>
             {
                 var tuple = ParseKey(key);
@@ -745,14 +745,14 @@ return result";
         return _valueConverter.ToRedisValue(value);
     }
 
-    private T Retry<T>(Func<T> retryme) =>
-        RetryHelper.Retry(retryme, _managerConfiguration.RetryTimeout, _managerConfiguration.MaxRetries);
+    private T Retry<T>(Func<T> action) =>
+        RetryHelper.Retry(action, _managerConfiguration.RetryTimeout, _managerConfiguration.MaxRetries);
 
-    private void Retry(Action retryme)
+    private void Retry(Action action)
         => Retry(
             () =>
             {
-                retryme();
+                action();
                 return true;
             });
 

@@ -2,10 +2,14 @@
 
 namespace Nerosoft.Euonia.Linq;
 
+/// <summary>
+/// Represents a class that can be used to order a queryable sequence.
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public sealed class Orderable<T>
 {
     /// <summary>
-    /// 
+    /// Initializes a new instance of the <see cref="Orderable{T}"/> class.
     /// </summary>
     /// <param name="enumerable"></param>
     public Orderable(IQueryable<T> enumerable)
@@ -14,12 +18,12 @@ public sealed class Orderable<T>
     }
 
     /// <summary>
-    /// 
+    /// Gets or sets the queryable sequence.
     /// </summary>
     public IQueryable<T> Queryable { get; private set; }
 
     /// <summary>
-    /// 
+    /// Sorts the elements of a sequence in ascending order by using a specified comparer.
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <param name="keySelector"></param>
@@ -31,7 +35,7 @@ public sealed class Orderable<T>
     }
 
     /// <summary>
-    /// 
+    /// Sorts the elements of a sequence in ascending order by using a specified comparer.
     /// </summary>
     /// <typeparam name="TKey1"></typeparam>
     /// <typeparam name="TKey2"></typeparam>
@@ -46,7 +50,7 @@ public sealed class Orderable<T>
     }
 
     /// <summary>
-    /// 
+    /// Sorts the elements of a sequence in ascending order by using a specified comparer.
     /// </summary>
     /// <typeparam name="TKey1"></typeparam>
     /// <typeparam name="TKey2"></typeparam>
@@ -64,7 +68,7 @@ public sealed class Orderable<T>
     }
 
     /// <summary>
-    /// 
+    /// Sorts the elements of a sequence in descending order by using a specified comparer.
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <param name="keySelector"></param>
@@ -76,7 +80,7 @@ public sealed class Orderable<T>
     }
 
     /// <summary>
-    /// 
+    /// Sorts the elements of a sequence in descending order by using a specified comparer.
     /// </summary>
     /// <typeparam name="TKey1"></typeparam>
     /// <typeparam name="TKey2"></typeparam>
@@ -91,7 +95,7 @@ public sealed class Orderable<T>
     }
 
     /// <summary>
-    /// 
+    /// Sorts the elements of a sequence in descending order by using a specified comparer.
     /// </summary>
     /// <typeparam name="TKey1"></typeparam>
     /// <typeparam name="TKey2"></typeparam>

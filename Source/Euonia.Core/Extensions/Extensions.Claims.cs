@@ -2,6 +2,9 @@
 using System.Security.Claims;
 using Nerosoft.Euonia.Claims;
 
+/// <summary>
+/// Extension methods for <see cref="UserPrincipal"/> and <see cref="ClaimsPrincipal"/>.
+/// </summary>
 public static partial class Extensions
 {
     /// <summary>
@@ -26,7 +29,7 @@ public static partial class Extensions
     }
 
     /// <summary>
-    /// Convert user id to long.
+    /// Gets user id of <see cref="long"/>.
     /// </summary>
     /// <param name="user"></param>
     /// <returns></returns>
@@ -48,7 +51,7 @@ public static partial class Extensions
     }
 
     /// <summary>
-    /// 
+    /// Gets user id of int32.
     /// </summary>
     /// <param name="user"></param>
     /// <returns></returns>
@@ -83,7 +86,7 @@ public static partial class Extensions
     }
 
     /// <summary>
-    /// 
+    /// Ensure user is in roles.
     /// </summary>
     /// <param name="user"></param>
     /// <param name="roles"></param>
@@ -101,7 +104,7 @@ public static partial class Extensions
     }
 
     /// <summary>
-    /// 
+    /// Ensure user is in roles.
     /// </summary>
     /// <param name="user"></param>
     /// <param name="roles"></param>
@@ -123,7 +126,7 @@ public static partial class Extensions
     }
 
     /// <summary>
-    /// 
+    /// Ensure user is in roles.
     /// </summary>
     /// <param name="user"></param>
     /// <param name="roles"></param>

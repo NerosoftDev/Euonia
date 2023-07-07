@@ -1,11 +1,14 @@
-﻿namespace Nerosoft.Euonia;
+﻿namespace Nerosoft.Euonia.Core;
 
+/// <summary>
+/// Responsible for storing and returning exception prompts.
+/// </summary>
 public static class ExceptionPrompt
 {
     private static readonly List<IExceptionPrompt> _prompts = new();
 
     /// <summary>
-    /// 
+    /// Add a prompt to the list of prompts.
     /// </summary>
     /// <param name="prompt"></param>
     /// <exception cref="ArgumentNullException"></exception>
@@ -25,7 +28,7 @@ public static class ExceptionPrompt
     }
 
     /// <summary>
-    /// 
+    /// Gets the prompt for the specified exception.
     /// </summary>
     /// <param name="exception"></param>
     /// <returns></returns>

@@ -75,7 +75,7 @@ public class CommandConsumer<TCommand> : CommandConsumer
         var props = args.BasicProperties;
         var replyNeeded = !string.IsNullOrEmpty(props.CorrelationId);
 
-        var message = CommandConsumer<TCommand>.Deserialize(body.ToArray());
+        var message = Deserialize(body.ToArray());
         OnMessageReceived(new MessageReceivedEventArgs(message, messageContext));
 
         var taskCompletion = new TaskCompletionSource<object>();

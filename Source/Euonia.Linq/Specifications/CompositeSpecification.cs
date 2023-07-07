@@ -44,12 +44,23 @@ public sealed class CompositeSpecification<TEntity> : Specification<TEntity>
         return this;
     }
 
+    /// <summary>
+    /// Adds new specification.
+    /// </summary>
+    /// <param name="specification"></param>
+    /// <returns></returns>
     public CompositeSpecification<TEntity> Add(Func<ISpecification<TEntity>> specification)
     {
         _specifications.Add(specification());
         return this;
     }
 
+    /// <summary>
+    /// Adds new specification if condition is true.
+    /// </summary>
+    /// <param name="condition"></param>
+    /// <param name="specification"></param>
+    /// <returns></returns>
     public CompositeSpecification<TEntity> AddIf(bool condition, ISpecification<TEntity> specification)
     {
         if (condition)
@@ -59,6 +70,12 @@ public sealed class CompositeSpecification<TEntity> : Specification<TEntity>
         return this;
     }
 
+    /// <summary>
+    /// Adds new specification if condition is true.
+    /// </summary>
+    /// <param name="condition"></param>
+    /// <param name="specification"></param>
+    /// <returns></returns>
     public CompositeSpecification<TEntity> AddIf(bool condition, Func<ISpecification<TEntity>> specification)
     {
         if (condition)
@@ -68,6 +85,12 @@ public sealed class CompositeSpecification<TEntity> : Specification<TEntity>
         return this;
     }
 
+    /// <summary>
+    /// Adds new specification if condition is true.
+    /// </summary>
+    /// <param name="condition"></param>
+    /// <param name="specification"></param>
+    /// <returns></returns>
     public CompositeSpecification<TEntity> AddIf(Func<bool> condition, ISpecification<TEntity> specification)
     {
         if (condition())
@@ -77,6 +100,12 @@ public sealed class CompositeSpecification<TEntity> : Specification<TEntity>
         return this;
     }
 
+    /// <summary>
+    /// Adds new specification if condition is true.
+    /// </summary>
+    /// <param name="condition"></param>
+    /// <param name="specification"></param>
+    /// <returns></returns>
     public CompositeSpecification<TEntity> AddIf(Func<bool> condition, Func<ISpecification<TEntity>> specification)
     {
         if (condition())

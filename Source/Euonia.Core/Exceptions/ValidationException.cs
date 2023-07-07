@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Nerosoft.Euonia.Validation;
+namespace Nerosoft.Euonia.Core;
 
 /// <summary>
 /// Represents the exception that is thrown when given data is not valid.
@@ -34,12 +34,14 @@ public class ValidationException : Exception
         _errors = errors;
     }
 
+    /// <inheritdoc />
     protected ValidationException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {
         _errors = info.GetValue(nameof(Errors), typeof(IEnumerable<ValidationResult>)) as IEnumerable<ValidationResult>;
     }
 
+    /// <inheritdoc />
     public override void GetObjectData(SerializationInfo info, StreamingContext context)
     {
         base.GetObjectData(info, context);

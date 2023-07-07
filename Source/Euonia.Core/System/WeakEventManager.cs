@@ -324,11 +324,19 @@ public sealed class WeakEventManager
         RemoveEventHandler(eventName, handler.Target, handler.GetMethodInfo());
     }
 
+    /// <summary>
+    /// Remove event handlers.
+    /// </summary>
     public void RemoveEventHandlers()
     {
         _eventHandlers.Clear();
     }
 
+    /// <summary>
+    /// Remove event handlers for specified event.
+    /// </summary>
+    /// <param name="eventName"></param>
+    /// <exception cref="ArgumentNullException"></exception>
     public void RemoveEventHandlers(string eventName)
     {
         if (string.IsNullOrEmpty(eventName))

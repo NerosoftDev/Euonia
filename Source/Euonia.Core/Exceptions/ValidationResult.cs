@@ -1,4 +1,4 @@
-﻿namespace Nerosoft.Euonia.Validation;
+﻿namespace Nerosoft.Euonia.Core;
 
 [Serializable]
 public class ValidationResult

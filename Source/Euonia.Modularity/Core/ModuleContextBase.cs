@@ -14,7 +14,7 @@ public abstract class ModuleContextBase : IModuleContext
     protected internal virtual bool AutomaticRegisterService => true;
 
     /// <summary>
-    /// 
+    /// Gets or sets the service configuration context.
     /// </summary>
     /// <exception cref="Exception"></exception>
     protected internal ServiceConfigurationContext ConfigurationContext
@@ -32,6 +32,11 @@ public abstract class ModuleContextBase : IModuleContext
     }
 
     private ServiceConfigurationContext _configurationContext;
+
+    /// <summary>
+    /// Gets or sets the application configuration service.
+    /// </summary>
+    protected internal IConfiguration Configuration { get; internal set; }
 
     /// <inheritdoc />
     public virtual void AheadConfigureServices(ServiceConfigurationContext context)

@@ -654,4 +654,35 @@ public static partial class Extensions
     }
 
     #endregion
+    
+    /// <summary>
+    /// Converts a <see cref="Task"/> to a <see cref="ValueTask"/>.
+    /// </summary>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="task"></param>
+    /// <returns></returns>
+    public static async ValueTask ConvertToVoid<TResult>(this ValueTask<TResult> task) => await task.ConfigureAwait(false);
+
+    /// <summary>
+    /// Converts a <see cref="Task{T}"/> to a <see cref="ValueTask{T}"/>.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="task"></param>
+    /// <returns></returns>
+    public static ValueTask<T> AsValueTask<T>(this Task<T> task) => new(task);
+
+    /// <summary>
+    /// Converts a <see cref="Task"/> to a <see cref="ValueTask"/>.
+    /// </summary>
+    /// <param name="task"></param>
+    /// <returns></returns>
+    public static ValueTask AsValueTask(this Task task) => new(task);
+
+    /// <summary>
+    /// Converts a value to a <see cref="ValueTask{T}"/>.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static ValueTask<T> AsValueTask<T>(this T value) => new(value);
 }

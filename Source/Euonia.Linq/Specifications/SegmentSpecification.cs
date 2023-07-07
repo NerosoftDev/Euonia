@@ -2,6 +2,12 @@
 
 namespace Nerosoft.Euonia.Linq;
 
+/// <summary>
+/// Represents a specification which can be used to filter a collection of objects.
+/// </summary>
+/// <typeparam name="TTarget"></typeparam>
+/// <typeparam name="TProperty"></typeparam>
+/// <typeparam name="TValue"></typeparam>
 public class SegmentSpecification<TTarget, TProperty, TValue> : ISpecification<TTarget>
     where TTarget : class
     where TValue : struct, IComparable<TValue>
@@ -64,6 +70,11 @@ public class SegmentSpecification<TTarget, TProperty, TValue> : ISpecification<T
         return min.Value.CompareTo(max.Value) > 0;
     }
 
+    /// <summary>
+    /// Gets the value.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
     protected virtual TValue? GetValue(TValue? value)
     {
         return value;

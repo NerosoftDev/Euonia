@@ -16,9 +16,10 @@
 		<PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
 		<PackageVersion Include="Autofac.Extras.DynamicProxy" Version="7.1.0" />
 		<PackageVersion Include="AutoMapper" Version="12.0.1" />
+		<PackageVersion Include="Azure.Storage.Blobs" Version="12.16.0" />
 		<PackageVersion Include="Castle.Core" Version="5.1.1" />
 		<PackageVersion Include="Consul" Version="1.6.10.9" />
-		<PackageVersion Include="FluentValidation" Version="11.5.2" />
+		<PackageVersion Include="FluentValidation" Version="11.6.0" />
 		<PackageVersion Include="IdentityModel" Version="6.1.0" />
 		<PackageVersion Include="IdentityModel.AspNetCore.OAuth2Introspection" Version="6.2.0" />
 		<PackageVersion Include="Mapster" Version="7.3.0" />
@@ -52,6 +53,7 @@
 		<PackageVersion Include="System.Runtime.Loader" Version="4.3.0" />
 		<PackageVersion Include="System.Text.Json" Version="7.0.3" />
 		<PackageVersion Include="Winton.Extensions.Configuration.Consul" Version="3.2.0" />
+		<PackageVersion Include="ZooKeeperNetEx" Version="3.4.12.4" />
 	</ItemGroup>
 	<!-- Microsoft.Extensions -->
 	<ItemGroup>
@@ -95,17 +97,16 @@
 		<PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="7.0.5" />
 		<PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.8" />
 		<PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="7.0.8" />
-		
 	</ItemGroup>
 	<!-- Grpc -->
 	<ItemGroup>
 		<PackageVersion Include="Google.Protobuf" Version="3.23.3" />
 		<PackageVersion Include="Grpc" Version="2.46.6" />
-		<PackageVersion Include="Grpc.AspNetCore" Version="2.54.0" />
-		<PackageVersion Include="Grpc.AspNetCore.Server" Version="2.54.0" />
-		<PackageVersion Include="Grpc.AspNetCore.Server.Reflection" Version="2.54.0" />
+		<PackageVersion Include="Grpc.AspNetCore" Version="2.55.0" />
+		<PackageVersion Include="Grpc.AspNetCore.Server" Version="2.55.0" />
+		<PackageVersion Include="Grpc.AspNetCore.Server.Reflection" Version="2.55.0" />
 		<PackageVersion Include="Grpc.Core" Version="2.46.6" />
-		<PackageVersion Include="Grpc.HealthCheck" Version="2.54.0" />
+		<PackageVersion Include="Grpc.HealthCheck" Version="2.55.0" />
 		<PackageVersion Include="Grpc.Tools" Version="2.54.0" />
 	</ItemGroup>
 	<!-- Tests -->

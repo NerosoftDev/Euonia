@@ -86,6 +86,12 @@ public static class Reflect
         throw new ArgumentException($"Expression '{expression}' does not refer to a property.");
     }
 
+    /// <summary>
+    /// Gets the method information represented by the lambda expression.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="expression"></param>
+    /// <returns></returns>
     public static MethodInfo GetMethodInfo<T>(Expression<Func<T, Delegate>> expression)
     {
         return GetMethodInfo((LambdaExpression)expression);
@@ -100,6 +106,14 @@ public static class Reflect
     //    return methodInfo;
     //}
 
+    /// <summary>
+    /// Gets the method information represented by the lambda expression.
+    /// </summary>
+    /// <param name="expression"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    /// <exception cref="ArgumentException"></exception>
+    /// <exception cref="NullReferenceException"></exception>
     public static MethodInfo GetMethodInfo(Expression expression)
     {
         if (expression == null)
@@ -237,6 +251,12 @@ public static class Reflect
         return givenTypeInfo.BaseType != null && IsAssignableToGenericType(givenTypeInfo.BaseType, genericType);
     }
 
+    /// <summary>
+    /// Gets the implemented generic types.
+    /// </summary>
+    /// <param name="givenType"></param>
+    /// <param name="genericType"></param>
+    /// <returns></returns>
     public static List<Type> GetImplementedGenericTypes(Type givenType, Type genericType)
     {
         var result = new List<Type>();
@@ -523,7 +543,6 @@ public static class Reflect<TTarget>
     /// <summary>
     /// Sets the value to property.
     /// </summary>
-    /// <typeparam name="T">The item type.</typeparam>
     /// <typeparam name="TValue">The type of the value.</typeparam>
     /// <param name="item">The item.</param>
     /// <param name="value">The value.</param>
@@ -544,7 +563,6 @@ public static class Reflect<TTarget>
     /// <summary>
     /// Gets the value.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     /// <param name="item">The item.</param>
     /// <param name="property">The property.</param>
     /// <returns>System.Object.</returns>
@@ -561,26 +579,53 @@ public static class Reflect<TTarget>
         return propertyInfo.GetValue(item);
     }
 
+    /// <summary>
+    /// Detects whether the specified type is assignable to a generic type.
+    /// </summary>
+    /// <param name="genericType"></param>
+    /// <returns></returns>
     public static bool IsAssignableToGenericType(Type genericType)
     {
         return Reflect.IsAssignableToGenericType(typeof(TTarget), genericType);
     }
+
+    /// <summary>
+    /// Gets the implemented generic types.
+    /// </summary>
+    /// <param name="genericType"></param>
+    /// <returns></returns>
 
     public static List<Type> GetImplementedGenericTypes(Type genericType)
     {
         return Reflect.GetImplementedGenericTypes(typeof(TTarget), genericType);
     }
 
+    /// <summary>
+    /// Gets value of the property.
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="propertyPath"></param>
+    /// <returns></returns>
     public static object GetValue(TTarget obj, string propertyPath)
     {
         return Reflect.GetValue(obj, typeof(TTarget), propertyPath);
     }
 
+    /// <summary>
+    /// Sets value of the property.
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="propertyPath"></param>
+    /// <param name="value"></param>
     public static void SetValue(TTarget obj, string propertyPath, object value)
     {
         Reflect.SetValue(obj, typeof(TTarget), propertyPath, value);
     }
 
+    /// <summary>
+    /// Gets the public constants recursively.
+    /// </summary>
+    /// <returns></returns>
     public static IEnumerable<string> GetPublicConstantsRecursively()
     {
         return Reflect.GetPublicConstantsRecursively(typeof(TTarget));

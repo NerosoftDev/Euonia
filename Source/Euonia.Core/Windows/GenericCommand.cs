@@ -51,7 +51,7 @@ public sealed class GenericCommand : ICommand
     /// </summary>
     public void RaiseCanExecuteChanged()
     {
-        var handler = this.CanExecuteChanged;
+        var handler = CanExecuteChanged;
         handler?.Invoke(this, new EventArgs());
     }
 

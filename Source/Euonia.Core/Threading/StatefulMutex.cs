@@ -98,6 +98,9 @@ public class StatefulMutex : IDisposable
     /// </summary>
     public void Dispose() => _mutex.Dispose();
 
+    /// <summary>
+    /// The state context of the <see cref="StatefulMutex"/>
+    /// </summary>
     public class Context : IDisposable
     {
         private readonly StatefulMutex _parent;
