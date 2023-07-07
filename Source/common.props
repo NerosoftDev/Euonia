@@ -17,7 +17,7 @@
     <PropertyGroup Condition=" '$(Configuration)'=='Debug' ">
         <DebugType>full</DebugType>
         <DebugSymbols>true</DebugSymbols>
-        <GenerateDocumentationFile>false</GenerateDocumentationFile>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)'=='Release' ">

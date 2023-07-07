@@ -8,12 +8,10 @@ namespace Nerosoft.Euonia.Linq;
 /// </summary>
 public static class Lambda
 {
-    #region GetMember(获取成员)
-
     /// <summary>
     /// Gets the menber of the expression.
     /// </summary>
-    /// <param name="expression">表达式,范例：t => t.Name</param>
+    /// <param name="expression">The lambda expression.</param>
     public static MemberInfo GetMember(Expression expression)
     {
         var memberExpression = GetMemberExpression(expression);
@@ -21,9 +19,9 @@ public static class Lambda
     }
 
     /// <summary>
-    /// 获取成员表达式
+    /// Gets the member expression.
     /// </summary>
-    /// <param name="expression">表达式</param>
+    /// <param name="expression">The lambda expression.</param>
     public static MemberExpression GetMemberExpression(Expression expression)
     {
         if (expression == null)
@@ -39,14 +37,11 @@ public static class Lambda
         };
     }
 
-    #endregion
-
-    #region GetName(获取成员名称)
-
     /// <summary>
-    /// 获取成员名称，范例：t => t.Name,返回 Name
+    /// Gets the member name of expression.
     /// </summary>
-    /// <param name="expression">表达式,范例：t => t.Name</param>
+    /// <param name="expression">The lambda expression.</param>
+    /// <remarks>expression: t => t.Name == "A"，returns: Name</remarks>
     public static string GetName(Expression expression)
     {
         var memberExpression = GetMemberExpression(expression);
@@ -54,7 +49,7 @@ public static class Lambda
     }
 
     /// <summary>
-    /// 获取成员名称
+    /// Gets the member name of <paramref name="memberExpression"/>
     /// </summary>
     public static string GetMemberName(MemberExpression memberExpression)
     {
@@ -67,15 +62,11 @@ public static class Lambda
         return result[index..];
     }
 
-    #endregion
-
-    #region GetNames(获取名称列表)
-
     /// <summary>
-    /// 获取名称列表
+    /// Gets names of multiple element expression.
     /// </summary>
-    /// <typeparam name="T">实体类型</typeparam>
-    /// <param name="expression">属性集合表达式,范例：t => new object[]{t.A,t.B}</param>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="expression">The expression of properties. e.g t => new object[]{t.A,t.B}</param>
     public static List<string> GetNames<T>(Expression<Func<T, object[]>> expression)
     {
         var result = new List<string>();
@@ -95,31 +86,30 @@ public static class Lambda
     }
 
     /// <summary>
-    /// 添加名称
+    /// Adds expression name to list.
     /// </summary>
     private static void AddName(List<string> result, Expression expression)
     {
         var name = GetName(expression);
         if (string.IsNullOrWhiteSpace(name))
+        {
             return;
+        }
         result.Add(name);
     }
 
-    #endregion
-
-    #region GetValue(获取值)
-
     /// <summary>
-    /// 获取值,范例：t => t.Name == "A",返回 A
+    /// Gets the expression argument value.
     /// </summary>
-    /// <param name="expression">表达式,范例：t => t.Name == "A"</param>
+    /// <param name="expression">The lambda expression.</param>
+    /// <example>expression: t => t.Name == "A", returns: "A"</example>
     public static object GetValue(Expression expression)
     {
         if (expression == null)
         {
             return null;
         }
-#pragma warning disable IDE0066 // 将 switch 语句转换为表达式
+#pragma warning disable IDE0066 
         switch (expression.NodeType)
         {
             case ExpressionType.Lambda:
@@ -140,7 +130,7 @@ public static class Lambda
             case ExpressionType.Constant:
                 return GetConstantExpressionValue(expression);
         }
-#pragma warning restore IDE0066 // 将 switch 语句转换为表达式
+#pragma warning restore IDE0066
 
         return null;
     }
@@ -153,7 +143,9 @@ public static class Lambda
         var methodCallExpression = (MethodCallExpression)expression;
         var value = GetValue(methodCallExpression.Arguments.FirstOrDefault());
         if (value != null)
+        {
             return value;
+        }
         return GetValue(methodCallExpression.Object);
     }
 
@@ -191,10 +183,6 @@ public static class Lambda
         return constantExpression.Value;
     }
 
-    #endregion
-
-    #region GetParameter(获取参数)
-
     /// <summary>
     /// 获取参数，范例：t.Name,返回 t
     /// </summary>
@@ -231,10 +219,6 @@ public static class Lambda
         return null;
     }
 
-    #endregion
-
-    #region GetConditionCount(获取查询条件个数)
-
     /// <summary>
     /// 获取查询条件个数
     /// </summary>
@@ -247,10 +231,6 @@ public static class Lambda
         var result = expression.ToString().Replace("AndAlso", "|").Replace("OrElse", "|");
         return result.Split('|').Length;
     }
-
-    #endregion
-
-    #region GetAttribute(获取特性)
 
     /// <summary>
     /// 获取特性
@@ -286,10 +266,6 @@ public static class Lambda
         return GetAttribute<TAttribute>(propertyExpression);
     }
 
-    #endregion
-
-    #region GetAttributes(获取特性列表)
-
     /// <summary>
     /// 获取特性列表
     /// </summary>
@@ -302,10 +278,6 @@ public static class Lambda
         var memberInfo = GetMember(propertyExpression);
         return memberInfo.GetCustomAttributes<TAttribute>();
     }
-
-    #endregion
-
-    #region Constant(获取常量)
 
     /// <summary>
     /// 获取常量表达式
@@ -320,10 +292,6 @@ public static class Lambda
         }
         return Expression.Constant(value, memberExpression.Type);
     }
-
-    #endregion
-
-    #region Equal(等于表达式)
 
     /// <summary>
     /// 创建等于运算lambda表达式
@@ -347,10 +315,6 @@ public static class Lambda
         return Expression.Parameter(typeof(T), "t");
     }
 
-    #endregion
-
-    #region NotEqual(不等于表达式)
-
     /// <summary>
     /// 创建不等于运算lambda表达式
     /// </summary>
@@ -364,10 +328,6 @@ public static class Lambda
                         .NotEqual(value)
                         .ToLambda<Func<T, bool>>(parameter);
     }
-
-    #endregion
-
-    #region Greater(大于表达式)
 
     /// <summary>
     /// 创建大于运算lambda表达式
@@ -383,10 +343,6 @@ public static class Lambda
                         .ToLambda<Func<T, bool>>(parameter);
     }
 
-    #endregion
-
-    #region GreaterEqual(大于等于表达式)
-
     /// <summary>
     /// 创建大于等于运算lambda表达式
     /// </summary>
@@ -400,10 +356,6 @@ public static class Lambda
                         .GreaterEqual(value)
                         .ToLambda<Func<T, bool>>(parameter);
     }
-
-    #endregion
-
-    #region Less(小于表达式)
 
     /// <summary>
     /// 创建小于运算lambda表达式
@@ -419,10 +371,6 @@ public static class Lambda
                         .ToLambda<Func<T, bool>>(parameter);
     }
 
-    #endregion
-
-    #region LessEqual(小于等于表达式)
-
     /// <summary>
     /// 创建小于等于运算lambda表达式
     /// </summary>
@@ -436,10 +384,6 @@ public static class Lambda
                         .LessEqual(value)
                         .ToLambda<Func<T, bool>>(parameter);
     }
-
-    #endregion
-
-    #region Starts(调用StartsWith方法)
 
     /// <summary>
     /// 调用StartsWith方法
@@ -455,10 +399,6 @@ public static class Lambda
                         .ToLambda<Func<T, bool>>(parameter);
     }
 
-    #endregion
-
-    #region Ends(调用EndsWith方法)
-
     /// <summary>
     /// 调用EndsWith方法
     /// </summary>
@@ -472,10 +412,6 @@ public static class Lambda
                         .EndsWith(value)
                         .ToLambda<Func<T, bool>>(parameter);
     }
-
-    #endregion
-
-    #region Contains(调用Contains方法)
 
     /// <summary>
     /// 调用Contains方法
@@ -491,10 +427,6 @@ public static class Lambda
                         .ToLambda<Func<T, bool>>(parameter);
     }
 
-    #endregion
-
-    #region ParsePredicate(解析为谓词表达式)
-
     /// <summary>
     /// 解析为谓词表达式
     /// </summary>
@@ -507,6 +439,4 @@ public static class Lambda
         var parameter = Expression.Parameter(typeof(T), "t");
         return parameter.Property(propertyName).Operation(@operator, value).ToLambda<Func<T, bool>>(parameter);
     }
-
-    #endregion
 }

@@ -52,7 +52,7 @@ public static class QueryableExtensions
     /// <param name="predicate">The query predicate.</param>
     /// <remarks>
     /// NOTE: Only one ctiteria property is allowd.
-    /// e.g.
+    /// e.g
     /// <code>t => t.Name == "a"</code> -- YES
     /// <code>t => t.Name == "a" &amp;&amp; t.Mobile == "123"</code> --NO
     /// <code>t => t.Name == ""</code> -- IGNORED
@@ -77,7 +77,7 @@ public static class QueryableExtensions
     /// <typeparam name="TEntity">The entity type.</typeparam>
     /// <param name="source">The query source.</param>
     /// <typeparam name="TProperty">The property type.</typeparam>
-    /// <param name="propertyExpression">The property expression. e.g. t => t.Age</param>
+    /// <param name="propertyExpression">The property expression. e.g t => t.Age</param>
     /// <param name="min">The minimum boundary value.</param>
     /// <param name="max">The maximum boundary value.</param>
     /// <param name="boundary">The value to indicate whether the boundary value should be included or not.</param>
@@ -94,7 +94,7 @@ public static class QueryableExtensions
     /// <typeparam name="TEntity">The entity type.</typeparam>
     /// <param name="source">The query source.</param>
     /// <typeparam name="TProperty">The property type.</typeparam>
-    /// <param name="propertyExpression">The property expression. e.g. t => t.Age</param>
+    /// <param name="propertyExpression">The property expression. e.g t => t.Age</param>
     /// <param name="min">The minimum boundary value.</param>
     /// <param name="max">The maximum boundary value.</param>
     /// <param name="boundary">The value to indicate whether the boundary value should be included or not.</param>

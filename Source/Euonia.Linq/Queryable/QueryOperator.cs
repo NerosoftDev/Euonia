@@ -1,7 +1,7 @@
 ﻿namespace Nerosoft.Euonia.Linq;
 
 /// <summary>
-/// 
+/// Enumerates the query operators.
 /// </summary>
 public enum QueryOperator
 {
