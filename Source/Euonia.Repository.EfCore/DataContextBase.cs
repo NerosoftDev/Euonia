@@ -25,6 +25,9 @@ public abstract class DataContextBase<TContext> : DbContext, IRepositoryContext
     /// </summary>
     protected abstract bool AutoSetEntryValues { get; }
 
+    /// <summary>
+    /// Gets a value indicate whether the domain events publishing are enabled or not.
+    /// </summary>
     protected abstract bool EnabledPublishEvents { get; }
 
     /// <inheritdoc />
@@ -42,7 +45,7 @@ public abstract class DataContextBase<TContext> : DbContext, IRepositoryContext
         var result = base.SaveChanges(acceptAllChangesOnSuccess);
         if (result > 0 && events.Any())
         {
-            RaiseDomainEvents(events);
+            PublishEvents(events);
         }
 
         return result;
@@ -102,7 +105,7 @@ public abstract class DataContextBase<TContext> : DbContext, IRepositoryContext
         var result = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         if (result > 0 && events.Any())
         {
-            RaiseDomainEvents(events);
+            PublishEvents(events);
         }
 
         return result;
@@ -223,7 +226,11 @@ public abstract class DataContextBase<TContext> : DbContext, IRepositoryContext
         }
     }
 
-    protected virtual void RaiseDomainEvents(IEnumerable<DomainEvent> events)
+    /// <summary>
+    /// Publishes the domain events.
+    /// </summary>
+    /// <param name="events"></param>
+    protected virtual void PublishEvents(IEnumerable<DomainEvent> events)
     {
         if (!EnabledPublishEvents)
         {
@@ -241,11 +248,17 @@ public abstract class DataContextBase<TContext> : DbContext, IRepositoryContext
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception, "RaiseDomainEvents Error");
+            _logger.LogError(exception, "PublishEvents Error");
             Console.WriteLine(exception);
         }
     }
 
+    /// <summary>
+    /// Publishes the domain event asynchronously.
+    /// </summary>
+    /// <param name="event"></param>
+    /// <typeparam name="TEvent"></typeparam>
+    /// <returns></returns>
     protected abstract Task PublishEventAsync<TEvent>(TEvent @event)
         where TEvent : DomainEvent;
 }

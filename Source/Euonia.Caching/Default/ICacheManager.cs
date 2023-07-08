@@ -5,6 +5,13 @@
 /// </summary>
 public interface ICacheManager
 {
+    /// <summary>
+    /// Gets cached value with the specified key.
+    /// </summary>
+    /// <param name="key"></param>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TResult"></typeparam>
+    /// <returns></returns>
     TResult Get<TKey, TResult>(TKey key);
 
     /// <summary>
@@ -17,6 +24,14 @@ public interface ICacheManager
     /// <returns>TResult.</returns>
     TResult GetOrAdd<TKey, TResult>(TKey key, Func<AcquireContext<TKey>, TResult> acquire);
 
+    /// <summary>
+    /// Adds or updates cached value with the specified key.
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="acquire"></param>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TResult"></typeparam>
+    /// <returns></returns>
     TResult AddOrUpdate<TKey, TResult>(TKey key, Func<AcquireContext<TKey>, TResult> acquire);
 
     /// <summary>

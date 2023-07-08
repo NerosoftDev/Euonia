@@ -127,10 +127,36 @@ public interface ICacheService
     /// <returns></returns>
     Task<TValue> GetOrAddAsync<TValue>(string key, Func<Task<TValue>> factory, DateTime timeout, bool isUtcTime = true, CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Add or update cached value of specified key asynchronously.
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="factory"></param>
+    /// <param name="timeout"></param>
+    /// <param name="cancellationToken"></param>
+    /// <typeparam name="TValue"></typeparam>
+    /// <returns></returns>
     Task<TValue> AddOrUpdateAsync<TValue>(string key, Func<Task<TValue>> factory, TimeSpan? timeout = null, CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Add or update cached value of specified key asynchronously.
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="factory"></param>
+    /// <param name="timeout"></param>
+    /// <param name="isUtcTime"></param>
+    /// <param name="cancellationToken"></param>
+    /// <typeparam name="TValue"></typeparam>
+    /// <returns></returns>
     Task<TValue> AddOrUpdateAsync<TValue>(string key, Func<Task<TValue>> factory, DateTime timeout, bool isUtcTime = true, CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Add or update cached value of specified key asynchronously.
+    /// </summary>
+    /// <param name="factory"></param>
+    /// <param name="cancellationToken"></param>
+    /// <typeparam name="TValue"></typeparam>
+    /// <returns></returns>
     Task<TValue> AddOrUpdateAsync<TValue>(Func<Task<CacheItem<TValue>>> factory, CancellationToken cancellationToken = default);
 
     /// <summary>

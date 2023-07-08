@@ -1,16 +1,19 @@
 ﻿using Microsoft.Extensions.Options;
-using Nerosoft.Euonia.Caching.Runtime;
 
 namespace Nerosoft.Euonia.Caching.Runtime;
 
 /// <summary>
-/// The implement of <see cref="ICacheService"/> with <see cref="Microsoft.Extensions.Caching.Memory"/>.
+/// The implement of <see cref="ICacheService"/> with <see cref="System.Runtime.Caching"/>.
 /// </summary>
 public class RuntimeCacheService : ICacheService
 {
     private readonly RuntimeCacheManager _manager;
     private readonly string _prefix;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RuntimeCacheService"/> class.
+    /// </summary>
+    /// <param name="options"></param>
     public RuntimeCacheService(IOptions<RuntimeCacheOptions> options)
     {
         _manager = new RuntimeCacheManager(options.Value);
@@ -60,6 +63,7 @@ public class RuntimeCacheService : ICacheService
         return AddOrUpdate(key, value, timeout);
     }
 
+    /// <inheritdoc />
     public TValue AddOrUpdate<TValue>(string key, Func<TValue> factory, DateTime timeout, bool isUtcTime = true)
     {
         var timespan = timeout - (isUtcTime ? DateTime.UtcNow : DateTime.Now);
@@ -85,7 +89,7 @@ public class RuntimeCacheService : ICacheService
     /// <inheritdoc />
     public TValue AddOrUpdate<TValue>(CacheItem<TValue> item)
     {
-        var key = RewriteKey(item.Key);
+        RewriteKey(item.Key);
 
         return _manager.Instance<TValue>().AddOrUpdate(item, _ => item.Value);
     }
@@ -105,11 +109,13 @@ public class RuntimeCacheService : ICacheService
         {
             return value;
         }
+
         value = await factory();
         var result = _manager.Instance<TValue>().GetOrAdd(key, _ => GetCacheItem(key, value, timeout));
         return result.Value;
     }
 
+    /// <inheritdoc />
     public async Task<TValue> GetOrAddAsync<TValue>(string key, Func<Task<TValue>> factory, DateTime timeout, bool isUtcTime = true, CancellationToken cancellationToken = default)
     {
         var timespan = timeout - (isUtcTime ? DateTime.UtcNow : DateTime.Now);
@@ -165,6 +171,7 @@ public class RuntimeCacheService : ICacheService
         {
             item = new CacheItem<TValue>(key, value);
         }
+
         return item;
     }
 }

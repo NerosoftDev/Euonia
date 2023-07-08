@@ -1,5 +1,8 @@
 ﻿namespace Nerosoft.Euonia.Threading;
 
+/// <summary>
+/// Extension methods for <see cref="ILockFactory" /> and <see cref="ISemaphoreFactory" />.
+/// </summary>
 public static class Extensions
 {
     #region ILockFactory

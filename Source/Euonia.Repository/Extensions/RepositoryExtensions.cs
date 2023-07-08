@@ -6,8 +6,21 @@ using Nerosoft.Euonia.Linq;
 
 namespace Nerosoft.Euonia.Repository;
 
+/// <summary>
+/// Extensions methods for <see cref="IQueryable{TEntity}"/>.
+/// </summary>
 public static class RepositoryExtensions
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="action"></param>
+    /// <param name="page"></param>
+    /// <param name="size"></param>
+    /// <param name="cancellationToken"></param>
+    /// <typeparam name="TEntity"></typeparam>
+    /// <returns></returns>
     public static async Task<PageableCollection<TEntity>> GetPagedCollectionAsync<TEntity>(this IQueryable<TEntity> source, Func<IQueryable<TEntity>, CancellationToken, Task<IList<TEntity>>> action, int? page, int? size, CancellationToken cancellationToken = default)
     {
         var handler = new QueryHandler<TEntity>(source);
@@ -22,6 +35,17 @@ public static class RepositoryExtensions
         return new PageableCollection<TEntity>(list) { TotalCount = count, PageNumber = page ?? 1, PageSize = size ?? int.MaxValue };
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="action"></param>
+    /// <param name="order"></param>
+    /// <param name="page"></param>
+    /// <param name="size"></param>
+    /// <param name="cancellationToken"></param>
+    /// <typeparam name="TEntity"></typeparam>
+    /// <returns></returns>
     public static async Task<PageableCollection<TEntity>> GetPagedCollectionAsync<TEntity>(this IQueryable<TEntity> source, Func<IQueryable<TEntity>, CancellationToken, Task<IList<TEntity>>> action, Action<Orderable<TEntity>> order, int? page, int? size, CancellationToken cancellationToken = default)
     {
         var handler = new QueryHandler<TEntity>(source);

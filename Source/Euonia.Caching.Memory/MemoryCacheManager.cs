@@ -15,7 +15,7 @@ internal class MemoryCacheManager
             settings.WithUpdateMode(options.UpdateMode)
                     .WithMaxRetries(options.MaxRetries)
                     .WithRetryTimeout(options.RetryTimeout)
-                    .WithMemoryCacheHandle(options.InstaceName, options)
+                    .WithMemoryCacheHandle(options.InstanceName, options)
                     .WithExpiration(CacheExpirationMode.Default, options.Expires ?? TimeSpan.MaxValue);
         });
 

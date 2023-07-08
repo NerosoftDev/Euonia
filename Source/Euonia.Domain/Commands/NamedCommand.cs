@@ -1,5 +1,8 @@
 ﻿namespace Nerosoft.Euonia.Domain;
 
+/// <summary>
+/// Defines a command with a name.
+/// </summary>
 public class NamedCommand : Command, INamedMessage
 {
     /// <summary>

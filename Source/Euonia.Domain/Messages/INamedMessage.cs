@@ -1,5 +1,8 @@
 ﻿namespace Nerosoft.Euonia.Domain;
 
+/// <summary>
+/// Represents a named message.
+/// </summary>
 public interface INamedMessage : IMessage
 {
     /// <summary>

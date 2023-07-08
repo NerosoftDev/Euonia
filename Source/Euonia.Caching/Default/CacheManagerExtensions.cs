@@ -12,16 +12,39 @@ public static class CacheManagerExtensions
     /// </summary>
     private static readonly ConcurrentDictionary<object, object> _locks = new();
 
+    /// <summary>
+    /// Gets cached value with the specified key.
+    /// </summary>
+    /// <param name="manager"></param>
+    /// <param name="key"></param>
+    /// <typeparam name="TResult"></typeparam>
+    /// <returns></returns>
     public static TResult Get<TResult>(this ICacheManager manager, string key)
     {
         return manager.Get<string, TResult>(key);
     }
 
+    /// <summary>
+    /// Gets cached value with the specified key, or adds value to cache if not exists.
+    /// </summary>
+    /// <param name="manager"></param>
+    /// <param name="key"></param>
+    /// <param name="acquire"></param>
+    /// <typeparam name="TResult"></typeparam>
+    /// <returns></returns>
     public static TResult GetOrAdd<TResult>(this ICacheManager manager, string key, Func<AcquireContext<string>, TResult> acquire)
     {
         return manager.GetOrAdd(key, acquire);
     }
 
+    /// <summary>
+    /// Adds or updates cached value with the specified key.
+    /// </summary>
+    /// <param name="manager"></param>
+    /// <param name="key"></param>
+    /// <param name="acquire"></param>
+    /// <typeparam name="TResult"></typeparam>
+    /// <returns></returns>
     public static TResult AddOrUpdate<TResult>(this ICacheManager manager, string key, Func<AcquireContext<string>, TResult> acquire)
     {
         return manager.AddOrUpdate(key, acquire);
@@ -51,6 +74,16 @@ public static class CacheManagerExtensions
         }
     }
 
+    /// <summary>
+    /// Adds or updates the specified key.
+    /// </summary>
+    /// <param name="manager"></param>
+    /// <param name="key"></param>
+    /// <param name="acquire"></param>
+    /// <param name="preventConcurrentCalls"></param>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TResult"></typeparam>
+    /// <returns></returns>
     public static TResult AddOrUpdate<TKey, TResult>(this ICacheManager manager, TKey key, Func<AcquireContext<TKey>, TResult> acquire, bool preventConcurrentCalls)
     {
         if (!preventConcurrentCalls)
@@ -65,11 +98,29 @@ public static class CacheManagerExtensions
         }
     }
 
+    /// <summary>
+    /// Gets cached value with the specified key, or adds value to cache if not exists.
+    /// </summary>
+    /// <param name="manager"></param>
+    /// <param name="key"></param>
+    /// <param name="acquire"></param>
+    /// <param name="preventConcurrentCalls"></param>
+    /// <typeparam name="TResult"></typeparam>
+    /// <returns></returns>
     public static TResult GetOrAdd<TResult>(this ICacheManager manager, string key, Func<AcquireContext<string>, TResult> acquire, bool preventConcurrentCalls)
     {
         return manager.GetOrAdd<string, TResult>(key, acquire, preventConcurrentCalls);
     }
 
+    /// <summary>
+    /// Adds or updates cached value with the specified key.
+    /// </summary>
+    /// <param name="manager"></param>
+    /// <param name="key"></param>
+    /// <param name="acquire"></param>
+    /// <param name="preventConcurrentCalls"></param>
+    /// <typeparam name="TResult"></typeparam>
+    /// <returns></returns>
     public static TResult AddOrUpdate<TResult>(this ICacheManager manager, string key, Func<AcquireContext<string>, TResult> acquire, bool preventConcurrentCalls)
     {
         return manager.AddOrUpdate<string, TResult>(key, acquire, preventConcurrentCalls);

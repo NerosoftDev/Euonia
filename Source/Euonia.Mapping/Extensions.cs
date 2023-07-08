@@ -1,5 +1,8 @@
 ﻿using Nerosoft.Euonia.Mapping;
 
+/// <summary>
+/// Extensions methods for <see cref="TypeAdapterFactory" />.
+/// </summary>
 public static partial class Extensions
 {
     /// <summary>

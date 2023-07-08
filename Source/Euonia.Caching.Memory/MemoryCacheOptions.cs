@@ -1,11 +1,14 @@
 ﻿namespace Nerosoft.Euonia.Caching.Memory;
 
+/// <summary>
+/// The memory cache options.
+/// </summary>
 public class MemoryCacheOptions : Microsoft.Extensions.Caching.Memory.MemoryCacheOptions
 {
     /// <summary>
     /// Gets or sets the name to be used for the cache instance.
     /// </summary>
-    public string InstaceName { get; set; } = "default";
+    public string InstanceName { get; set; } = "default";
 
     /// <summary>
     /// 

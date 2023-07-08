@@ -1,15 +1,5 @@
 ﻿namespace Nerosoft.Euonia.Threading;
 
-public interface ISemaphoreProvider<THandle> : ISemaphoreProvider
-    where THandle : class, ISynchronizationHandle
-{
-    new THandle TryAcquire(TimeSpan timeout = default, CancellationToken cancellationToken = default);
-    new THandle Acquire(TimeSpan? timeout = null, CancellationToken cancellationToken = default);
-    new ValueTask<THandle> TryAcquireAsync(TimeSpan timeout = default, CancellationToken cancellationToken = default);
-    new ValueTask<THandle> AcquireAsync(TimeSpan? timeout = null, CancellationToken cancellationToken = default);
-    new ValueTask<THandle> TryAcquireAsync(TimeoutValue timeout, CancellationToken cancellationToken = default);
-}
-
 /// <summary>
 /// A synchronization primitive which restricts access to a resource or critical section of code to a fixed number of concurrent threads/processes.
 /// Compare to <see cref="Semaphore"/>.
@@ -105,4 +95,18 @@ public interface ISemaphoreProvider
     /// </code>
     /// </example>
     ValueTask<ISynchronizationHandle> TryAcquireAsync(TimeoutValue timeout, CancellationToken cancellationToken = default);
+}
+
+/// <summary>
+/// A synchronization primitive which restricts access to a resource or critical section of code to a fixed number of concurrent threads/processes.
+/// Compare to <see cref="Semaphore"/>.
+/// </summary>
+public interface ISemaphoreProvider<THandle> : ISemaphoreProvider
+    where THandle : class, ISynchronizationHandle
+{
+    new THandle TryAcquire(TimeSpan timeout = default, CancellationToken cancellationToken = default);
+    new THandle Acquire(TimeSpan? timeout = null, CancellationToken cancellationToken = default);
+    new ValueTask<THandle> TryAcquireAsync(TimeSpan timeout = default, CancellationToken cancellationToken = default);
+    new ValueTask<THandle> AcquireAsync(TimeSpan? timeout = null, CancellationToken cancellationToken = default);
+    new ValueTask<THandle> TryAcquireAsync(TimeoutValue timeout, CancellationToken cancellationToken = default);
 }

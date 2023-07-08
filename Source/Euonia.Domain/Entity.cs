@@ -20,6 +20,7 @@ public abstract class Entity<TKey> : Entity, IEntity<TKey>
         return new object[] { Id };
     }
 
+    /// <inheritdoc />
     public override string ToString()
     {
         return $"[ENTITY: {GetType().Name}] Id = {Id}";
@@ -31,6 +32,7 @@ public abstract class Entity<TKey> : Entity, IEntity<TKey>
 /// </summary>
 public abstract class Entity : IEntity
 {
+    /// <inheritdoc />
     public abstract object[] GetKeys();
 
     /// <inheritdoc/>

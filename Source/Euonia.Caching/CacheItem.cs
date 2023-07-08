@@ -317,7 +317,7 @@ public class CacheItem<T> : ISerializable, ICacheItemProperties
     /// <remarks>We do not clone the cache item or value.</remarks>
     /// <returns>The new instance of the cache item.</returns>
     public CacheItem<T> WithDefaultExpiration() =>
-        new(Key, Region, Value, CacheExpirationMode.Default, TimeSpan.Zero, CreatedUtc, LastAccessedUtc, true);
+        new(Key, Region, Value, CacheExpirationMode.Default, TimeSpan.Zero, CreatedUtc, LastAccessedUtc);
 
     /// <summary>
     /// Creates a copy of the current cache item with new value.
