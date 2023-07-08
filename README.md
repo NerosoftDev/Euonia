@@ -1,5 +1,5 @@
 # Euonia
-Euonia development framework and toolkit library for .NET application/service. Powered by Nerosoft.
+Euonia is a development framework and toolkit library for developers to build .NET application/service. It aims to provide a comprehensive and user-friendly solution to empowers developers to build efficient, scalable and robust systems that can handle complex distributed workflows. Whether you are working on microservices, cloud-native applications, or any other distributed system, it offers a range of features, necessary tools and infrastructure to streamline your development process and enhance the overall performance of your project.
 
 The word "eunoia" refers to a concept derived from the ancient Greek language. It is a term that signifies a state of goodwill, beautiful thinking, and a well-disposed mind. The word "eunoia" combines the prefix "eu," meaning "good" or "well," and "noos," meaning "mind" or "thinking." It encompasses the idea of having a positive mindset, open-heartedness, and a sincere attitude towards others. Eunoia can be seen as a virtue that promotes harmony, empathy, and generosity in interpersonal relationships. It is often associated with the ideal of achieving inner peace and fostering harmonious connections with others.
 
@@ -8,7 +8,7 @@ The word "eunoia" refers to a concept derived from the ancient Greek language. I
 ## Diagram
 
 ```mermaid
-graph TD;
+graph TD
 	Euonia.Modularity --> Euonia.Core
 	Euonia.Hosting --> Euonia.Modularity
 
@@ -44,12 +44,12 @@ graph TD;
 
 ## Core module
 - [Euonia.Core](/Source/Euonia.Core)
-  > Core library for Euonia framework.
+  > Core library that providers base class, helpers and extension methods.
 - [Euonia.Business](/Source/Euonia.Business)
-  > Object oriented & scalable business library.
+  > Object oriented & scalable business architecture library.
 - [Euonia.Grpc](/Source/Euonia.Grpc)
   
-  > Grpc library for Euonia framework.
+  > Providers tools and features to seamlessly integrate gRPC capabilities into projects.
 - [Euonia.Hosting](/Source/Euonia.Hosting)
   > A library that helps developer to build a host for .NET application/service quickly.
 - [Euonia.Linq](/Source/Euonia.Linq)
@@ -59,7 +59,7 @@ graph TD;
 - [Euonia.Pipeline](/Source/Euonia.Pipeline)
   > To be added.
 - [Euonia.Validation](/Source/Euonia.Validation)
-  > Used Euonia.Validation to.
+  > Provides customizable validation capabilities for various data inputs.
 
 ## Caching module
 - [Euonia.Caching](/Source/Euonia.Caching)
@@ -69,7 +69,6 @@ graph TD;
 - [Euonia.Caching.Memory](/Source/Euonia.Caching.Memory)
   > Implements ICachingService with *Microsoft.Extensions.Caching.Memory*.
 - [Euonia.Caching.Runtime](/Source/Euonia.Caching.Runtime)
-  
   > Implements ICachingService with build-in *System.Runtime.Caching*.
 
 ## Domain Driven Design module
