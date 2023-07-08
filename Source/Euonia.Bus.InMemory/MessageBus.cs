@@ -40,6 +40,9 @@ public abstract class MessageBus : DisposableObject, IMessageBus
         ServiceAccessor = accessor;
     }
 
+    /// <summary>
+    /// Gets the service accessor.
+    /// </summary>
     protected IServiceAccessor ServiceAccessor { get; }
 
     /// <summary>
@@ -96,11 +99,21 @@ public abstract class MessageBus : DisposableObject, IMessageBus
         MessageAcknowledged?.Invoke(this, args);
     }
 
+    /// <summary>
+    /// Subscribes the specified message type.
+    /// </summary>
+    /// <param name="messageType"></param>
+    /// <param name="handlerType"></param>
     public virtual void Subscribe(Type messageType, Type handlerType)
     {
         HandlerContext.Register(messageType, handlerType);
     }
 
+    /// <summary>
+    /// Subscribes the specified message name.
+    /// </summary>
+    /// <param name="messageName"></param>
+    /// <param name="handlerType"></param>
     public virtual void Subscribe(string messageName, Type handlerType)
     {
         HandlerContext.Register(messageName, handlerType);

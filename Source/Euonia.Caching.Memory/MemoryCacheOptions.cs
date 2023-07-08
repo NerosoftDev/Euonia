@@ -24,12 +24,12 @@ public class MemoryCacheOptions : Microsoft.Extensions.Caching.Memory.MemoryCach
     /// </summary>
     public int RetryTimeout { get; set; } = 3000;
 
-    // <summary>
+    /// <summary>
     /// Gets or sets the redis cache update mode.
+    /// </summary>
     /// <see cref="CacheUpdateMode"/>
     /// <value>None,Up</value>
     /// <remarks>Default: Up.</remarks>
-    /// </summary>
     public CacheUpdateMode UpdateMode { get; set; } = CacheUpdateMode.Up;
 
     /// <summary>

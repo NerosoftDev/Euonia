@@ -4,11 +4,11 @@ public partial class BaseCacheManager<TValue>
 {
     /// <inheritdoc />
     public TValue GetOrAdd(string key, TValue value)
-        => GetOrAdd(key, (k) => value);
+        => GetOrAdd(key, _ => value);
 
     /// <inheritdoc />
     public TValue GetOrAdd(string key, string region, TValue value)
-        => GetOrAdd(key, region, (k, r) => value);
+        => GetOrAdd(key, region, (_, _) => value);
 
     /// <inheritdoc />
     public TValue GetOrAdd(string key, Func<string, TValue> valueFactory)
@@ -16,7 +16,7 @@ public partial class BaseCacheManager<TValue>
         Check.EnsureNotNullOrWhiteSpace(key, nameof(key));
         Check.EnsureNotNull(valueFactory, nameof(valueFactory));
 
-        return GetOrAddInternal(key, null, (k, r) => new CacheItem<TValue>(k, valueFactory(k))).Value;
+        return GetOrAddInternal(key, null, (k, _) => new CacheItem<TValue>(k, valueFactory(k))).Value;
     }
 
     /// <inheritdoc />
@@ -35,7 +35,7 @@ public partial class BaseCacheManager<TValue>
         Check.EnsureNotNullOrWhiteSpace(key, nameof(key));
         Check.EnsureNotNull(valueFactory, nameof(valueFactory));
 
-        return GetOrAddInternal(key, null, (k, r) => valueFactory(k));
+        return GetOrAddInternal(key, null, (k, _) => valueFactory(k));
     }
 
     /// <inheritdoc />
@@ -57,7 +57,7 @@ public partial class BaseCacheManager<TValue>
         if (TryGetOrAddInternal(
             key,
             null,
-            (k, r) =>
+            (k, _) =>
             {
                 var newValue = valueFactory(k);
                 return newValue == null ? null : new CacheItem<TValue>(k, newValue);
@@ -103,7 +103,7 @@ public partial class BaseCacheManager<TValue>
         Check.EnsureNotNullOrWhiteSpace(key, nameof(key));
         Check.EnsureNotNull(valueFactory, nameof(valueFactory));
 
-        return TryGetOrAddInternal(key, null, (k, r) => valueFactory(k), out item);
+        return TryGetOrAddInternal(key, null, (k, _) => valueFactory(k), out item);
     }
 
     /// <inheritdoc />

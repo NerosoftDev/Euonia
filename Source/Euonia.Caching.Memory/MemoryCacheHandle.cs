@@ -10,11 +10,11 @@ namespace Nerosoft.Euonia.Caching.Memory;
 /// <typeparam name="TCacheValue">The type of the cache value.</typeparam>
 public class MemoryCacheHandle<TCacheValue> : BaseCacheHandle<TCacheValue>
 {
-    private const string DefaultName = "default";
+    private const string DEFAULT_NAME = "default";
 
     private readonly string _cacheName = string.Empty;
 
-    private volatile MemoryCache _cache = null;
+    private volatile MemoryCache _cache;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MemoryCacheHandle{TCacheValue}"/> class.
