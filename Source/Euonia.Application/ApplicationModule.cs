@@ -4,6 +4,7 @@ using Nerosoft.Euonia.Modularity;
 
 namespace Nerosoft.Euonia.Application;
 
+/// <inheritdoc />
 public class ApplicationModule : ModuleContextBase
 {
     /// <inheritdoc />

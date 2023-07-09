@@ -11,7 +11,7 @@ public class RuntimeCacheOptions
     /// <summary>
     /// Gets or sets the name to be used for the cache instance.
     /// </summary>
-    public string InstaceName { get; set; } = "default";
+    public string InstanceName { get; set; } = "default";
 
     /// <summary>
     /// 
@@ -30,12 +30,12 @@ public class RuntimeCacheOptions
     /// </summary>
     public int RetryTimeout { get; set; } = 3000;
 
-    // <summary>
+    /// <summary>
     /// Gets or sets the redis cache update mode.
     /// <see cref="CacheUpdateMode"/>
+    /// </summary>
     /// <value>None,Up</value>
     /// <remarks>Default: Up.</remarks>
-    /// </summary>
     public CacheUpdateMode UpdateMode { get; set; } = CacheUpdateMode.Up;
 
     /// <summary>

@@ -1,5 +1,8 @@
 ﻿namespace Nerosoft.Euonia.Domain;
 
+/// <summary>
+/// Defines an event with a name.
+/// </summary>
 public class NamedEvent : Event, INamedMessage
 {
     /// <summary>

@@ -4,6 +4,9 @@ using Nerosoft.Euonia.Modularity;
 
 namespace Nerosoft.Euonia.Bus.InMemory;
 
+/// <summary>
+/// Import this module to use the in-memory message bus.
+/// </summary>
 [DependsOn(typeof(MessageBusModule))]
 public class InMemoryMessageBusModule : ModuleContextBase
 {

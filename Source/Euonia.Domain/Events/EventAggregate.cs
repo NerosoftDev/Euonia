@@ -5,6 +5,7 @@
 /// </summary>
 public class EventAggregate : IAggregateRoot<Guid>
 {
+    /// <inheritdoc />
     public object[] GetKeys()
     {
         return new object[] { Id };

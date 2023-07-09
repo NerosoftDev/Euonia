@@ -9,6 +9,7 @@ namespace Nerosoft.Euonia.Caching.Redis;
 /// <typeparam name="TValue">The type of the cache value.</typeparam>
 public class RedisCacheHandle<TValue> : BaseCacheHandle<TValue>
 {
+    // ReSharper disable once StaticMemberInGenericType
     private static readonly TimeSpan _minimumExpirationTimeout = TimeSpan.FromMilliseconds(1);
     private const string BASE64_PREFIX = "base64\0";
     private const string HASH_FIELD_CREATED = "created";
@@ -436,7 +437,7 @@ return result";
         var values = (RedisValue[])result;
 
         // the first item stores the value
-        var item = values[0];
+        var item = values![0];
         var expirationModeItem = values[1];
         var timeoutItem = values[2];
         var createdItem = values[3];
@@ -490,6 +491,12 @@ return result";
         return cacheItem;
     }
 
+    /// <summary>
+    /// Gets a <c>CacheItem</c> for the specified key without using lua script.
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="region"></param>
+    /// <returns></returns>
     protected virtual CacheItem<TValue> GetCacheItemInternalNoScript(string key, string region)
     {
         return Retry(() =>

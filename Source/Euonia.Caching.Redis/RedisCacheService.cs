@@ -64,6 +64,7 @@ public class RedisCacheService : ICacheService
         return AddOrUpdate(key, value, timeout);
     }
 
+    /// <inheritdoc />
     public TValue AddOrUpdate<TValue>(string key, Func<TValue> factory, DateTime timeout, bool isUtcTime = true)
     {
         var timespan = timeout - (isUtcTime ? DateTime.UtcNow : DateTime.Now);
@@ -89,6 +90,7 @@ public class RedisCacheService : ICacheService
     /// <inheritdoc />
     public TValue AddOrUpdate<TValue>(CacheItem<TValue> item)
     {
+        RewriteKey(item.Key);
         return _manager.Instance<TValue>().AddOrUpdate(item, _ => item.Value);
     }
 
@@ -113,6 +115,7 @@ public class RedisCacheService : ICacheService
         return result.Value;
     }
 
+    /// <inheritdoc />
     public async Task<TValue> GetOrAddAsync<TValue>(string key, Func<Task<TValue>> factory, DateTime timeout, bool isUtcTime = true, CancellationToken cancellationToken = default)
     {
         var timespan = timeout - (isUtcTime ? DateTime.UtcNow : DateTime.Now);

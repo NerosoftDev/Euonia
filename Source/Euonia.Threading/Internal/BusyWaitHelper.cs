@@ -1,7 +1,22 @@
 ﻿namespace Nerosoft.Euonia.Threading;
 
+/// <summary>
+/// Methods for waiting for a value to be available
+/// </summary>
 public static class BusyWaitHelper
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="state"></param>
+    /// <param name="tryGetValue"></param>
+    /// <param name="timeout"></param>
+    /// <param name="minSleepTime"></param>
+    /// <param name="maxSleepTime"></param>
+    /// <param name="cancellationToken"></param>
+    /// <typeparam name="TState"></typeparam>
+    /// <typeparam name="TResult"></typeparam>
+    /// <returns></returns>
     public static async ValueTask<TResult> WaitAsync<TState, TResult>(
         TState state,
         Func<TState, CancellationToken, ValueTask<TResult>> tryGetValue, 

@@ -1,5 +1,8 @@
 ﻿namespace Nerosoft.Euonia.Core;
 
+/// <summary>
+/// The validation result.
+/// </summary>
 [Serializable]
 public class ValidationResult
 {

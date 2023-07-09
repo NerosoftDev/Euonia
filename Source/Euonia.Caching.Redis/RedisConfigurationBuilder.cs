@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Nerosoft.Euonia.Caching.Redis;
+﻿namespace Nerosoft.Euonia.Caching.Redis;
 
 /// <summary>
 /// <see cref="RedisConfigurationBuilder"/> helps creating the <see cref="RedisConfiguration"/>
@@ -9,15 +6,15 @@ namespace Nerosoft.Euonia.Caching.Redis;
 /// </summary>
 public class RedisConfigurationBuilder
 {
-    private bool _allowAdmin = false;
+    private bool _allowAdmin;
     private int _connectionTimeout = 5000;
-    private int _database = 0;
-    private IList<ServerEndPoint> _endpoints = new List<ServerEndPoint>();
-    private bool _isSsl = false;
-    private string _key = string.Empty;
-    private string _password = null;
-    private string _sslHost = null;
-    private bool _enabledKeyspaceNotifications = false;
+    private int _database;
+    private readonly IList<ServerEndPoint> _endpoints = new List<ServerEndPoint>();
+    private bool _isSsl;
+    private readonly string _key;
+    private string _password;
+    private string _sslHost;
+    private bool _enabledKeyspaceNotifications;
     private string _useVersion;
     private bool _useTwemproxy;
 
@@ -39,7 +36,7 @@ public class RedisConfigurationBuilder
     /// </summary>
     /// <returns>The <c>RedisConfiguration</c></returns>
     public RedisConfiguration Build() =>
-        new RedisConfiguration(
+        new(
             key: _key,
             endpoints: _endpoints,
             database: _database,

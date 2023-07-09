@@ -2,6 +2,9 @@
 
 namespace Nerosoft.Euonia.Domain;
 
+/// <summary>
+/// Extension methods for <see cref="CommandResponse"/>.
+/// </summary>
 public static class CommandResponseExtensions
 {
     /// <summary>
@@ -60,6 +63,12 @@ public static class CommandResponseExtensions
         return response;
     }
 
+    /// <summary>
+    /// Set response error and return the current instance.
+    /// </summary>
+    /// <param name="response"></param>
+    /// <param name="status"></param>
+    /// <returns></returns>
     public static CommandResponse WithStatus(this CommandResponse response, CommandStatus status)
     {
         response.Status = status;

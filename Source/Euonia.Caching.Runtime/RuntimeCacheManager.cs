@@ -15,7 +15,7 @@ internal class RuntimeCacheManager
             settings.WithUpdateMode(options.UpdateMode)
                     .WithMaxRetries(options.MaxRetries)
                     .WithRetryTimeout(options.RetryTimeout)
-                    .WithRuntimeCacheHandle(options.InstaceName, options)
+                    .WithRuntimeCacheHandle(options.InstanceName, options)
                     .WithExpiration(CacheExpirationMode.Default, options.Expires ?? TimeSpan.MaxValue);
         });
 

@@ -40,6 +40,7 @@ public class DefaultCacheManager : ICacheManager
         return _holder.GetCache<TKey, TResult>(_component);
     }
 
+    /// <inheritdoc />
     public TResult Get<TKey, TResult>(TKey key)
     {
         return TryGet<TKey, TResult>(key, out var result) ? result : default;
@@ -58,6 +59,7 @@ public class DefaultCacheManager : ICacheManager
         return GetCache<TKey, TResult>().GetOrAdd(key, acquire);
     }
 
+    /// <inheritdoc />
     public TResult AddOrUpdate<TKey, TResult>(TKey key, Func<AcquireContext<TKey>, TResult> acquire)
     {
         return GetCache<TKey, TResult>().AddOrUpdate(key, acquire);

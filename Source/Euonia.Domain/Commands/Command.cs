@@ -15,6 +15,10 @@ public abstract class Command : Message, ICommand
     /// </summary>
     public IDictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
 
+    /// <summary>
+    /// Gets or sets the command property with specified name.
+    /// </summary>
+    /// <param name="name"></param>
     public object this[string name]
     {
         get => Properties.TryGetValue(name, out var value) ? value : default;
@@ -37,15 +41,18 @@ public abstract class Command : Message, ICommand
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 public abstract class Command<T1> : Command
 {
+    /// <inheritdoc />
     protected Command()
     {
     }
 
+    /// <inheritdoc />
     protected Command(Tuple<T1> data)
     {
         Data = data;
     }
 
+    /// <inheritdoc />
     protected Command(T1 item1)
         : this(Tuple.Create(item1))
     {
@@ -102,15 +109,18 @@ public abstract class Command<T1> : Command
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 public abstract class Command<T1, T2> : Command
 {
+    /// <inheritdoc />
     protected Command()
     {
     }
 
+    /// <inheritdoc />
     protected Command(Tuple<T1, T2> data)
     {
         Data = data;
     }
 
+    /// <inheritdoc />
     protected Command(T1 item1, T2 item2)
         : this(Tuple.Create(item1, item2))
     {
@@ -173,15 +183,18 @@ public abstract class Command<T1, T2> : Command
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 public abstract class Command<T1, T2, T3> : Command
 {
+    /// <inheritdoc />
     protected Command()
     {
     }
 
+    /// <inheritdoc />
     protected Command(Tuple<T1, T2, T3> data)
     {
         Data = data;
     }
 
+    /// <inheritdoc />
     protected Command(T1 item1, T2 item2, T3 item3)
         : this(Tuple.Create(item1, item2, item3))
     {
@@ -250,15 +263,18 @@ public abstract class Command<T1, T2, T3> : Command
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 public abstract class Command<T1, T2, T3, T4> : Command
 {
+    /// <inheritdoc />
     protected Command()
     {
     }
 
+    /// <inheritdoc />
     protected Command(Tuple<T1, T2, T3, T4> data)
     {
         Data = data;
     }
 
+    /// <inheritdoc />
     protected Command(T1 item1, T2 item2, T3 item3, T4 item4)
         : this(Tuple.Create(item1, item2, item3, item4))
     {
@@ -333,15 +349,18 @@ public abstract class Command<T1, T2, T3, T4> : Command
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 public abstract class Command<T1, T2, T3, T4, T5> : Command
 {
+    /// <inheritdoc />
     protected Command()
     {
     }
 
+    /// <inheritdoc />
     protected Command(Tuple<T1, T2, T3, T4, T5> data)
     {
         Data = data;
     }
 
+    /// <inheritdoc />
     protected Command(T1 item1, T2 item2, T3 item3, T4 item4, T5 item5)
         : this(Tuple.Create(item1, item2, item3, item4, item5))
     {
@@ -422,22 +441,34 @@ public abstract class Command<T1, T2, T3, T4, T5> : Command
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 public abstract class Command<T1, T2, T3, T4, T5, T6> : Command
 {
+    /// <inheritdoc />
     protected Command()
     {
     }
 
+    /// <inheritdoc />
     protected Command(Tuple<T1, T2, T3, T4, T5, T6> data)
     {
         Data = data;
     }
 
+    /// <inheritdoc />
     protected Command(T1 item1, T2 item2, T3 item3, T4 item4, T5 item5, T6 item6)
         : this(Tuple.Create(item1, item2, item3, item4, item5, item6))
     {
     }
 
+    
+    /// <summary>
+    /// Gets or sets the command data.
+    /// </summary>
     public Tuple<T1, T2, T3, T4, T5, T6> Data { get; set; }
 
+    /// <summary>
+    /// Gets the item value at specified index.
+    /// </summary>
+    /// <param name="index"></param>
+    /// <exception cref="IndexOutOfRangeException"></exception>
     public object this[int index]
     {
         get
@@ -456,6 +487,12 @@ public abstract class Command<T1, T2, T3, T4, T5, T6> : Command
         }
     }
 
+    /// <summary>
+    /// Gets the item value at specified index.
+    /// </summary>
+    /// <param name="index"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public virtual T GetItem<T>(int index)
     {
         var value = this[index];
@@ -502,15 +539,18 @@ public abstract class Command<T1, T2, T3, T4, T5, T6> : Command
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 public abstract class Command<T1, T2, T3, T4, T5, T6, T7> : Command
 {
+    /// <inheritdoc />
     protected Command()
     {
     }
 
+    /// <inheritdoc />
     protected Command(Tuple<T1, T2, T3, T4, T5, T6, T7> data)
     {
         Data = data;
     }
 
+    /// <inheritdoc />
     protected Command(T1 item1, T2 item2, T3 item3, T4 item4, T5 item5, T6 item6, T7 item7)
         : this(Tuple.Create(item1, item2, item3, item4, item5, item6, item7))
     {

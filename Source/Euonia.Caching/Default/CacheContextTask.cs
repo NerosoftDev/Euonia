@@ -1,5 +1,9 @@
 ﻿namespace Nerosoft.Euonia.Caching;
 
+/// <summary>
+/// The cache context.
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public class CacheContextTask<T> : IDisposable
 {
     /// <summary>

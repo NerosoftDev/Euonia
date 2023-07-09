@@ -4,8 +4,16 @@ using Nerosoft.Euonia.Bus.InMemory;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+/// <summary>
+/// Message bus extensions for <see cref="IServiceCollection"/>.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds the in-memory command bus to the service collection.
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
     public static IServiceCollection AddInMemoryCommandBus(this IServiceCollection services)
     {
         return services.AddSingleton<ICommandBus>(provider =>
@@ -26,6 +34,11 @@ public static class ServiceCollectionExtensions
         });
     }
 
+    /// <summary>
+    /// Adds the in-memory event bus to the service collection.
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
     public static IServiceCollection AddInMemoryEventBus(this IServiceCollection services)
     {
         return services.AddSingleton<IEventBus>(provider =>

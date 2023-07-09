@@ -1,9 +1,12 @@
 ﻿namespace Nerosoft.Euonia.Domain;
 
+/// <summary>
+/// Represents the object has domain events.
+/// </summary>
 public interface IHasDomainEvents
 {
     /// <summary>
-    /// 
+    /// Gets the attached domain events.
     /// </summary>
     /// <returns></returns>
     IEnumerable<DomainEvent> GetEvents();

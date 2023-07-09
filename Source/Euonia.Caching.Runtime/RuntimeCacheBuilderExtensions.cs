@@ -48,7 +48,7 @@ public static class RuntimeCacheBuilderExtensions
     /// <param name="part">The builder part.</param>
     /// <param name="instanceName">The name to be used for the cache instance.</param>
     /// <param name="options">
-    /// The <see cref="RuntimeMemoryCacheOptions"/> which should be used to initiate this cache.
+    /// The <see cref="RuntimeCacheOptions"/> which should be used to initiate this cache.
     /// If <c>Null</c>, default options will be used.
     /// </param>
     /// <returns>
@@ -68,7 +68,7 @@ public static class RuntimeCacheBuilderExtensions
     /// <param name="isBackplaneSource">Set this to true if this cache handle should be the source of the backplane.
     /// This setting will be ignored if no backplane is configured.</param>
     /// <param name="options">
-    /// The <see cref="RuntimeMemoryCacheOptions"/> which should be used to initiate this cache.
+    /// The <see cref="RuntimeCacheOptions"/> which should be used to initiate this cache.
     /// If <c>Null</c>, default options will be used.
     /// </param>
     /// <returns>

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using MongoDB.Bson.Serialization;
 using Nerosoft.Euonia.Reflection;
 
@@ -25,24 +24,45 @@ public class ModelProfile
 
     internal bool? BypassDocumentValidation { get; set; }
 
+    /// <summary>
+    /// Sets the model key.
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="type"></param>
+    /// <returns></returns>
     public ModelKeyBuilder HasKey(string key, Type type = null)
     {
         _keyBuilder = new ModelKeyBuilder(key, type);
         return _keyBuilder;
     }
 
+    /// <summary>
+    /// Sets the collection name for current model.
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
     public ModelProfile ToCollection(string name)
     {
         CollectionName = name;
         return this;
     }
 
+    /// <summary>
+    /// Sets a value indicating whether to automatically map properties.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
     public ModelProfile AutoMap(bool value)
     {
         AutoMapProperty = value;
         return this;
     }
 
+    /// <summary>
+    /// Sets a value indicating whether to bypass document validation.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
     public ModelProfile BypassValidation(bool value)
     {
         BypassDocumentValidation = value;

@@ -10,6 +10,10 @@ public class MemoryCacheService : ICacheService
     private readonly MemoryCacheManager _manager;
     private readonly string _prefix;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MemoryCacheService"/> class.
+    /// </summary>
+    /// <param name="options"></param>
     public MemoryCacheService(IOptions<MemoryCacheOptions> options)
     {
         _manager = new MemoryCacheManager(options.Value);
@@ -59,6 +63,7 @@ public class MemoryCacheService : ICacheService
         return AddOrUpdate(key, value, timeout);
     }
 
+    /// <inheritdoc />
     public TValue AddOrUpdate<TValue>(string key, Func<TValue> factory, DateTime timeout, bool isUtcTime = true)
     {
         var timespan = timeout - (isUtcTime ? DateTime.UtcNow : DateTime.Now);
@@ -84,7 +89,7 @@ public class MemoryCacheService : ICacheService
     /// <inheritdoc />
     public TValue AddOrUpdate<TValue>(CacheItem<TValue> item)
     {
-        var key = RewriteKey(item.Key);
+        RewriteKey(item.Key);
 
         return _manager.Instance<TValue>().AddOrUpdate(item, _ => item.Value);
     }
@@ -109,6 +114,7 @@ public class MemoryCacheService : ICacheService
         return result.Value;
     }
 
+    /// <inheritdoc />
     public async Task<TValue> GetOrAddAsync<TValue>(string key, Func<Task<TValue>> factory, DateTime timeout, bool isUtcTime = true, CancellationToken cancellationToken = default)
     {
         var timespan = timeout - (isUtcTime ? DateTime.UtcNow : DateTime.Now);
