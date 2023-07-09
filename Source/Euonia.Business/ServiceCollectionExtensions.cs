@@ -4,8 +4,16 @@ using Nerosoft.Euonia.Business;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+/// <summary>
+/// Extension methods for setting up business object related services in an <see cref="IServiceCollection" />.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds business object related services to the specified <see cref="IServiceCollection" />.
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="assemblies"></param>
     public static void AddBusinessObject(this IServiceCollection services, params Assembly[] assemblies)
     {
         services.TryAddScoped<BusinessContextAccessor>();

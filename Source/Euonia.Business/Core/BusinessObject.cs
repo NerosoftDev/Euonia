@@ -10,12 +10,21 @@ using Nerosoft.Euonia.Reflection;
 
 namespace Nerosoft.Euonia.Business;
 
+/// <summary>
+/// Abstract class that serves as the base for all business objects.
+/// </summary>
 public abstract partial class BusinessObject : IBusinessObject, IHasRuleCheck, IDisposable
 {
-    protected readonly WeakEventManager _events = new();
+    /// <summary>
+    /// The events manager for business object.
+    /// </summary>
+    protected readonly WeakEventManager Events = new();
 
     private BusinessContext _businessContext;
 
+    /// <summary>
+    /// Gets or sets the business context.
+    /// </summary>
     public BusinessContext BusinessContext
     {
         get => _businessContext;
@@ -28,49 +37,83 @@ public abstract partial class BusinessObject : IBusinessObject, IHasRuleCheck, I
         }
     }
 
+    /// <summary>
+    /// Gets the current service provider.
+    /// </summary>
+    /// <returns></returns>
     public IServiceProvider GetServiceProvider() => BusinessContext?.CurrentServiceProvider;
 
+    /// <summary>
+    /// Handles the event when the BusinessContext is set.
+    /// </summary>
     protected virtual void OnBusinessContextSet()
     {
     }
 
+    /// <summary>
+    /// Initializes the business object.
+    /// </summary>
     protected virtual void Initialize()
     {
     }
 
+    /// <summary>
+    /// Occurs when property rule checks completed.
+    /// </summary>
     public event EventHandler ValidationComplete
     {
-        add => _events.AddEventHandler(value);
-        remove => _events.RemoveEventHandler(value);
+        add => Events.AddEventHandler(value);
+        remove => Events.RemoveEventHandler(value);
     }
 
     #region IHasRuleCheck implements
 
+    /// <summary>
+    /// To be added.
+    /// </summary>
+    /// <param name="property"></param>
     public void RuleCheckComplete(IPropertyInfo property)
     {
         OnPropertyChanged(property);
     }
 
+    /// <summary>
+    /// To be added.
+    /// </summary>
+    /// <param name="property"></param>
     public void RuleCheckComplete(string property)
     {
         OnPropertyChanged(property);
     }
 
+    /// <summary>
+    /// Complete all business object rules
+    /// </summary>
     public void AllRulesComplete()
     {
         OnValidationComplete();
     }
 
+    /// <summary>
+    /// Suspends all rule checking, to be resumed later.
+    /// </summary>
     public void SuspendRuleChecking()
     {
         Rules.SuppressRuleChecking = true;
     }
 
+    /// <summary>
+    /// Resumes rule checking.
+    /// </summary>
     public void ResumeRuleChecking()
     {
         Rules.SuppressRuleChecking = false;
     }
 
+    /// <summary>
+    /// Returns a collection of broken rules for this object instance.
+    /// </summary>
+    /// <returns>Collection of broken rules.</returns>
     public BrokenRuleCollection GetBrokenRules()
     {
         return Rules.BrokenRules;
@@ -80,10 +123,14 @@ public abstract partial class BusinessObject : IBusinessObject, IHasRuleCheck, I
 
     #region Rule check
 
+    /// <inheritdoc/>
     public virtual bool IsValid => Rules.IsValid;
 
     private Rules _rules;
 
+    /// <summary>
+    /// Gets the rules object for this business object.
+    /// </summary>
     protected Rules Rules
     {
         get
@@ -101,9 +148,15 @@ public abstract partial class BusinessObject : IBusinessObject, IHasRuleCheck, I
         }
     }
 
+    /// <summary>
+    /// Called when validation has completed
+    /// </summary>
+    /// <remarks>
+    /// The ValidationComplete event will be raised up.
+    /// </remarks>
     protected virtual void OnValidationComplete()
     {
-        _events.HandleEvent(this, EventArgs.Empty, nameof(ValidationComplete));
+        Events.HandleEvent(this, EventArgs.Empty, nameof(ValidationComplete));
     }
 
     private void InitializeRules()
@@ -135,15 +188,26 @@ public abstract partial class BusinessObject : IBusinessObject, IHasRuleCheck, I
         }
     }
 
+    /// <summary>
+    /// Gets the registered property check rules for the business object.
+    /// </summary>
+    /// <returns></returns>
     protected RuleManager GetRegisteredRules()
     {
         return Rules.RuleManager;
     }
 
+    /// <summary>
+    ///  Adds the rules applicable to this business object.
+    /// </summary>
     protected virtual void AddRules()
     {
     }
 
+    /// <summary>
+    ///  Checks the rules for the specified property and raises the OnPropertyChanged event for each property that has a rule violation.
+    /// </summary>
+    /// <param name="property"></param>
     protected virtual void CheckPropertyRules(IPropertyInfo property)
     {
         var propertyNames = Rules.CheckRules(property);
@@ -162,33 +226,62 @@ public abstract partial class BusinessObject : IBusinessObject, IHasRuleCheck, I
     /// </summary>
     protected internal bool CheckRuleOnPropertyChanged { get; } = false;
 
+    /// <inheritdoc/>
     public event PropertyChangedEventHandler PropertyChanged;
+    
+    /// <inheritdoc/>
     public event PropertyChangingEventHandler PropertyChanging;
 
+    /// <summary>
+    /// Notifies that a property value has been changed.
+    /// </summary>
+    /// <param name="propertyName">The name of the property that changed.</param>
     protected virtual void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
+    /// <summary>
+    /// Notifies that a property value has been changed.
+    /// </summary>
+    /// <param name="propertyInfo">The property that changed.</param>
     protected virtual void OnPropertyChanged(IPropertyInfo propertyInfo)
     {
         OnPropertyChanged(propertyInfo.Name);
     }
 
+    /// <summary>
+    /// Notifies that a property value is about to change.
+    /// </summary>
+    /// <param name="propertyName">The name of the property that is about to change.</param>
     protected virtual void OnPropertyChanging(string propertyName)
     {
         PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
     }
 
+    /// <summary>
+    /// Notifies that a property value is about to change.
+    /// </summary>
+    /// <param name="propertyInfo">The property that is about to change.</param>
     protected virtual void OnPropertyChanging(IPropertyInfo propertyInfo)
     {
         OnPropertyChanging(propertyInfo.Name);
     }
 
+    /// <summary>
+    /// Raises the PropertyChanged event for the specified property and value.
+    /// </summary>
+    /// <param name="name">The name of the property that changed.</param>
+    /// <param name="value">The new value of the property.</param>
     protected virtual void OnPropertyChanged(string name, object value)
     {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 
+    /// <summary>
+    /// Marks the specified property as being dirty, or changed.
+    /// </summary>
+    /// <param name="property"></param>
     protected virtual void PropertyHasChanged(IPropertyInfo property)
     {
         ChangedProperties.Add(property);
@@ -202,19 +295,32 @@ public abstract partial class BusinessObject : IBusinessObject, IHasRuleCheck, I
         }
     }
 
+    /// <summary>
+    /// Marks the specified property as being dirty, or changed.
+    /// </summary>
+    /// <param name="propertyName"></param>
     protected void PropertyHasChanged(string propertyName)
     {
         PropertyHasChanged(FieldManager.GetRegisteredProperty(propertyName));
     }
 
+    /// <summary>
+    /// Gets the list of changed properties.
+    /// </summary>
     protected virtual List<IPropertyInfo> ChangedProperties { get; } = new();
 
+    /// <summary>
+    /// Checks if the object has changed properties.
+    /// </summary>
     public virtual bool HasChangedProperties => ChangedProperties.Any();
 
     #endregion
 
     #region Property Checks
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the object should bypass property checks.
+    /// </summary>
     protected bool IsBypassingRuleChecks { get; set; }
 
     private BypassRuleChecksObject InternalBypassRuleChecks { get; set; }
@@ -227,6 +333,10 @@ public abstract partial class BusinessObject : IBusinessObject, IHasRuleCheck, I
     /// </summary>
     protected internal BypassRuleChecksObject BypassRuleChecks => BypassRuleChecksObject.GetManager(this);
 
+    /// <summary>
+    /// Used to create an object that bypasses rule checks, allowing certain values to be set even if they are not strictly valid. 
+    /// The object also allows developers to check whether certain rules are being bypassed at any given time.
+    /// </summary>
     protected internal class BypassRuleChecksObject : IDisposable
     {
         private BusinessObject _target;
@@ -314,6 +424,13 @@ public abstract partial class BusinessObject : IBusinessObject, IHasRuleCheck, I
 
     #endregion
 
+    /// <summary>
+    /// Registers a property on the business object.
+    /// </summary>
+    /// <typeparam name="TValue"></typeparam>
+    /// <param name="objectType"></param>
+    /// <param name="info"></param>
+    /// <returns></returns>
     protected static PropertyInfo<TValue> RegisterProperty<TValue>(Type objectType, PropertyInfo<TValue> info)
     {
         return PropertyInfoManager.RegisterProperty(objectType, info);
@@ -323,6 +440,7 @@ public abstract partial class BusinessObject : IBusinessObject, IHasRuleCheck, I
 
     private FieldDataManager _fieldManager;
 
+    /// <inheritdoc/>
     public FieldDataManager FieldManager => _fieldManager ??= new FieldDataManager(GetType());
 
     #endregion
@@ -393,11 +511,22 @@ public abstract partial class BusinessObject : IBusinessObject, IHasRuleCheck, I
 
     #region Load Properties
 
+    /// <summary>
+    /// Checks if the provided property exists in the field manager.
+    /// </summary>
+    /// <param name="property"></param>
+    /// <returns></returns>
     public bool FieldExists(IPropertyInfo property)
     {
         return FieldManager.FieldExists(property);
     }
 
+    /// <summary>
+    /// Loads a property's managed field with a new value.
+    /// </summary>
+    /// <typeparam name="TValue"></typeparam>
+    /// <param name="propertyInfo"></param>
+    /// <param name="newValue"></param>
     public void LoadProperty<TValue>(PropertyInfo<TValue> propertyInfo, TValue newValue)
     {
         TValue oldValue;
@@ -419,6 +548,14 @@ public abstract partial class BusinessObject : IBusinessObject, IHasRuleCheck, I
         LoadPropertyValue(propertyInfo, oldValue, newValue, false);
     }
 
+    /// <summary>
+    /// Loads property value.
+    /// </summary>
+    /// <typeparam name="TValue"></typeparam>
+    /// <param name="propertyInfo"></param>
+    /// <param name="oldValue"></param>
+    /// <param name="newValue"></param>
+    /// <param name="markAsChanged"></param>
     protected void LoadPropertyValue<TValue>(IPropertyInfo propertyInfo, TValue oldValue, TValue newValue, bool markAsChanged)
     {
         var valuesDiffer = ValuesDiffer(propertyInfo, newValue, oldValue);
@@ -440,6 +577,7 @@ public abstract partial class BusinessObject : IBusinessObject, IHasRuleCheck, I
         }
     }
 
+    /// <inheritdoc/>
     public virtual void LoadProperty(IPropertyInfo propertyInfo, object newValue)
     {
 #if IOS
@@ -559,11 +697,23 @@ public abstract partial class BusinessObject : IBusinessObject, IHasRuleCheck, I
 
     #region Authorization
 
+    /// <summary>
+    /// Determines whether the specified property can be read.
+    /// </summary>
+    /// <param name="property"></param>
+    /// <returns></returns>
     public virtual bool CanReadProperty(IPropertyInfo property)
     {
         return true;
     }
 
+    /// <summary>
+    /// Determines whether the specified property can be read.
+    /// </summary>
+    /// <param name="property"></param>
+    /// <param name="throwOnFalse"></param>
+    /// <returns></returns>
+    /// <exception cref="SecurityException"></exception>
     public bool CanReadProperty(IPropertyInfo property, bool throwOnFalse)
     {
         bool result = CanReadProperty(property);
@@ -575,6 +725,11 @@ public abstract partial class BusinessObject : IBusinessObject, IHasRuleCheck, I
         return result;
     }
 
+    /// <summary>
+    /// Determines whether the specified property can be read.
+    /// </summary>
+    /// <param name="propertyName"></param>
+    /// <returns></returns>
     public bool CanReadProperty(string propertyName)
     {
         return CanReadProperty(propertyName, false);
@@ -592,11 +747,23 @@ public abstract partial class BusinessObject : IBusinessObject, IHasRuleCheck, I
         return CanReadProperty(propertyInfo, throwOnFalse);
     }
 
+    /// <summary>
+    /// Determines whether the specified property can be set.
+    /// </summary>
+    /// <param name="property"></param>
+    /// <returns></returns>
     public virtual bool CanWriteProperty(IPropertyInfo property)
     {
         return true;
     }
 
+    /// <summary>
+    /// Determines whether the specified property can be set.
+    /// </summary>
+    /// <param name="property"></param>
+    /// <param name="throwOnFalse"></param>
+    /// <returns></returns>
+    /// <exception cref="SecurityException"></exception>
     public bool CanWriteProperty(IPropertyInfo property, bool throwOnFalse)
     {
         var result = CanWriteProperty(property);
@@ -608,6 +775,11 @@ public abstract partial class BusinessObject : IBusinessObject, IHasRuleCheck, I
         return result;
     }
 
+    /// <summary>
+    /// Determines whether the specified property can be set.
+    /// </summary>
+    /// <param name="propertyName"></param>
+    /// <returns></returns>
     public bool CanWriteProperty(string propertyName)
     {
         return CanWriteProperty(propertyName, false);
@@ -636,6 +808,10 @@ public abstract partial class BusinessObject : IBusinessObject, IHasRuleCheck, I
     #region IDisposable
     private bool disposedValue;
 
+    /// <summary>
+    /// Disoisable pattern implementation.
+    /// </summary>
+    /// <param name="disposing"></param>
     protected virtual void Dispose(bool disposing)
     {
         if (!disposedValue)
@@ -652,12 +828,16 @@ public abstract partial class BusinessObject : IBusinessObject, IHasRuleCheck, I
     }
 
     // 仅当“Dispose(bool disposing)”拥有用于释放未托管资源的代码时才替代终结器
+    /// <summary>
+    /// 
+    /// </summary>
     ~BusinessObject()
     {
         // 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中
         Dispose(disposing: false);
     }
 
+    /// <inheritdoc/>
     public void Dispose()
     {
         // 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中
