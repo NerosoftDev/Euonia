@@ -3,7 +3,9 @@ using Nerosoft.Euonia.Reflection;
 
 namespace Nerosoft.Euonia.Business;
 
-
+/// <summary>
+/// Manages fields and properties for a given business object.
+/// </summary>
 public class FieldDataManager
 {
     private const string RESOURCE_PROPERTY_NOT_REGISTERED = "Property not registered";
@@ -12,10 +14,17 @@ public class FieldDataManager
     private readonly Dictionary<string, IFieldData> _fieldData = new();
     private readonly List<IPropertyInfo> _properties;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FieldDataManager"/> class.
+    /// </summary>
     public FieldDataManager()
     {
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FieldDataManager"/> class.
+    /// </summary>
+    /// <param name="businessObjectType"></param>
     public FieldDataManager(Type businessObjectType)
     {
         _properties = CreateConsolidatedList(businessObjectType);
@@ -47,11 +56,21 @@ public class FieldDataManager
         return result;
     }
 
+    /// <summary>
+    /// Gets registered properties of the business object.
+    /// </summary>
+    /// <returns></returns>
     public List<IPropertyInfo> GetRegisteredProperties()
     {
         return new List<IPropertyInfo>(_properties);
     }
 
+    /// <summary>
+    /// Gets registered property of the business object with specified name.
+    /// </summary>
+    /// <param name="propertyName"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     public IPropertyInfo GetRegisteredProperty(string propertyName)
     {
         var result = GetRegisteredProperties().FirstOrDefault(c => c.Name == propertyName);
@@ -65,6 +84,12 @@ public class FieldDataManager
 
     #region Get/Set/Find fields
 
+    /// <summary>
+    /// Gets the field data for a property.
+    /// </summary>
+    /// <param name="property"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
     public IFieldData GetFieldData(IPropertyInfo property)
     {
         try
@@ -178,6 +203,12 @@ public class FieldDataManager
         }
     }
 
+    /// <summary>
+    /// Gets a value indicating whether the field is exists.
+    /// </summary>
+    /// <param name="property"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
     public bool FieldExists(IPropertyInfo property)
     {
         try

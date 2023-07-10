@@ -4,6 +4,9 @@ using Nerosoft.Euonia.Modularity;
 
 namespace Nerosoft.Euonia.Hosting;
 
+/// <summary>
+/// The HostingModule class contains methods used to configure the hosting environment.
+/// </summary>
 public class HostingModule : ModuleContextBase
 {
     /// <inheritdoc />
@@ -22,6 +25,8 @@ public class HostingModule : ModuleContextBase
         base.OnApplicationInitialization(context);
         var app = context.GetApplicationBuilder();
         app.UseMiddleware<RequestTraceMiddleware>();
+
+        // Setup the ServiceProvider for IServiceAccessor.
         app.Use(async (httpContext, next) =>
         {
             var accessor = httpContext.RequestServices.GetService<IServiceAccessor>();

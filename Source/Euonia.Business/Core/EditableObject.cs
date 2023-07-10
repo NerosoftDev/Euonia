@@ -66,8 +66,8 @@ public abstract class EditableObject<T> : BusinessObject<T>, IOperableProperty, 
     /// </summary>
     public event EventHandler<SavedEventArgs> Saved
     {
-        add => _events.AddEventHandler(value);
-        remove => _events.RemoveEventHandler(value);
+        add => Events.AddEventHandler(value);
+        remove => Events.RemoveEventHandler(value);
     }
 
     /// <summary>
@@ -84,7 +84,7 @@ public abstract class EditableObject<T> : BusinessObject<T>, IOperableProperty, 
     protected virtual void OnSaved(T newObject, Exception error, object userState)
     {
         var args = new SavedEventArgs(newObject, error, userState);
-        _events.HandleEvent(this, args, nameof(Saved));
+        Events.HandleEvent(this, args, nameof(Saved));
     }
 
     void ISavable<T>.SaveComplete(T newObject)
