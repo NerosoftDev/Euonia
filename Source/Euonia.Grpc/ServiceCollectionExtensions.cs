@@ -21,6 +21,7 @@ public static class ServiceCollectionExtensions
             options.MaxReceiveMessageSize = null;
             options.EnableDetailedErrors = true;
             options.Interceptors.Add<ExceptionHandlingInterceptor>();
+            options.Interceptors.Add<RequestTraceInterceptor>();
             configureOptions?.Invoke(options);
         });
         services.AddGrpcReflection();
