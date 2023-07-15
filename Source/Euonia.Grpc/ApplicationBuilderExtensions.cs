@@ -6,6 +6,9 @@ using Nerosoft.Euonia.Grpc;
 
 namespace Microsoft.AspNetCore.Builder;
 
+/// <summary>
+/// Extension methods for <see cref="IApplicationBuilder"/> to add gRPC server features.
+/// </summary>
 public static class ApplicationBuilderExtensions
 {
     /// <summary>

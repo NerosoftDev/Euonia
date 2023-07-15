@@ -2,6 +2,9 @@
 
 namespace Nerosoft.Euonia.Grpc;
 
+/// <summary>
+/// To be added.
+/// </summary>
 public interface IExceptionHandler
 {
     /// <summary>

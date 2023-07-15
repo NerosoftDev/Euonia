@@ -2,7 +2,7 @@
     <PropertyGroup>
         <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
 		<RootNamespace>Nerosoft.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
-        <Version>7.2.0</Version>
+        <Version>7.2.1</Version>
         <Authors>damon</Authors>
         <Company>Nerosoft Co., Ltd.</Company>
         <Product>Euonia</Product>
@@ -11,6 +11,7 @@
         <Nullable>disable</Nullable>
         <LangVersion>latest</LangVersion>
         <Description>Euonia development framework and toolkit library for .NET application/service. Powered by Nerosoft.</Description>
+        <PackageProjectUrl>https://github.com/NerosoftDev/Euonia/</PackageProjectUrl>
         <Configurations>Debug;Release;Product</Configurations>
     </PropertyGroup>
 

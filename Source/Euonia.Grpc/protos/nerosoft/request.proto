@@ -1,0 +1,18 @@
+﻿syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/wrappers.proto";
+
+package google.protobuf;
+
+option csharp_namespace = "Google.Protobuf";
+
+message GrpcRequest
+{
+  string RequestId = 1;
+  google.protobuf.StringValue Data = 2;
+  map<string, string> Property = 3;
+  int32 Page = 4;
+  int32 Size = 5;
+}

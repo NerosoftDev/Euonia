@@ -1,0 +1,10 @@
+﻿syntax = "proto3";
+
+package google.protobuf;
+
+option csharp_namespace = "Google.Protobuf";
+
+message JsonValue
+{
+	string Value = 1;
+}
