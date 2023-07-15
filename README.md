@@ -60,6 +60,8 @@ graph TD
   > To be added.
 - [Euonia.Validation](/Source/Euonia.Validation)
   > Provides customizable validation capabilities for various data inputs.
+- [Euonia.Quartz](/Source/Euonia.Quartz)
+  > Provides a simple and easy to use .NET library for scheduling jobs using Quartz.
 
 ## Caching module
 - [Euonia.Caching](/Source/Euonia.Caching)
