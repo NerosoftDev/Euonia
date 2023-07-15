@@ -3,14 +3,6 @@
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 		<EnablePackageVersionOverride>true</EnablePackageVersionOverride>
 	</PropertyGroup>
-	<PropertyGroup>
-		<LatestVersion>*</LatestVersion>
-		<MicrosoftAspNetCorePackageVersion7>7.0.2</MicrosoftAspNetCorePackageVersion7>
-		<MicrosoftAspNetCorePackageVersion6>6.0.13</MicrosoftAspNetCorePackageVersion6>
-		<MicrosoftExtensionsPackageVersion>7.0.0</MicrosoftExtensionsPackageVersion>
-		<EntityFrameworkCorePackageVersion>7.0.2</EntityFrameworkCorePackageVersion>
-		<GrpcPackageVersion>2.51.0</GrpcPackageVersion>
-	</PropertyGroup>
 	<ItemGroup>
 		<PackageVersion Include="Autofac" Version="7.0.1" />
 		<PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
@@ -94,9 +86,9 @@
 		<PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.16" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)'=='net7.0'">
-		<PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="7.0.8" />
-		<PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.8" />
-		<PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="7.0.8" />
+		<PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="7.0.9" />
+		<PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.9" />
+		<PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="7.0.9" />
 	</ItemGroup>
 	<!-- Grpc -->
 	<ItemGroup>
@@ -107,7 +99,7 @@
 		<PackageVersion Include="Grpc.AspNetCore.Server.Reflection" Version="2.55.0" />
 		<PackageVersion Include="Grpc.Core" Version="2.46.6" />
 		<PackageVersion Include="Grpc.HealthCheck" Version="2.55.0" />
-		<PackageVersion Include="Grpc.Tools" Version="2.54.0" />
+		<PackageVersion Include="Grpc.Tools" Version="2.56.0" />
 	</ItemGroup>
 	<!-- Tests -->
 	<ItemGroup>
