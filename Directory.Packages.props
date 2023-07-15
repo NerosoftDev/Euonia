@@ -16,7 +16,7 @@
 		<PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
 		<PackageVersion Include="Autofac.Extras.DynamicProxy" Version="7.1.0" />
 		<PackageVersion Include="AutoMapper" Version="12.0.1" />
-		<PackageVersion Include="Azure.Storage.Blobs" Version="12.16.0" />
+		<PackageVersion Include="Azure.Storage.Blobs" Version="12.17.0" />
 		<PackageVersion Include="Castle.Core" Version="5.1.1" />
 		<PackageVersion Include="Consul" Version="1.6.10.9" />
 		<PackageVersion Include="FluentValidation" Version="11.6.0" />
@@ -24,13 +24,13 @@
 		<PackageVersion Include="IdentityModel.AspNetCore.OAuth2Introspection" Version="6.2.0" />
 		<PackageVersion Include="Mapster" Version="7.3.0" />
 		<PackageVersion Include="Mapster.DependencyInjection" Version="1.0.0" />
-		<PackageVersion Include="MediatR" Version="12.1.0" />
+		<PackageVersion Include="MediatR" Version="12.1.1" />
 		<PackageVersion Include="MediatR.Contracts" Version="2.0.1" />
 		<PackageVersion Include="mongocsharpdriver" Version="2.20.0" />
 		<PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageVersion Include="Polly" Version="7.2.4" />
 		<PackageVersion Include="protobuf-net" Version="3.1.33" />
-		<PackageVersion Include="Quartz" Version="3.6.0" />
+		<PackageVersion Include="Quartz" Version="3.6.3" />
 		<PackageVersion Include="RabbitMQ.Client" Version="6.5.0" />
 		<PackageVersion Include="Refit" Version="6.3.2" />
 		<PackageVersion Include="Refit.HttpClientFactory" Version="6.3.2" />
@@ -73,14 +73,14 @@
 	</ItemGroup>
 	<!-- Microsoft.EntityFrameworkCore -->
 	<ItemGroup>
-		<PackageVersion Include="Microsoft.EntityFrameworkCore" Version="7.0.8" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />
 		<PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5" />
 		<PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.5" />
-		<PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.8">
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.9">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageVersion>
-		<PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.8" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.9" />
 	</ItemGroup>
 	<!-- Microsoft.AspNetCore -->
 	<ItemGroup>
