@@ -12,6 +12,7 @@ public static class ApplicationFactory
     /// Create new instance of <see cref="IApplicationWithServiceProvider"/>.
     /// </summary>
     /// <param name="services"></param>
+    /// <param name="configuration"></param>
     /// <param name="optionsAction"></param>
     /// <typeparam name="TStartupModule"></typeparam>
     /// <returns></returns>
@@ -26,6 +27,7 @@ public static class ApplicationFactory
     /// </summary>
     /// <param name="startupModuleType"></param>
     /// <param name="services"></param>
+    /// <param name="configuration"></param>
     /// <param name="optionsAction"></param>
     /// <returns></returns>
     public static IApplicationWithServiceProvider Create(Type startupModuleType, IServiceCollection services, IConfiguration configuration, Action<ApplicationCreationOptions> optionsAction = null)
