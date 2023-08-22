@@ -21,38 +21,6 @@ public static class ApplicationBuilderExtensions
     /// </summary>
     /// <param name="app"></param>
     /// <returns></returns>
-    //public static IApplicationBuilder UseTypeAdapter(this IApplicationBuilder app)
-    //{
-    //    var factory = app.ApplicationServices.GetService<ITypeAdapterFactory>();
-    //    if (factory != null)
-    //    {
-    //        TypeAdapterFactory.SetCurrent(factory);
-    //    }
-
-    //    return app;
-    //}
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="app"></param>
-    /// <returns></returns>
-    //public static IApplicationBuilder UseValidator(this IApplicationBuilder app)
-    //{
-    //    var factory = app.ApplicationServices.GetService<IValidatorFactory>();
-    //    if (factory != null)
-    //    {
-    //        ValidatorFactory.SetCurrent(factory);
-    //    }
-
-    //    return app;
-    //}
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="app"></param>
-    /// <returns></returns>
     public static IApplicationBuilder UseCulture(this IApplicationBuilder app)
     {
         app.Use(async (context, next) =>

@@ -1,7 +1,13 @@
 namespace Microsoft.AspNetCore.Authentication;
 
+/// <summary>
+/// The jwt authentication options.
+/// </summary>
 public class JwtAuthenticationOptions
 {
+    /// <summary>
+    /// Gets or sets the scheme.
+    /// </summary>
     public string Scheme { get; set; }
 
     /// <summary>
@@ -9,6 +15,9 @@ public class JwtAuthenticationOptions
     /// </summary>
     public IEnumerable<string> Issuer { get; set; }
 
+    /// <summary>
+    /// Gets or sets the signing key.
+    /// </summary>
     public string SigningKey { get; set; }
 
     /// <summary>
@@ -16,9 +25,18 @@ public class JwtAuthenticationOptions
     /// </summary>
     public string Authority { get; set; }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the HTTPS metadata is required.
+    /// </summary>
     public bool RequireHttpsMetadata { get; set; }
 
+    /// <summary>
+    /// Gets or sets the audience.
+    /// </summary>
     public string Audience { get; set; }
 
+    /// <summary>
+    /// Gets or sets a value indicating if the policy should be used.
+    /// </summary>
     public bool UsePolicy { get; set; } = true;
 }
