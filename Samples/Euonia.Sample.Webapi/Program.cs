@@ -1,5 +1,3 @@
-
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Nerosoft.Euonia.Hosting;
 
 namespace Nerosoft.Euonia.Sample;
@@ -24,7 +22,7 @@ public class Program
         //    });
         //}
 
-        HostUtility.Run<Startup>(args, HostBuilderOptionsAction, null);
+        HostUtility.Run<Startup>(args, HostBuilderOptionsAction);
     }
 
     //public static void Main(string[] args)

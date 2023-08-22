@@ -1,4 +1,4 @@
-﻿namespace Nerosoft.Euonia.Dependency;
+﻿namespace System;
 
 /// <summary>
 /// <see cref="ILazyServiceProvider"/>

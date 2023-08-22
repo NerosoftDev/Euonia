@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
-using Nerosoft.Euonia.Dependency;
 
 namespace Nerosoft.Euonia.Business;
 

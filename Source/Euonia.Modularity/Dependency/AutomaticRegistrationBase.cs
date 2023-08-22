@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Nerosoft.Euonia.Dependency;
 using Nerosoft.Euonia.Reflection;
 using System.Reflection;
 

@@ -1,7 +1,7 @@
 ﻿// ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedType.Global
 
-namespace Nerosoft.Euonia.Dependency;
+namespace System;
 
 /// <summary>
 /// Indicate that the property or parameter would resolved from service container.

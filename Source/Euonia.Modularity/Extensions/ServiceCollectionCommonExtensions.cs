@@ -1,5 +1,4 @@
-﻿using Nerosoft.Euonia.Dependency;
-using Nerosoft.Euonia.Modularity;
+﻿using Nerosoft.Euonia.Modularity;
 using System.Reflection;
 using Castle.DynamicProxy;
 

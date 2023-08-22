@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
-using Nerosoft.Euonia.Dependency;
 using Nerosoft.Euonia.Modularity;
 
 namespace Microsoft.AspNetCore.Builder;

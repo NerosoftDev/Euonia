@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Nerosoft.Euonia.Dependency;
 using Nerosoft.Euonia.Modularity;
 
 namespace Nerosoft.Euonia.Hosting;

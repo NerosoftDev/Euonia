@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Nerosoft.Euonia.Dependency;
 
 namespace Nerosoft.Euonia.Modularity;
 
