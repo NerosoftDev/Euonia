@@ -15,7 +15,7 @@ public static class Clock
     /// <summary>
     /// Ticks since 1970.
     /// </summary>
-    public const long UnixEpochTicks = TimeSpan.TicksPerDay * DaysTo1970;
+    public const long UnixEpochTicks = TimeSpan.TicksPerDay * DAYS_TO1970;
 
     /// <summary>
     /// Seconds since 1970.
@@ -23,19 +23,19 @@ public static class Clock
     public const long UnixEpochSeconds = UnixEpochTicks / TimeSpan.TicksPerSecond;
 
     // Number of days in a non-leap year
-    private const int DaysPerYear = 365;
+    private const int DAYS_PER_YEAR = 365;
 
     // Number of days in 4 years
-    private const int DaysPer4Years = DaysPerYear * 4 + 1;       // 1461
+    private const int DAYS_PER4_YEARS = DAYS_PER_YEAR * 4 + 1;       // 1461
 
     // Number of days in 100 years
-    private const int DaysPer100Years = DaysPer4Years * 25 - 1;  // 36524
+    private const int DAYS_PER100_YEARS = DAYS_PER4_YEARS * 25 - 1;  // 36524
 
     // Number of days in 400 years
-    private const int DaysPer400Years = DaysPer100Years * 4 + 1; // 146097
+    private const int DAYS_PER400_YEARS = DAYS_PER100_YEARS * 4 + 1; // 146097
 
     // Number of days from 1/1/0001 to 12/31/1969
-    private const int DaysTo1970 = DaysPer400Years * 4 + DaysPer100Years * 3 + DaysPer4Years * 17 + DaysPerYear; // 719,162
+    private const int DAYS_TO1970 = DAYS_PER400_YEARS * 4 + DAYS_PER100_YEARS * 3 + DAYS_PER4_YEARS * 17 + DAYS_PER_YEAR; // 719,162
 
     /// <summary>
     /// Computes a timestamp representing milliseconds since 1970.
