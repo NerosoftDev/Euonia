@@ -65,6 +65,7 @@ public class EventConsumer : DisposableObject
         OnMessageAcknowledged(new MessageAcknowledgedEventArgs(@event, null));
     }
 
+    /// <inheritdoc />
     protected override void Dispose(bool disposing)
     {
         _consumer.Received -= HandleMessageReceived;

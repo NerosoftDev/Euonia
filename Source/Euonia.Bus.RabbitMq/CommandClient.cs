@@ -151,6 +151,13 @@ public class CommandClient : DisposableObject
         _disposed = true;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="json"></param>
+    /// <param name="path"></param>
+    /// <param name="type"></param>
+    /// <returns></returns>
     protected virtual Exception GetException(string json, string path, Type type)
     {
         var jsonObject = JObject.Parse(json);

@@ -28,6 +28,7 @@ public abstract class CommandConsumer : DisposableObject
 public class CommandConsumer<TCommand> : CommandConsumer
     where TCommand : ICommand
 {
+    // ReSharper disable once StaticMemberInGenericType
     private static readonly JsonSerializerSettings _serializerSettings = new()
     {
         ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
@@ -38,18 +39,16 @@ public class CommandConsumer<TCommand> : CommandConsumer
     private readonly IModel _channel;
     private readonly IConnection _connection;
     private readonly EventingBasicConsumer _consumer;
-    private readonly RabbitMqMessageBusOptions _options;
     private readonly IMessageHandlerContext _handlerContext;
 
     /// <summary>
-    /// 
+    /// Initializes a new instance of the <see cref="CommandConsumer{TCommand}"/> class.
     /// </summary>
     /// <param name="factory"></param>
     /// <param name="options"></param>
     /// <param name="handlerContext"></param>
     public CommandConsumer(IConnectionFactory factory, RabbitMqMessageBusOptions options, IMessageHandlerContext handlerContext)
     {
-        _options = options;
         _handlerContext = handlerContext;
         _connection = factory.CreateConnection();
         _channel = _connection.CreateModel();
