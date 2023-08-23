@@ -45,55 +45,97 @@ public readonly struct ObjectId
     /// </summary>
     public object Value { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Returns a value indicating whether the two specified <see cref="ObjectId"/> values are equal.
+    /// </summary>
+    /// <param name="id1"></param>
+    /// <param name="id2"></param>
+    /// <returns></returns>
     public static bool operator ==(ObjectId id1, ObjectId id2) => EqualityComparer<object>.Default.Equals(id1.Value, id2.Value);
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Returns a value indicating whether the two specified <see cref="ObjectId"/> values are not equal.
+    /// </summary>
+    /// <param name="id1"></param>
+    /// <param name="id2"></param>
+    /// <returns></returns>
     public static bool operator !=(ObjectId id1, ObjectId id2) => !EqualityComparer<object>.Default.Equals(id1.Value, id2.Value);
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Defines an explicit conversion of a <see cref="ObjectId"/> to a <see cref="long"/>.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     public static implicit operator ObjectId(long id)
     {
         return new ObjectId(id);
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Defines an explicit conversion of a <see cref="ObjectId"/> to a <see cref="long"/>.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     public static implicit operator long(ObjectId id)
     {
         return (long)id.Value;
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Defines an explicit conversion of a <see cref="ObjectId"/> to a <see cref="int"/>.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     public static implicit operator ObjectId(int id)
     {
         return new ObjectId(id);
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Defines an explicit conversion of a <see cref="ObjectId"/> to a <see cref="int"/>.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     public static implicit operator int(ObjectId id)
     {
         return (int)id.Value;
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Defines an explicit conversion of a <see cref="ObjectId"/> to a <see cref="string"/>.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     public static implicit operator ObjectId(string id)
     {
         return new ObjectId(id);
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Defines an explicit conversion of a <see cref="ObjectId"/> to a <see cref="string"/>.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     public static implicit operator string(ObjectId id)
     {
         return (string)id.Value;
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Defines an explicit conversion of a <see cref="ObjectId"/> to a <see cref="System.Guid"/>.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     public static implicit operator ObjectId(Guid id)
     {
         return new ObjectId(id);
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Defines an explicit conversion of a <see cref="ObjectId"/> to a <see cref="System.Guid"/>.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     public static implicit operator Guid(ObjectId id)
     {
         return (Guid)id.Value;
@@ -195,19 +237,37 @@ public readonly struct ObjectId<T>
     /// </summary>
     public T Value { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Returns a value that indicates whether the current instance and a specified <see cref="ObjectId{T}"/> have the same value.
+    /// </summary>
+    /// <param name="id1"></param>
+    /// <param name="id2"></param>
+    /// <returns></returns>
     public static bool operator ==(ObjectId<T> id1, ObjectId<T> id2) => EqualityComparer<T>.Default.Equals(id1.Value, id2.Value);
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Returns a value that indicates whether the current instance and a specified <see cref="ObjectId{T}"/> have different values.
+    /// </summary>
+    /// <param name="id1"></param>
+    /// <param name="id2"></param>
+    /// <returns></returns>
     public static bool operator !=(ObjectId<T> id1, ObjectId<T> id2) => !EqualityComparer<T>.Default.Equals(id1.Value, id2.Value);
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Defines an explicit conversion of a <typeparamref name="T"/> to a <see cref="ObjectId{T}"/>.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     public static implicit operator ObjectId<T>(T id)
     {
         return new ObjectId<T>(id);
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Defines an explicit conversion of a <see cref="ObjectId{T}"/> to a <typeparamref name="T"/>.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     public static implicit operator T(ObjectId<T> id)
     {
         return id.Value;

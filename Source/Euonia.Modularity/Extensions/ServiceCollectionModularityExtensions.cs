@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Nerosoft.Euonia.Modularity;
 using Castle.DynamicProxy;
 using Microsoft.Extensions.Hosting;
-using Nerosoft.Euonia.Dependency;
 
 namespace Microsoft.Extensions.DependencyInjection;
 

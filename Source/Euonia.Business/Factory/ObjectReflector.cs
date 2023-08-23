@@ -1,10 +1,12 @@
 ﻿using System.Collections.Concurrent;
 using System.Reflection;
 using Nerosoft.Euonia.Business.Properties;
-using Nerosoft.Euonia.Dependency;
 
 namespace Nerosoft.Euonia.Business;
 
+/// <summary>
+/// The object reflector.
+/// </summary>
 public class ObjectReflector
 {
     private const BindingFlags BINDING_FLAGS = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;

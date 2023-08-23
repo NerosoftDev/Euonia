@@ -1,5 +1,4 @@
-﻿namespace Nerosoft.Euonia.Threading;
-/*
+﻿/*
 /// <summary>
 /// Specifies contract of lock provider.
 /// </summary>

@@ -1,4 +1,4 @@
-﻿namespace Nerosoft.Euonia.Dependency;
+﻿namespace System;
 
 /// <summary>
 /// The delegate to inject or resolve service with specified name.

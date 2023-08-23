@@ -5,6 +5,9 @@ using Serilog.Sinks.Elasticsearch;
 
 namespace Nerosoft.Euonia.Hosting;
 
+/// <summary>
+/// The extension methods for <see cref="IHostBuilder"/>.
+/// </summary>
 public static class HostBuilderExtensions
 {
     /// <summary>

@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using Nerosoft.Euonia.Claims;
 
 namespace Microsoft.AspNetCore.Authentication;
 

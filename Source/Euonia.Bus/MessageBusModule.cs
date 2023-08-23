@@ -5,6 +5,9 @@ using Nerosoft.Euonia.Modularity;
 
 namespace Nerosoft.Euonia.Bus;
 
+/// <summary>
+/// 
+/// </summary>
 public class MessageBusModule : ModuleContextBase
 {
     /// <inheritdoc />

@@ -3,6 +3,9 @@ using Newtonsoft.Json;
 
 namespace Nerosoft.Euonia.Bus.RabbitMq;
 
+/// <summary>
+/// 
+/// </summary>
 public abstract class MessageBus : DisposableObject, IMessageBus
 {
     private static readonly JsonSerializerSettings _serializerSettings = new()
@@ -115,6 +118,12 @@ public abstract class MessageBus : DisposableObject, IMessageBus
         return string.IsNullOrEmpty(stringValue) ? Array.Empty<byte>() : Encoding.UTF8.GetBytes(stringValue);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="header"></param>
+    /// <param name="key"></param>
+    /// <returns></returns>
     protected virtual string GetHeaderValue(IDictionary<string, object> header, string key)
     {
         if (header == null)
@@ -136,11 +145,21 @@ public abstract class MessageBus : DisposableObject, IMessageBus
         return string.Empty;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="messageType"></param>
+    /// <param name="handlerType"></param>
     public virtual void Subscribe(Type messageType, Type handlerType)
     {
         HandlerContext.Register(messageType, handlerType);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="messageName"></param>
+    /// <param name="handlerType"></param>
     public virtual void Subscribe(string messageName, Type handlerType)
     {
         HandlerContext.Register(messageName, handlerType);

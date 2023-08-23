@@ -83,13 +83,27 @@ public readonly struct TimeoutValue : IEquatable<TimeoutValue>, IComparable<Time
     /// <returns></returns>
     public int CompareTo(TimeoutValue that) => IsInfinite ? (that.IsInfinite ? 0 : 1) : that.IsInfinite ? -1 : InMilliseconds.CompareTo(that.InMilliseconds);
 
-    /// <inheritdoc />
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="a"></param>
+    /// <param name="b"></param>
+    /// <returns></returns>
     public static bool operator ==(TimeoutValue a, TimeoutValue b) => a.Equals(b);
 
-    /// <inheritdoc />
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="a"></param>
+    /// <param name="b"></param>
+    /// <returns></returns>
     public static bool operator !=(TimeoutValue a, TimeoutValue b) => !(a == b);
 
-    /// <inheritdoc />
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="timeout"></param>
+    /// <returns></returns>
     public static implicit operator TimeoutValue(TimeSpan? timeout) => new(timeout);
 
     /// <inheritdoc />

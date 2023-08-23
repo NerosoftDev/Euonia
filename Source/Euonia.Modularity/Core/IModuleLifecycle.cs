@@ -1,6 +1,4 @@
-﻿using Nerosoft.Euonia.Dependency;
-
-namespace Nerosoft.Euonia.Modularity;
+﻿namespace Nerosoft.Euonia.Modularity;
 
 public interface IModuleLifecycle : ITransientDependency
 {

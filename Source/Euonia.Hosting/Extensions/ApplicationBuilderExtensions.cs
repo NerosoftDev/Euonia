@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
-using Nerosoft.Euonia.Dependency;
 using Nerosoft.Euonia.Modularity;
 
 namespace Microsoft.AspNetCore.Builder;
@@ -16,38 +15,6 @@ namespace Microsoft.AspNetCore.Builder;
 /// </summary>
 public static class ApplicationBuilderExtensions
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="app"></param>
-    /// <returns></returns>
-    //public static IApplicationBuilder UseTypeAdapter(this IApplicationBuilder app)
-    //{
-    //    var factory = app.ApplicationServices.GetService<ITypeAdapterFactory>();
-    //    if (factory != null)
-    //    {
-    //        TypeAdapterFactory.SetCurrent(factory);
-    //    }
-
-    //    return app;
-    //}
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="app"></param>
-    /// <returns></returns>
-    //public static IApplicationBuilder UseValidator(this IApplicationBuilder app)
-    //{
-    //    var factory = app.ApplicationServices.GetService<IValidatorFactory>();
-    //    if (factory != null)
-    //    {
-    //        ValidatorFactory.SetCurrent(factory);
-    //    }
-
-    //    return app;
-    //}
-
     /// <summary>
     /// 
     /// </summary>

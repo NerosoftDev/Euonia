@@ -2,7 +2,7 @@
     <PropertyGroup>
         <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
 		<RootNamespace>Nerosoft.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
-        <Version>7.2.2</Version>
+        <Version>7.2.3</Version>
         <Authors>damon</Authors>
         <Company>Nerosoft Co., Ltd.</Company>
         <Product>Euonia</Product>
@@ -12,6 +12,7 @@
         <LangVersion>latest</LangVersion>
         <Description>Euonia development framework and toolkit library for .NET application/service. Powered by Nerosoft.</Description>
         <PackageProjectUrl>https://github.com/NerosoftDev/Euonia/</PackageProjectUrl>
+        <PackageTags>.net, asp.net, core, framework, ddd, distributed, architecture, EventBus, ServiceBug, EF, EFCore, Caching, Redis, Mapping, Mapper, ObjectMap, DistributedLock, OOP, RPC, Grpc, proto, Validate, Validation, FluentValidation</PackageTags>
         <Configurations>Debug;Release;Product</Configurations>
     </PropertyGroup>
 

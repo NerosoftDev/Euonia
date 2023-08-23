@@ -1,14 +1,22 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Nerosoft.Euonia.Dependency;
 
 namespace Nerosoft.Euonia.Modularity;
 
+/// <summary>
+/// The module manager.
+/// </summary>
 public class ModuleManager : IModuleManager, ISingletonDependency
 {
     private readonly IModuleContainer _moduleContainer;
     private readonly IEnumerable<IModuleLifecycle> _lifecycleContributors;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ModuleManager"/> class.
+    /// </summary>
+    /// <param name="moduleContainer"></param>
+    /// <param name="options"></param>
+    /// <param name="serviceProvider"></param>
     public ModuleManager(IModuleContainer moduleContainer, IOptions<ModuleLifecycleOptions> options, IServiceProvider serviceProvider)
     {
         _moduleContainer = moduleContainer;
@@ -20,6 +28,11 @@ public class ModuleManager : IModuleManager, ISingletonDependency
             .ToArray();
     }
 
+    /// <summary>
+    /// Initializes the modules.
+    /// </summary>
+    /// <param name="context"></param>
+    /// <exception cref="Exception"></exception>
     public void InitializeModules(ApplicationInitializationContext context)
     {
         foreach (var contributor in _lifecycleContributors)
@@ -38,6 +51,11 @@ public class ModuleManager : IModuleManager, ISingletonDependency
         }
     }
 
+    /// <summary>
+    /// Shutdowns the modules.
+    /// </summary>
+    /// <param name="context"></param>
+    /// <exception cref="Exception"></exception>
     public void ShutdownModules(ApplicationShutdownContext context)
     {
         var modules = _moduleContainer.Modules.Reverse().ToList();

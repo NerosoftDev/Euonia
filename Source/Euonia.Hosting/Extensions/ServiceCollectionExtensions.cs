@@ -30,6 +30,12 @@ public static class ServiceCollectionExtensions
         return services.AddSingleton<IClaimsTransformation, ScopeClaimsTransformer>();
     }
 
+    /// <summary>
+    /// Adds Jwt authentication to the DI container.
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="optionsAction"></param>
+    /// <returns></returns>
     public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, Action<JwtAuthenticationOptions> optionsAction)
     {
         var bearerOptions = new JwtAuthenticationOptions();

@@ -1,4 +1,4 @@
-﻿namespace Nerosoft.Euonia.Dependency;
+﻿namespace System;
 
 /// <inheritdoc />
 public class ObjectAccessor<TValue> : IObjectAccessor<TValue>
