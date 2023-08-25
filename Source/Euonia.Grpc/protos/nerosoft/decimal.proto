@@ -2,8 +2,6 @@
 
 package google.protobuf;
 
-option csharp_namespace = "Google.Protobuf";
-
 // Example: 12345.6789 -> { units = 12345, nanos = 678900000 }
 message DecimalValue {
 

@@ -1,14 +1,12 @@
 ﻿syntax = "proto3";
 
-import "google/protobuf/timestamp.proto";
-import "google/protobuf/any.proto";
 import "google/protobuf/wrappers.proto";
 
 package google.protobuf;
 
-option csharp_namespace = "Google.Protobuf";
-
 message GrpcResponse
 {
-	google.protobuf.StringValue Data = 1;
+	string RequestId = 1;
+	google.protobuf.StringValue Data = 2;
+	map<string, string> Property = 3;
 }
