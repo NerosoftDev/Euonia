@@ -18,17 +18,10 @@
 		<PackageReference Include="Grpc.AspNetCore.Server.Reflection" />
 		<PackageReference Include="Grpc.Core" />
 		<PackageReference Include="Grpc.HealthCheck" />
-		<PackageReference Include="Grpc.Tools">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
 		<PackageReference Include="Microsoft.Extensions.Hosting" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Reference Include="Google.Protobuf" />
-		<Reference Include="Grpc.AspNetCore.Server" />
-		
 		<Protobuf CompileOutputs="true" Include="protos\nerosoft\*.proto" GrpcServices="None" AdditionalImportDirs=".\protos" AdditionalProtocArguments="--experimental_allow_proto3_optional" />
 
 		<None Update="protos\nerosoft\*.proto">
