@@ -35,6 +35,7 @@ public class MessageHandlerContext : IMessageHandlerContext
         _logger = provider.GetService<ILoggerFactory>()?.CreateLogger<MessageHandlerContext>();
     }
 
+    /// <inheritdoc />
     public virtual IMediator GetMediator()
     {
         return _provider.GetService<IMediator>();

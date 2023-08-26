@@ -2,8 +2,15 @@
 
 namespace Nerosoft.Euonia.Bus;
 
+/// <summary>
+/// Occurs when message was handled.
+/// </summary>
 public class MessageHandledEventArgs : EventArgs
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MessageHandledEventArgs"/> class.
+    /// </summary>
+    /// <param name="message"></param>
     public MessageHandledEventArgs(IMessage message)
     {
         Message = message;

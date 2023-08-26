@@ -8,6 +8,9 @@ namespace Nerosoft.Euonia.Bus;
 /// </summary>
 public interface IMessageHandlerContext
 {
+    /// <summary>
+    /// Occurs when message subscribed.
+    /// </summary>
     event EventHandler<MessageSubscribedEventArgs> MessageSubscribed;
 
     /// <summary>
@@ -68,5 +71,9 @@ public interface IMessageHandlerContext
     /// <returns>Task.</returns>
     Task HandleAsync(IMessage message, MessageContext context, CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Gets the mediator instance.
+    /// </summary>
+    /// <returns></returns>
     IMediator GetMediator();
 }

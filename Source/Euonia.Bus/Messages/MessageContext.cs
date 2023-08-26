@@ -9,12 +9,19 @@ public class MessageContext : IDisposable
 {
     private readonly WeakEventManager _events = new();
 
-    private bool disposedValue;
+    private bool _disposedValue;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MessageContext"/> class.
+    /// </summary>
     public MessageContext()
     {
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MessageContext"/> class.
+    /// </summary>
+    /// <param name="message"></param>
     public MessageContext(IMessage message)
     {
         Message = message;
@@ -38,6 +45,9 @@ public class MessageContext : IDisposable
         remove => _events.RemoveEventHandler(value);
     }
 
+    /// <summary>
+    /// Gets or sets the message.
+    /// </summary>
     public IMessage Message { get; set; }
 
     /// <summary>
@@ -80,18 +90,24 @@ public class MessageContext : IDisposable
         _events.HandleEvent(this, new MessageHandledEventArgs(message) { HandlerType = handlerType }, nameof(Completed));
     }
 
+    /// <summary>
+    /// Called after the message has been handled.
+    /// </summary>
+    /// <param name="disposing"></param>
     protected virtual void Dispose(bool disposing)
     {
-        if (!disposedValue)
+        if (_disposedValue)
         {
-            if (disposing)
-            {
-                Complete(Message);
-            }
-
-            _events.RemoveEventHandlers();
-            disposedValue = true;
+            return;
         }
+
+        if (disposing)
+        {
+            Complete(Message);
+        }
+
+        _events.RemoveEventHandlers();
+        _disposedValue = true;
     }
 
     ~MessageContext()
@@ -99,6 +115,7 @@ public class MessageContext : IDisposable
         Dispose(disposing: false);
     }
 
+    /// <inheritdoc />
     public void Dispose()
     {
         Dispose(disposing: true);

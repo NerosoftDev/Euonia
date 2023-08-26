@@ -133,12 +133,22 @@ public static class ServiceCollectionExtensions
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="assemblies"></param>
     public static void AddMediatorHandler(this IServiceCollection services, params Assembly[] assemblies)
     {
         var types = assemblies.SelectMany(t => t.GetTypes());
         services.AddMediatorHandler(types.ToArray());
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="types"></param>
     public static void AddMediatorHandler(this IServiceCollection services, params Type[] types)
     {
         foreach (var type in types)

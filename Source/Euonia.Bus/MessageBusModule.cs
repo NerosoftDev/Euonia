@@ -16,7 +16,7 @@ public class MessageBusModule : ModuleContextBase
         {
             //context.Services.TryAddScoped<ServiceFactory>(provider => provider.GetService);
             context.Services.TryAddScoped<IMediator, Mediator>();
-            
+
             var descriptor = new ServiceDescriptor(typeof(IMessageHandlerContext), provider =>
             {
                 var @delegate = provider.GetService<MessageConversionDelegate>();
