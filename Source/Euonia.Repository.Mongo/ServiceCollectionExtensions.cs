@@ -5,50 +5,53 @@ using Nerosoft.Euonia.Repository.Mongo;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+/// <summary>
+/// The extension methods for <see cref="IServiceCollection"/>.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
     /// <summary>
-    /// 
+    /// Adds the mongo repository.
     /// </summary>
-    /// <param name="services"></param>
-    /// <param name="options"></param>
+    /// <param name="services">The service collection instance.</param>
+    /// <param name="configure">The mongo database options configure action.</param>
     /// <param name="contextLifeTime"></param>
     /// <typeparam name="TContext"></typeparam>
     /// <returns></returns>
-    public static IServiceCollection AddMongoRepository<TContext>(this IServiceCollection services, Action<MongoDbOptions> options, ServiceLifetime contextLifeTime = ServiceLifetime.Scoped)
+    public static IServiceCollection AddMongoRepository<TContext>(this IServiceCollection services, Action<MongoDbOptions> configure, ServiceLifetime contextLifeTime = ServiceLifetime.Scoped)
         where TContext : MongoDbContext, IRepositoryContext
     {
         services.AddContextProvider()
                 .AddUnitOfWork();
-        services.AddMongoDbContext<TContext>(options, contextLifeTime)
+        services.AddMongoDbContext<TContext>(configure, contextLifeTime)
                 .AddMongoRepository(contextLifeTime);
 
         return services;
     }
 
     /// <summary>
-    /// 
+    /// Adds the mongo repository.
     /// </summary>
-    /// <param name="services"></param>
-    /// <param name="options"></param>
+    /// <param name="services">The service collection instance.</param>
+    /// <param name="configure">The mongo database options configure action.</param>
     /// <param name="contextLifeTime"></param>
     /// <typeparam name="TContextService"></typeparam>
     /// <typeparam name="TContextImplementation"></typeparam>
     /// <returns></returns>
-    public static IServiceCollection AddMongoRepository<TContextService, TContextImplementation>(this IServiceCollection services, Action<MongoDbOptions> options, ServiceLifetime contextLifeTime = ServiceLifetime.Scoped)
+    public static IServiceCollection AddMongoRepository<TContextService, TContextImplementation>(this IServiceCollection services, Action<MongoDbOptions> configure, ServiceLifetime contextLifeTime = ServiceLifetime.Scoped)
         where TContextService : MongoDbContext, IRepositoryContext
         where TContextImplementation : TContextService
     {
         services.AddContextProvider()
                 .AddUnitOfWork();
-        services.AddMongoDbContext<TContextService, TContextImplementation>(options, contextLifeTime)
+        services.AddMongoDbContext<TContextService, TContextImplementation>(configure, contextLifeTime)
                 .AddMongoRepository(contextLifeTime);
 
         return services;
     }
 
     /// <summary>
-    /// 
+    /// Adds the mongo repository.
     /// </summary>
     /// <param name="services"></param>
     /// <param name="contextLifeTime"></param>
@@ -74,6 +77,16 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Adds the mongo database context.
+    /// </summary>
+    /// <param name="services">The service collection instance.</param>
+    /// <param name="configure">The mongo database options configure action.</param>
+    /// <param name="contextLifeTime"></param>
+    /// <typeparam name="TContextService"></typeparam>
+    /// <typeparam name="TContextImplementation"></typeparam>
+    /// <returns></returns>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     public static IServiceCollection AddMongoDbContext<TContextService, TContextImplementation>(this IServiceCollection services, Action<MongoDbOptions> configure, ServiceLifetime contextLifeTime = ServiceLifetime.Scoped)
         where TContextService : MongoDbContext, IRepositoryContext
         where TContextImplementation : TContextService
@@ -104,6 +117,15 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Adds the mongo database context.
+    /// </summary>
+    /// <param name="services">The service collection instance.</param>
+    /// <param name="configure">The mongo database options configure action.</param>
+    /// <param name="contextLifeTime"></param>
+    /// <typeparam name="TContext"></typeparam>
+    /// <returns></returns>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     public static IServiceCollection AddMongoDbContext<TContext>(this IServiceCollection services, Action<MongoDbOptions> configure, ServiceLifetime contextLifeTime = ServiceLifetime.Scoped)
         where TContext : MongoDbContext, IRepositoryContext
     {
