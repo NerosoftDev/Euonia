@@ -1,6 +1,7 @@
 ﻿using Nerosoft.Euonia.Modularity;
 using System.Reflection;
 using Castle.DynamicProxy;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -10,7 +11,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 public static class ServiceCollectionCommonExtensions
 {
     /// <summary>
-    /// 
+    /// Determines whether the <see cref="IServiceCollection"/> contains a service of the specified type.
     /// </summary>
     /// <param name="services"></param>
     /// <typeparam name="T"></typeparam>
@@ -21,7 +22,7 @@ public static class ServiceCollectionCommonExtensions
     }
 
     /// <summary>
-    /// 
+    /// Determines whether the <see cref="IServiceCollection"/> contains a service of the specified type.
     /// </summary>
     /// <param name="services"></param>
     /// <param name="type"></param>
@@ -32,7 +33,7 @@ public static class ServiceCollectionCommonExtensions
     }
 
     /// <summary>
-    /// 
+    /// Gets a singleton service object of the specified type.
     /// </summary>
     /// <param name="services"></param>
     /// <typeparam name="T"></typeparam>
@@ -45,7 +46,7 @@ public static class ServiceCollectionCommonExtensions
     }
 
     /// <summary>
-    /// 
+    /// Gets a singleton service object of the specified type.
     /// </summary>
     /// <param name="services"></param>
     /// <typeparam name="T"></typeparam>
@@ -186,7 +187,7 @@ public static class ServiceCollectionCommonExtensions
     }
 
     /// <summary>
-    /// 
+    /// Add an object as <see cref="ObjectAccessor{T}"/> to the <see cref="IServiceCollection"/>.
     /// </summary>
     /// <param name="services"></param>
     /// <param name="obj"></param>
@@ -642,6 +643,115 @@ public static class ServiceCollectionCommonExtensions
             var actual = provider.GetRequiredService<TImplementation>();
             var interceptors = interceptorTypes?.Select(type => (IInterceptor)ActivatorUtilities.GetServiceOrCreateInstance(provider, type)).ToArray();
             return proxyGenerator.CreateInterfaceProxyWithTarget(typeof(TService), actual, interceptors);
+        });
+        return services;
+    }
+
+    /// <summary>
+    /// Adds a transient service of the type specified in <typeparamref name="TService" /> to the specified <see cref="IServiceCollection" /> with a given name.
+    /// </summary>
+    /// <param name="services">The <see cref="IServiceCollection"/> instance.</param>
+    /// <param name="name">The name of service implementation.</param>
+    /// <typeparam name="TService">The service type.</typeparam>
+    /// <typeparam name="TImplementation">The implementation type.</typeparam>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException">Throws if the <typeparamref name="TService"/> with given name already registered.</exception>
+    public static IServiceCollection AddTransient<TService, TImplementation>(this IServiceCollection services, string name)
+        where TImplementation : class, TService
+    {
+        if (!Singleton<NamedServiceContainer<TService>>.Instance.TryAdd(name, typeof(TImplementation)))
+        {
+            throw new InvalidOperationException($"{nameof(TService)} with name '{name}' already registered.");
+        }
+
+        services.AddNamedService((key, provider) =>
+        {
+            if (!Singleton<NamedServiceContainer<TService>>.Instance.TryGetValue(key, out var type))
+            {
+                return default;
+            }
+
+            return (TService)ActivatorUtilities.GetServiceOrCreateInstance(provider, type);
+        });
+        services.AddTransient<TImplementation>();
+
+        return services;
+    }
+
+    /// <summary>
+    /// Adds a scoped service of the type specified in <typeparamref name="TService" /> to the specified <see cref="IServiceCollection" /> with a given name.
+    /// </summary>
+    /// <param name="services">The <see cref="IServiceCollection"/> instance.</param>
+    /// <param name="name">The name of service implementation.</param>
+    /// <typeparam name="TService">The service type.</typeparam>
+    /// <typeparam name="TImplementation">The implementation type.</typeparam>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException">Throws if the <typeparamref name="TService"/> with given name already registered.</exception>
+    public static IServiceCollection AddScoped<TService, TImplementation>(this IServiceCollection services, string name)
+        where TImplementation : class, TService
+    {
+        if (!Singleton<NamedServiceContainer<TService>>.Instance.TryAdd(name, typeof(TImplementation)))
+        {
+            throw new InvalidOperationException($"{nameof(TService)} with name '{name}' already registered.");
+        }
+
+        services.AddNamedService((key, provider) =>
+        {
+            if (!Singleton<NamedServiceContainer<TService>>.Instance.TryGetValue(key, out var type))
+            {
+                return default;
+            }
+
+            return (TService)ActivatorUtilities.GetServiceOrCreateInstance(provider, type);
+        });
+        services.AddScoped<TImplementation>();
+
+        return services;
+    }
+
+    /// <summary>
+    /// Adds a singleton service of the type specified in <typeparamref name="TService" /> to the specified <see cref="IServiceCollection" /> with a given name.
+    /// </summary>
+    /// <param name="services">The <see cref="IServiceCollection"/> instance.</param>
+    /// <param name="name">The name of service implementation.</param>
+    /// <typeparam name="TService">The service type.</typeparam>
+    /// <typeparam name="TImplementation">The implementation type.</typeparam>
+    /// <returns>A reference to this instance after the operation has completed.</returns>
+    /// <exception cref="InvalidOperationException">Throws if the <typeparamref name="TService"/> with given name already registered.</exception>
+    public static IServiceCollection AddSingleton<TService, TImplementation>(this IServiceCollection services, string name)
+        where TImplementation : class, TService
+    {
+        if (!Singleton<NamedServiceContainer<TService>>.Instance.TryAdd(name, typeof(TImplementation)))
+        {
+            throw new InvalidOperationException($"{nameof(TService)} with name '{name}' already registered.");
+        }
+
+        services.AddNamedService((key, provider) =>
+        {
+            if (!Singleton<NamedServiceContainer<TService>>.Instance.TryGetValue(key, out var type))
+            {
+                return default;
+            }
+
+            return (TService)ActivatorUtilities.GetServiceOrCreateInstance(provider, type);
+        });
+        services.AddSingleton<TImplementation>();
+
+        return services;
+    }
+
+    /// <summary>
+    /// Adds service of the type <typeparamref name="TService" /> using the factory to the specified <see cref="IServiceCollection" />.
+    /// </summary>
+    /// <param name="services">The <see cref="IServiceCollection"/> instance.</param>
+    /// <param name="factory">The factory to create a implementation instance of <typeparamref name="TService"/>.</param>
+    /// <typeparam name="TService">The service type.</typeparam>
+    /// <returns>A reference to this instance after the operation has completed.</returns>
+    public static IServiceCollection AddNamedService<TService>(this IServiceCollection services, Func<string, IServiceProvider, TService> factory)
+    {
+        services.TryAddTransient<NamedService<TService>>(provider =>
+        {
+            return name => factory(name, provider);
         });
         return services;
     }
