@@ -73,10 +73,10 @@ internal class ExceptionHandlingInterceptor : Interceptor
                 return rpcException;
             }
 
-            var statusCode = GetStatusCode(exception);
+            var statusCode = ConvertToStatusCode(exception);
             return new RpcException(new Status(statusCode, exception.Message));
 
-            static StatusCode GetStatusCode(Exception exception)
+            static StatusCode ConvertToStatusCode(Exception exception)
             {
                 var name = exception.GetType().Name;
 
@@ -97,11 +97,9 @@ internal class ExceptionHandlingInterceptor : Interceptor
                     HttpRequestException => StatusCode.Unavailable,
                     WebException => StatusCode.Unavailable,
                     RowNotInTableException => StatusCode.NotFound,
-                    _ => ExceptionHandlingInterceptor.GetStatusCode(exception.GetType().Name),
+                    _ => GetStatusCode(exception.GetType().Name),
                 };
             }
-
-            
         }
     }
 

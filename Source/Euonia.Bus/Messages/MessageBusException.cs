@@ -51,12 +51,14 @@ public class MessageBusException : Exception
     /// <value>The type of the message.</value>
     public virtual IMessage MessageContext => _message;
 
-    protected MessageBusException(SerializationInfo info, StreamingContext context)
+    /// <inheritdoc />
+    public MessageBusException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {
         _message = info.GetValue(nameof(MessageContext), typeof(IMessage)) as IMessage;
     }
 
+    /// <inheritdoc />
     public override void GetObjectData(SerializationInfo info, StreamingContext context)
     {
         base.GetObjectData(info, context);
