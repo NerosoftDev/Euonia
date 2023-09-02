@@ -4,9 +4,15 @@ using Mapster;
 
 namespace Nerosoft.Euonia.Mapping;
 
+/// <summary>
+/// The converter used to convert <see cref="RepeatedField{TSource}"/> to <see cref="IEnumerable{TDestination}"/>.
+/// </summary>
+/// <typeparam name="TSource"></typeparam>
+/// <typeparam name="TDestination"></typeparam>
 public class RepeatedFieldToListConverter<TSource, TDestination> : IRegister
 {
-    public void Register(TypeAdapterConfig config)
+	/// <inheritdoc />
+	public void Register(TypeAdapterConfig config)
     {
         config.ForType<RepeatedField<TSource>, IEnumerable<TDestination>>()
               .MapToTargetWith((source, destination) => Convert(source, destination));

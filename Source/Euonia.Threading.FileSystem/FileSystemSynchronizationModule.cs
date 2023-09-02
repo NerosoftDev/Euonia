@@ -8,9 +8,13 @@ internal class FileSystemSynchronizationModule : ModuleContextBase
 {
 }
 
+/// <summary>
+/// The FileSystemLockModule class contains methods used to configure the file system lock.
+/// </summary>
 [DependsOn(typeof(FileSystemSynchronizationModule))]
 public class FileSystemLockModule : ModuleContextBase
 {
+    /// <inheritdoc />
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         context.Services.AddSingleton<ILockFactory>(provider =>

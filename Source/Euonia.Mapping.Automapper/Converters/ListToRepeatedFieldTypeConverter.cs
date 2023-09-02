@@ -4,9 +4,15 @@ using Google.Protobuf.WellKnownTypes;
 
 namespace Nerosoft.Euonia.Mapping;
 
+/// <summary>
+/// The converter used to convert <see cref="RepeatedField{T}"/> to <see cref="IEnumerable{T}"/>.
+/// </summary>
+/// <typeparam name="TSource"></typeparam>
+/// <typeparam name="TDestination"></typeparam>
 public class ListToRepeatedFieldTypeConverter<TSource, TDestination> : ITypeConverter<IEnumerable<TSource>, RepeatedField<TDestination>>
 {
-    public RepeatedField<TDestination> Convert(IEnumerable<TSource> source, RepeatedField<TDestination> destination, ResolutionContext context)
+	/// <inheritdoc />
+	public RepeatedField<TDestination> Convert(IEnumerable<TSource> source, RepeatedField<TDestination> destination, ResolutionContext context)
     {
         if (source == null)
         {

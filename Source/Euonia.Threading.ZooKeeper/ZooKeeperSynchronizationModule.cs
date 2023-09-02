@@ -25,18 +25,26 @@ internal class ZooKeeperSynchronizationModule : ModuleContextBase
     }
 }
 
+/// <summary>
+/// The ZooKeeperLockModule class contains methods used to configure the ZooKeeper lock.
+/// </summary>
 [DependsOn(typeof(ZooKeeperSynchronizationModule))]
 public class ZooKeeperLockModule : ModuleContextBase
 {
+    /// <inheritdoc />
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         context.Services.AddSingleton<ILockFactory>(provider => provider.GetRequiredService<ZooKeeperSynchronizationFactory>());
     }
 }
 
+/// <summary>
+/// The ZooKeeperSemaphoreModule class contains methods used to configure the ZooKeeper semaphore.
+/// </summary>
 [DependsOn(typeof(ZooKeeperSynchronizationModule))]
 public class ZooKeeperSemaphoreModule : ModuleContextBase
 {
+    /// <inheritdoc />
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         context.Services.AddSingleton<ISemaphoreFactory>(provider => provider.GetRequiredService<ZooKeeperSynchronizationFactory>());

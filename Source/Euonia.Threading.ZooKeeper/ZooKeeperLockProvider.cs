@@ -75,16 +75,19 @@ public sealed partial class ZooKeeperLockProvider : ILockProvider<ZooKeeperSynch
 
 public sealed partial class ZooKeeperLockProvider
 {
+    /// <inheritdoc />
     public ZooKeeperSynchronizationHandle TryAcquire(TimeSpan timeout = default, CancellationToken cancellationToken = default)
     {
         return Helpers.TryAcquire(this, timeout, cancellationToken);
     }
 
+    /// <inheritdoc />
     public ZooKeeperSynchronizationHandle Acquire(TimeSpan? timeout = null, CancellationToken cancellationToken = default)
     {
         return Helpers.Acquire(this, timeout, cancellationToken);
     }
 
+    /// <inheritdoc />
     public async ValueTask<ZooKeeperSynchronizationHandle> TryAcquireAsync(TimeoutValue timeout, CancellationToken cancellationToken)
     {
         var nodeHandle = await _synchronizationHelper.TryAcquireAsync(
@@ -108,11 +111,13 @@ public sealed partial class ZooKeeperLockProvider
         return nodeHandle != null ? new ZooKeeperSynchronizationHandle(nodeHandle) : null;
     }
 
+    /// <inheritdoc />
     public ValueTask<ZooKeeperSynchronizationHandle> TryAcquireAsync(TimeSpan timeout = default, CancellationToken cancellationToken = default)
     {
         return this.As<ILockProvider<ZooKeeperSynchronizationHandle>>().TryAcquireAsync(timeout, cancellationToken);
     }
 
+    /// <inheritdoc />
     public ValueTask<ZooKeeperSynchronizationHandle> AcquireAsync(TimeSpan? timeout = null, CancellationToken cancellationToken = default)
     {
         return Helpers.AcquireAsync(this, timeout, cancellationToken);

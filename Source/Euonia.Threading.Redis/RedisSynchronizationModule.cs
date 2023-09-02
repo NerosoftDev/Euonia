@@ -32,18 +32,26 @@ internal class RedisSynchronizationModule : ModuleContextBase
     }
 }
 
+/// <summary>
+/// The <see cref="RedisLockModule"/> class contains methods used to configure the Redis lock.
+/// </summary>
 [DependsOn(typeof(RedisSynchronizationModule))]
 public class RedisLockModule : ModuleContextBase
 {
+    /// <inheritdoc />
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         context.Services.AddSingleton<ILockFactory>(provider => provider.GetRequiredService<RedisSynchronizationFactory>());
     }
 }
 
+/// <summary>
+/// The <see cref="RedisSemaphoreModule"/> class contains methods used to configure the Redis semaphore.
+/// </summary>
 [DependsOn(typeof(RedisSynchronizationModule))]
 public class RedisSemaphoreModule : ModuleContextBase
 {
+    /// <inheritdoc />
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         context.Services.AddSingleton<ISemaphoreFactory>(provider => provider.GetRequiredService<RedisSynchronizationFactory>());

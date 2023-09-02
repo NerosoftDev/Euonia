@@ -26,7 +26,6 @@ internal sealed class ZooKeeperNodeHandle : ISynchronizationHandle
             var handleLostSource = CancellationTokenSource.CreateLinkedTokenSource(_connection.ConnectionLostToken);
             var handleLostToken = handleLostSource.Token; // grab this now before the source is disposed
             var disposalSource = new CancellationTokenSource();
-            var disposalSourceToken = disposalSource.Token;
             var monitoringTask = Task.Run(async () =>
             {
                 try

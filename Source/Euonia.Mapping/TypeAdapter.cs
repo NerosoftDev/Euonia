@@ -1,5 +1,8 @@
 ﻿namespace Nerosoft.Euonia.Mapping;
 
+/// <summary>
+/// TypeAdapter
+/// </summary>
 public class TypeAdapter
 {
     /// <summary>

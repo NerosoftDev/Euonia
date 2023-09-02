@@ -12,6 +12,9 @@ namespace Nerosoft.Euonia.Repository;
 public interface IRepository<TEntity> : IDisposable
     where TEntity : class
 {
+    /// <summary>
+    /// Gets the actions to be executed before query.
+    /// </summary>
     List<Func<IQueryable<TEntity>, IQueryable<TEntity>>> Actions { get; }
 
     /// <summary>

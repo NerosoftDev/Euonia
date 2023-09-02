@@ -1,5 +1,8 @@
 ﻿namespace Nerosoft.Euonia.Threading.Redis;
 
+/// <summary>
+/// <see cref="ISynchronizationHandle"/> implementation with Redis.
+/// </summary>
 public class RedisSynchronizationHandle : ISynchronizationHandle
 {
     private RedisLockHandle _innerHandle;

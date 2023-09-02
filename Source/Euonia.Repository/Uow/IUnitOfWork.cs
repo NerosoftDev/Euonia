@@ -22,10 +22,19 @@ public interface IUnitOfWork : IDisposable
     /// </summary>
     event EventHandler<UnitOfWorkFailedEventArgs> Failed;
 
+    /// <summary>
+    /// Gets the instance identifier.
+    /// </summary>
     Guid Id { get; }
 
+    /// <summary>
+    /// Gets the items.
+    /// </summary>
     Dictionary<string, object> Items { get; }
 
+    /// <summary>
+    /// Gets the contexts.
+    /// </summary>
     IReadOnlyDictionary<Type, IRepositoryContext> Contexts { get; }
 
     /// <summary>
@@ -131,9 +140,20 @@ public interface IUnitOfWork : IDisposable
     /// <returns></returns>
     IEnumerable<object> GetServices(Type serviceType);
 
+    /// <summary>
+    /// Creates a new <see cref="IRepositoryContext"/> instance with specified connection string.
+    /// </summary>
+    /// <param name="connectionString"></param>
+    /// <typeparam name="TContext"></typeparam>
+    /// <returns></returns>
     TContext CreateContext<TContext>(string connectionString)
         where TContext : IRepositoryContext;
 
+    /// <summary>
+    /// Creates a new <see cref="IRepositoryContext"/> instance.
+    /// </summary>
+    /// <typeparam name="TContext"></typeparam>
+    /// <returns></returns>
     TContext CreateContext<TContext>()
         where TContext : IRepositoryContext;
 }

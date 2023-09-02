@@ -17,7 +17,7 @@ internal class RedisMutexPrimitive : IRedisLockAcquirableSynchronizationPrimitiv
 
     public TimeoutValue AcquireTimeout => _timeouts.AcquireTimeout;
 
-    private static readonly RedisScript<RedisMutexPrimitive> ReleaseScript = new(@"
+    private static readonly RedisScript<RedisMutexPrimitive> _releaseScript = new(@"
             if redis.call('get', @key) == @lockId then
                 return redis.call('del', @key)
             end
@@ -25,15 +25,15 @@ internal class RedisMutexPrimitive : IRedisLockAcquirableSynchronizationPrimitiv
         p => new { key = p._key, lockId = p._lockId }
     );
 
-    public void Release(IDatabase database, bool fireAndForget) => ReleaseScript.Execute(database, this, fireAndForget);
-    public Task ReleaseAsync(IDatabaseAsync database, bool fireAndForget) => ReleaseScript.ExecuteAsync(database, this, fireAndForget);
+    public void Release(IDatabase database, bool fireAndForget) => _releaseScript.Execute(database, this, fireAndForget);
+    public Task ReleaseAsync(IDatabaseAsync database, bool fireAndForget) => _releaseScript.ExecuteAsync(database, this, fireAndForget);
 
     public bool TryAcquire(IDatabase database) =>
         database.StringSet(_key, _lockId, _timeouts.Expiry.TimeSpan, When.NotExists, CommandFlags.DemandMaster);
     public Task<bool> TryAcquireAsync(IDatabaseAsync database) =>
         database.StringSetAsync(_key, _lockId, _timeouts.Expiry.TimeSpan, When.NotExists, CommandFlags.DemandMaster);
 
-    private static readonly RedisScript<RedisMutexPrimitive> ExtendScript = new(@"
+    private static readonly RedisScript<RedisMutexPrimitive> _extendScript = new(@"
             if redis.call('get', @key) == @lockId then
                 return redis.call('pexpire', @key, @expiryMillis)
             end
@@ -41,5 +41,5 @@ internal class RedisMutexPrimitive : IRedisLockAcquirableSynchronizationPrimitiv
         p => new { key = p._key, lockId = p._lockId, expiryMillis = p._timeouts.Expiry.InMilliseconds }
     );
 
-    public Task<bool> TryExtendAsync(IDatabaseAsync database) => ExtendScript.ExecuteAsync(database, this).AsBooleanTask();
+    public Task<bool> TryExtendAsync(IDatabaseAsync database) => _extendScript.ExecuteAsync(database, this).AsBooleanTask();
 }

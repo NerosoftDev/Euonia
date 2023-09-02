@@ -30,31 +30,38 @@ internal static class FileNameValidationHelper
 
     // Chosen because below this the risk of collisions just seems too high. If someone is picking a base directory so long
     // that names are limited to < 12 chars, it feels like a mistake
-    internal const int MinFileNameLength = 12;
+    private const int MIN_FILE_NAME_LENGTH = 12;
 
     // Chosen because this is both less than the 255 chars allowed by Windows and (because we always incorporate a Base 32 hash) less
     // than the 255 bytes allowed by Unix. This is hopefully also short enough to rarely overflow MAX_PATH, even on Windows
-    private const int PortableFileNameLength = 64;
+    private const int PORTABLE_FILE_NAME_LENGTH = 64;
 
     public static string GetLockFileName(DirectoryInfo lockFileDirectory, string name)
     {
-        if (lockFileDirectory == null) { throw new ArgumentNullException(nameof(lockFileDirectory)); }
-        if (name == null) { throw new ArgumentNullException(nameof(name)); }
+        if (lockFileDirectory == null)
+        {
+            throw new ArgumentNullException(nameof(lockFileDirectory));
+        }
+
+        if (name == null)
+        {
+            throw new ArgumentNullException(nameof(name));
+        }
 
         var directoryPath = lockFileDirectory.FullName;
-        var directoryPathWithTrailingSeparator = directoryPath[directoryPath.Length - 1] == Path.DirectorySeparatorChar
+        var directoryPathWithTrailingSeparator = directoryPath[^1] == Path.DirectorySeparatorChar
             ? directoryPath
             : directoryPath + Path.DirectorySeparatorChar;
 
         var baseName = ConvertToValidBaseName(name);
         var nameHash = ComputeHash(Encoding.UTF8.GetBytes(name));
-        const string Extension = ".lock";
+        const string extension = ".lock";
 
         // first, try the full portable name format
         var portableLockFileName = directoryPathWithTrailingSeparator
-            + baseName.Substring(0, Math.Min(PortableFileNameLength - nameHash.Length - Extension.Length, baseName.Length))
-            + nameHash
-            + Extension;
+                                   + baseName[..Math.Min(PORTABLE_FILE_NAME_LENGTH - nameHash.Length - extension.Length, baseName.Length)]
+                                   + nameHash
+                                   + extension;
         if (!IsTooLong(portableLockFileName))
         {
             return portableLockFileName;
@@ -68,13 +75,13 @@ internal static class FileNameValidationHelper
         }
 
         // finally, try using just a portion of the hash
-        var minimumLengthFileName = directoryPathWithTrailingSeparator + nameHash.Substring(0, MinFileNameLength);
+        var minimumLengthFileName = directoryPathWithTrailingSeparator + nameHash.Substring(0, MIN_FILE_NAME_LENGTH);
         if (!IsTooLong(minimumLengthFileName))
         {
             return minimumLengthFileName;
         }
 
-        throw new PathTooLongException($"Unable to construct lock file name because the base directory (length = {directoryPathWithTrailingSeparator.Length}) does not leave enough room for a {MinFileNameLength} lock name");
+        throw new PathTooLongException($"Unable to construct lock file name because the base directory (length = {directoryPathWithTrailingSeparator.Length}) does not leave enough room for a {MIN_FILE_NAME_LENGTH} lock name");
     }
 
     private static bool IsTooLong(string name)
@@ -92,16 +99,16 @@ internal static class FileNameValidationHelper
 
     private static string ConvertToValidBaseName(string name)
     {
-        const char ReplacementChar = '_';
+        const char replacementChar = '_';
 
         StringBuilder builder = null;
         for (var i = 0; i < name.Length; ++i)
         {
             var @char = name[i];
-            if (!char.IsLetterOrDigit(@char) && @char != ReplacementChar)
+            if (!char.IsLetterOrDigit(@char) && @char != replacementChar)
             {
                 builder ??= new StringBuilder(name.Length).Append(name, startIndex: 0, count: i);
-                builder.Append(ReplacementChar);
+                builder.Append(replacementChar);
             }
             else if (builder != null)
             {
@@ -115,8 +122,8 @@ internal static class FileNameValidationHelper
     // We truncate to 160 bits, which is 32 chars of Base32. This should still give us good collision resistance but allows for a 64-char
     // name to include a good portion of the original provided name, which is good for debugging. See
     // https://crypto.stackexchange.com/questions/9435/is-truncating-a-sha512-hash-to-the-first-160-bits-as-secure-as-using-sha1#:~:text=Yes.,time%20is%20still%20pretty%20big
-    private const int Base32CharBits = 5;
-    internal const int HashLengthInChars = 160 / Base32CharBits;
+    private const int BASE32_CHAR_BITS = 5;
+    internal const int HashLengthInChars = 160 / BASE32_CHAR_BITS;
 
     private static string ComputeHash(byte[] bytes)
     {
@@ -125,7 +132,7 @@ internal static class FileNameValidationHelper
 
         // we use Base32 because it is case-insensitive (important for windows files) and a bit more compact than Base16
         // RFC 4648 from https://en.wikipedia.org/wiki/Base32
-        const string Base32Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+        const string base32Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 
         var chars = new char[HashLengthInChars];
         var byteIndex = 0;
@@ -133,14 +140,15 @@ internal static class FileNameValidationHelper
         var bitsRemaining = 0;
         for (var charIndex = 0; charIndex < chars.Length; ++charIndex)
         {
-            if (bitsRemaining < Base32CharBits)
+            if (bitsRemaining < BASE32_CHAR_BITS)
             {
                 bitBuffer |= hashBytes[byteIndex++] << bitsRemaining;
                 bitsRemaining += 8;
             }
-            chars[charIndex] = Base32Alphabet[bitBuffer & 31];
-            bitBuffer >>= Base32CharBits;
-            bitsRemaining -= Base32CharBits;
+
+            chars[charIndex] = base32Alphabet[bitBuffer & 31];
+            bitBuffer >>= BASE32_CHAR_BITS;
+            bitsRemaining -= BASE32_CHAR_BITS;
         }
 
         return new string(chars);
