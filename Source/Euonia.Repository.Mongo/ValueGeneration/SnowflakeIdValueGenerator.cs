@@ -2,20 +2,26 @@
 
 namespace Nerosoft.Euonia.Repository.Mongo;
 
+/// <summary>
+/// The class used to generate a snowflake id.
+/// </summary>
 public class SnowflakeIdValueGenerator : IIdGenerator, IValueGenerator<long>
 {
-    public long Generate()
+	/// <inheritdoc />
+	public long Generate()
     {
         var id = ObjectId.NewSnowflake();
         return id;
     }
 
-    public object GenerateId(object container, object document)
+	/// <inheritdoc />
+	public object GenerateId(object container, object document)
     {
         return Generate();
     }
 
-    public bool IsEmpty(object id)
+	/// <inheritdoc />
+	public bool IsEmpty(object id)
     {
         return id == null || (long)id == 0;
     }

@@ -8,21 +8,33 @@ using Nerosoft.Euonia.Linq;
 
 namespace Nerosoft.Euonia.Repository.Mongo;
 
+/// <summary>
+/// The class used to implement the repository pattern for MongoDB.
+/// </summary>
+/// <typeparam name="TContext"></typeparam>
+/// <typeparam name="TEntity"></typeparam>
+/// <typeparam name="TKey"></typeparam>
 public class MongoRepository<TContext, TEntity, TKey> : Repository<TContext, TEntity, TKey>
     where TKey : IEquatable<TKey>
     where TEntity : class, IEntity<TKey>
     where TContext : MongoDbContext, IRepositoryContext
 {
+    /// <summary>
+    /// Initialize a new instance of <see cref="MongoRepository{TContext, TEntity, TKey}"/> with context.
+    /// </summary>
+    /// <param name="provider"></param>
     public MongoRepository(IContextProvider provider)
         : base(provider)
     {
     }
 
+    /// <inheritdoc />
     protected override void Dispose(bool disposing)
     {
         // ignore.
     }
 
+    /// <inheritdoc />
     public override IQueryable<TEntity> Queryable()
     {
         IQueryable<TEntity> query = Context.Collection<TEntity>().AsQueryable();
@@ -34,12 +46,14 @@ public class MongoRepository<TContext, TEntity, TKey> : Repository<TContext, TEn
         return query;
     }
 
+    /// <inheritdoc />
     public override async Task<TEntity> GetAsync(TKey key, CancellationToken cancellationToken = default)
     {
         var id = MongoDB.Bson.ObjectId.Parse(key.ToString());
         return await Context.FindAsync<TEntity>(id, cancellationToken);
     }
 
+    /// <inheritdoc />
     public override async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
     {
         var options = new FindOptions<TEntity> { Limit = 1 };
@@ -47,11 +61,13 @@ public class MongoRepository<TContext, TEntity, TKey> : Repository<TContext, TEn
         return await query.FirstOrDefaultAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
     public override IQueryable<TEntity> Fetch(Expression<Func<TEntity, bool>> predicate)
     {
         return System.Linq.Queryable.Where(Context.Collection<TEntity>().AsQueryable(), predicate);
     }
 
+    /// <inheritdoc />
     public override IQueryable<TEntity> Fetch(Expression<Func<TEntity, bool>> predicate, Action<Orderable<TEntity>> order)
     {
         var orderable = new Orderable<TEntity>(Fetch(predicate));
@@ -59,6 +75,7 @@ public class MongoRepository<TContext, TEntity, TKey> : Repository<TContext, TEn
         return orderable.Queryable;
     }
 
+    /// <inheritdoc />
     public override IQueryable<TEntity> Fetch(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> order)
     {
         var query = Queryable().Where(predicate);
@@ -66,6 +83,7 @@ public class MongoRepository<TContext, TEntity, TKey> : Repository<TContext, TEn
         return query;
     }
 
+    /// <inheritdoc />
     public override async Task<PageableCollection<TEntity>> FetchAsync(Expression<Func<TEntity, bool>> predicate, Action<Orderable<TEntity>> order, int? page, int? size, CancellationToken cancellationToken = default)
     {
         var pageIndex = page ?? 1;
@@ -85,6 +103,7 @@ public class MongoRepository<TContext, TEntity, TKey> : Repository<TContext, TEn
         return new PageableCollection<TEntity>(list) { TotalCount = count, PageNumber = pageIndex, PageSize = pageSize };
     }
 
+    /// <inheritdoc />
     public override async Task<PageableCollection<TEntity>> FetchAsync(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> order, int? page, int? size, CancellationToken cancellationToken = default)
     {
         var pageIndex = page ?? 1;
@@ -104,18 +123,21 @@ public class MongoRepository<TContext, TEntity, TKey> : Repository<TContext, TEn
         return new PageableCollection<TEntity>(list) { TotalCount = count, PageNumber = pageIndex, PageSize = pageSize };
     }
 
+    /// <inheritdoc />
     public override async Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
     {
         var result = await Context.Collection<TEntity>().CountDocumentsAsync(predicate, null, cancellationToken);
         return (int)result;
     }
 
+    /// <inheritdoc />
     public override async Task<long> LongCountAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
     {
         var result = await Context.Collection<TEntity>().CountDocumentsAsync(predicate, null, cancellationToken);
         return result;
     }
 
+    /// <inheritdoc />
     public override async Task<TEntity> InsertAsync(TEntity entity, bool autoSave = true, CancellationToken cancellationToken = default)
     {
         var document = await Context.InsertAsync(entity, cancellationToken);
@@ -124,21 +146,25 @@ public class MongoRepository<TContext, TEntity, TKey> : Repository<TContext, TEn
         return result;
     }
 
+    /// <inheritdoc />
     public override async Task InsertAsync(IEnumerable<TEntity> entities, bool autoSave = true, CancellationToken cancellationToken = default)
     {
         await Context.InsertAsync(entities, cancellationToken);
     }
 
+    /// <inheritdoc />
     public override async Task UpdateAsync(TEntity entity, bool autoSave = true, CancellationToken cancellationToken = default)
     {
         await Context.UpdateAsync(MongoDB.Bson.ObjectId.Parse(entity.Id.ToString()), entity, cancellationToken);
     }
 
+    /// <inheritdoc />
     public override async Task UpdateAsync(IEnumerable<TEntity> entities, bool autoSave = true, CancellationToken cancellationToken = default)
     {
         await Context.UpdateAsync(entities, t => t.Id, cancellationToken);
     }
 
+    /// <inheritdoc />
     public override async Task DeleteAsync(TEntity entity, bool autoSave = true, CancellationToken cancellationToken = default)
     {
         await Context.DeleteAsync<TEntity>(MongoDB.Bson.ObjectId.Parse(entity.Id.ToString()), cancellationToken);

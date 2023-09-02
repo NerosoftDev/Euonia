@@ -113,6 +113,7 @@ internal class ZooKeeperConnection : IDisposable
 
             using var timeoutSource = new CancellationTokenSource(connectionInfo.ConnectTimeout.TimeSpan);
             using var timeoutRegistration = timeoutSource.Token.Register(
+                // ReSharper disable once AccessToDisposedClosure
                 () => watcher.TaskCompletionSource.TrySetException(new TimeoutException($"Timed out connecting to ZooKeeper after {connectionInfo.ConnectTimeout.InMilliseconds}ms"))
             );
 

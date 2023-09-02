@@ -1,5 +1,8 @@
 ﻿namespace Nerosoft.Euonia.Repository;
 
+/// <summary>
+/// The <see cref="IContextFactory"/> implementation used to create a <see cref="IRepositoryContext"/> instance.
+/// </summary>
 public class UnitOfWorkContextFactory : IContextFactory
 {
     private readonly IUnitOfWorkManager _manager;
@@ -31,5 +34,6 @@ public class UnitOfWorkContextFactory : IContextFactory
         return context;
     }
 
+    /// <inheritdoc />
     public int Order => 1;
 }

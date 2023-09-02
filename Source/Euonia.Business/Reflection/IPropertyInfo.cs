@@ -15,6 +15,11 @@ public interface IPropertyInfo : IMemberInfo, IComparable
     /// </summary>
     object DefaultValue { get; }
 
+    /// <summary>
+    /// Gets a new <see cref="IFieldData"/> with specified name.
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
     IFieldData NewFieldData(string name);
     
     /// <summary>

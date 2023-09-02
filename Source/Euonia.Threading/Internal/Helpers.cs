@@ -176,11 +176,6 @@ internal static class Helpers
 
     private static async ValueTask<T> ThrowTimeoutIfNull<T>(this ValueTask<T> task, string @object = null) where T : class =>
         await task.ConfigureAwait(false) ?? throw LockTimeout(@object);
-    
-    private static async ValueTask ThrowTimeoutIfFalse(this ValueTask<bool> task)
-    {
-        if (!await task.ConfigureAwait(false)) { throw LockTimeout(); }
-    }
 }
 
 // ReSharper disable once UnusedTypeParameter

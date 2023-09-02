@@ -3,9 +3,13 @@ using Mapster;
 
 namespace Nerosoft.Euonia.Mapping;
 
+/// <summary>
+/// The converter used to convert <see cref="DateTime"/> to <see cref="Timestamp"/>.
+/// </summary>
 public class DatetimeToTimestampConverter : IRegister
 {
-    public void Register(TypeAdapterConfig config)
+	/// <inheritdoc />
+	public void Register(TypeAdapterConfig config)
     {
         config.ForType<object, Timestamp>().MapWith(source => Convert(source));
     }

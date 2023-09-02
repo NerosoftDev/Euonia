@@ -3,15 +3,20 @@ using Nerosoft.Euonia.Modularity;
 
 namespace Nerosoft.Euonia.Mapping;
 
+/// <summary>
+/// The module used to configure mapster services.
+/// </summary>
 public class MapsterModule : ModuleContextBase
 {
-    public override void ConfigureServices(ServiceConfigurationContext context)
+	/// <inheritdoc />
+	public override void ConfigureServices(ServiceConfigurationContext context)
     {
         context.Services.AddMapster();
         context.Services.AddSingleton<ITypeAdapterFactory, MapsterTypeAdapterFactory>();
     }
 
-    public override void OnApplicationInitialization(ApplicationInitializationContext context)
+	/// <inheritdoc />
+	public override void OnApplicationInitialization(ApplicationInitializationContext context)
     {
         var factory = context.ServiceProvider.GetService<ITypeAdapterFactory>();
         if (factory != null)

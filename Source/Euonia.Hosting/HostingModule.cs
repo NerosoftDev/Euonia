@@ -17,6 +17,7 @@ public class HostingModule : ModuleContextBase
         context.Services.AddScopeTransformation();
         context.Services.AddUserPrincipal();
         context.Services.AddObjectAccessor<IApplicationBuilder>();
+        context.Services.AddTransient<ExceptionHandlingMiddleware>();
     }
 
     /// <inheritdoc />
@@ -25,7 +26,8 @@ public class HostingModule : ModuleContextBase
         base.OnApplicationInitialization(context);
         var app = context.GetApplicationBuilder();
         app.UseMiddleware<RequestTraceMiddleware>();
-
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
+        
         // Setup the ServiceProvider for IServiceAccessor.
         app.Use(async (httpContext, next) =>
         {

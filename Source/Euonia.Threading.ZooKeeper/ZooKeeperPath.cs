@@ -155,5 +155,6 @@ public readonly struct ZooKeeperPath : IEquatable<ZooKeeperPath>
         @char > '\u0000' && @char <= '\u001f'
         || @char >= '\u007f' && @char <= '\u009F'
         || @char >= '\ud800' && @char <= '\uf8ff'
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalse
         || @char >= '\ufff0' && @char <= '\uffff';
 }

@@ -32,6 +32,7 @@ public abstract class Repository<TContext, TEntity, TKey> : DisposableObject, IR
     /// </summary>
     public TContext Context => _provider.GetContext<TContext>();
 
+    /// <inheritdoc />
     public List<Func<IQueryable<TEntity>, IQueryable<TEntity>>> Actions { get; } = new();
 
     /// <summary>

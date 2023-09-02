@@ -1,9 +1,11 @@
 ﻿using Nerosoft.Euonia.Mapping;
 
 /// <summary>
-/// Extensions methods for <see cref="TypeAdapterFactory" />.
+/// Extensions methods to project object to destination type.
 /// </summary>
-public static partial class Extensions
+// ReSharper disable once UnusedType.Global
+#pragma warning disable CA1050
+public static class Extensions
 {
     /// <summary>
     /// Project object to <typeparamref name="TDestination"/>
@@ -43,3 +45,5 @@ public static partial class Extensions
         return adapter.Adapt<List<TDestination>>(items);
     }
 }
+
+#pragma warning restore CA1050

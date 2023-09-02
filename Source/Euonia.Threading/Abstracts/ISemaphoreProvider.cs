@@ -19,6 +19,11 @@ public interface ISemaphoreProvider
 
     /// <summary>
     /// Attempts to acquire a semaphore ticket synchronously. Usage: 
+    /// </summary>
+    /// <param name="timeout">How long to wait before giving up on the acquisition attempt. Defaults to 0</param>
+    /// <param name="cancellationToken">Specifies a token by which the wait can be canceled</param>
+    /// <returns>An <see cref="ISynchronizationHandle"/> which can be used to release the ticket or null on failure</returns>
+    /// <example>
     /// <code>
     ///     using (var handle = mySemaphore.TryAcquire(...))
     ///     {
@@ -26,14 +31,16 @@ public interface ISemaphoreProvider
     ///     }
     ///     // dispose releases the ticket if we took it
     /// </code>
-    /// </summary>
-    /// <param name="timeout">How long to wait before giving up on the acquisition attempt. Defaults to 0</param>
-    /// <param name="cancellationToken">Specifies a token by which the wait can be canceled</param>
-    /// <returns>An <see cref="ISynchronizationHandle"/> which can be used to release the ticket or null on failure</returns>
+    /// </example>
     ISynchronizationHandle TryAcquire(TimeSpan timeout = default, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Acquires a semaphore ticket synchronously, failing with <see cref="TimeoutException"/> if the attempt times out. Usage: 
+    /// </summary>
+    /// <param name="timeout">How long to wait before giving up on the acquisition attempt. Defaults to <see cref="Timeout.InfiniteTimeSpan"/></param>
+    /// <param name="cancellationToken">Specifies a token by which the wait can be canceled</param>
+    /// <returns>An <see cref="ISynchronizationHandle"/> which can be used to release the ticket</returns>
+    /// <example>
     /// <code>
     ///     using (mySemaphore.Acquire(...))
     ///     {
@@ -41,14 +48,16 @@ public interface ISemaphoreProvider
     ///     }
     ///     // dispose releases the ticket
     /// </code>
-    /// </summary>
-    /// <param name="timeout">How long to wait before giving up on the acquisition attempt. Defaults to <see cref="Timeout.InfiniteTimeSpan"/></param>
-    /// <param name="cancellationToken">Specifies a token by which the wait can be canceled</param>
-    /// <returns>An <see cref="ISynchronizationHandle"/> which can be used to release the ticket</returns>
+    /// </example>
     ISynchronizationHandle Acquire(TimeSpan? timeout = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Attempts to acquire a semaphore ticket asynchronously. Usage: 
+    /// </summary>
+    /// <param name="timeout">How long to wait before giving up on the acquisition attempt. Defaults to 0</param>
+    /// <param name="cancellationToken">Specifies a token by which the wait can be canceled</param>
+    /// <returns>An <see cref="ISynchronizationHandle"/> which can be used to release the ticket or null on failure</returns>
+    /// <example>
     /// <code>
     ///     await using (var handle = await mySemaphore.TryAcquireAsync(...))
     ///     {
@@ -56,10 +65,7 @@ public interface ISemaphoreProvider
     ///     }
     ///     // dispose releases the ticket if we took it
     /// </code>
-    /// </summary>
-    /// <param name="timeout">How long to wait before giving up on the acquisition attempt. Defaults to 0</param>
-    /// <param name="cancellationToken">Specifies a token by which the wait can be canceled</param>
-    /// <returns>An <see cref="ISynchronizationHandle"/> which can be used to release the ticket or null on failure</returns>
+    /// </example>
     ValueTask<ISynchronizationHandle> TryAcquireAsync(TimeSpan timeout = default, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -104,9 +110,43 @@ public interface ISemaphoreProvider
 public interface ISemaphoreProvider<THandle> : ISemaphoreProvider
     where THandle : class, ISynchronizationHandle
 {
+    /// <summary>
+    /// Attempts to acquire a semaphore ticket synchronously. Usage: 
+    /// </summary>
+    /// <param name="timeout"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     new THandle TryAcquire(TimeSpan timeout = default, CancellationToken cancellationToken = default);
+    
+    /// <summary>
+    /// Acquires a semaphore ticket synchronously, failing with <see cref="TimeoutException"/> if the attempt times out. Usage: 
+    /// </summary>
+    /// <param name="timeout"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     new THandle Acquire(TimeSpan? timeout = null, CancellationToken cancellationToken = default);
+    
+    /// <summary>
+    /// Attempts to acquire a semaphore ticket asynchronously. Usage: 
+    /// </summary>
+    /// <param name="timeout"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     new ValueTask<THandle> TryAcquireAsync(TimeSpan timeout = default, CancellationToken cancellationToken = default);
+    
+    /// <summary>
+    /// Acquires a semaphore ticket asynchronously, failing with <see cref="TimeoutException"/> if the attempt times out. Usage: 
+    /// </summary>
+    /// <param name="timeout"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     new ValueTask<THandle> AcquireAsync(TimeSpan? timeout = null, CancellationToken cancellationToken = default);
+    
+    /// <summary>
+    /// Acquires a semaphore ticket asynchronously, failing with <see cref="TimeoutException"/> if the attempt times out. Usage: 
+    /// </summary>
+    /// <param name="timeout"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     new ValueTask<THandle> TryAcquireAsync(TimeoutValue timeout, CancellationToken cancellationToken = default);
 }

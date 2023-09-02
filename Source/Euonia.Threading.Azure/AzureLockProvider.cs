@@ -166,27 +166,32 @@ public sealed partial class AzureLockProvider : ILockProvider<AzureSynchronizati
 
 public sealed partial class AzureLockProvider
 {
-    public AzureSynchronizationHandle Acquire(TimeSpan? timeout = null, CancellationToken cancellationToken = default)
+	/// <inheritdoc />
+	public AzureSynchronizationHandle Acquire(TimeSpan? timeout = null, CancellationToken cancellationToken = default)
     {
         return Helpers.Acquire(this, timeout, cancellationToken);
     }
 
-    public ValueTask<AzureSynchronizationHandle> AcquireAsync(TimeSpan? timeout = null, CancellationToken cancellationToken = default)
+	/// <inheritdoc />
+	public ValueTask<AzureSynchronizationHandle> AcquireAsync(TimeSpan? timeout = null, CancellationToken cancellationToken = default)
     {
         return Helpers.AcquireAsync(this, timeout, cancellationToken);
     }
 
-    public AzureSynchronizationHandle TryAcquire(TimeSpan timeout = default, CancellationToken cancellationToken = default)
+	/// <inheritdoc />
+	public AzureSynchronizationHandle TryAcquire(TimeSpan timeout = default, CancellationToken cancellationToken = default)
     {
         return Helpers.TryAcquire(this, timeout, cancellationToken);
     }
 
-    public ValueTask<AzureSynchronizationHandle> TryAcquireAsync(TimeSpan timeout = default, CancellationToken cancellationToken = default)
+	/// <inheritdoc />
+	public ValueTask<AzureSynchronizationHandle> TryAcquireAsync(TimeSpan timeout = default, CancellationToken cancellationToken = default)
     {
         return this.As<ILockProvider<AzureSynchronizationHandle>>().TryAcquireAsync(timeout, cancellationToken);
     }
 
-    public ValueTask<AzureSynchronizationHandle> TryAcquireAsync(TimeoutValue timeout, CancellationToken cancellationToken)
+	/// <inheritdoc />
+	public ValueTask<AzureSynchronizationHandle> TryAcquireAsync(TimeoutValue timeout, CancellationToken cancellationToken)
     {
         return BusyWaitHelper.WaitAsync(
             (@lock: this, leaseClient: BlobClient.GetBlobLeaseClient()),

@@ -2,68 +2,95 @@
 
 namespace Nerosoft.Euonia.Business;
 
+/// <summary>
+/// The <see cref="PropertyInfo{T}"/> class provides a strongly-typed wrapper for a <see cref="PropertyInfo"/>.
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public class PropertyInfo<T> : IPropertyInfo
 {
-    public PropertyInfo(string name)
-        : this(name, null)
-    {
-        Name = name;
-    }
+	/// <inheritdoc />
+	public PropertyInfo(string name)
+		: this(name, null)
+	{
+		Name = name;
+	}
 
-    public PropertyInfo(string name, T defaultValue)
-        : this(name, null, defaultValue)
-    {
-    }
+	/// <inheritdoc />
+	public PropertyInfo(string name, T defaultValue)
+		: this(name, null, defaultValue)
+	{
+	}
 
-    public PropertyInfo(string name, Type objectType)
-        : this(name, objectType, GetDefaultValue())
-    {
-    }
+	/// <inheritdoc />
+	public PropertyInfo(string name, Type objectType)
+		: this(name, objectType, GetDefaultValue())
+	{
+	}
 
-    public PropertyInfo(string name, Type objectType, T defaultValue)
-    {
-        Name = name;
-        _propertyInfo = objectType?.GetProperty(name);
-        DefaultValue = defaultValue;
-    }
+	/// <summary>
+	/// Initializes a new instance of the <see cref="PropertyInfo{T}"/> class.
+	/// </summary>
+	/// <param name="name"></param>
+	/// <param name="objectType"></param>
+	/// <param name="defaultValue"></param>
+	public PropertyInfo(string name, Type objectType, T defaultValue)
+	{
+		Name = name;
+		_propertyInfo = objectType?.GetProperty(name);
+		DefaultValue = defaultValue;
+	}
 
-    public string Name { get; }
+	/// <inheritdoc />
+	public string Name { get; }
 
-    public int CompareTo(object obj)
-    {
-        return string.Compare(Name, ((IPropertyInfo)obj).Name, StringComparison.InvariantCulture);
-    }
+	/// <inheritdoc />
+	public int CompareTo(object obj)
+	{
+		return string.Compare(Name, (((IPropertyInfo)obj)!).Name, StringComparison.InvariantCulture);
+	}
 
-    public Type Type => typeof(T);
+	/// <inheritdoc />
+	public Type Type => typeof(T);
 
-    /// <summary>
-    /// Gets the default initial value for the property.
-    /// </summary>
-    public virtual T DefaultValue { get; }
+	/// <summary>
+	/// Gets the default initial value for the property.
+	/// </summary>
+	public virtual T DefaultValue { get; }
 
-    object IPropertyInfo.DefaultValue => DefaultValue;
+	object IPropertyInfo.DefaultValue => DefaultValue;
 
-    private readonly PropertyInfo _propertyInfo;
-    public PropertyInfo GetPropertyInfo() => _propertyInfo;
+	private readonly PropertyInfo _propertyInfo;
 
-    public static T GetDefaultValue()
-    {
-        // if T is string we need an empty string, not null, for data binding
-        if (typeof(T) == typeof(string))
-        {
-            return (T)(object)string.Empty;
-        }
+	/// <inheritdoc />
+	public PropertyInfo GetPropertyInfo() => _propertyInfo;
 
-        return default;
-    }
+	/// <summary>
+	/// Gets the default initial value for the property.
+	/// </summary>
+	/// <returns></returns>
+	public static T GetDefaultValue()
+	{
+		// if T is string we need an empty string, not null, for data binding
+		if (typeof(T) == typeof(string))
+		{
+			return (T)(object)string.Empty;
+		}
 
-    IFieldData IPropertyInfo.NewFieldData(string name)
-    {
-        return NewFieldData(name);
-    }
+		return default;
+	}
 
-    protected virtual IFieldData NewFieldData(string name)
-    {
-        return new FieldData<T>(name);
-    }
+	IFieldData IPropertyInfo.NewFieldData(string name)
+	{
+		return NewFieldData(name);
+	}
+
+	/// <summary>
+	/// Gets a new <see cref="IFieldData"/> instance with specified name.
+	/// </summary>
+	/// <param name="name"></param>
+	/// <returns></returns>
+	protected virtual IFieldData NewFieldData(string name)
+	{
+		return new FieldData<T>(name);
+	}
 }

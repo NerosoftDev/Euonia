@@ -3,9 +3,13 @@ using Mapster;
 
 namespace Nerosoft.Euonia.Mapping;
 
+/// <summary>
+/// The converter used to convert <see cref="TimeSpan"/> to <see cref="Duration"/>.
+/// </summary>
 public class DurationToTimespanConverter : IRegister
 {
-    public void Register(TypeAdapterConfig config)
+	/// <inheritdoc />
+	public void Register(TypeAdapterConfig config)
     {
         config.ForType<Duration, TimeSpan>().MapWith(source => Convert(source, default));
         config.ForType<Duration, TimeSpan?>().MapWith(source => Convert(source));

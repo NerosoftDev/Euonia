@@ -3,7 +3,7 @@
 /// <summary>
 /// A distributed lock based on holding an exclusive handle to a lock file. The file will be deleted when the lock is released.
 /// </summary>
-public sealed partial class FileLockProvider : ILockProvider<FileSynchronizationHandle>, ILockProvider
+public sealed partial class FileLockProvider : ILockProvider<FileSynchronizationHandle>
 {
     /// <summary>
     /// Since <see cref="UnauthorizedAccessException"/> can be thrown EITHER transiently or for permissions issues, we retry up to this many times
@@ -157,26 +157,31 @@ public sealed partial class FileLockProvider : ILockProvider<FileSynchronization
 
 public sealed partial class FileLockProvider
 {
+    /// <inheritdoc />
     public FileSynchronizationHandle TryAcquire(TimeSpan timeout = default, CancellationToken cancellationToken = default)
     {
         return Helpers.TryAcquire(this, timeout, cancellationToken);
     }
 
+    /// <inheritdoc />
     public FileSynchronizationHandle Acquire(TimeSpan? timeout = null, CancellationToken cancellationToken = default)
     {
         return Helpers.Acquire(this, timeout, cancellationToken);
     }
 
+    /// <inheritdoc />
     public ValueTask<FileSynchronizationHandle> TryAcquireAsync(TimeSpan timeout = default, CancellationToken cancellationToken = default)
     {
         return this.As<ILockProvider<FileSynchronizationHandle>>().TryAcquireAsync(timeout, cancellationToken);
     }
 
+    /// <inheritdoc />
     public ValueTask<FileSynchronizationHandle> AcquireAsync(TimeSpan? timeout = null, CancellationToken cancellationToken = default)
     {
         return Helpers.AcquireAsync(this, timeout, cancellationToken);
     }
 
+    /// <inheritdoc />
     public ValueTask<FileSynchronizationHandle> TryAcquireAsync(TimeoutValue timeout, CancellationToken cancellationToken = default)
     {
         return BusyWaitHelper.WaitAsync(

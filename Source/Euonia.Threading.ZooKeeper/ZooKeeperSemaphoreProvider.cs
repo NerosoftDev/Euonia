@@ -13,12 +13,7 @@ public sealed partial class ZooKeeperSemaphoreProvider : ISemaphoreProvider<ZooK
     /// If <paramref name="assumePathExists"/> is specified, then the node will not be created as part of acquiring nor will it be 
     /// deleted after releasing (defaults to false).
     /// </summary>
-    public ZooKeeperSemaphoreProvider(
-        ZooKeeperPath path,
-        int maxCount,
-        string connectionString,
-        bool assumePathExists = false,
-        Action<ZooKeeperSynchronizationOptionsBuilder> options = null)
+    public ZooKeeperSemaphoreProvider(ZooKeeperPath path, int maxCount, string connectionString, bool assumePathExists = false, Action<ZooKeeperSynchronizationOptionsBuilder> options = null)
         : this(path, maxCount, assumePathExists: assumePathExists, connectionString, options)
     {
         if (path == default)
@@ -90,26 +85,31 @@ public sealed partial class ZooKeeperSemaphoreProvider : ISemaphoreProvider<ZooK
 
 public sealed partial class ZooKeeperSemaphoreProvider
 {
+    /// <inheritdoc />
     public ZooKeeperSynchronizationHandle TryAcquire(TimeSpan timeout = default, CancellationToken cancellationToken = default)
     {
         return Helpers.TryAcquire(this, timeout, cancellationToken);
     }
 
+    /// <inheritdoc />
     public ZooKeeperSynchronizationHandle Acquire(TimeSpan? timeout = null, CancellationToken cancellationToken = default)
     {
         return Helpers.Acquire(this, timeout, cancellationToken);
     }
 
+    /// <inheritdoc />
     public ValueTask<ZooKeeperSynchronizationHandle> TryAcquireAsync(TimeSpan timeout = default, CancellationToken cancellationToken = default)
     {
         return this.As<ISemaphoreProvider<ZooKeeperSynchronizationHandle>>().TryAcquireAsync(timeout, cancellationToken);
     }
 
+    /// <inheritdoc />
     public ValueTask<ZooKeeperSynchronizationHandle> AcquireAsync(TimeSpan? timeout = null, CancellationToken cancellationToken = default)
     {
         return Helpers.AcquireAsync(this, timeout, cancellationToken);
     }
 
+    /// <inheritdoc />
     public async ValueTask<ZooKeeperSynchronizationHandle> TryAcquireAsync(TimeoutValue timeout, CancellationToken cancellationToken)
     {
         var nodeHandle = await _synchronizationHelper.TryAcquireAsync(

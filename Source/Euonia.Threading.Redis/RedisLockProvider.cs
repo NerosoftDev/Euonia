@@ -2,6 +2,9 @@
 
 namespace Nerosoft.Euonia.Threading.Redis;
 
+/// <summary>
+/// Implements a <see cref="ILockProvider"/> using Redis.
+/// </summary>
 public sealed partial class RedisLockProvider : ILockProvider<RedisSynchronizationHandle>
 {
     private readonly IReadOnlyList<IDatabase> _databases;

@@ -5,10 +5,13 @@ using Nerosoft.Euonia.Mapping;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+/// <summary>
+/// The <see cref="IServiceCollection"/> extensions to register object mapping provider.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
     /// <summary>
-    /// Add <see cref="IMapper"/> as object mapping provider.
+    /// Adds <see cref="IMapper"/> as object mapping provider.
     /// </summary>
     /// <param name="services"></param>
     /// <returns></returns>

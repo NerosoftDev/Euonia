@@ -3,7 +3,7 @@
 namespace Nerosoft.Euonia.Repository;
 
 /// <summary>
-/// 
+/// The options used to create a unit of work.
 /// </summary>
 public class UnitOfWorkOptions
 {
@@ -22,6 +22,9 @@ public class UnitOfWorkOptions
     /// </summary>
     public TimeSpan? Timeout { get; set; }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UnitOfWorkOptions"/> class.
+    /// </summary>
     public UnitOfWorkOptions()
     {
     }

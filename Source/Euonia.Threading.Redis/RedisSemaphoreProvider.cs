@@ -53,26 +53,31 @@ public sealed partial class RedisSemaphoreProvider : ISemaphoreProvider<RedisSyn
 
 public sealed partial class RedisSemaphoreProvider
 {
+    /// <inheritdoc />
     public RedisSynchronizationHandle TryAcquire(TimeSpan timeout = default, CancellationToken cancellationToken = default)
     {
         return Helpers.TryAcquire(this, timeout, cancellationToken);
     }
 
+    /// <inheritdoc />
     public RedisSynchronizationHandle Acquire(TimeSpan? timeout = null, CancellationToken cancellationToken = default)
     {
         return Helpers.Acquire(this, timeout, cancellationToken);
     }
 
+    /// <inheritdoc />
     public ValueTask<RedisSynchronizationHandle> TryAcquireAsync(TimeSpan timeout = default, CancellationToken cancellationToken = default)
     {
         return this.As<ISemaphoreProvider<RedisSynchronizationHandle>>().TryAcquireAsync(timeout, cancellationToken);
     }
 
+    /// <inheritdoc />
     public ValueTask<RedisSynchronizationHandle> AcquireAsync(TimeSpan? timeout = null, CancellationToken cancellationToken = default)
     {
         return Helpers.AcquireAsync(this, timeout, cancellationToken);
     }
 
+    /// <inheritdoc />
     public ValueTask<RedisSynchronizationHandle> TryAcquireAsync(TimeoutValue timeout, CancellationToken cancellationToken)
     {
         return BusyWaitHelper.WaitAsync(

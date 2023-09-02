@@ -2,6 +2,9 @@
 
 namespace Nerosoft.Euonia.Mapping;
 
+/// <summary>
+/// The <see cref="ITypeAdapter"/> implementation use automapper.
+/// </summary>
 public class AutomapperTypeAdapter : ITypeAdapter
 {
     private readonly IMapper _mapper;

@@ -166,11 +166,17 @@ public abstract class EditableObject<T> : BusinessObject<T>, IOperableProperty, 
         await Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Update the object.
+    /// </summary>
     protected internal virtual async Task UpdateAsync()
     {
         await Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Delete the object.
+    /// </summary>
     protected internal virtual async Task DeleteAsync()
     {
         await Task.CompletedTask;
@@ -204,26 +210,62 @@ public abstract class EditableObject<T> : BusinessObject<T>, IOperableProperty, 
         return defaultValue;
     }
 
+    /// <summary>
+    /// Gets a property's value, first checking authorization.
+    /// </summary>
+    /// <param name="propertyInfo"></param>
+    /// <param name="field"></param>
+    /// <typeparam name="TValue"></typeparam>
+    /// <returns></returns>
     protected TValue GetProperty<TValue>(PropertyInfo<TValue> propertyInfo, TValue field)
     {
         return GetProperty(propertyInfo.Name, field, propertyInfo.DefaultValue);
     }
 
+    /// <summary>
+    /// Gets a property's value, first checking authorization.
+    /// </summary>
+    /// <param name="propertyInfo"></param>
+    /// <param name="field"></param>
+    /// <param name="defaultValue"></param>
+    /// <typeparam name="TValue"></typeparam>
+    /// <returns></returns>
     protected TValue GetProperty<TValue>(PropertyInfo<TValue> propertyInfo, TValue field, TValue defaultValue)
     {
         return GetProperty(propertyInfo.Name, field, defaultValue);
     }
 
+    /// <summary>
+    /// Gets a property's value, first checking authorization.
+    /// </summary>
+    /// <param name="propertyInfo"></param>
+    /// <param name="field"></param>
+    /// <typeparam name="TField"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
+    /// <returns></returns>
     protected TValue GetPropertyConvert<TField, TValue>(PropertyInfo<TField> propertyInfo, TField field)
     {
         return TypeHelper.CoerceValue<TValue>(typeof(TField),  GetProperty(propertyInfo.Name, field, propertyInfo.DefaultValue));
     }
 
+    /// <summary>
+    /// Gets a property's value, first checking authorization.
+    /// </summary>
+    /// <param name="propertyInfo"></param>
+    /// <typeparam name="TField"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
+    /// <returns></returns>
     protected TValue GetPropertyConvert<TField, TValue>(PropertyInfo<TField> propertyInfo)
     {
         return TypeHelper.CoerceValue<TValue>(typeof(TField), GetProperty(propertyInfo));
     }
 
+    /// <summary>
+    /// Gets a property's value, first checking authorization.
+    /// </summary>
+    /// <param name="propertyInfo"></param>
+    /// <typeparam name="TValue"></typeparam>
+    /// <returns></returns>
     protected TValue GetProperty<TValue>(PropertyInfo<TValue> propertyInfo)
     {
         TValue result;
@@ -234,6 +276,11 @@ public abstract class EditableObject<T> : BusinessObject<T>, IOperableProperty, 
         return result;
     }
 
+    /// <summary>
+    /// Gets value of <see cref="IPropertyInfo"/> property.
+    /// </summary>
+    /// <param name="propertyInfo"></param>
+    /// <returns></returns>
     public object GetProperty(IPropertyInfo propertyInfo)
     {
         object result;
@@ -250,6 +297,12 @@ public abstract class EditableObject<T> : BusinessObject<T>, IOperableProperty, 
         return result;
     }
 
+    /// <summary>
+    /// Gets value of <see cref="IPropertyInfo"/> property.
+    /// </summary>
+    /// <param name="propertyInfo"></param>
+    /// <typeparam name="TValue"></typeparam>
+    /// <returns></returns>
     protected TValue GetProperty<TValue>(IPropertyInfo propertyInfo)
     {
         return (TValue)GetProperty(propertyInfo);
@@ -259,16 +312,38 @@ public abstract class EditableObject<T> : BusinessObject<T>, IOperableProperty, 
 
     #region Set Properties
 
+    /// <summary>
+    /// Sets a property's value, first checking authorization.
+    /// </summary>
+    /// <param name="propertyInfo"></param>
+    /// <param name="field"></param>
+    /// <param name="newValue"></param>
+    /// <typeparam name="TValue"></typeparam>
     protected void SetProperty<TValue>(PropertyInfo<TValue> propertyInfo, ref TValue field, TValue newValue)
     {
         SetProperty(propertyInfo.Name, ref field, newValue);
     }
 
+    /// <summary>
+    /// Sets a property's value, first checking authorization.
+    /// </summary>
+    /// <param name="propertyInfo"></param>
+    /// <param name="field"></param>
+    /// <param name="newValue"></param>
+    /// <typeparam name="TField"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
     protected void SetPropertyConvert<TField, TValue>(PropertyInfo<TField> propertyInfo, ref TField field, TValue newValue)
     {
         SetPropertyConvert(propertyInfo.Name, ref field, newValue);
     }
 
+    /// <summary>
+    /// Sets a property's value, first checking authorization.
+    /// </summary>
+    /// <param name="propertyName"></param>
+    /// <param name="field"></param>
+    /// <param name="newValue"></param>
+    /// <typeparam name="TValue"></typeparam>
     protected void SetProperty<TValue>(string propertyName, ref TValue field, TValue newValue)
     {
         #region Check to see if the property is marked with RelationshipTypes.PrivateField
@@ -311,6 +386,14 @@ public abstract class EditableObject<T> : BusinessObject<T>, IOperableProperty, 
         }
     }
 
+    /// <summary>
+    /// Sets a property's value, first checking authorization.
+    /// </summary>
+    /// <param name="propertyName"></param>
+    /// <param name="field"></param>
+    /// <param name="newValue"></param>
+    /// <typeparam name="TField"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
     protected void SetPropertyConvert<TField, TValue>(string propertyName, ref TField field, TValue newValue)
     {
         #region Check to see if the property is marked with RelationshipTypes.PrivateField
@@ -360,6 +443,13 @@ public abstract class EditableObject<T> : BusinessObject<T>, IOperableProperty, 
         }
     }
 
+    /// <summary>
+    /// Sets a property's value, first checking authorization.
+    /// </summary>
+    /// <param name="propertyInfo"></param>
+    /// <param name="newValue"></param>
+    /// <typeparam name="TField"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
     protected void SetPropertyConvert<TField, TValue>(PropertyInfo<TField> propertyInfo, TValue newValue)
     {
         if (!IsBypassingRuleChecks && !CanWriteProperty(propertyInfo, true))
@@ -391,6 +481,12 @@ public abstract class EditableObject<T> : BusinessObject<T>, IOperableProperty, 
         LoadPropertyValue(propertyInfo, oldValue, TypeHelper.CoerceValue<TField>(typeof(TValue), newValue), !IsBypassingRuleChecks);
     }
 
+    /// <summary>
+    /// Sets a property's value, first checking authorization.
+    /// </summary>
+    /// <param name="propertyInfo"></param>
+    /// <param name="newValue"></param>
+    /// <typeparam name="TValue"></typeparam>
     protected void SetProperty<TValue>(PropertyInfo<TValue> propertyInfo, TValue newValue)
     {
         if (!IsBypassingRuleChecks && !CanWriteProperty(propertyInfo, true))
@@ -422,6 +518,11 @@ public abstract class EditableObject<T> : BusinessObject<T>, IOperableProperty, 
         LoadPropertyValue(propertyInfo, oldValue, newValue, !IsBypassingRuleChecks);
     }
 
+    /// <summary>
+    /// Sets a property's value, first checking authorization.
+    /// </summary>
+    /// <param name="propertyInfo"></param>
+    /// <param name="newValue"></param>
     public void SetProperty(IPropertyInfo propertyInfo, object newValue)
     {
         if (!IsBypassingRuleChecks && !CanWriteProperty(propertyInfo, true))
@@ -442,6 +543,12 @@ public abstract class EditableObject<T> : BusinessObject<T>, IOperableProperty, 
         }
     }
 
+    /// <summary>
+    /// Sets a property's value, first checking authorization.
+    /// </summary>
+    /// <param name="propertyInfo"></param>
+    /// <param name="newValue"></param>
+    /// <typeparam name="TValue"></typeparam>
     protected virtual void SetProperty<TValue>(IPropertyInfo propertyInfo, TValue newValue)
     {
         SetProperty(propertyInfo, (object)newValue);
