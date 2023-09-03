@@ -6,7 +6,7 @@ public abstract class ModuleLifecycleBase : IModuleLifecycle
     {
     }
 
-    public virtual void Shutdown(ApplicationShutdownContext context, IModuleContext module)
+    public virtual void Unload(ApplicationShutdownContext context, IModuleContext module)
     {
     }
 }
