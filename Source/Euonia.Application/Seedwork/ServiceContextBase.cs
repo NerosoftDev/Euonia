@@ -3,6 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Nerosoft.Euonia.Application;
 
+/// <summary>
+/// The service context base.
+/// </summary>
 public abstract class ServiceContextBase : IServiceContext
 {
     /// <inheritdoc />

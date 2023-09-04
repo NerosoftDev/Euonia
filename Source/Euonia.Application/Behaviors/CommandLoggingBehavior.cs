@@ -20,6 +20,7 @@ public class CommandLoggingBehavior : IPipelineBehavior<ICommand, CommandRespons
         _logger = factory.CreateLogger<CommandLoggingBehavior>();
     }
 
+    /// <inheritdoc />
     public async Task<CommandResponse> HandleAsync(ICommand context, PipelineDelegate<ICommand, CommandResponse> next)
     {
         _logger.LogInformation("Command {Id} - {FullName}: {Context}", context.Id, context.GetType().FullName, context);

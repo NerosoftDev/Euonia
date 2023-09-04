@@ -3,6 +3,10 @@ using Nerosoft.Euonia.Pipeline;
 
 namespace Nerosoft.Euonia.Application;
 
+/// <summary>
+/// The pipeline command.
+/// </summary>
+/// <typeparam name="TCommand"></typeparam>
 public class PipelineCommand<TCommand>
     where TCommand : ICommand
 {
@@ -62,10 +66,17 @@ public class PipelineCommand<TCommand>
 }
 
 /// <summary>
-/// 
+/// The extension methods for pipeline command.
 /// </summary>
 public static class PipelineCommandExtensions
 {
+    /// <summary>
+    /// Use pipeline.
+    /// </summary>
+    /// <param name="command"></param>
+    /// <param name="pipeline"></param>
+    /// <typeparam name="TCommand"></typeparam>
+    /// <returns></returns>
     public static PipelineCommand<TCommand> UsePipeline<TCommand>(this TCommand command, IPipeline<ICommand, CommandResponse> pipeline)
         where TCommand : ICommand
     {
