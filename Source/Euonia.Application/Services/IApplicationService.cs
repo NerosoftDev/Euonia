@@ -1,6 +1,4 @@
-﻿using Nerosoft.Euonia.Modularity;
-
-namespace Nerosoft.Euonia.Application;
+﻿namespace Nerosoft.Euonia.Application;
 
 /// <summary>
 /// Represents that the implemented classes are application services.
