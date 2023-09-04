@@ -40,10 +40,7 @@ public static class RedisConfigurations
             Check.EnsureNotNull(configuration, nameof(configuration));
             Check.EnsureNotNullOrWhiteSpace(configuration.Key, nameof(configuration.Key));
 
-            if (!Configurations.ContainsKey(configuration.Key))
-            {
-                Configurations.Add(configuration.Key, configuration);
-            }
+            Configurations.TryAdd(configuration.Key, configuration);
         }
     }
 

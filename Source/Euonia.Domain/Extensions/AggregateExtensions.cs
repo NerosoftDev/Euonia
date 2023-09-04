@@ -1,5 +1,8 @@
 ﻿namespace Nerosoft.Euonia.Domain;
 
+/// <summary>
+/// The extensions for <see cref="Aggregate{TKey}"/>.
+/// </summary>
 public static class AggregateExtensions
 {
     /// <summary>

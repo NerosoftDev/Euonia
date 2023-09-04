@@ -3,6 +3,9 @@ using Nerosoft.Euonia.Domain;
 
 namespace Nerosoft.Euonia.Bus;
 
+/// <summary>
+/// The message handler options.
+/// </summary>
 public class MessageHandlerOptions
 {
     private const BindingFlags BINDING_FLAGS = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
@@ -57,6 +60,11 @@ public class MessageHandlerOptions
         }
     }
 
+    /// <summary>
+    /// Subscribes the specified message.
+    /// </summary>
+    /// <param name="messageName"></param>
+    /// <param name="handlerType"></param>
     public void Subscribe(string messageName, Type handlerType)
     {
         Subscription.Add(new MessageSubscription(messageName, handlerType));

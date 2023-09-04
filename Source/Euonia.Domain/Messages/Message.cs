@@ -26,7 +26,7 @@ public abstract class Message : IMessage
     /// <value>
     /// The identifier of the message.
     /// </value>
-    public Guid Id { get; private set; }
+    public Guid Id { get; }
 
     /// <summary>
     /// Gets or sets the timestamp that describes when the message occurs.

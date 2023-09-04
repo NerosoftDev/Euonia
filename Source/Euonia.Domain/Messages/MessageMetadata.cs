@@ -61,10 +61,7 @@ public class MessageMetadata : IDictionary<string, object>
     /// <param name="value"></param>
     public void Add(string key, object value)
     {
-        if (!_dictionary.ContainsKey(key))
-        {
-            _dictionary.Add(key, value);
-        }
+	    _dictionary.TryAdd(key, value);
     }
 
     /// <summary>
