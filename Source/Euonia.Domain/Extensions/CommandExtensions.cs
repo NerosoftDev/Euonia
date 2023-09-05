@@ -3,6 +3,9 @@ using System.Security.Authentication;
 
 namespace Nerosoft.Euonia.Domain;
 
+/// <summary>
+/// The extensions for <see cref="ICommand"/>.
+/// </summary>
 public static class CommandExtensions
 {
     private const string HEADER_USER_ID = "$nerosoft:user.id";

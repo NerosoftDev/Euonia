@@ -8,6 +8,9 @@ using Nerosoft.Euonia.Domain;
 
 namespace Nerosoft.Euonia.Repository.EfCore;
 
+/// <summary>
+/// The extensions for <see cref="DbContext"/>.
+/// </summary>
 public static class DataContextExtensions
 {
     /// <summary>

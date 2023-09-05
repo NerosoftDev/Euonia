@@ -3,6 +3,9 @@ using Microsoft.Extensions.Primitives;
 
 namespace Nerosoft.Euonia.Application;
 
+/// <summary>
+/// Defines the interface of a request context accessor.
+/// </summary>
 public interface IRequestContextAccessor
 {
     /// <summary>
@@ -36,16 +39,34 @@ public interface IRequestContextAccessor
     IDictionary<string, StringValues> RequestHeaders { get; }
 }
 
+/// <summary>
+/// Gets the authenticated user information for the current request.
+/// </summary>
 public delegate ClaimsPrincipal GetRequestUserDelegate();
 
+/// <summary>
+/// Gets the items for the current request.
+/// </summary>
 public delegate IDictionary<object, object> GetRequestItemsDelegate();
 
+/// <summary>
+/// Gets the request trace identifier.
+/// </summary>
 public delegate string GetRequestTraceIdentifierDelegate();
 
+/// <summary>
+/// Gets the injected service provider for the current request.
+/// </summary>
 public delegate IServiceProvider GetRequestServicesDelegate();
 
+/// <summary>
+/// Gets the request cancellation token.
+/// </summary>
 public delegate CancellationToken GetRequestAbortedDelegate();
 
+/// <summary>
+/// Gets the request headers.
+/// </summary>
 public delegate IDictionary<string, StringValues> GetRequestHeadersDelegate();
 
 /// <summary>
@@ -60,10 +81,14 @@ public class DelegateRequestContextAccessor : IRequestContextAccessor
     private readonly GetRequestAbortedDelegate _getAborted;
     private readonly GetRequestHeadersDelegate _getHeaders;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DelegateRequestContextAccessor"/> class.
+    /// </summary>
     public DelegateRequestContextAccessor()
     {
     }
 
+    /// <inheritdoc />
     public DelegateRequestContextAccessor(GetRequestUserDelegate getUser, GetRequestItemsDelegate getItems, GetRequestTraceIdentifierDelegate getTraceIdentifier, GetRequestServicesDelegate getServices, GetRequestAbortedDelegate getAborted, GetRequestHeadersDelegate getHeaders)
         : this()
     {
@@ -75,15 +100,33 @@ public class DelegateRequestContextAccessor : IRequestContextAccessor
         _getHeaders = getHeaders;
     }
 
+    /// <summary>
+    /// Gets the authenticated user information for the current request.
+    /// </summary>
     public ClaimsPrincipal User => _getUser?.Invoke();
 
+    /// <summary>
+    /// Gets the items for the current request.
+    /// </summary>
     public IDictionary<object, object> Items => _getItems?.Invoke();
 
+    /// <summary>
+    /// Gets the request trace identifier.
+    /// </summary>
     public string TraceIdentifier => _getTraceIdentifier?.Invoke();
 
+    /// <summary>
+    /// Gets the injected service provider for the current request.
+    /// </summary>
     public IServiceProvider RequestServices => _getServices?.Invoke();
 
+    /// <summary>
+    /// Gets the request cancellation token.
+    /// </summary>
     public CancellationToken RequestAborted => _getAborted?.Invoke() ?? default;
 
+    /// <summary>
+    /// Gets the request headers.
+    /// </summary>
     public IDictionary<string, StringValues> RequestHeaders => _getHeaders?.Invoke();
 }

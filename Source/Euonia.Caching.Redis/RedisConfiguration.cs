@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using StackExchange.Redis;
+﻿using StackExchange.Redis;
 
 namespace Nerosoft.Euonia.Caching.Redis;
 

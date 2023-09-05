@@ -1,7 +1,6 @@
 ﻿using Nerosoft.Euonia.Bus;
 using Nerosoft.Euonia.Claims;
 using Nerosoft.Euonia.Domain;
-using Nerosoft.Euonia.Modularity;
 using Nerosoft.Euonia.Validation;
 
 namespace Nerosoft.Euonia.Application;

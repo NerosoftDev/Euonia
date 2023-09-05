@@ -56,7 +56,7 @@ public class ModuleManager : IModuleManager, ISingletonDependency
     /// </summary>
     /// <param name="context"></param>
     /// <exception cref="Exception"></exception>
-    public void ShutdownModules(ApplicationShutdownContext context)
+    public void UnloadModules(ApplicationShutdownContext context)
     {
         var modules = _moduleContainer.Modules.Reverse().ToList();
 
@@ -66,7 +66,7 @@ public class ModuleManager : IModuleManager, ISingletonDependency
             {
                 try
                 {
-                    contributor.Shutdown(context, module.Instance);
+                    contributor.Unload(context, module.Instance);
                 }
                 catch (Exception ex)
                 {

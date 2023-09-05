@@ -18,6 +18,11 @@ public class MessageSubscribedEventArgs : EventArgs
         MessageType = messageType;
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MessageSubscribedEventArgs"/> class.
+    /// </summary>
+    /// <param name="messageName"></param>
+    /// <param name="handlerType"></param>
     public MessageSubscribedEventArgs(string messageName, Type handlerType)
     {
         MessageName = messageName;

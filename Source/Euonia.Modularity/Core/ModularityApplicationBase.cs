@@ -72,7 +72,7 @@ public abstract class ModularityApplicationBase : IModularityApplication
         using var scope = ServiceProvider.CreateScope();
         scope.ServiceProvider
              .GetRequiredService<IModuleManager>()
-             .ShutdownModules(new ApplicationShutdownContext(scope.ServiceProvider));
+             .UnloadModules(new ApplicationShutdownContext(scope.ServiceProvider));
     }
 
     /// <summary>

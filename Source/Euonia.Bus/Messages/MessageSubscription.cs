@@ -1,13 +1,26 @@
 ﻿namespace Nerosoft.Euonia.Bus;
 
+/// <summary>
+/// The message subscription.
+/// </summary>
 public class MessageSubscription
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MessageSubscription"/> class.
+    /// </summary>
+    /// <param name="messageType"></param>
+    /// <param name="handlerType"></param>
     public MessageSubscription(Type messageType, Type handlerType)
         : this(messageType.FullName, handlerType)
     {
         MessageType = messageType;
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MessageSubscription"/> class.
+    /// </summary>
+    /// <param name="messageName"></param>
+    /// <param name="handlerType"></param>
     public MessageSubscription(string messageName, Type handlerType)
     {
         MessageName = messageName;

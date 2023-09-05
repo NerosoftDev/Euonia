@@ -2,7 +2,6 @@
 // ReSharper disable UnusedType.Global
 
 using System.Reflection;
-using Nerosoft.Euonia.Pipeline;
 
 namespace Nerosoft.Euonia.Pipeline;
 
@@ -147,6 +146,11 @@ public abstract class PipelineBase : IPipeline
         await @delegate(context);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="context"></param>
+    /// <param name="accumulate"></param>
     public virtual async Task RunAsync(object context, Func<object, Task> accumulate)
     {
         Use((requext, next) =>
@@ -172,6 +176,11 @@ public abstract class PipelineBase : IPipeline
     #endregion
 }
 
+/// <summary>
+/// Specified a abstract implement of <see cref="IPipeline{TRequest,TResponse}"/>.
+/// </summary>
+/// <typeparam name="TRequest"></typeparam>
+/// <typeparam name="TResponse"></typeparam>
 public abstract class PipelineBase<TRequest, TResponse> : IPipeline<TRequest, TResponse>
 {
     private readonly List<Func<PipelineDelegate<TRequest, TResponse>, PipelineDelegate<TRequest, TResponse>>> _components = new();
@@ -316,6 +325,12 @@ public abstract class PipelineBase<TRequest, TResponse> : IPipeline<TRequest, TR
         return await @delegate(context);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="context"></param>
+    /// <param name="accumulate"></param>
+    /// <returns></returns>
     public virtual async Task<TResponse> RunAsync(TRequest context, Func<TRequest, Task<TResponse>> accumulate)
     {
         Use((requext, next) =>
