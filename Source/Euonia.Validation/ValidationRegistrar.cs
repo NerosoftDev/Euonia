@@ -4,6 +4,9 @@ using Nerosoft.Euonia.Modularity;
 
 namespace Nerosoft.Euonia.Validation;
 
+/// <summary>
+/// This class is used by the <see cref="ValidationModule"/> to register the validation services.
+/// </summary>
 public class ValidationRegistrar : DefaultAutomaticRegistration
 {
     /// <inheritdoc />

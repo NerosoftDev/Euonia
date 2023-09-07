@@ -31,6 +31,10 @@ public interface IPipelineBehavior<TRequest, TResponse>
     Task<TResponse> HandleAsync(TRequest context, PipelineDelegate<TRequest, TResponse> next);
 }
 
+/// <summary>
+/// Pipeline behavior to surround the inner handler.
+/// </summary>
+/// <typeparam name="TRequest"></typeparam>
 public interface IPipelineBehavior<TRequest>
 {
     /// <summary>

@@ -2,10 +2,19 @@
 
 namespace Nerosoft.Euonia.Repository.Mongo;
 
+/// <summary>
+/// The model builder.
+/// </summary>
 public class ModelBuilder
 {
     internal Action<Type, ModelProfile> OnConfigure { get; set; }
 
+    /// <summary>
+    /// Sets the configure action for specified model type.
+    /// </summary>
+    /// <param name="buildAction"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public ModelBuilder For<T>(Action<ModelProfile<T>> buildAction)
         where T : class
     {

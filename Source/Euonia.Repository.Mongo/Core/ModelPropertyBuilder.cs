@@ -1,5 +1,8 @@
 ﻿namespace Nerosoft.Euonia.Repository.Mongo;
 
+/// <summary>
+/// The mongo model property builder.
+/// </summary>
 public class ModelPropertyBuilder
 {
     internal ModelPropertyBuilder(string propertyName, Type propertyType)
@@ -18,18 +21,33 @@ public class ModelPropertyBuilder
 
     internal IValueGenerator ValueGenerator { get; private set; }
 
+    /// <summary>
+    /// Sets the element name for current property.
+    /// </summary>
+    /// <param name="elementName"></param>
+    /// <returns></returns>
     public ModelPropertyBuilder HasElementName(string elementName)
     {
         ElementName = elementName;
         return this;
     }
 
+    /// <summary>
+    /// Sets a value indicating whether the current property is required.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
     public ModelPropertyBuilder Required(bool value)
     {
         IsRequired = value;
         return this;
     }
 
+    /// <summary>
+    /// Sets the value generator for current property.
+    /// </summary>
+    /// <typeparam name="TGenerator"></typeparam>
+    /// <returns></returns>
     public ModelPropertyBuilder HasValueGenerator<TGenerator>()
         where TGenerator : class, IValueGenerator, new()
     {
@@ -37,6 +55,11 @@ public class ModelPropertyBuilder
         return this;
     }
 
+    /// <summary>
+    /// Sets the value generator for current property.
+    /// </summary>
+    /// <param name="generator"></param>
+    /// <returns></returns>
     public ModelPropertyBuilder HasValueGenerator(IValueGenerator generator)
     {
         ValueGenerator = generator;

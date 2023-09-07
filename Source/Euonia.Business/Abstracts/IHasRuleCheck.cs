@@ -1,5 +1,8 @@
 ﻿namespace Nerosoft.Euonia.Business;
 
+/// <summary>
+/// Represents that the implemented classes have rule checking.
+/// </summary>
 public interface IHasRuleCheck
 {
     /// <summary>
@@ -25,8 +28,14 @@ public interface IHasRuleCheck
     /// </summary>
     void AllRulesComplete();
 
+	/// <summary>
+	/// Suspends the rule checking.
+	/// </summary>
     void SuspendRuleChecking();
 
+	/// <summary>
+	/// Resumes the rule checking.
+	/// </summary>
     void ResumeRuleChecking();
 
     /// <summary>

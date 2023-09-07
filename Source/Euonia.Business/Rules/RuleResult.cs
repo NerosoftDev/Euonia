@@ -5,12 +5,22 @@
 /// </summary>
 public class RuleResult
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RuleResult"/> class.
+    /// </summary>
+    /// <param name="ruleName"></param>
     public RuleResult(string ruleName)
     {
         RuleName = ruleName;
         Success = true;
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RuleResult"/> class.
+    /// </summary>
+    /// <param name="ruleName"></param>
+    /// <param name="description"></param>
+    /// <param name="severity"></param>
     public RuleResult(string ruleName, string description, RuleSeverity severity)
     {
         RuleName = ruleName;

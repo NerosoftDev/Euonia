@@ -1,5 +1,8 @@
 ﻿namespace Nerosoft.Euonia.Business;
 
+/// <summary>
+/// Interface for field data.
+/// </summary>
 public interface IFieldData
 {
     /// <summary>
@@ -30,6 +33,10 @@ public interface IFieldData
     void Undo();
 }
 
+/// <summary>
+/// Interface for field data of a specific type.
+/// </summary>
+/// <typeparam name="T">The type of the field data.</typeparam>
 public interface IFieldData<T> : IFieldData
 {
     /// <summary>

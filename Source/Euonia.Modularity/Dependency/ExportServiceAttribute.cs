@@ -12,7 +12,7 @@ namespace Nerosoft.Euonia.Modularity;
 public class ExportServiceAttribute : Attribute
 {
     /// <summary>
-    /// 
+    /// Initialize a new instance of <see cref="ExportServiceAttribute"/>.
     /// </summary>
     /// <param name="lifetime"></param>
     public ExportServiceAttribute(ServiceLifetime lifetime)
@@ -21,11 +21,10 @@ public class ExportServiceAttribute : Attribute
     }
 
     /// <summary>
-    /// 
+    /// Initialize a new instance of <see cref="ExportServiceAttribute"/>.
     /// </summary>
     /// <param name="lifetime"></param>
     /// <param name="serviceTypes"></param>
-    /// <exception cref="RegistrationException"></exception>
     public ExportServiceAttribute(ServiceLifetime lifetime, params Type[] serviceTypes)
         : this(lifetime)
     {

@@ -2,6 +2,10 @@
 
 namespace Nerosoft.Euonia.Business;
 
+/// <summary>
+/// The read only object.
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public class ReadOnlyObject<T> : BusinessObject<T>, IReadOnlyObject, IOperableProperty
     where T : ReadOnlyObject<T>
 {
@@ -31,26 +35,62 @@ public class ReadOnlyObject<T> : BusinessObject<T>, IReadOnlyObject, IOperablePr
         return defaultValue;
     }
 
+    /// <summary>
+    /// Gets the value of specified property.
+    /// </summary>
+    /// <param name="propertyInfo"></param>
+    /// <param name="field"></param>
+    /// <typeparam name="TValue"></typeparam>
+    /// <returns></returns>
     protected TValue GetProperty<TValue>(PropertyInfo<TValue> propertyInfo, TValue field)
     {
         return GetProperty(propertyInfo.Name, field, propertyInfo.DefaultValue);
     }
 
+    /// <summary>
+    /// Gets the value of specified property.
+    /// </summary>
+    /// <param name="propertyInfo"></param>
+    /// <param name="field"></param>
+    /// <param name="defaultValue"></param>
+    /// <typeparam name="TValue"></typeparam>
+    /// <returns></returns>
     protected TValue GetProperty<TValue>(PropertyInfo<TValue> propertyInfo, TValue field, TValue defaultValue)
     {
         return GetProperty(propertyInfo.Name, field, defaultValue);
     }
 
+    /// <summary>
+    /// Gets the value of specified property.
+    /// </summary>
+    /// <param name="propertyInfo"></param>
+    /// <param name="field"></param>
+    /// <typeparam name="TField"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
+    /// <returns></returns>
     protected TValue GetPropertyConvert<TField, TValue>(PropertyInfo<TField> propertyInfo, TField field)
     {
         return TypeHelper.CoerceValue<TValue>(typeof(TField), GetProperty(propertyInfo.Name, field, propertyInfo.DefaultValue));
     }
 
+    /// <summary>
+    /// Gets the value of specified property.
+    /// </summary>
+    /// <param name="propertyInfo"></param>
+    /// <typeparam name="TField"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
+    /// <returns></returns>
     protected TValue GetPropertyConvert<TField, TValue>(PropertyInfo<TField> propertyInfo)
     {
         return TypeHelper.CoerceValue<TValue>(typeof(TField), GetProperty(propertyInfo));
     }
 
+    /// <summary>
+    /// Gets the value of specified property.
+    /// </summary>
+    /// <param name="propertyInfo"></param>
+    /// <typeparam name="TValue"></typeparam>
+    /// <returns></returns>
     protected TValue GetProperty<TValue>(PropertyInfo<TValue> propertyInfo)
     {
         TValue result;
@@ -61,6 +101,7 @@ public class ReadOnlyObject<T> : BusinessObject<T>, IReadOnlyObject, IOperablePr
         return result;
     }
 
+    /// <inheritdoc />
     public object GetProperty(IPropertyInfo propertyInfo)
     {
         object result;
@@ -77,6 +118,12 @@ public class ReadOnlyObject<T> : BusinessObject<T>, IReadOnlyObject, IOperablePr
         return result;
     }
 
+    /// <summary>
+    /// Gets the value of specified property.
+    /// </summary>
+    /// <param name="propertyInfo"></param>
+    /// <typeparam name="TValue"></typeparam>
+    /// <returns></returns>
     protected TValue GetProperty<TValue>(IPropertyInfo propertyInfo)
     {
         return (TValue)GetProperty(propertyInfo);
@@ -86,16 +133,38 @@ public class ReadOnlyObject<T> : BusinessObject<T>, IReadOnlyObject, IOperablePr
 
     #region Set Properties
 
+    /// <summary>
+    /// Sets the value of specified property.
+    /// </summary>
+    /// <param name="propertyInfo"></param>
+    /// <param name="field"></param>
+    /// <param name="newValue"></param>
+    /// <typeparam name="TValue"></typeparam>
     protected void SetProperty<TValue>(PropertyInfo<TValue> propertyInfo, ref TValue field, TValue newValue)
     {
         SetProperty(propertyInfo.Name, ref field, newValue);
     }
 
+    /// <summary>
+    /// Sets the value of specified property.
+    /// </summary>
+    /// <param name="propertyInfo"></param>
+    /// <param name="field"></param>
+    /// <param name="newValue"></param>
+    /// <typeparam name="TField"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
     protected void SetPropertyConvert<TField, TValue>(PropertyInfo<TField> propertyInfo, ref TField field, TValue newValue)
     {
         SetPropertyConvert(propertyInfo.Name, ref field, newValue);
     }
 
+    /// <summary>
+    /// Sets the value of specified property.
+    /// </summary>
+    /// <param name="propertyName"></param>
+    /// <param name="field"></param>
+    /// <param name="newValue"></param>
+    /// <typeparam name="TValue"></typeparam>
     protected void SetProperty<TValue>(string propertyName, ref TValue field, TValue newValue)
     {
         #region Check to see if the property is marked with RelationshipTypes.PrivateField
@@ -138,6 +207,14 @@ public class ReadOnlyObject<T> : BusinessObject<T>, IReadOnlyObject, IOperablePr
         }
     }
 
+    /// <summary>
+    /// Sets the value of specified property.
+    /// </summary>
+    /// <param name="propertyName"></param>
+    /// <param name="field"></param>
+    /// <param name="newValue"></param>
+    /// <typeparam name="TField"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
     protected void SetPropertyConvert<TField, TValue>(string propertyName, ref TField field, TValue newValue)
     {
         #region Check to see if the property is marked with RelationshipTypes.PrivateField
@@ -187,6 +264,13 @@ public class ReadOnlyObject<T> : BusinessObject<T>, IReadOnlyObject, IOperablePr
         }
     }
 
+    /// <summary>
+    /// Sets the value of specified property.
+    /// </summary>
+    /// <param name="propertyInfo"></param>
+    /// <param name="newValue"></param>
+    /// <typeparam name="TField"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
     protected void SetPropertyConvert<TField, TValue>(PropertyInfo<TField> propertyInfo, TValue newValue)
     {
         if (!IsBypassingRuleChecks && !CanWriteProperty(propertyInfo, true))
@@ -218,6 +302,12 @@ public class ReadOnlyObject<T> : BusinessObject<T>, IReadOnlyObject, IOperablePr
         LoadPropertyValue(propertyInfo, oldValue, TypeHelper.CoerceValue<TField>(typeof(TValue), newValue), !IsBypassingRuleChecks);
     }
 
+    /// <summary>
+    /// Sets the value of specified property.
+    /// </summary>
+    /// <param name="propertyInfo"></param>
+    /// <param name="newValue"></param>
+    /// <typeparam name="TValue"></typeparam>
     protected void SetProperty<TValue>(PropertyInfo<TValue> propertyInfo, TValue newValue)
     {
         if (!IsBypassingRuleChecks && !CanWriteProperty(propertyInfo, true))
@@ -249,6 +339,7 @@ public class ReadOnlyObject<T> : BusinessObject<T>, IReadOnlyObject, IOperablePr
         LoadPropertyValue(propertyInfo, oldValue, newValue, !IsBypassingRuleChecks);
     }
 
+    /// <inheritdoc />
     public void SetProperty(IPropertyInfo propertyInfo, object newValue)
     {
         if (!IsBypassingRuleChecks && !CanWriteProperty(propertyInfo, true))
@@ -269,6 +360,12 @@ public class ReadOnlyObject<T> : BusinessObject<T>, IReadOnlyObject, IOperablePr
         }
     }
 
+    /// <summary>
+    /// Sets the value of specified property.
+    /// </summary>
+    /// <param name="propertyInfo"></param>
+    /// <param name="newValue"></param>
+    /// <typeparam name="TValue"></typeparam>
     protected virtual void SetProperty<TValue>(IPropertyInfo propertyInfo, TValue newValue)
     {
         SetProperty(propertyInfo, (object)newValue);

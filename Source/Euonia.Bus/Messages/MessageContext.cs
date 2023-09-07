@@ -110,6 +110,9 @@ public class MessageContext : IDisposable
         _disposedValue = true;
     }
 
+	/// <summary>
+	/// Finalizes the current instance of the <see cref="MessageContext"/> class.
+	/// </summary>
     ~MessageContext()
     {
         Dispose(disposing: false);

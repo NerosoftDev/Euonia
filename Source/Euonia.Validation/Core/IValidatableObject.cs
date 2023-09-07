@@ -2,6 +2,9 @@
 
 namespace Nerosoft.Euonia.Validation;
 
+/// <summary>
+/// Interface for validating objects.
+/// </summary>
 public interface IValidatableObject
 {
     /// <summary>

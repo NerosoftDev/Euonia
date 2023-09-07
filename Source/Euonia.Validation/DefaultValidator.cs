@@ -5,6 +5,9 @@ using ValidationException = Nerosoft.Euonia.Core.ValidationException;
 
 namespace Nerosoft.Euonia.Validation;
 
+/// <summary>
+/// The default validator.
+/// </summary>
 public class DefaultValidator : IValidator
 {
     private readonly IServiceProvider _service;
