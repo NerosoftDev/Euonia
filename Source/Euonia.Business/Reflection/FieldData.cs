@@ -1,12 +1,18 @@
-﻿using System.Reactive.Linq;
-using System.Reactive.Subjects;
+﻿using System.Reactive.Subjects;
 
 namespace Nerosoft.Euonia.Business;
 
+/// <summary>
+/// The field data.
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public class FieldData<T> : IFieldData<T>
 {
     private readonly Stack<T> _histories = new();
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FieldData{T}"/> class.
+    /// </summary>
     public FieldData()
     {
         ObservableValue.Subscribe(value =>
@@ -15,6 +21,7 @@ public class FieldData<T> : IFieldData<T>
         });
     }
 
+    /// <inheritdoc />
     public FieldData(string name)
         : this()
     {
@@ -42,11 +49,13 @@ public class FieldData<T> : IFieldData<T>
         }
     }
 
+    /// <inheritdoc />
     public void MarkAsUnchanged()
     {
         _histories.Clear();
     }
 
+    /// <inheritdoc />
     public void Undo()
     {
         if (_histories.Count > 0 && _histories.TryPop(out var value))
@@ -61,6 +70,9 @@ public class FieldData<T> : IFieldData<T>
         set => Value = value == null ? default : (T)value;
     }
 
+    /// <summary>
+    /// Gets the observable value.
+    /// </summary>
     public IObservable<T> ObservableValue => _subject;
 
     /// <inheritdoc />

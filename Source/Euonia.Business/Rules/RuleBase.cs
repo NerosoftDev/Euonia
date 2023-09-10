@@ -1,62 +1,78 @@
 ﻿using System.Reflection;
-using System.Text;
 
 namespace Nerosoft.Euonia.Business;
 
+/// <summary>
+/// The rule base.
+/// </summary>
 public abstract class RuleBase : IRuleBase
 {
-    protected RuleBase()
-    {
-        Name = GenerateName(GetType());
-    }
+	/// <summary>
+	/// Initializes a new instance of the <see cref="RuleBase"/> class.
+	/// </summary>
+	protected RuleBase()
+	{
+		Name = GenerateName(GetType());
+	}
 
-    protected RuleBase(IPropertyInfo property)
-    {
-        Name = GenerateName(GetType(), property.Name);
-        Property = property;
-    }
+	/// <summary>
+	/// Initializes a new instance of the <see cref="RuleBase"/> class.
+	/// </summary>
+	/// <param name="property"></param>
+	protected RuleBase(IPropertyInfo property)
+	{
+		Name = GenerateName(GetType(), property.Name);
+		Property = property;
+	}
 
-    protected RuleBase(IPropertyInfo property, MemberInfo validationType)
-    {
-        Name = GenerateName(GetType(), property.Name, validationType.Name);
-        Property = property;
-    }
+	/// <summary>
+	/// Initializes a new instance of the <see cref="RuleBase"/> class.
+	/// </summary>
+	/// <param name="property"></param>
+	/// <param name="validationType"></param>
+	protected RuleBase(IPropertyInfo property, MemberInfo validationType)
+	{
+		Name = GenerateName(GetType(), property.Name, validationType.Name);
+		Property = property;
+	}
 
-    public string Name { get; }
-    public IPropertyInfo Property { get; }
+	/// <inheritdoc />
+	public string Name { get; }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public virtual List<IPropertyInfo> RelatedProperties { get; } = new();
+	/// <inheritdoc />
+	public IPropertyInfo Property { get; }
 
-    public int Priority { get; set; }
+	/// <inheritdoc />
+	public virtual List<IPropertyInfo> RelatedProperties { get; } = new();
 
-    /// <summary>
-    /// Execute the rule check logic.
-    /// </summary>
-    /// <param name="context"></param>
-    /// <param name="cancellationToken"></param>
-    public virtual async Task ExecuteAsync(IRuleContext context, CancellationToken cancellationToken = default)
-    {
-        await Task.CompletedTask;
-    }
+	/// <inheritdoc />
+	public int Priority { get; set; }
 
-    private static string GenerateName(Type ruleType, params string[] names)
-    {
-        var fullName = $"{ruleType.Namespace}.{ruleType.Name}";
+	/// <summary>
+	/// Execute the rule check logic.
+	/// </summary>
+	/// <param name="context"></param>
+	/// <param name="cancellationToken"></param>
+	public virtual async Task ExecuteAsync(IRuleContext context, CancellationToken cancellationToken = default)
+	{
+		await Task.CompletedTask;
+	}
 
-        return GenerateName(fullName, names);
-    }
+	private static string GenerateName(Type ruleType, params string[] names)
+	{
+		var fullName = $"{ruleType.Namespace}.{ruleType.Name}";
 
-    private static string GenerateName(string typeName, params string[] names)
-    {
-        var builder = new StringBuilder($"rule://{typeName}");
-        foreach (var name in names)
-        {
-            builder.Append($"/{name}");
-        }
+		return GenerateName(fullName, names);
+	}
 
-        return builder.ToString().ToLowerInvariant();
-    }
+	private static string GenerateName(string typeName, params string[] names)
+	{
+		var builder = new StringBuilder($"rule://{typeName}");
+		foreach (var name in names)
+		{
+			builder.Append($"/{name}");
+		}
+
+		return builder.ToString().ToLowerInvariant();
+	}
 }
