@@ -3,27 +3,37 @@
 namespace Nerosoft.Euonia.Validation;
 
 /// <summary>
-/// 
+/// The generic validator for specified type.
 /// </summary>
 /// <typeparam name="TValue"></typeparam>
 public class GenericValidator<TValue> : AbstractValidator<TValue>
 {
-    private readonly Func<TValue, string> _function;
+	private readonly Func<TValue, string> _function;
 
-    public GenericValidator(Expression<Func<TValue, string>> expression)
-    {
-        _function = expression.Compile();
-    }
+	/// <summary>
+	/// Initializes a new instance of the <see cref="GenericValidator{TValue}"/> class.
+	/// </summary>
+	/// <param name="expression"></param>
+	public GenericValidator(Expression<Func<TValue, string>> expression)
+	{
+		_function = expression.Compile();
+	}
 
-    public GenericValidator(Expression<Func<TValue, bool>> expression, string message)
-    {
-        var function = expression.Compile();
-        _function = value => function(value) ? string.Empty : message;
-    }
+	/// <summary>
+	/// Initializes a new instance of the <see cref="GenericValidator{TValue}"/> class.
+	/// </summary>
+	/// <param name="expression"></param>
+	/// <param name="message"></param>
+	public GenericValidator(Expression<Func<TValue, bool>> expression, string message)
+	{
+		var function = expression.Compile();
+		_function = value => function(value) ? string.Empty : message;
+	}
 
-    public override bool Validate(TValue value)
-    {
-        Message = _function?.Invoke(value);
-        return string.IsNullOrEmpty(Message);
-    }
+	/// <inheritdoc/>
+	public override bool Validate(TValue value)
+	{
+		Message = _function?.Invoke(value);
+		return string.IsNullOrEmpty(Message);
+	}
 }

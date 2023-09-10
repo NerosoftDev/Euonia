@@ -3,258 +3,272 @@ using System.Reflection;
 
 namespace Nerosoft.Euonia.Business;
 
+/// <summary>
+/// Implementation of <see cref="IRules"/> interface.
+/// </summary>
 public class Rules : IRules
 {
-    private static readonly object _lockObject = new();
+	private static readonly object _lockObject = new();
 
-    internal Rules(IHasRuleCheck @object)
-    {
-        _target = @object;
-    }
+	internal Rules(IHasRuleCheck @object)
+	{
+		_target = @object;
+	}
 
-    private IHasRuleCheck _target;
-    public object Target => _target;
+	private IHasRuleCheck _target;
 
-    private RuleManager _ruleManager;
+	/// <inheritdoc />
+	public object Target => _target;
 
-    /// <summary>
-    /// Gets the rule manager.
-    /// </summary>
-    internal RuleManager RuleManager
-    {
-        get
-        {
-            if (_ruleManager == null && Target != null)
-            {
-                _ruleManager = RuleManager.GetRules(Target.GetType());
-            }
+	private RuleManager _ruleManager;
 
-            return _ruleManager;
-        }
-    }
+	/// <summary>
+	/// Gets the rule manager.
+	/// </summary>
+	internal RuleManager RuleManager
+	{
+		get
+		{
+			if (_ruleManager == null && Target != null)
+			{
+				_ruleManager = RuleManager.GetRules(Target.GetType());
+			}
 
-    /// <summary>
-    /// Gets a value indicating whether there are any currently broken rules, which would mean the object is not valid.
-    /// </summary>
-    public bool IsValid => BrokenRules?.ErrorCount == 0;
+			return _ruleManager;
+		}
+	}
 
-    internal BrokenRuleCollection BrokenRules { get; } = new();
+	/// <summary>
+	/// Gets a value indicating whether there are any currently broken rules, which would mean the object is not valid.
+	/// </summary>
+	public bool IsValid => BrokenRules?.ErrorCount == 0;
 
-    public bool SuppressRuleChecking { get; set; }
+	internal BrokenRuleCollection BrokenRules { get; } = new();
 
-    private List<IRuleBase> RunningRules { get; } = new();
+	/// <summary>
+	/// Gets or sets a value indicating whether to suppress rule checking.
+	/// </summary>
+	public bool SuppressRuleChecking { get; set; }
 
-    public bool HasRunningRules { get; private set; }
+	private List<IRuleBase> RunningRules { get; } = new();
 
-    internal void SetTarget(IHasRuleCheck target)
-    {
-        _target = target;
-    }
+	/// <summary>
+	/// Gets a value indicating whether there are any currently running rules.
+	/// </summary>
+	public bool HasRunningRules { get; private set; }
 
-    /// <summary>
-    /// Add rule to business rule manager.
-    /// </summary>
-    /// <param name="rule"></param>
-    public void AddRule(IRuleBase rule)
-    {
-        RuleManager.Rules.Add(rule);
-    }
+	internal void SetTarget(IHasRuleCheck target)
+	{
+		_target = target;
+	}
 
-    #region Rule check
+	/// <summary>
+	/// Add rule to business rule manager.
+	/// </summary>
+	/// <param name="rule"></param>
+	public void AddRule(IRuleBase rule)
+	{
+		RuleManager.Rules.Add(rule);
+	}
 
-    /// <summary>
-    /// Check rule for current object.
-    /// </summary>
-    /// <param name="cascade"></param>
-    /// <returns></returns>
-    public List<string> CheckObjectRules(bool cascade)
-    {
-        if (SuppressRuleChecking)
-        {
-            return new List<string>();
-        }
+	#region Rule check
 
-        var currentRunningState = HasRunningRules;
-        HasRunningRules = true;
-        var rules = RuleManager.Rules.Where(t => t.Property == null).OrderBy(t => t.Priority);
-        BrokenRules.ClearRules(null);
-        var (properties, tasks) = RunRules(rules, cascade);
-        Task.WaitAll(tasks.ToArray());
-        HasRunningRules = currentRunningState;
-        return properties.Distinct().ToList();
-    }
+	/// <summary>
+	/// Check rule for current object.
+	/// </summary>
+	/// <param name="cascade"></param>
+	/// <returns></returns>
+	public List<string> CheckObjectRules(bool cascade)
+	{
+		if (SuppressRuleChecking)
+		{
+			return new List<string>();
+		}
 
-    /// <summary>
-    /// Check rule for specified property.
-    /// </summary>
-    /// <param name="property"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentNullException"></exception>
-    public List<string> CheckRules(IPropertyInfo property)
-    {
-        if (property == null)
-        {
-            throw new ArgumentNullException(nameof(property));
-        }
+		var currentRunningState = HasRunningRules;
+		HasRunningRules = true;
+		var rules = RuleManager.Rules.Where(t => t.Property == null).OrderBy(t => t.Priority);
+		BrokenRules.ClearRules(null);
+		var (properties, tasks) = RunRules(rules, cascade);
+		Task.WaitAll(tasks.ToArray());
+		HasRunningRules = currentRunningState;
+		return properties.Distinct().ToList();
+	}
 
-        if (SuppressRuleChecking)
-        {
-            return new List<string> { property.Name };
-        }
+	/// <summary>
+	/// Check rule for specified property.
+	/// </summary>
+	/// <param name="property"></param>
+	/// <returns></returns>
+	/// <exception cref="ArgumentNullException"></exception>
+	public List<string> CheckRules(IPropertyInfo property)
+	{
+		if (property == null)
+		{
+			throw new ArgumentNullException(nameof(property));
+		}
 
-        var (properties, tasks) = CheckRulesForProperty(property, true);
-        Task.WaitAll(tasks.ToArray());
-        return properties.Distinct().ToList();
-    }
+		if (SuppressRuleChecking)
+		{
+			return new List<string> { property.Name };
+		}
 
-    /// <summary>
-    /// Execute all rules check logic for specified property.
-    /// </summary>
-    /// <param name="property">
-    /// The property to execute property rule check.
-    /// </param>
-    /// <param name="cascade"></param>
-    /// <returns></returns>
-    private Tuple<List<string>, List<Task>> CheckRulesForProperty(IPropertyInfo property, bool cascade)
-    {
-        var rules = from rule in RuleManager.Rules
-                    where ReferenceEquals(rule.Property, property) // || rule.RelatedProperties.Contains(property)
-                    orderby rule.Priority
-                    select rule;
+		var (properties, tasks) = CheckRulesForProperty(property, true);
+		Task.WaitAll(tasks.ToArray());
+		return properties.Distinct().ToList();
+	}
 
-        BrokenRules.ClearRules(property);
+	/// <summary>
+	/// Execute all rules check logic for specified property.
+	/// </summary>
+	/// <param name="property">
+	/// The property to execute property rule check.
+	/// </param>
+	/// <param name="cascade"></param>
+	/// <returns></returns>
+	private Tuple<List<string>, List<Task>> CheckRulesForProperty(IPropertyInfo property, bool cascade)
+	{
+		var rules = from rule in RuleManager.Rules
+		            where ReferenceEquals(rule.Property, property) // || rule.RelatedProperties.Contains(property)
+		            orderby rule.Priority
+		            select rule;
 
-        return RunRules(rules, cascade);
-    }
+		BrokenRules.ClearRules(property);
 
-    /// <summary>
-    /// Run rule checks.
-    /// </summary>
-    /// <param name="rules"></param>
-    /// <param name="cascade"></param>
-    /// <returns></returns>
-    private Tuple<List<string>, List<Task>> RunRules(IEnumerable<IRuleBase> rules, bool cascade)
-    {
-        var affectProperties = new List<string>();
-        var tasks = new List<Task>();
-        foreach (var rule in rules)
-        {
-            var context = new RuleContext(ruleContext =>
-            {
-                lock (_lockObject)
-                {
-                    BrokenRules.Add(ruleContext.Results, ruleContext.Rule.Property?.Name);
+		return RunRules(rules, cascade);
+	}
 
-                    RunningRules.Remove(ruleContext.Rule);
+	/// <summary>
+	/// Run rule checks.
+	/// </summary>
+	/// <param name="rules"></param>
+	/// <param name="cascade"></param>
+	/// <returns></returns>
+	private Tuple<List<string>, List<Task>> RunRules(IEnumerable<IRuleBase> rules, bool cascade)
+	{
+		var affectProperties = new List<string>();
+		var tasks = new List<Task>();
+		foreach (var rule in rules)
+		{
+			var context = new RuleContext(ruleContext =>
+			{
+				lock (_lockObject)
+				{
+					BrokenRules.Add(ruleContext.Results, ruleContext.Rule.Property?.Name);
 
-                    var properties = Enumerable.Empty<IPropertyInfo>();
+					RunningRules.Remove(ruleContext.Rule);
 
-                    if (ruleContext.Rule.Property != null)
-                    {
-                        properties = properties.Append(ruleContext.Rule.Property);
-                    }
+					var properties = Enumerable.Empty<IPropertyInfo>();
 
-                    properties = properties.Concat(ruleContext.Rule.RelatedProperties);
+					if (ruleContext.Rule.Property != null)
+					{
+						properties = properties.Append(ruleContext.Rule.Property);
+					}
 
-                    foreach (var property in properties)
-                    {
-                        if (RunningRules.All(r => r.Property != property))
-                        {
-                            _target.RuleCheckComplete(property);
-                        }
-                    }
+					properties = properties.Concat(ruleContext.Rule.RelatedProperties);
 
-                    if (!HasRunningRules)
-                    {
-                        _target.AllRulesComplete();
-                    }
-                }
-            })
-            {
-                Target = Target,
-                Rule = rule,
-                PropertyName = rule.Property?.Name
-            };
+					foreach (var property in properties)
+					{
+						if (RunningRules.All(r => r.Property != property))
+						{
+							_target.RuleCheckComplete(property);
+						}
+					}
 
-            if (cascade)
-            {
-                lock (_lockObject)
-                {
-                    foreach (var property in rule.RelatedProperties)
-                    {
-                        var (properties, cascadeTasks) = CheckRulesForProperty(property, false);
-                        affectProperties.AddRange(properties);
-                        tasks.AddRange(cascadeTasks);
-                    }
-                }
-            }
+					if (!HasRunningRules)
+					{
+						_target.AllRulesComplete();
+					}
+				}
+			})
+			{
+				Target = Target,
+				Rule = rule,
+				PropertyName = rule.Property?.Name
+			};
 
-            try
-            {
-                RunningRules.Add(rule);
-                tasks.Add(RunAsync(rule, context));
-            }
-            catch (Exception ex)
-            {
-                context.AddErrorResult($"{rule.Name}: {ex.Message}");
-                context.Complete();
-            }
-        }
+			if (cascade)
+			{
+				lock (_lockObject)
+				{
+					foreach (var property in rule.RelatedProperties)
+					{
+						var (properties, cascadeTasks) = CheckRulesForProperty(property, false);
+						affectProperties.AddRange(properties);
+						tasks.AddRange(cascadeTasks);
+					}
+				}
+			}
 
-        return Tuple.Create(affectProperties, tasks);
-    }
+			try
+			{
+				RunningRules.Add(rule);
+				tasks.Add(RunAsync(rule, context));
+			}
+			catch (Exception ex)
+			{
+				context.AddErrorResult($"{rule.Name}: {ex.Message}");
+				context.Complete();
+			}
+		}
 
-    /// <summary>
-    /// Run a async rule check job.
-    /// </summary>
-    /// <param name="rule"></param>
-    /// <param name="context"></param>
-    private static async Task RunAsync(IRuleBase rule, IRuleContext context)
-    {
-        try
-        {
-            await rule.ExecuteAsync(context);
-        }
-        catch (Exception ex)
-        {
-            context.AddErrorResult($"{rule.Name}: {ex.Message}");
-        }
-        finally
-        {
-            context.Complete();
-        }
-    }
+		return Tuple.Create(affectProperties, tasks);
+	}
 
-    #endregion
+	/// <summary>
+	/// Run a async rule check job.
+	/// </summary>
+	/// <param name="rule"></param>
+	/// <param name="context"></param>
+	private static async Task RunAsync(IRuleBase rule, IRuleContext context)
+	{
+		try
+		{
+			await rule.ExecuteAsync(context);
+		}
+		catch (Exception ex)
+		{
+			context.AddErrorResult($"{rule.Name}: {ex.Message}");
+		}
+		finally
+		{
+			context.Complete();
+		}
+	}
 
-    #region DataAnnotations
+	#endregion
 
-    public void AddDataAnnotations()
-    {
-        var registeredProperties = ((IBusinessObject)_target).FieldManager.GetRegisteredProperties();
+	#region DataAnnotations
 
-        if (registeredProperties == null || registeredProperties.Count == 0)
-        {
-            return;
-        }
+	/// <summary>
+	/// Add data annotations to business rule manager.
+	/// </summary>
+	public void AddDataAnnotations()
+	{
+		var registeredProperties = ((IBusinessObject)_target).FieldManager.GetRegisteredProperties();
 
-        var properties = _target.GetType().GetRuntimeProperties();
+		if (registeredProperties == null || registeredProperties.Count == 0)
+		{
+			return;
+		}
 
-        foreach (var property in properties)
-        {
-            var registeredProperty = registeredProperties.FirstOrDefault(t => t.Name == property.Name);
-            if (registeredProperty == null)
-            {
-                continue;
-            }
+		var properties = _target.GetType().GetRuntimeProperties();
 
-            var attributes = property.GetCustomAttributes<ValidationAttribute>(true);
-            foreach (var attribute in attributes)
-            {
-                AddRule(new DataAnnotationRule(registeredProperty, attribute));
-            }
-        }
-    }
+		foreach (var property in properties)
+		{
+			var registeredProperty = registeredProperties.FirstOrDefault(t => t.Name == property.Name);
+			if (registeredProperty == null)
+			{
+				continue;
+			}
 
-    #endregion
+			var attributes = property.GetCustomAttributes<ValidationAttribute>(true);
+			foreach (var attribute in attributes)
+			{
+				AddRule(new DataAnnotationRule(registeredProperty, attribute));
+			}
+		}
+	}
+
+	#endregion
 }
