@@ -4,8 +4,8 @@ namespace Nerosoft.Euonia.Caching.Redis;
 
 internal static class RetryHelper
 {
-    private const string ERROR_MESSAGE = "Maximum number of tries exceeded to perform the action: {0}.";
-    private const string WARNING_MESSAGE = "Exception occurred performing an action. Retrying... {0}/{1}";
+    // private const string ERROR_MESSAGE = "Maximum number of tries exceeded to perform the action: {0}.";
+    // private const string WARNING_MESSAGE = "Exception occurred performing an action. Retrying... {0}/{1}";
 
     public static T Retry<T>(Func<T> action, int timeOut, int retries)
     {

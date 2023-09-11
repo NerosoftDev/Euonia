@@ -1,5 +1,4 @@
 ﻿using System.Runtime.ExceptionServices;
-using System.Text;
 
 public static partial class Extensions
 {
