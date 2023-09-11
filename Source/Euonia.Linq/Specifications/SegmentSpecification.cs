@@ -33,11 +33,13 @@ public class SegmentSpecification<TTarget, TProperty, TValue> : ISpecification<T
         _property = property ?? throw new ArgumentNullException(nameof(property), "Property expression can not null.");
         if (min == null && max == null)
         {
-            throw new ArgumentNullException("min/max", $"At least one of {nameof(min)}/{nameof(max)} parameter is not null.");
+	        // ReSharper disable once NotResolvedInText
+	        throw new ArgumentNullException("min/max", $"At least one of {nameof(min)}/{nameof(max)} parameter is not null.");
         }
-        else if (IsMinGreaterThanMax(min, max))
+
+        if (IsMinGreaterThanMax(min, max))
         {
-            throw new ArgumentException($"Value of {min} can not greater than {max}.");
+	        throw new ArgumentException($"Value of {min} can not greater than {max}.");
         }
 
         MinimumValue = GetValue(min);
