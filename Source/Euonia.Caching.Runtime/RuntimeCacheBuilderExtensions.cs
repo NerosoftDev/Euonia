@@ -9,7 +9,7 @@ namespace Nerosoft.Euonia.Caching;
 public static class RuntimeCacheBuilderExtensions
 {
 
-    private const string DefaultName = "default";
+    private const string DEFAULT_NAME = "default";
 
     /// <summary>
     /// Adds a <see cref="RuntimeCacheHandle{TValue}" /> using a <see cref="MemoryCache"/>.
@@ -23,7 +23,7 @@ public static class RuntimeCacheBuilderExtensions
     /// </returns>
     /// <returns>The builder part.</returns>
     public static ConfigurationBuilderCacheHandlePart WithRuntimeCacheHandle(this ConfigurationBuilderCachePart part, bool isBackplaneSource = false)
-        => part?.WithHandle(typeof(RuntimeCacheHandle<>), DefaultName, isBackplaneSource);
+        => part?.WithHandle(typeof(RuntimeCacheHandle<>), DEFAULT_NAME, isBackplaneSource);
 
     /// <summary>
     /// Adds a <see cref="RuntimeCacheHandle{TValue}" /> using a <see cref="MemoryCache"/> instance with the given <paramref name="instanceName"/>.

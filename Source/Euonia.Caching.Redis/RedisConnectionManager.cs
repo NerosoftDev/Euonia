@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using StackExchange.Redis;
 
@@ -147,8 +148,9 @@ internal class RedisConnectionManager
                             throw new InvalidOperationException($"Connection to '{RemoveCredentials(_connectionString)}' failed.");
                         }
 
-                        connection.ConnectionRestored += (sender, args) =>
+                        connection.ConnectionRestored += (_, args) =>
                         {
+	                        Debug.WriteLine("Connection restored, type: '{0}', failure: '{1}'", args.ConnectionType, args.FailureType);
                             //_logger.LogInfo(args.Exception, "Connection restored, type: '{0}', failure: '{1}'", args.ConnectionType, args.FailureType);
                         };
 
@@ -203,6 +205,7 @@ internal class RedisConnectionManager
         public override void Write(char[] buffer, int index, int count)
         {
             var logValue = new string(buffer, index, count);
+            Debug.WriteLine(logValue);
         }
     }
 }
