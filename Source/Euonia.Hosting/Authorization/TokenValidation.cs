@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Http;
 
 namespace Microsoft.AspNetCore.Authorization;
 
+/// <summary>
+/// The jwt token validation class.
+/// </summary>
 public class TokenValidation
 {
     /// <summary>
@@ -14,8 +17,7 @@ public class TokenValidation
         string Select(HttpContext context)
         {
             var (scheme, credential) = GetSchemeAndCredential(context);
-            if (scheme.Equals("Bearer", StringComparison.OrdinalIgnoreCase) &&
-                !credential.Contains("."))
+            if (scheme.Equals("Bearer", StringComparison.OrdinalIgnoreCase) && !credential.Contains('.'))
             {
                 return introspectionScheme;
             }
