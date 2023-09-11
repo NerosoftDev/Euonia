@@ -3,16 +3,28 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Nerosoft.Euonia.Business;
 
+/// <summary>
+/// The business object factory.
+/// </summary>
 public class BusinessObjectFactory : IObjectFactory
 {
     private readonly IServiceProvider _provider;
     private readonly IObjectActivator _activator;
 
+    /// <summary>
+    /// Initialize a new instance of <see cref="BusinessObjectFactory"/>.
+    /// </summary>
+    /// <param name="provider"></param>
     public BusinessObjectFactory(IServiceProvider provider)
     {
         _provider = provider;
     }
 
+    /// <summary>
+    /// Initialize a new instance of <see cref="BusinessObjectFactory"/>.
+    /// </summary>
+    /// <param name="provider"></param>
+    /// <param name="activator"></param>
     public BusinessObjectFactory(IServiceProvider provider, IObjectActivator activator)
     {
         _provider = provider;
@@ -101,12 +113,12 @@ public class BusinessObjectFactory : IObjectFactory
         var method = target switch
         {
             IEditableObject editableObject => editableObject.State switch
-            {
-                ObjectEditState.Insert => ObjectReflector.FindFactoryMethod<TTarget, FactoryInsertAttribute>(Array.Empty<object>()),
-                ObjectEditState.Update => ObjectReflector.FindFactoryMethod<TTarget, FactoryUpdateAttribute>(Array.Empty<object>()),
-                ObjectEditState.Delete => ObjectReflector.FindFactoryMethod<TTarget, FactoryDeleteAttribute>(Array.Empty<object>()),
-                _ => throw new ArgumentOutOfRangeException()
-            },
+			{
+				ObjectEditState.Insert => ObjectReflector.FindFactoryMethod<TTarget, FactoryInsertAttribute>(Array.Empty<object>()),
+				ObjectEditState.Update => ObjectReflector.FindFactoryMethod<TTarget, FactoryUpdateAttribute>(Array.Empty<object>()),
+				ObjectEditState.Delete => ObjectReflector.FindFactoryMethod<TTarget, FactoryDeleteAttribute>(Array.Empty<object>()),
+				_ => throw new ArgumentOutOfRangeException(nameof(target), "Invalid state")
+			},
             ICommandObject => ObjectReflector.FindFactoryMethod<TTarget, FactoryExecuteAttribute>(Array.Empty<object>()),
             IReadOnlyObject => throw new InvalidOperationException("The operation can not apply for ReadOnlyObject."),
             _ => ObjectReflector.FindFactoryMethod<TTarget, FactoryUpdateAttribute>(Array.Empty<object>())
@@ -176,11 +188,11 @@ public class BusinessObjectFactory : IObjectFactory
 
     #region Supports
 
-    private async Task InvokeAsync<Target>(MethodInfo method, Target target, object[] parameters)
+    private static async Task InvokeAsync<TTarget>(MethodInfo method, TTarget target, object[] parameters)
     {
         if (method.IsAsync())
         {
-            await (Task)method.Invoke(target, parameters: parameters);
+            await ((Task)method.Invoke(target, parameters: parameters))!;
         }
         else
         {
