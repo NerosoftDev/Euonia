@@ -19,7 +19,7 @@ namespace Nerosoft.Euonia.Caching.Internal;
 /// <typeparam name="TValue">Inherited object type of the owning cache handle.</typeparam>
 public sealed class CacheStats<TValue> : IDisposable
 {
-    private static readonly string _nullRegionKey = Guid.NewGuid().ToString();
+	private static readonly string _nullRegionKey = Guid.NewGuid().ToString();
     private readonly ConcurrentDictionary<string, CacheStatsCounter> _counters;
     private readonly bool _isStatsEnabled;
 
@@ -350,7 +350,8 @@ public sealed class CacheStats<TValue> : IDisposable
     {
         if (disposeManaged)
         {
-        }
+			_counters.Clear();
+		}
     }
 
     private CacheStatsCounter GetCounter(string key)

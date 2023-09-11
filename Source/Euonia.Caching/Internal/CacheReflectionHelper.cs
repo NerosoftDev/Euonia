@@ -41,7 +41,7 @@ internal static class CacheReflectionHelper
         {
             var handleType = handleConfiguration.HandleType;
 
-            Type instanceType = null;
+            Type instanceType;
 
             ValidateCacheHandleGenericTypeArguments(handleType);
 
@@ -154,8 +154,8 @@ internal static class CacheReflectionHelper
 
         if (constructors.Any(p => p.GetParameters().Length == 0))
         {
-            // no match found, will try empty ctor
-            return new object[] { };
+			// no match found, will try empty ctor
+			return Array.Empty<object>();
         }
 
         // give more detailed error of what failed
@@ -164,11 +164,11 @@ internal static class CacheReflectionHelper
             var ctorTypes = string.Join(", ", lastCtor.GetParameters().Select(p => p.ParameterType.Name).ToArray());
 
             throw new InvalidOperationException(
-                $"Could not find a matching constructor for type '{lastCtor.DeclaringType.Name}'. Trying to match [{ctorTypes}] but missing {lastParamMiss.ParameterType.Name}");
+                $"Could not find a matching constructor for type '{lastCtor.DeclaringType?.Name}'. Trying to match [{ctorTypes}] but missing {lastParamMiss.ParameterType.Name}");
         }
 
         throw new InvalidOperationException(
-            $"Could not find a matching or empty constructor for type '{lastCtor.DeclaringType.Name}'.");
+            $"Could not find a matching or empty constructor for type '{lastCtor?.DeclaringType?.Name}'.");
     }
 
     private static IEnumerable<Type> GetGenericBaseTypes(this Type type)
