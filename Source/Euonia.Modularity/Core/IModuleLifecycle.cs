@@ -13,9 +13,9 @@ public interface IModuleLifecycle : ITransientDependency
     void Initialize(ApplicationInitializationContext context, IModuleContext module);
 
     /// <summary>
-    /// Shutdowns the module.
+    /// Releases the module.
     /// </summary>
-    /// <param name="context"></param>
-    /// <param name="module"></param>
-    void Unload(ApplicationShutdownContext context, IModuleContext module);
+    /// <param name="context">The application shutdown context.</param>
+    /// <param name="module">The module context.</param>
+    void Finalize(ApplicationShutdownContext context, IModuleContext module);
 }

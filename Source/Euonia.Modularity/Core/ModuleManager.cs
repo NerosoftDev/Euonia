@@ -66,7 +66,7 @@ public class ModuleManager : IModuleManager, ISingletonDependency
             {
                 try
                 {
-                    contributor.Unload(context, module.Instance);
+                    contributor.Finalize(context, module.Instance);
                 }
                 catch (Exception ex)
                 {
