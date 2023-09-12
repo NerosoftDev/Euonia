@@ -1,10 +1,13 @@
 ﻿namespace Nerosoft.Euonia.Validation;
 
+/// <summary>
+/// Represents the method/parameter/class should be validated.
+/// </summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Parameter | AttributeTargets.Method)]
 public class ValidationAttribute : Attribute
 {
     /// <summary>
-    /// 
+    /// Initializes a new instance of the <see cref="ValidationAttribute"/> class.
     /// </summary>
     public ValidationAttribute()
     {

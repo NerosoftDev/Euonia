@@ -133,26 +133,28 @@ public sealed class BackplaneMessage
     /// <inheritdoc />
     public override string ToString()
     {
-        switch (Action)
-        {
-            case Changed:
-                return $"{Action} {Region}:{Key} {ChangeAction}";
+		switch (Action)
+		{
+			case Changed:
+				return $"{Action} {Region}:{Key} {ChangeAction}";
 
-            case Removed:
-                return $"{Action} {Region}:{Key}";
+			case Removed:
+				return $"{Action} {Region}:{Key}";
 
-            case ClearRegion:
-                return $"{Action} {Region}";
+			case ClearRegion:
+				return $"{Action} {Region}";
 
-            case Clear:
-                return $"{Action}";
-        }
+			case Clear:
+				return $"{Action}";
+			case Invalid:
+				break;
+		}
 
-        return string.Empty;
-    }
+		return string.Empty;
+	}
 
-    /// <inheritdoc />
-    public override bool Equals(object obj)
+	/// <inheritdoc />
+	public override bool Equals(object obj)
     {
         if (obj == null)
         {
@@ -184,6 +186,7 @@ public sealed class BackplaneMessage
 
             hash = hash * 23 + Action.GetHashCode();
             hash = hash * 23 + ChangeAction.GetHashCode();
+            // ReSharper disable once NonReadonlyMemberInGetHashCode
             hash = hash * 23 + (Region?.GetHashCode() ?? 17);
             hash = hash * 23 + (Key?.GetHashCode() ?? 17);
             return hash;

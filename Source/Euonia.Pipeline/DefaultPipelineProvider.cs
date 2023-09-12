@@ -144,6 +144,11 @@ public class DefaultPipelineProvider : PipelineBase
     private static readonly MethodInfo GetServiceInfo = typeof(PipelineBase).GetMethod(nameof(GetService), BindingFlags.NonPublic | BindingFlags.Static);
 }
 
+/// <summary>
+/// The default pipeline provider.
+/// </summary>
+/// <typeparam name="TRequest"></typeparam>
+/// <typeparam name="TResponse"></typeparam>
 public class DefaultPipelineProvider<TRequest, TResponse> : PipelineBase<TRequest, TResponse>
 {
     private const string HANDLE_METHOD_NAME = "Handle";

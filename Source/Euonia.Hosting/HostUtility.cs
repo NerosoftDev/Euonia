@@ -61,7 +61,7 @@ public class HostUtility
         {
             host = host.UseServiceProviderFactory(new AutofacServiceProviderFactory(builder =>
             {
-                options?.ConfigureContainerBuilder?.Invoke(builder);
+                options.ConfigureContainerBuilder?.Invoke(builder);
             }));
         }
 
@@ -75,7 +75,7 @@ public class HostUtility
             builder.UseStartup<TStartup>()
                    .CaptureStartupErrors(options.CaptureStartupErrors);
 
-            options?.ConfigureWebHostBuilder?.Invoke(builder);
+            options.ConfigureWebHostBuilder?.Invoke(builder);
         });
 
         return host;

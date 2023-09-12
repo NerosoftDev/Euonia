@@ -133,10 +133,7 @@ return result";
     }
 
     /// <inheritdoc />
-    public override bool IsDistributedCache
-    {
-        get { return true; }
-    }
+    public override bool IsDistributedCache => true;
 
     /// <summary>
     /// Gets the number of items the cache handle currently maintains.

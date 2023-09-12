@@ -1,6 +1,7 @@
-﻿namespace Nerosoft.Euonia.Core.Tests.Extensions;
+﻿// ReSharper disable All
+namespace Nerosoft.Euonia.Core.Tests.Extensions;
 
-public partial class ExtensionsTest
+public class ExtensionsTest
 {
     [Fact]
     public void TestStringTruncateWithoutEllipsis()
@@ -21,7 +22,7 @@ public partial class ExtensionsTest
     [Fact]
     public void TestStringTruncateWithoutEllipsis_NullSource()
     {
-        string? source = null;
+        string source = null;
         var result = source.Truncate(15, false);
         Assert.Equal(string.Empty, result);
     }
@@ -29,7 +30,7 @@ public partial class ExtensionsTest
     [Fact]
     public void TestStringTruncateWithinEllipsis_NullSource()
     {
-        string? source = null;
+        string source = null;
         var result = source.Truncate(15, true);
         Assert.Equal(string.Empty, result);
     }

@@ -10,257 +10,243 @@ namespace Nerosoft.Euonia.Caching.Memory;
 /// <typeparam name="TCacheValue">The type of the cache value.</typeparam>
 public class MemoryCacheHandle<TCacheValue> : BaseCacheHandle<TCacheValue>
 {
-    private const string DEFAULT_NAME = "default";
+	private volatile MemoryCache _cache;
 
-    private readonly string _cacheName = string.Empty;
+	/// <summary>
+	/// Initializes a new instance of the <see cref="MemoryCacheHandle{TCacheValue}"/> class.
+	/// </summary>
+	/// <param name="managerConfiguration">The manager configuration.</param>
+	/// <param name="configuration">The cache handle configuration.</param>
+	/// <param name="options">The vendor specific options.</param>
+	/// 
+	public MemoryCacheHandle(CacheManagerConfiguration managerConfiguration, CacheHandleConfiguration configuration, MemoryCacheOptions options = null)
+		: base(managerConfiguration, configuration)
+	{
+		Check.EnsureNotNull(configuration, nameof(configuration));
 
-    private volatile MemoryCache _cache;
+		Options = options ?? new MemoryCacheOptions();
+		_cache = new MemoryCache(Options);
+	}
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MemoryCacheHandle{TCacheValue}"/> class.
-    /// </summary>
-    /// <param name="managerConfiguration">The manager configuration.</param>
-    /// <param name="configuration">The cache handle configuration.</param>
-    /// 
-    public MemoryCacheHandle(CacheManagerConfiguration managerConfiguration, CacheHandleConfiguration configuration)
-        : this(managerConfiguration, configuration, null)
-    {
-    }
+	/// <inheritdoc/>
+	public override int Count => _cache.Count;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MemoryCacheHandle{TCacheValue}"/> class.
-    /// </summary>
-    /// <param name="managerConfiguration">The manager configuration.</param>
-    /// <param name="configuration">The cache handle configuration.</param>
-    /// <param name="options">The vendor specific options.</param>
-    /// 
-    public MemoryCacheHandle(CacheManagerConfiguration managerConfiguration, CacheHandleConfiguration configuration, MemoryCacheOptions options)
-        : base(managerConfiguration, configuration)
-    {
-        Check.EnsureNotNull(configuration, nameof(configuration));
+	internal MemoryCacheOptions Options { get; }
 
-        _cacheName = configuration.Name;
-        Options = options ?? new MemoryCacheOptions();
-        _cache = new MemoryCache(Options);
-    }
+	/// <inheritdoc/>
+	public override void Clear()
+	{
+		_cache = new MemoryCache(Options);
+	}
 
-    /// <inheritdoc/>
-    public override int Count => _cache.Count;
+	/// <inheritdoc/>
+	public override void ClearRegion(string region)
+	{
+		_cache.RemoveChilds(region);
+		_cache.Remove(region);
+	}
 
-    internal MemoryCacheOptions Options { get; }
+	/// <inheritdoc />
+	public override bool Exists(string key)
+	{
+		return _cache.Contains(GetItemKey(key));
+	}
 
-    /// <inheritdoc/>
-    public override void Clear()
-    {
-        _cache = new MemoryCache(Options);
-    }
+	/// <inheritdoc />
+	public override bool Exists(string key, string region)
+	{
+		Check.EnsureNotNullOrWhiteSpace(region, nameof(region));
 
-    /// <inheritdoc/>
-    public override void ClearRegion(string region)
-    {
-        _cache.RemoveChilds(region);
-        _cache.Remove(region);
-    }
+		return _cache.Contains(GetItemKey(key, region));
+	}
 
-    /// <inheritdoc />
-    public override bool Exists(string key)
-    {
-        return _cache.Contains(GetItemKey(key));
-    }
+	/// <inheritdoc/>
+	protected override CacheItem<TCacheValue> GetCacheItemInternal(string key)
+	{
+		return GetCacheItemInternal(key, null);
+	}
 
-    /// <inheritdoc />
-    public override bool Exists(string key, string region)
-    {
-        Check.EnsureNotNullOrWhiteSpace(region, nameof(region));
+	/// <inheritdoc/>
+	protected override CacheItem<TCacheValue> GetCacheItemInternal(string key, string region)
+	{
+		var fullKey = GetItemKey(key, region);
 
-        return _cache.Contains(GetItemKey(key, region));
-    }
+		if (_cache.Get(fullKey) is not CacheItem<TCacheValue> item)
+		{
+			return null;
+		}
 
-    /// <inheritdoc/>
-    protected override CacheItem<TCacheValue> GetCacheItemInternal(string key)
-    {
-        return GetCacheItemInternal(key, null);
-    }
+		if (item.IsExpired)
+		{
+			RemoveInternal(item.Key, item.Region);
+			TriggerCacheSpecificRemove(item.Key, item.Region, CacheItemRemovedReason.Expired, item.Value);
+			return null;
+		}
 
-    /// <inheritdoc/>
-    protected override CacheItem<TCacheValue> GetCacheItemInternal(string key, string region)
-    {
-        var fullKey = GetItemKey(key, region);
+		if (item.ExpirationMode == CacheExpirationMode.Sliding)
+		{
+			// item = this.GetItemExpiration(item);
+			_cache.Set(fullKey, item, GetOptions(item));
+		}
 
-        if (_cache.Get(fullKey) is not CacheItem<TCacheValue> item)
-        {
-            return null;
-        }
+		return item;
+	}
 
-        if (item.IsExpired)
-        {
-            RemoveInternal(item.Key, item.Region);
-            TriggerCacheSpecificRemove(item.Key, item.Region, CacheItemRemovedReason.Expired, item.Value);
-            return null;
-        }
+	/// <inheritdoc/>
+	protected override bool RemoveInternal(string key)
+	{
+		return RemoveInternal(key, null);
+	}
 
-        if (item.ExpirationMode == CacheExpirationMode.Sliding)
-        {
-            // item = this.GetItemExpiration(item); // done by basecachehandle already
-            _cache.Set(fullKey, item, GetOptions(item));
-        }
+	/// <inheritdoc/>
+	protected override bool RemoveInternal(string key, string region)
+	{
+		var fullKey = GetItemKey(key, region);
+		var result = _cache.Contains(fullKey);
+		if (result)
+		{
+			_cache.Remove(fullKey);
+		}
 
-        return item;
-    }
+		return result;
+	}
 
-    /// <inheritdoc/>
-    protected override bool RemoveInternal(string key)
-    {
-        return RemoveInternal(key, null);
-    }
+	/// <inheritdoc/>
+	protected override bool AddInternalPrepared(CacheItem<TCacheValue> item)
+	{
+		var key = GetItemKey(item);
 
-    /// <inheritdoc/>
-    protected override bool RemoveInternal(string key, string region)
-    {
-        var fullKey = GetItemKey(key, region);
-        var result = _cache.Contains(fullKey);
-        if (result)
-        {
-            _cache.Remove(fullKey);
-        }
+		if (_cache.Contains(key))
+		{
+			return false;
+		}
 
-        return result;
-    }
+		var options = GetOptions(item);
+		_cache.Set(key, item, options);
 
-    /// <inheritdoc/>
-    protected override bool AddInternalPrepared(CacheItem<TCacheValue> item)
-    {
-        var key = GetItemKey(item);
+		if (item.Region != null)
+		{
+			_cache.RegisterChild(item.Region, key);
+		}
 
-        if (_cache.Contains(key))
-        {
-            return false;
-        }
+		return true;
+	}
 
-        var options = GetOptions(item);
-        _cache.Set(key, item, options);
+	/// <inheritdoc/>
+	protected override void PutInternalPrepared(CacheItem<TCacheValue> item)
+	{
+		var key = GetItemKey(item);
 
-        if (item.Region != null)
-        {
-            _cache.RegisterChild(item.Region, key);
-        }
+		var options = GetOptions(item);
+		_cache.Set(key, item, options);
 
-        return true;
-    }
+		if (item.Region != null)
+		{
+			_cache.RegisterChild(item.Region, key);
+		}
+	}
 
-    /// <inheritdoc/>
-    protected override void PutInternalPrepared(CacheItem<TCacheValue> item)
-    {
-        var key = GetItemKey(item);
+	private string GetItemKey(CacheItem<TCacheValue> item) => GetItemKey(item?.Key, item?.Region);
 
-        var options = GetOptions(item);
-        _cache.Set(key, item, options);
+	private string GetItemKey(string key, string region = null)
+	{
+		Check.EnsureNotNullOrWhiteSpace(key, nameof(key));
 
-        if (item.Region != null)
-        {
-            _cache.RegisterChild(item.Region, key);
-        }
-    }
+		if (string.IsNullOrWhiteSpace(region))
+		{
+			return key;
+		}
 
-    private string GetItemKey(CacheItem<TCacheValue> item) => GetItemKey(item?.Key, item?.Region);
+		return region + ":" + key;
+	}
 
-    private string GetItemKey(string key, string region = null)
-    {
-        Check.EnsureNotNullOrWhiteSpace(key, nameof(key));
+	private MemoryCacheEntryOptions GetOptions(CacheItem<TCacheValue> item)
+	{
+		if (item.Region != null)
+		{
+			if (!_cache.Contains(item.Region))
+			{
+				CreateRegionToken(item.Region);
+			}
+		}
 
-        if (string.IsNullOrWhiteSpace(region))
-        {
-            return key;
-        }
+		var options = new MemoryCacheEntryOptions()
+			.SetPriority(CacheItemPriority.Normal);
 
-        return region + ":" + key;
-    }
+		if (item.ExpirationMode == CacheExpirationMode.Absolute)
+		{
+			options.SetAbsoluteExpiration(item.ExpirationTimeout);
+			options.RegisterPostEvictionCallback(ItemRemoved, Tuple.Create(item.Key, item.Region));
+		}
 
-    private MemoryCacheEntryOptions GetOptions(CacheItem<TCacheValue> item)
-    {
-        if (item.Region != null)
-        {
-            if (!_cache.Contains(item.Region))
-            {
-                CreateRegionToken(item.Region);
-            }
-        }
+		if (item.ExpirationMode == CacheExpirationMode.Sliding)
+		{
+			options.SetSlidingExpiration(item.ExpirationTimeout);
+			options.RegisterPostEvictionCallback(ItemRemoved, Tuple.Create(item.Key, item.Region));
+		}
 
-        var options = new MemoryCacheEntryOptions()
-            .SetPriority(CacheItemPriority.Normal);
+		item.LastAccessedUtc = DateTime.UtcNow;
 
-        if (item.ExpirationMode == CacheExpirationMode.Absolute)
-        {
-            options.SetAbsoluteExpiration(item.ExpirationTimeout);
-            options.RegisterPostEvictionCallback(ItemRemoved, Tuple.Create(item.Key, item.Region));
-        }
+		return options;
+	}
 
-        if (item.ExpirationMode == CacheExpirationMode.Sliding)
-        {
-            options.SetSlidingExpiration(item.ExpirationTimeout);
-            options.RegisterPostEvictionCallback(ItemRemoved, Tuple.Create(item.Key, item.Region));
-        }
+	private void CreateRegionToken(string region)
+	{
+		var options = new MemoryCacheEntryOptions
+		{
+			Priority = CacheItemPriority.Normal,
+			AbsoluteExpiration = DateTimeOffset.MaxValue,
+			SlidingExpiration = TimeSpan.MaxValue,
+		};
 
-        item.LastAccessedUtc = DateTime.UtcNow;
+		_cache.Set(region, new ConcurrentDictionary<object, bool>(), options);
+	}
 
-        return options;
-    }
+	private void ItemRemoved(object key, object value, EvictionReason reason, object state)
+	{
+		var strKey = key as string;
+		if (string.IsNullOrWhiteSpace(strKey))
+		{
+			return;
+		}
 
-    private void CreateRegionToken(string region)
-    {
-        var options = new MemoryCacheEntryOptions
-        {
-            Priority = CacheItemPriority.Normal,
-            AbsoluteExpiration = DateTimeOffset.MaxValue,
-            SlidingExpiration = TimeSpan.MaxValue,
-        };
+		// don't trigger stuff on manual remove
+		if (reason == EvictionReason.Removed)
+		{
+			return;
+		}
 
-        _cache.Set(region, new ConcurrentDictionary<object, bool>(), options);
-    }
+		if (state is Tuple<string, string> tuple)
+		{
+			if (tuple.Item2 != null)
+			{
+				Stats.OnRemove(tuple.Item2);
+			}
+			else
+			{
+				Stats.OnRemove();
+			}
 
-    private void ItemRemoved(object key, object value, EvictionReason reason, object state)
-    {
-        var strKey = key as string;
-        if (string.IsNullOrWhiteSpace(strKey))
-        {
-            return;
-        }
+			object originalValue = null;
+			if (value is CacheItem<TCacheValue> item)
+			{
+				originalValue = item.Value;
+			}
 
-        // don't trigger stuff on manual remove
-        if (reason == EvictionReason.Removed)
-        {
-            return;
-        }
-
-        if (state is Tuple<string, string> keyRegionTupple)
-        {
-            if (keyRegionTupple.Item2 != null)
-            {
-                Stats.OnRemove(keyRegionTupple.Item2);
-            }
-            else
-            {
-                Stats.OnRemove();
-            }
-
-            object originalValue = null;
-            if (value is CacheItem<TCacheValue> item)
-            {
-                originalValue = item.Value;
-            }
-
-            if (reason == EvictionReason.Capacity)
-            {
-                TriggerCacheSpecificRemove(keyRegionTupple.Item1, keyRegionTupple.Item2, CacheItemRemovedReason.Evicted, originalValue);
-            }
-            else if (reason == EvictionReason.Expired)
-            {
-                TriggerCacheSpecificRemove(keyRegionTupple.Item1, keyRegionTupple.Item2, CacheItemRemovedReason.Expired, originalValue);
-            }
-        }
-        else
-        {
-            Stats.OnRemove();
-        }
-    }
+			// ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+			switch (reason)
+			{
+				case EvictionReason.Capacity:
+					TriggerCacheSpecificRemove(tuple.Item1, tuple.Item2, CacheItemRemovedReason.Evicted, originalValue);
+					break;
+				case EvictionReason.Expired:
+					TriggerCacheSpecificRemove(tuple.Item1, tuple.Item2, CacheItemRemovedReason.Expired, originalValue);
+					break;
+			}
+		}
+		else
+		{
+			Stats.OnRemove();
+		}
+	}
 }

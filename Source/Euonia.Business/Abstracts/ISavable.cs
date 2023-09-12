@@ -1,5 +1,8 @@
 ﻿namespace Nerosoft.Euonia.Business;
 
+/// <summary>
+/// Represents that the implemented classes are savable.
+/// </summary>
 public interface ISavable
 {
     /// <summary>
@@ -22,6 +25,10 @@ public interface ISavable
     Task<object> SaveAsync(bool forceUpdate = false, CancellationToken cancellationToken = default);
 }
 
+/// <summary>
+/// Represents that the implemented classes are savable.
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public interface ISavable<T> where T : class
 {
     /// <summary>

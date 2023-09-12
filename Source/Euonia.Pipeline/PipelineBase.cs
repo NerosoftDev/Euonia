@@ -153,9 +153,9 @@ public abstract class PipelineBase : IPipeline
     /// <param name="accumulate"></param>
     public virtual async Task RunAsync(object context, Func<object, Task> accumulate)
     {
-        Use((requext, next) =>
+        Use((request, _) =>
         {
-            return Task.Run(() => accumulate(requext));
+            return Task.Run(() => accumulate(request));
         });
         await RunAsync(context);
     }
@@ -204,7 +204,7 @@ public abstract class PipelineBase<TRequest, TResponse> : IPipeline<TRequest, TR
     }
 
     /// <summary>
-    /// 
+    /// Use the specified pipeline component.
     /// </summary>
     /// <param name="component"></param>
     /// <param name="index"></param>
@@ -216,7 +216,7 @@ public abstract class PipelineBase<TRequest, TResponse> : IPipeline<TRequest, TR
     }
 
     /// <summary>
-    /// 
+    /// Use the specified pipeline handler.
     /// </summary>
     /// <param name="handler"></param>
     /// <returns></returns>
@@ -224,15 +224,12 @@ public abstract class PipelineBase<TRequest, TResponse> : IPipeline<TRequest, TR
     {
         return Use(next =>
         {
-            return context =>
-            {
-                return handler(context, next);
-            };
+            return context => handler(context, next);
         });
     }
 
     /// <summary>
-    /// 
+    /// Use the specified pipeline handler.
     /// </summary>
     /// <param name="type"></param>
     /// <param name="args"></param>
@@ -243,7 +240,7 @@ public abstract class PipelineBase<TRequest, TResponse> : IPipeline<TRequest, TR
     }
 
     /// <summary>
-    /// 
+    /// Use the specified pipeline behavior.
     /// </summary>
     /// <typeparam name="TBehavior"></typeparam>
     /// <returns></returns>
@@ -254,7 +251,7 @@ public abstract class PipelineBase<TRequest, TResponse> : IPipeline<TRequest, TR
     }
 
     /// <summary>
-    /// 
+    /// Use the specified pipeline behavior.
     /// </summary>
     /// <typeparam name="TContext"></typeparam>
     /// <param name="useAheadOfOthers"></param>
@@ -265,7 +262,7 @@ public abstract class PipelineBase<TRequest, TResponse> : IPipeline<TRequest, TR
     }
 
     /// <summary>
-    /// 
+    /// Use the specified pipeline behavior.
     /// </summary>
     /// <param name="contextType"></param>
     /// <param name="useAheadOfOthers"></param>
@@ -333,9 +330,9 @@ public abstract class PipelineBase<TRequest, TResponse> : IPipeline<TRequest, TR
     /// <returns></returns>
     public virtual async Task<TResponse> RunAsync(TRequest context, Func<TRequest, Task<TResponse>> accumulate)
     {
-        Use((requext, next) =>
+        Use((request, _) =>
         {
-            return Task.Run(() => accumulate(requext));
+            return Task.Run(() => accumulate(request));
         });
         return await RunAsync(context);
     }

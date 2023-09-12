@@ -4,24 +4,43 @@ using MongoDB.Driver;
 
 namespace Nerosoft.Euonia.Repository.Mongo;
 
+/// <summary>
+/// The abstract mongo database context.
+/// </summary>
 public abstract class MongoDbContext
 {
+    /// <summary>
+    /// Gets the mongo database.
+    /// </summary>
     protected IMongoDatabase Database { get; }
 
     private readonly ModelProfileContainer _container;
 
     private readonly MongoCollectionSettings _collectionSettings = new() { AssignIdOnInsert = false };
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MongoDbContext"/> class.
+    /// </summary>
+    /// <param name="database"></param>
     protected MongoDbContext(IMongoDatabase database)
     {
         _container = ModelProfileContainer.GetInstance(OnModelCreating);
         Database = database;
     }
 
+    /// <summary>
+    /// The logic to build model profile.
+    /// </summary>
+    /// <param name="builder"></param>
     protected virtual void OnModelCreating(ModelBuilder builder)
     {
     }
 
+    /// <summary>
+    /// Gets the mongo collection of specified type.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public IMongoCollection<T> Collection<T>()
         where T : class
     {
@@ -30,12 +49,23 @@ public abstract class MongoDbContext
         return Database.GetCollection<T>(profile.CollectionName ?? type.Name, _collectionSettings);
     }
 
+    /// <summary>
+    /// Gets the mongo collection of specified type.
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
     public IMongoCollection<BsonDocument> Collection(Type type)
     {
         var profile = _container.GetProfile(type);
         return Database.GetCollection<BsonDocument>(profile.CollectionName ?? type.Name, _collectionSettings);
     }
 
+    /// <summary>
+    /// Gets a single model of specified type by id.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public T Find<T>(MongoDB.Bson.ObjectId id)
     {
         var type = typeof(T);
@@ -45,6 +75,13 @@ public abstract class MongoDbContext
         return collection.FindSync(filter).FirstOrDefault();
     }
 
+    /// <summary>
+    /// Gets a single model of specified type by id.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public async Task<T> FindAsync<T>(MongoDB.Bson.ObjectId id, CancellationToken cancellationToken = default)
     {
         var type = typeof(T);
@@ -55,6 +92,14 @@ public abstract class MongoDbContext
         return await query.FirstOrDefaultAsync(cancellationToken);
     }
 
+    /// <summary>
+    /// Gets models of specified type by filter.
+    /// </summary>
+    /// <param name="filter"></param>
+    /// <param name="options"></param>
+    /// <param name="cancellationToken"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public async Task<IAsyncCursor<T>> FindAsync<T>(Expression<Func<T, bool>> filter, FindOptions<T> options, CancellationToken cancellationToken = default)
     {
         var type = typeof(T);
@@ -64,6 +109,14 @@ public abstract class MongoDbContext
         return query;
     }
 
+    /// <summary>
+    /// Gets models of specified type by filter.
+    /// </summary>
+    /// <param name="filter"></param>
+    /// <param name="options"></param>
+    /// <param name="cancellationToken"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public async Task<IAsyncCursor<T>> FindAsync<T>(FilterDefinition<T> filter, FindOptions<T> options, CancellationToken cancellationToken = default)
     {
         var type = typeof(T);
@@ -72,6 +125,14 @@ public abstract class MongoDbContext
         return await collection.FindAsync(filter, options, cancellationToken);
     }
 
+    /// <summary>
+    /// Gets model of specified type by filter.
+    /// </summary>
+    /// <param name="filter"></param>
+    /// <param name="options"></param>
+    /// <param name="cancellationToken"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public async Task<IAsyncCursor<T>> FindAsync<T>(QueryDocument filter, FindOptions<T> options, CancellationToken cancellationToken = default)
     {
         var type = typeof(T);
@@ -80,6 +141,12 @@ public abstract class MongoDbContext
         return await collection.FindAsync(filter, options, cancellationToken);
     }
 
+    /// <summary>
+    /// Finds models of specified type by filter.
+    /// </summary>
+    /// <param name="filter"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public IFindFluent<T, T> Find<T>(Expression<Func<T, bool>> filter)
     {
         var type = typeof(T);
@@ -88,6 +155,12 @@ public abstract class MongoDbContext
         return collection.Find(filter);
     }
 
+    /// <summary>
+    /// Finds models of specified type by filter.
+    /// </summary>
+    /// <param name="filter"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public IFindFluent<T, T> Find<T>(FilterDefinition<T> filter)
     {
         var type = typeof(T);
@@ -96,6 +169,12 @@ public abstract class MongoDbContext
         return collection.Find(filter);
     }
 
+    /// <summary>
+    /// Finds documents of specified type by filter.
+    /// </summary>
+    /// <param name="collectionName"></param>
+    /// <param name="id"></param>
+    /// <returns></returns>
     public BsonDocument Find(string collectionName, MongoDB.Bson.ObjectId id)
     {
         var collection = Database.GetCollection<BsonDocument>(collectionName, _collectionSettings);
@@ -104,6 +183,12 @@ public abstract class MongoDbContext
         return query.FirstOrDefault();
     }
 
+    /// <summary>
+    /// Finds documents of specified type by filter.
+    /// </summary>
+    /// <param name="collectionName"></param>
+    /// <param name="id"></param>
+    /// <returns></returns>
     public async Task<BsonDocument> FindAsync(string collectionName, MongoDB.Bson.ObjectId id)
     {
         var collection = Database.GetCollection<BsonDocument>(collectionName, _collectionSettings);
@@ -112,6 +197,12 @@ public abstract class MongoDbContext
         return await query.FirstOrDefaultAsync();
     }
 
+    /// <summary>
+    /// Inserts a single model.
+    /// </summary>
+    /// <param name="model"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public BsonDocument Insert<T>(T model)
         where T : class
     {
@@ -123,6 +214,13 @@ public abstract class MongoDbContext
         return document;
     }
 
+    /// <summary>
+    /// Inserts a single model.
+    /// </summary>
+    /// <param name="model"></param>
+    /// <param name="cancellationToken"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public async Task<BsonDocument> InsertAsync<T>(T model, CancellationToken cancellationToken = default)
         where T : class
     {
@@ -134,6 +232,12 @@ public abstract class MongoDbContext
         return document;
     }
 
+    /// <summary>
+    /// Inserts multiple models.
+    /// </summary>
+    /// <param name="models"></param>
+    /// <param name="cancellationToken"></param>
+    /// <typeparam name="T"></typeparam>
     public async Task InsertAsync<T>(IEnumerable<T> models, CancellationToken cancellationToken = default)
         where T : class
     {
@@ -144,6 +248,12 @@ public abstract class MongoDbContext
         await collection.InsertManyAsync(documents, new InsertManyOptions { BypassDocumentValidation = profile.BypassDocumentValidation }, cancellationToken);
     }
 
+    /// <summary>
+    /// Inserts document to specified collection.
+    /// </summary>
+    /// <param name="collectionName"></param>
+    /// <param name="document"></param>
+    /// <returns></returns>
     public BsonDocument Insert(string collectionName, BsonDocument document)
     {
         var collection = Database.GetCollection<BsonDocument>(collectionName, _collectionSettings);
@@ -151,6 +261,13 @@ public abstract class MongoDbContext
         return document;
     }
 
+    /// <summary>
+    /// Inserts document to specified collection.
+    /// </summary>
+    /// <param name="collectionName"></param>
+    /// <param name="document"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     public async Task<BsonDocument> InsertAsync(string collectionName, BsonDocument document, CancellationToken cancellationToken = default)
     {
         var collection = Database.GetCollection<BsonDocument>(collectionName, _collectionSettings);
@@ -158,6 +275,13 @@ public abstract class MongoDbContext
         return document;
     }
 
+    /// <summary>
+    /// Updates a single model.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="model"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public int Update<T>(MongoDB.Bson.ObjectId id, T model)
     {
         var type = typeof(T);
@@ -168,6 +292,14 @@ public abstract class MongoDbContext
         return (int)result.ModifiedCount;
     }
 
+    /// <summary>
+    /// Updates a single model.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="model"></param>
+    /// <param name="cancellationToken"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public async Task<int> UpdateAsync<T>(MongoDB.Bson.ObjectId id, T model, CancellationToken cancellationToken = default)
     {
         var type = typeof(T);
@@ -178,6 +310,13 @@ public abstract class MongoDbContext
         return (int)result.ModifiedCount;
     }
 
+    /// <summary>
+    /// Updates specified document.
+    /// </summary>
+    /// <param name="collectionName"></param>
+    /// <param name="id"></param>
+    /// <param name="document"></param>
+    /// <returns></returns>
     public int Update(string collectionName, MongoDB.Bson.ObjectId id, BsonDocument document)
     {
         var collection = Database.GetCollection<BsonDocument>(collectionName);
@@ -186,6 +325,14 @@ public abstract class MongoDbContext
         return (int)result.ModifiedCount;
     }
 
+    /// <summary>
+    /// Updates specified document.
+    /// </summary>
+    /// <param name="collectionName"></param>
+    /// <param name="id"></param>
+    /// <param name="document"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     public async Task<int> UpdateAsync(string collectionName, MongoDB.Bson.ObjectId id, BsonDocument document, CancellationToken cancellationToken = default)
     {
         var collection = Database.GetCollection<BsonDocument>(collectionName, _collectionSettings);
@@ -194,6 +341,14 @@ public abstract class MongoDbContext
         return (int)result.ModifiedCount;
     }
 
+    /// <summary>
+    /// Updates models.
+    /// </summary>
+    /// <param name="models"></param>
+    /// <param name="keyGetter"></param>
+    /// <param name="cancellationToken"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public async Task<int> UpdateAsync<T>(IEnumerable<T> models, Func<T, object> keyGetter, CancellationToken cancellationToken = default)
     {
         var type = typeof(T);
@@ -212,6 +367,13 @@ public abstract class MongoDbContext
         return count;
     }
 
+    /// <summary>
+    /// Deletes a single model.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public async Task<int> DeleteAsync<T>(MongoDB.Bson.ObjectId id, CancellationToken cancellationToken = default)
     {
         var type = typeof(T);
@@ -222,6 +384,13 @@ public abstract class MongoDbContext
         return (int)result.DeletedCount;
     }
 
+    /// <summary>
+    /// Deletes models by filter.
+    /// </summary>
+    /// <param name="filter"></param>
+    /// <param name="cancellationToken"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public async Task<int> DeleteAsync<T>(Expression<Func<T, bool>> filter, CancellationToken cancellationToken = default)
     {
         var type = typeof(T);

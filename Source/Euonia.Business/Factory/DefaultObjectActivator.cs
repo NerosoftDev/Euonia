@@ -1,5 +1,8 @@
 ﻿namespace Nerosoft.Euonia.Business;
 
+/// <summary>
+/// The default object activator.
+/// </summary>
 public class DefaultObjectActivator : IObjectActivator
 {
     /// <inheritdoc/>

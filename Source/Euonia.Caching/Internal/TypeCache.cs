@@ -59,6 +59,7 @@ public static class TypeCache
                             }
                             catch
                             {
+	                            // suppress error.
                             }
                         }
                     }
@@ -84,6 +85,7 @@ public static class TypeCache
                             }
                             catch
                             {
+	                            // suppress error.
                             }
                         }
 
@@ -95,10 +97,11 @@ public static class TypeCache
 
                             try
                             {
-                                typeResult = Type.GetType(typeName, false);
+                                typeResult = Type.GetType(typeName!, false);
                             }
                             catch
                             {
+	                            // suppress error.
                             }
                         }
                     }

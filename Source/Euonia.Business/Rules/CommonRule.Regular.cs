@@ -4,6 +4,9 @@ namespace Nerosoft.Euonia.Business;
 
 public partial class CommonRule
 {
+    /// <summary>
+    /// Provides property validation using regular expression.
+    /// </summary>
     public class Regular : CommonRuleBase
     {
         private readonly Regex _regex;
@@ -39,8 +42,12 @@ public partial class CommonRule
         /// </summary>
         public string Expression { get; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the null value should be ignored.
+        /// </summary>
         public bool IgnoreNullValue { get; set; } = true;
 
+        /// <inheritdoc />
         public override async Task ExecuteAsync(IRuleContext context, CancellationToken cancellationToken = default)
         {
             if (context.Target is IBusinessObject target)

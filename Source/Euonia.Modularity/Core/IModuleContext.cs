@@ -1,5 +1,8 @@
 ﻿namespace Nerosoft.Euonia.Modularity;
 
+/// <summary>
+/// The contract interface of the module context.
+/// </summary>
 public interface IModuleContext
 {
     /// <summary>

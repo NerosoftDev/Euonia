@@ -3,6 +3,9 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Nerosoft.Euonia.Modularity;
 
+/// <summary>
+/// The default automatic registration.
+/// </summary>
 public class DefaultAutomaticRegistration : AutomaticRegistrationBase
 {
     /// <summary>
@@ -12,6 +15,7 @@ public class DefaultAutomaticRegistration : AutomaticRegistrationBase
     /// <returns></returns>
     protected virtual bool IsAutomaticRegistrationDisabled(Type type) => false;
 
+    /// <inheritdoc />
     public override void AddType(IServiceCollection services, Type type)
     {
         if (IsAutomaticRegistrationDisabled(type))

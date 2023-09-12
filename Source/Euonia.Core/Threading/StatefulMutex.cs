@@ -63,7 +63,7 @@ public class StatefulMutex : IDisposable
             return new Context(this);
         }
         _mutex.Release();
-        throw new InvalidOperationException("Cannot lock mutex with expired state");
+        throw new InvalidOperationException(Resources.ERROR_CANNOT_LOCK_MUTEX_WITH_EXPIRED_STATE);
     }
 
     /// <summary>
@@ -90,7 +90,7 @@ public class StatefulMutex : IDisposable
             return new Context(this);
         }
         _mutex.Release();
-        throw new InvalidOperationException("Cannot lock mutex with expired state");
+        throw new InvalidOperationException(Resources.ERROR_CANNOT_LOCK_MUTEX_WITH_EXPIRED_STATE);
     }
 
     /// <summary>

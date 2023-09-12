@@ -23,7 +23,6 @@ public class ConfigurationBuilder : ConfigurationBuilderCachePart
     /// which provides fluent configuration methods.
     /// </summary>
     public ConfigurationBuilder()
-        : base()
     {
     }
 
@@ -33,7 +32,6 @@ public class ConfigurationBuilder : ConfigurationBuilderCachePart
     /// </summary>
     /// <param name="name">The name of the cache manager.</param>
     public ConfigurationBuilder(string name)
-        : base()
     {
         Check.EnsureNotNullOrWhiteSpace(name, nameof(name));
         Configuration.Name = name;
@@ -109,10 +107,16 @@ public class ConfigurationBuilder : ConfigurationBuilderCachePart
         return part.Configuration;
     }
 
-    //// Parses the timespan setting from configuration.
-    //// Cfg value can be suffixed with s|h|m for seconds hours or minutes...
-    //// Depending on the suffix we have to construct the returned TimeSpan.
-    private static TimeSpan GetTimeSpan(string timespanCfgValue, string propName)
+    /// <summary>
+    /// Parses the timespan setting from configuration.
+    /// Cfg value can be suffixed with s|h|m for seconds hours or minutes...
+    /// Depending on the suffix we have to construct the returned TimeSpan.
+    /// </summary>
+    /// <param name="timespanCfgValue"></param>
+    /// <param name="propName"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    public static TimeSpan GetTimeSpan(string timespanCfgValue, string propName)
     {
         if (string.IsNullOrWhiteSpace(timespanCfgValue))
         {
@@ -121,13 +125,12 @@ public class ConfigurationBuilder : ConfigurationBuilderCachePart
         }
 
         var normValue = timespanCfgValue.ToUpper(CultureInfo.InvariantCulture);
-
+        
         var hasSuffix = Regex.IsMatch(normValue, @"\b[0-9]+[S|H|M]\b");
 
         var suffix = hasSuffix ? new string(normValue.Last(), 1) : string.Empty;
 
-        var timeoutValue = 0;
-        if (!int.TryParse(hasSuffix ? normValue.Substring(0, normValue.Length - 1) : normValue, out timeoutValue))
+        if (!int.TryParse(hasSuffix ? normValue[..^1] : normValue, out var timeoutValue))
         {
             throw new InvalidOperationException(
                 string.Format(CultureInfo.InvariantCulture, "The value of the property '{1}' cannot be parsed [{0}].", timespanCfgValue, propName));
@@ -137,6 +140,12 @@ public class ConfigurationBuilder : ConfigurationBuilderCachePart
         if (!hasSuffix || suffix.Equals(MINUTES, StringComparison.OrdinalIgnoreCase))
         {
             return TimeSpan.FromMinutes(timeoutValue);
+        }
+
+        // seconds
+        if (suffix.Equals(SECONDS, StringComparison.OrdinalIgnoreCase))
+        {
+	        return TimeSpan.FromSeconds(timeoutValue);
         }
 
         // hours

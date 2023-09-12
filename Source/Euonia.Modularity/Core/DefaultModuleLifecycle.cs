@@ -14,7 +14,7 @@ public class OnApplicationInitializationModuleLifecycle : ModuleLifecycleBase
 public class OnApplicationShutdownModuleLifecycle : ModuleLifecycleBase
 {
     /// <inheritdoc />
-    public override void Unload(ApplicationShutdownContext context, IModuleContext module)
+    public override void Finalize(ApplicationShutdownContext context, IModuleContext module)
     {
         module.OnApplicationShutdown(context);
     }

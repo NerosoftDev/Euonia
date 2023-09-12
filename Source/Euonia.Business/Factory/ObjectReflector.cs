@@ -200,7 +200,16 @@ public class ObjectReflector
         }
     }
 
-    private static MethodInfo FindMatchedMethod<TTarget>(Type attributeType, IReadOnlyList<Type> parameterTypes)
+    /// <summary>
+    /// Find matched method.
+    /// </summary>
+    /// <param name="attributeType"></param>
+    /// <param name="parameterTypes"></param>
+    /// <typeparam name="TTarget"></typeparam>
+    /// <returns></returns>
+    /// <exception cref="MissingMethodException"></exception>
+    /// <exception cref="AmbiguousMatchException"></exception>
+    public static MethodInfo FindMatchedMethod<TTarget>(Type attributeType, IReadOnlyList<Type> parameterTypes)
     {
         var methods = typeof(TTarget).GetRuntimeMethods()
                                      .Where(t => t.GetCustomAttribute(attributeType) != null);
@@ -393,28 +402,28 @@ public class ObjectReflector
             return type.Name;
         }
 
-        var result = new System.Text.StringBuilder();
+        var result = new StringBuilder();
         var genericArguments = type.GetGenericArguments();
         result.Append(type.Name);
-        result.Append("<");
+        result.Append('<');
 
         for (var index = 0; index < genericArguments.Length; index++)
         {
             if (index > 0)
             {
-                result.Append(",");
+                result.Append(',');
             }
 
             result.Append(GetTypeName(genericArguments[index]));
         }
 
-        result.Append(">");
+        result.Append('>');
 
         return result.ToString();
     }
 
     /// <summary>
-    /// 计算参数匹配度
+    /// Calculate parameter match score.
     /// </summary>
     private static int CalculateParameterMatchScore(ParameterInfo parameter, object criteria)
     {

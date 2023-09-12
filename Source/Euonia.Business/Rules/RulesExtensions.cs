@@ -1,5 +1,8 @@
 ﻿namespace Nerosoft.Euonia.Business;
 
+/// <summary>
+/// The extension methods for <see cref="Rules"/>.
+/// </summary>
 public static class RulesExtensions
 {
     /// <summary>

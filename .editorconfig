@@ -15,6 +15,14 @@ indent_size = 4
 # C# files
 [*.cs]
 indent_style = tab
+
+# SYSLIB1045: RegexGenerator limitation reached.
+dotnet_diagnostic.SYSLIB1045.severity = silent
+# Use COALESCE expression
+dotnet_diagnostic.IDE0270.severity = silent
+
 resharper_move_local_function_after_jump_statement_highlighting = none;
 resharper_move_local_function_after_jump_statement = false;
-
+resharper_static_member_in_generic_type_highlighting = none;
+resharper_virtual_member_call_in_constructor_highlighting = none;
+resharper_inconsistently_synchronized_field_highlighting = hint;

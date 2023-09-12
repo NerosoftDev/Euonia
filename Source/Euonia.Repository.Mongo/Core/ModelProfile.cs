@@ -4,6 +4,9 @@ using Nerosoft.Euonia.Reflection;
 
 namespace Nerosoft.Euonia.Repository.Mongo;
 
+/// <summary>
+/// The mongo model profile.
+/// </summary>
 public class ModelProfile
 {
     private ModelKeyBuilder _keyBuilder;
@@ -70,6 +73,7 @@ public class ModelProfile
     }
 }
 
+/// <inheritdoc />
 public class ModelProfile<TModel> : ModelProfile
 {
     private readonly Dictionary<string, ModelPropertyBuilder> _properties = new();
@@ -78,12 +82,22 @@ public class ModelProfile<TModel> : ModelProfile
 
     internal Action<BsonClassMap<TModel>> MapAction { get; private set; }
 
+    /// <summary>
+    /// Sets the model key selector.
+    /// </summary>
+    /// <param name="selector"></param>
+    /// <returns></returns>
     public ModelKeyBuilder HasKey(Expression<Func<TModel, object>> selector)
     {
         var property = Reflect.GetProperty(selector);
         return HasKey(property.Name, property.PropertyType);
     }
 
+    /// <summary>
+    /// Sets the model property selector.
+    /// </summary>
+    /// <param name="selector"></param>
+    /// <returns></returns>
     public ModelPropertyBuilder HasProperty(Expression<Func<TModel, object>> selector)
     {
         var property = Reflect.GetProperty(selector);
@@ -92,6 +106,10 @@ public class ModelProfile<TModel> : ModelProfile
         return builder;
     }
 
+    /// <summary>
+    /// Sets the model map action.
+    /// </summary>
+    /// <param name="map"></param>
     public void Map(Action<BsonClassMap<TModel>> map)
     {
         MapAction = map;

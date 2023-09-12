@@ -44,19 +44,12 @@ public class TreeView<TEntity>
         }
         set
         {
-            if (Properties == null)
+	        if (Properties == null)
             {
                 throw new NullReferenceException();
             }
 
-            if (!Properties.ContainsKey(key))
-            {
-                Properties.Add(key, value);
-            }
-            else
-            {
-                Properties[key] = value;
-            }
+	        Properties[key] = value;
         }
     }
 }

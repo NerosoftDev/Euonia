@@ -45,13 +45,23 @@ public readonly struct EquatableReadOnlyList<T> : IReadOnlyList<T>, IEquatable<E
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Determines whether two specified <see cref="EquatableReadOnlyList{T}"/> have the same value.
+    /// </summary>
+    /// <param name="left"></param>
+    /// <param name="right"></param>
+    /// <returns></returns>
     public static bool operator ==(EquatableReadOnlyList<T> left, EquatableReadOnlyList<T> right)
     {
         return left.Equals(right);
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Determines whether two specified <see cref="EquatableReadOnlyList{T}"/> have different values.
+    /// </summary>
+    /// <param name="left"></param>
+    /// <param name="right"></param>
+    /// <returns></returns>
     public static bool operator !=(EquatableReadOnlyList<T> left, EquatableReadOnlyList<T> right)
     {
         return !(left == right);

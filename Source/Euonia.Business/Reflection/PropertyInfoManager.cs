@@ -1,5 +1,8 @@
 ﻿namespace Nerosoft.Euonia.Business;
 
+/// <summary>
+/// The property information manager class.
+/// </summary>
 public static class PropertyInfoManager
 {
     private static readonly Lazy<Dictionary<Type, PropertyInfoList>> _propertyCache = new();
@@ -28,6 +31,11 @@ public static class PropertyInfoManager
         return listInfo;
     }
 
+    /// <summary>
+    /// Gets the registered properties.
+    /// </summary>
+    /// <param name="objectType"></param>
+    /// <returns></returns>
     public static PropertyInfoList GetRegisteredProperties(Type objectType)
     {
         var list = GetPropertyListCache(objectType);
@@ -37,6 +45,12 @@ public static class PropertyInfoManager
         }
     }
 
+    /// <summary>
+    /// Gets the registered property.
+    /// </summary>
+    /// <param name="objectType"></param>
+    /// <param name="propertyName"></param>
+    /// <returns></returns>
     public static IPropertyInfo GetRegisteredProperty(Type objectType, string propertyName)
     {
         return GetRegisteredProperties(objectType).FirstOrDefault(p => p.Name == propertyName);

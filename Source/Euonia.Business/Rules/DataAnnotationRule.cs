@@ -33,7 +33,7 @@ public class DataAnnotationRule : RuleBase
     {
         try
         {
-            System.ComponentModel.DataAnnotations.ValidationResult result;
+            ValidationResult result;
             if (context.Target is IBusinessObject target)
             {
                 var value = target.ReadProperty(Property);
