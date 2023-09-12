@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Reflection;
-using Nerosoft.Euonia.Business.Properties;
 
 namespace Nerosoft.Euonia.Business;
 

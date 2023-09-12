@@ -117,7 +117,8 @@ public class BusinessObjectFactory : IObjectFactory
 				ObjectEditState.Insert => ObjectReflector.FindFactoryMethod<TTarget, FactoryInsertAttribute>(Array.Empty<object>()),
 				ObjectEditState.Update => ObjectReflector.FindFactoryMethod<TTarget, FactoryUpdateAttribute>(Array.Empty<object>()),
 				ObjectEditState.Delete => ObjectReflector.FindFactoryMethod<TTarget, FactoryDeleteAttribute>(Array.Empty<object>()),
-				_ => throw new ArgumentOutOfRangeException(nameof(target), "Invalid state")
+				ObjectEditState.None => throw new InvalidOperationException(),
+				_ => throw new ArgumentOutOfRangeException(nameof(target), Resources.INVALID_STATE)
 			},
             ICommandObject => ObjectReflector.FindFactoryMethod<TTarget, FactoryExecuteAttribute>(Array.Empty<object>()),
             IReadOnlyObject => throw new InvalidOperationException("The operation can not apply for ReadOnlyObject."),

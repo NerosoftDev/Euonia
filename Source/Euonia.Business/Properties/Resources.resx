@@ -120,4 +120,10 @@
   <data name="MULTIPLE_METHOD_MATCHED" xml:space="preserve">
     <value>Multiple methods were found for the specified operation.</value>
   </data>
+  <data name="RULE_MESSAGE_REQUIRED" xml:space="preserve">
+    <value>Rule message is required.</value>
+  </data>
+  <data name="INVALID_STATE" xml:space="preserve">
+    <value>Invalid state</value>
+  </data>
 </root>
