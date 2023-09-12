@@ -124,6 +124,6 @@
     <value>Rule message is required.</value>
   </data>
   <data name="INVALID_STATE" xml:space="preserve">
-    <value>Invalid state</value>
+      <value>Invalid state.</value>
   </data>
 </root>
