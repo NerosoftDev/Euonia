@@ -24,7 +24,6 @@
             <AutoGen>True</AutoGen>
             <DependentUpon>Resources.resx</DependentUpon>
         </Compile>
-        <Using Include="Nerosoft.Euonia.Core.Properties"/>
     </ItemGroup>
     
     <ItemGroup>

@@ -29,7 +29,6 @@
             <AutoGen>True</AutoGen>
             <DependentUpon>Resources.resx</DependentUpon>
         </Compile>
-        <Using Include="Nerosoft.Euonia.Business.Properties" />
     </ItemGroup>
     
     <ItemGroup>
