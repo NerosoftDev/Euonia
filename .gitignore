@@ -360,7 +360,7 @@ MigrationBackup/
 */Migrations
 package-lock.json
 */wwwroot/dist
-Resource.designer.cs
+*.Designer.cs
 */wwwroot/index.html
 .DS_Store
 nupkg/
