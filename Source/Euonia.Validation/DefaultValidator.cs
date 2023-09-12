@@ -10,25 +10,25 @@ namespace Nerosoft.Euonia.Validation;
 /// </summary>
 public class DefaultValidator : IValidator
 {
-    private readonly IServiceProvider _service;
+    private readonly IServiceProvider _provider;
 
     /// <summary>
-    /// 
+    /// Initializes a new instance of the <see cref="DefaultValidator"/> class.
     /// </summary>
-    /// <param name="service"></param>
-    public DefaultValidator(IServiceProvider service)
+    /// <param name="provider"></param>
+    public DefaultValidator(IServiceProvider provider)
     {
-        _service = service;
+        _provider = provider;
     }
 
     /// <summary>
-    /// 
+    /// Validate the given item.
     /// </summary>
     /// <param name="item"></param>
     /// <typeparam name="T"></typeparam>
     public void Validate<T>(T item) where T : class
     {
-        var validator = (IValidator<T>)_service.GetService(typeof(IValidator<T>));
+        var validator = (IValidator<T>)_provider.GetService(typeof(IValidator<T>));
         var result = validator?.Validate(item);
         if (result == null)
         {
