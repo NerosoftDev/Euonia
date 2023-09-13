@@ -62,13 +62,15 @@
                           StronglyTypedClassName="%(Filename)"
                           StronglyTypedNamespace="@(EmbeddedResource->'$(RootNamespace).Properties')"
                           StronglyTypedFileName="@(EmbeddedResource->'%(RootDir)%(Directory)%(Filename).Designer.cs')"
-                          Condition="'%(EmbeddedResource.GenerateResource)' != 'false'"
+                          Condition="'%(EmbeddedResource.GenerateResource)' != 'false' and '%(EmbeddedResource.FileName)' == 'Resources'"
                           PublicClass="false"
                           MinimalRebuildFromTracking="false">
             <Output TaskParameter="FilesWritten" ItemName="FileWrites"/>
             <Output TaskParameter="StronglyTypedFileName" ItemName="Compile"/>
             <Output TaskParameter="Sources" ItemName="_Temporary"/>
         </GenerateResource>
+        
+        <!--<Exec Command="dotnet-resgen @(EmbeddedResource) /str:cs,$(RootNamespace).Properties,%(Filename).Designer.cs" />-->
 
     </Target>
 </Project>
