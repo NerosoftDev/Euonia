@@ -361,6 +361,7 @@ MigrationBackup/
 package-lock.json
 */wwwroot/dist
 *.Designer.cs
+*.resources
 */wwwroot/index.html
 .DS_Store
 nupkg/
