@@ -191,7 +191,7 @@ public class ObjectReflector
 
                 if (maxCount > 1)
                 {
-                    throw new AmbiguousMatchException(Resources.MULTIPLE_METHOD_MATCHED);
+                    throw new AmbiguousMatchException(Resources.IDS_MULTIPLE_METHOD_MATCHED);
                 }
             }
 

@@ -40,7 +40,7 @@ public class StatefulMutex : IDisposable
     }
 
     /// <summary>
-    /// 
+    /// Acquire the <see cref="StatefulMutex"/>
     /// </summary>
     /// <returns></returns>
     public Context Acquire()
@@ -50,7 +50,7 @@ public class StatefulMutex : IDisposable
     }
 
     /// <summary>
-    /// 
+    /// Acquire the <see cref="StatefulMutex"/> with the given state
     /// </summary>
     /// <param name="state"></param>
     /// <returns></returns>
@@ -63,11 +63,11 @@ public class StatefulMutex : IDisposable
             return new Context(this);
         }
         _mutex.Release();
-        throw new InvalidOperationException(Resources.ERROR_CANNOT_LOCK_MUTEX_WITH_EXPIRED_STATE);
+        throw new InvalidOperationException(Resources.IDS_CANNOT_LOCK_MUTEX_WITH_EXPIRED_STATE);
     }
 
     /// <summary>
-    /// 
+    /// Acquire the <see cref="StatefulMutex"/>
     /// </summary>
     /// <returns></returns>
     public async Task<Context> AcquireAsync()
@@ -77,7 +77,7 @@ public class StatefulMutex : IDisposable
     }
 
     /// <summary>
-    /// 
+    /// Acquire the <see cref="StatefulMutex"/> with the given state
     /// </summary>
     /// <param name="state"></param>
     /// <returns></returns>
@@ -90,7 +90,7 @@ public class StatefulMutex : IDisposable
             return new Context(this);
         }
         _mutex.Release();
-        throw new InvalidOperationException(Resources.ERROR_CANNOT_LOCK_MUTEX_WITH_EXPIRED_STATE);
+        throw new InvalidOperationException(Resources.IDS_CANNOT_LOCK_MUTEX_WITH_EXPIRED_STATE);
     }
 
     /// <summary>

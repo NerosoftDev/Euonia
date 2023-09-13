@@ -90,7 +90,7 @@ public class BrokenRuleCollection : ObservableCollection<BrokenRule>
 
                 if (string.IsNullOrWhiteSpace(result.Description))
                 {
-	                throw new InvalidOperationException(Resources.RULE_MESSAGE_REQUIRED);
+	                throw new InvalidOperationException(Resources.IDS_RULE_MESSAGE_REQUIRED);
 	                //throw new InvalidOperationException(nameof(RuleResult.Description), Resources.RULE_MESSAGE_REQUIRED);
                 }
 
