@@ -117,7 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="MULTIPLE_METHOD_MATCHED" xml:space="preserve">
+  <data name="IDS_MULTIPLE_METHOD_MATCHED" xml:space="preserve">
     <value>Multiple methods were found for the specified operation.</value>
+  </data>
+  <data name="IDS_RULE_MESSAGE_REQUIRED" xml:space="preserve">
+    <value>Rule message is required.</value>
+  </data>
+  <data name="IDS_INVALID_STATE" xml:space="preserve">
+      <value>Invalid state.</value>
   </data>
 </root>

@@ -274,7 +274,7 @@ public static class Check
 	{
 		if (collection.IsNullOrEmpty())
 		{
-			throw new ArgumentException(string.Format(Resources.ERROR_PARAMETER_CANNOT_NULL_OR_EMPTY, parameter), parameter);
+			throw new ArgumentException(string.Format(Resources.IDS_PARAMETER_CANNOT_NULL_OR_EMPTY, parameter), parameter);
 		}
 
 		return collection;
@@ -315,7 +315,7 @@ public static class Check
 		{
 			if (string.IsNullOrEmpty(value))
 			{
-				throw new ArgumentException(string.Format(Resources.ERROR_PARAMETER_CANNOT_NULL_OR_EMPTY, parameter), parameter);
+				throw new ArgumentException(string.Format(Resources.IDS_PARAMETER_CANNOT_NULL_OR_EMPTY, parameter), parameter);
 			}
 
 			if (value.Length < minLength)

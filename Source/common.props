@@ -1,7 +1,7 @@
 <Project>
     <PropertyGroup>
         <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-		<RootNamespace>Nerosoft.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+        <RootNamespace>Nerosoft.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
         <Version>7.2.3</Version>
         <Authors>damon</Authors>
         <Company>Nerosoft Co., Ltd.</Company>
@@ -14,35 +14,63 @@
         <PackageProjectUrl>https://github.com/NerosoftDev/Euonia/</PackageProjectUrl>
         <PackageTags>.net, asp.net, core, framework, ddd, distributed, architecture, EventBus, ServiceBug, EF, EFCore, Caching, Redis, Mapping, Mapper, ObjectMap, DistributedLock, OOP, RPC, Grpc, proto, Validate, Validation, FluentValidation</PackageTags>
         <Configurations>Debug;Release;Product</Configurations>
+        <DeployDependsOn> $(DeployDependsOn); PrepareForBuild; Build </DeployDependsOn>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)'=='Debug' ">
         <DebugType>full</DebugType>
         <DebugSymbols>true</DebugSymbols>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>CS2002</NoWarn>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)'=='Release' ">
         <DebugType>pdbonly</DebugType>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <NoWarn>1591</NoWarn>
+        <NoWarn>1591;CS2002</NoWarn>
     </PropertyGroup>
-    
+
     <PropertyGroup Condition=" '$(Configuration)'=='Product' ">
         <DebugType>pdbonly</DebugType>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <NoWarn>1591</NoWarn>
+        <NoWarn>1591;CS2002</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
-        <Using Include="System" />
-        <Using Include="System.Collections" />
-		<Using Include="System.Collections.Generic" />
-		<Using Include="System.Linq" />
-		<Using Include="System.Text" />
-        <Using Include="System.Threading" />
-        <Using Include="System.Threading.Tasks" />
+        <Using Include="System"/>
+        <Using Include="System.Collections"/>
+        <Using Include="System.Collections.Generic"/>
+        <Using Include="System.Linq"/>
+        <Using Include="System.Text"/>
+        <Using Include="System.Threading"/>
+        <Using Include="System.Threading.Tasks"/>
     </ItemGroup>
+
+    <!-- See Microsoft.Common.CurrentVersion.targets -->
+
+    <Target Name="GenerateResx" BeforeTargets="PrepareForBuild">
+        <Message Text="Creating neutral language text resource"/>
+        
+        <!--<Delete Files="@(EmbeddedResource->'%(RootDir)%(Directory)%(Filename).resources')"/>
+        <Delete Files="@(EmbeddedResource->'%(RootDir)%(Directory)%(Filename).Designer.cs')"/>-->
+
+        <GenerateResource Sources="@(EmbeddedResource)"
+                          ExecuteAsTool="false"
+                          StronglyTypedLanguage="C#"
+                          StronglyTypedClassName="%(Filename)"
+                          StronglyTypedNamespace="@(EmbeddedResource->'$(RootNamespace).Properties')"
+                          StronglyTypedFileName="@(EmbeddedResource->'%(RootDir)%(Directory)%(Filename).Designer.cs')"
+                          Condition="'%(EmbeddedResource.GenerateResource)' != 'false' and '%(EmbeddedResource.FileName)' == 'Resources'"
+                          PublicClass="false"
+                          MinimalRebuildFromTracking="false">
+            <Output TaskParameter="FilesWritten" ItemName="FileWrites"/>
+            <Output TaskParameter="StronglyTypedFileName" ItemName="Compile"/>
+            <Output TaskParameter="Sources" ItemName="_Temporary"/>
+        </GenerateResource>
+        
+        <!--<Exec Command="dotnet-resgen @(EmbeddedResource) /str:cs,$(RootNamespace).Properties,%(Filename).Designer.cs" />-->
+
+    </Target>
 </Project>

@@ -90,7 +90,8 @@ public class BrokenRuleCollection : ObservableCollection<BrokenRule>
 
                 if (string.IsNullOrWhiteSpace(result.Description))
                 {
-                    throw new ArgumentNullException(nameof(result.Description), "Rule message is required.");
+	                throw new InvalidOperationException(Resources.IDS_RULE_MESSAGE_REQUIRED);
+	                //throw new InvalidOperationException(nameof(RuleResult.Description), Resources.RULE_MESSAGE_REQUIRED);
                 }
 
                 var rule = new BrokenRule
@@ -133,7 +134,7 @@ public class BrokenRuleCollection : ObservableCollection<BrokenRule>
                 break;
             case RuleSeverity.Success:
             default:
-                throw new Exception("unhandled severity=" + severity);
+                throw new Exception("Unhandled severity=" + severity);
         }
     }
 }

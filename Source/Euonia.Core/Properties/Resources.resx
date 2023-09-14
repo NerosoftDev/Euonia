@@ -117,10 +117,40 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ERROR_CANNOT_LOCK_MUTEX_WITH_EXPIRED_STATE" xml:space="preserve">
-    <value>Cannot lock mutex with expired state</value>
+  <data name="IDS_CANNOT_LOCK_MUTEX_WITH_EXPIRED_STATE" xml:space="preserve">
+    <value>Cannot lock mutex with expired state.</value>
   </data>
-  <data name="ERROR_PARAMETER_CANNOT_NULL_OR_EMPTY" xml:space="preserve">
+  <data name="IDS_PARAMETER_CANNOT_NULL_OR_EMPTY" xml:space="preserve">
     <value>{0} can not be null or empty!</value>
+  </data>
+  <data name="IDS_CAPACITY_MAY_NOT_BE_NEGATIVE" xml:space="preserve">
+    <value>Capacity may not be negative.</value>
+  </data>
+  <data name="IDS_VALUE_CANNOT_BE_NULL" xml:space="preserve">
+    <value>Value cannot be null.</value>
+  </data>
+  <data name="IDS_VALUE_IS_OF_INCORRECT_TYPE" xml:space="preserve">
+    <value>Value is of incorrect type.</value>
+  </data>
+  <data name="IDS_CAPACITY_CANNOT_BE_SET_TO_A_VALUE_LESS_THAN_COUNT" xml:space="preserve">
+    <value>Capacity cannot be set to a value less than Count.</value>
+  </data>
+  <data name="IDS_GIVEN_TYPE_SHOULD_BE_INSTANCE_OF_TYPE" xml:space="preserve">
+    <value>Given type ({0}) should be instance of {1}.</value>
+  </data>
+  <data name="IDS_EXPRESSION_IS_NOT_A_MEMBER_ACCESS_EXPRESSION" xml:space="preserve">
+    <value>The expression is not a member access expression.</value>
+  </data>
+  <data name="IDS_MEMBER_ACCESS_EXPRESSION_DOES_NOT_ACCESS_A_PROPERTY" xml:space="preserve">
+    <value>The member access expression does not access a property.</value>
+  </data>
+  <data name="IDS_NOT_A_LAMBDA_EXPRESSION" xml:space="preserve">
+    <value>Not a lambda expression.</value>
+  </data>
+  <data name="IDS_NOT_A_METHOD_CALL" xml:space="preserve">
+    <value>Not a method call.</value>
+  </data>
+  <data name="IDS_NOT_A_MEMBER_ACCESS" xml:space="preserve">
+    <value>Not a member access.</value>
   </data>
 </root>

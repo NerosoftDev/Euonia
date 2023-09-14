@@ -1,0 +1,1 @@
+﻿global using Nerosoft.Euonia.Core.Properties;
