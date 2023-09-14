@@ -1,4 +1,6 @@
-﻿namespace Nerosoft.Euonia.Quartz;
+﻿using Quartz;
+
+namespace Nerosoft.Euonia.Quartz;
 
 /// <summary>
 /// The background job attribute.
@@ -6,21 +8,14 @@
 [AttributeUsage(AttributeTargets.Class)]
 public class BackgroundJobAttribute : Attribute
 {
-    /// <summary>
-    /// Initialize a new instance of <see cref="BackgroundJobAttribute"/>.
-    /// </summary>
-    /// <param name="name">The job name.</param>
-    /// <param name="cron">The job schedule crontab expression.</param>
-    /// <exception cref="ArgumentNullException"></exception>
-    public BackgroundJobAttribute(string name, string cron)
+	/// <summary>
+	/// Initialize a new instance of <see cref="BackgroundJobAttribute"/>.
+	/// </summary>
+	/// <param name="name">The job name.</param>
+	/// <exception cref="ArgumentNullException"></exception>
+	public BackgroundJobAttribute(string name)
     {
         Name = name;
-        if (string.IsNullOrWhiteSpace(cron))
-        {
-            throw new ArgumentNullException(nameof(cron));
-        }
-
-        CronExpression = cron;
     }
 
     /// <summary>
@@ -34,14 +29,17 @@ public class BackgroundJobAttribute : Attribute
     public string Group { get; set; }
 
     /// <summary>
-    /// Gets the crontab expression.
+    /// Gets or sets a description for the job.
     /// </summary>
-    public string CronExpression { get; }
+    public string Description { get; set; }
+    
+    /// <summary>
+    /// Instructs the <see cref="IScheduler" /> whether or not the job should be re-executed if a 'recovery' or 'fail-over' situation is encountered.
+    /// </summary>
+    public bool? RequestRecovery { get; set; }
 
     /// <summary>
-    /// Gets or sets the job time zone name.
-    /// Please check https://docs.microsoft.com/en-us/dotnet/standard/base-types/time-zone-names-and-ids
-    /// Or you can get the time zone names using method <see cref="TimeZoneInfo.GetSystemTimeZones"/>
+    /// Whether or not the job should remain stored after it is orphaned (no <see cref="ITrigger" />s point to it).
     /// </summary>
-    public string TimeZoneName { get; set; } = "UTC";
+    public bool? StoreDurably { get; set; }
 }

@@ -18,19 +18,12 @@ public class BackgroundJobOptions
     public string Group { get; set; }
 
     /// <summary>
-    /// Gets the crontab expression.
+    /// Gets or sets job configuration.
     /// </summary>
-    public string CronExpression { get; set; }
+    public Action<IJobConfigurator> JobConfigure { get; set; }
 
     /// <summary>
-    /// Gets or sets the job time zone name.
-    /// Please check https://docs.microsoft.com/en-us/dotnet/standard/base-types/time-zone-names-and-ids
-    /// Or you can get the time zone names using method <see cref="TimeZoneInfo.GetSystemTimeZones"/>
+    /// Gets or sets trigger configuration.
     /// </summary>
-    public string TimeZoneName { get; set; } = "UTC";
-
-    /// <summary>
-    /// Gets or sets the <see cref="TriggerBuilder"/> action.
-    /// </summary>
-    public Func<TriggerBuilder, TriggerBuilder> Action { get; set; }
+    public List<Action<ITriggerConfigurator>> TriggerConfigure { get; } = new();
 }

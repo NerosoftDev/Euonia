@@ -17,9 +17,12 @@
 		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
 		<PackageReference Include="Microsoft.Extensions.Options" />
 		<PackageReference Include="Quartz" />
+		<PackageReference Include="Quartz.Extensions.DependencyInjection" />
+		<PackageReference Include="Quartz.Extensions.Hosting" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Euonia.Core\Euonia.Core.csproj" />
+		<ProjectReference Include="..\Euonia.Modularity\Euonia.Modularity.csproj" />
 	</ItemGroup>
 </Project>

@@ -13,8 +13,38 @@ public class BackgroundBuildOptions
     /// <summary>
     /// Gets the jobs.
     /// </summary>
-    internal List<Tuple<Type, BackgroundJobOptions>> Jobs { get; } = new();
+    internal Dictionary<Type, BackgroundJobOptions> Jobs { get; } = new();
 
+	/// <summary>
+	/// Gets or sets the scheduler identifier.
+	/// </summary>
+    public string SchedulerId { get; set; }
+    
+	/// <summary>
+	/// Gets or sets the scheduler name.
+	/// </summary>
+    public string SchedulerName { get; set; }
+    
+	/// <summary>
+	/// Gets or sets the misfire threshold time.
+	/// </summary>
+    public TimeSpan? MisfireThreshold { get; set; }
+
+	/// <summary>
+	/// 
+	/// </summary>
+	public bool IgnoreDuplicates { get; set; } = true;
+
+	/// <summary>
+	/// 
+	/// </summary>
+	public bool OverWriteExistingData { get; set; } = true;
+
+	/// <summary>
+	/// Gets or sets the type loader.
+	/// </summary>
+	public Type TypeLoader { get; set; }
+	
     /// <summary>
     /// Adds the job.
     /// </summary>
@@ -33,7 +63,7 @@ public class BackgroundBuildOptions
     public void AddJob<TJob>(BackgroundJobOptions options)
         where TJob : IJob
     {
-        Jobs.Add(Tuple.Create(typeof(TJob), options));
+	    Jobs[typeof(TJob)] = options;
     }
 
     /// <summary>
@@ -65,7 +95,7 @@ public class BackgroundBuildOptions
     /// <param name="options"></param>
     public void AddJob(Type jobType, BackgroundJobOptions options)
     {
-        Jobs.Add(Tuple.Create(jobType, options));
+	    Jobs[jobType] = options;
     }
 
     /// <summary>
