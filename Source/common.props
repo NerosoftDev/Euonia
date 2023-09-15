@@ -51,11 +51,7 @@
     <!-- See Microsoft.Common.CurrentVersion.targets -->
 
     <Target Name="GenerateResx" BeforeTargets="PrepareForBuild">
-        <Message Text="Creating neutral language text resource"/>
         
-        <!--<Delete Files="@(EmbeddedResource->'%(RootDir)%(Directory)%(Filename).resources')"/>
-        <Delete Files="@(EmbeddedResource->'%(RootDir)%(Directory)%(Filename).Designer.cs')"/>-->
-
         <GenerateResource Sources="@(EmbeddedResource)"
                           ExecuteAsTool="false"
                           StronglyTypedLanguage="C#"
@@ -70,7 +66,5 @@
             <Output TaskParameter="Sources" ItemName="_Temporary"/>
         </GenerateResource>
         
-        <!--<Exec Command="dotnet-resgen @(EmbeddedResource) /str:cs,$(RootNamespace).Properties,%(Filename).Designer.cs" />-->
-
     </Target>
 </Project>
