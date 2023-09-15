@@ -129,7 +129,7 @@ public sealed class RedisSynchronizationOptionsBuilder
 		{
 			if (specifiedMinValidityTime.CompareTo(expiry) >= 0)
 			{
-				var message = string.Format(Resources.IDS_TIME_MUST_BE_LESS_THAN_EXPIRY, minValidityTime, expiry, expiry.TimeSpan);
+				var message = string.Format(Resources.IDS_TIME_MUST_BE_LESS_THAN_EXPIRY, nameof(minValidityTime), expiry, expiry.TimeSpan);
 				throw new ArgumentOutOfRangeException(nameof(minValidityTime), specifiedMinValidityTime.TimeSpan, message);
 			}
 
@@ -148,7 +148,7 @@ public sealed class RedisSynchronizationOptionsBuilder
 			// See discussion here: https://github.com/madelson/DistributedLock/issues/130.
 			if (specifiedExtensionCadence.CompareTo(minValidityTime) >= 0)
 			{
-				var message = string.Format(Resources.IDS_TIME_MUST_BE_LESS_THAN_EXPIRY, extensionCadence, expiry, expiry.TimeSpan);
+				var message = string.Format(Resources.IDS_TIME_MUST_BE_LESS_THAN_EXPIRY, nameof(extensionCadence), expiry, expiry.TimeSpan);
 				throw new ArgumentOutOfRangeException(nameof(extensionCadence), specifiedExtensionCadence.TimeSpan, message);
 			}
 
