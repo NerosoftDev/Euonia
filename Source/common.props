@@ -46,15 +46,12 @@
         <Using Include="System.Text"/>
         <Using Include="System.Threading"/>
         <Using Include="System.Threading.Tasks"/>
+        <Using Include="$(RootNamespace).Properties"/>
     </ItemGroup>
 
     <!-- See Microsoft.Common.CurrentVersion.targets -->
 
     <Target Name="GenerateResx" BeforeTargets="PrepareForBuild">
-        <Message Text="Creating neutral language text resource"/>
-        
-        <!--<Delete Files="@(EmbeddedResource->'%(RootDir)%(Directory)%(Filename).resources')"/>
-        <Delete Files="@(EmbeddedResource->'%(RootDir)%(Directory)%(Filename).Designer.cs')"/>-->
 
         <GenerateResource Sources="@(EmbeddedResource)"
                           ExecuteAsTool="false"
@@ -69,8 +66,6 @@
             <Output TaskParameter="StronglyTypedFileName" ItemName="Compile"/>
             <Output TaskParameter="Sources" ItemName="_Temporary"/>
         </GenerateResource>
-        
-        <!--<Exec Command="dotnet-resgen @(EmbeddedResource) /str:cs,$(RootNamespace).Properties,%(Filename).Designer.cs" />-->
 
     </Target>
 </Project>

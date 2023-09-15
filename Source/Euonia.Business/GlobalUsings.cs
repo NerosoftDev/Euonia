@@ -1,1 +1,0 @@
-﻿global using Nerosoft.Euonia.Business.Properties;

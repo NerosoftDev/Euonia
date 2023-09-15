@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿/*
+using Microsoft.Extensions.Hosting;
 using System.Globalization;
 using System.Reflection;
 using Microsoft.Extensions.Options;
@@ -85,3 +86,4 @@ public class BackgroundJobService : BackgroundService
         await base.StopAsync(cancellationToken);
     }
 }
+*/
