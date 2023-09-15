@@ -46,12 +46,13 @@
         <Using Include="System.Text"/>
         <Using Include="System.Threading"/>
         <Using Include="System.Threading.Tasks"/>
+        <Using Include="$(RootNamespace).Properties"/>
     </ItemGroup>
 
     <!-- See Microsoft.Common.CurrentVersion.targets -->
 
     <Target Name="GenerateResx" BeforeTargets="PrepareForBuild">
-        
+
         <GenerateResource Sources="@(EmbeddedResource)"
                           ExecuteAsTool="false"
                           StronglyTypedLanguage="C#"
@@ -65,6 +66,6 @@
             <Output TaskParameter="StronglyTypedFileName" ItemName="Compile"/>
             <Output TaskParameter="Sources" ItemName="_Temporary"/>
         </GenerateResource>
-        
+
     </Target>
 </Project>
