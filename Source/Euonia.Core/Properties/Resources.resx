@@ -121,7 +121,7 @@
     <value>Cannot lock mutex with expired state.</value>
   </data>
   <data name="IDS_PARAMETER_CANNOT_NULL_OR_EMPTY" xml:space="preserve">
-    <value>{0} can not be null or empty!</value>
+    <value>{0} can not be null or empty.</value>
   </data>
   <data name="IDS_CAPACITY_MAY_NOT_BE_NEGATIVE" xml:space="preserve">
     <value>Capacity may not be negative.</value>
@@ -152,5 +152,50 @@
   </data>
   <data name="IDS_NOT_A_MEMBER_ACCESS" xml:space="preserve">
     <value>Not a member access.</value>
+  </data>
+  <data name="IDS_DESTINATION_ARRAY_CANNOT_BE_NULL" xml:space="preserve">
+    <value>Destination array cannot be null.</value>
+  </data>
+  <data name="IDS_DESTINATION_ARRAY_IS_OF_INCORRECT_TYPE" xml:space="preserve">
+    <value>Destination array is of incorrect type.</value>
+  </data>
+  <data name="IDS_DESTINATION_ARRAY_MUST_BE_SINGLE_DIMENSIONAL" xml:space="preserve">
+    <value>Destination array must be single dimensional.</value>
+  </data>
+  <data name="IDS_INVALID_COUNT" xml:space="preserve">
+    <value>Invalid count {0}.</value>
+  </data>
+  <data name="IDS_INVALID_EXISTING_INDEX_FOR_SOURCE_LENGTH" xml:space="preserve">
+    <value>Invalid existing index {0} for source length {0}.</value>
+  </data>
+  <data name="IDS_INVALID_NEW_INDEX_FOR_SOURCE_LENGTH" xml:space="preserve">
+    <value>Invalid new index {0} for source length {1}.</value>
+  </data>
+  <data name="IDS_INVALID_OFFSET" xml:space="preserve">
+    <value>Invalid offset {0}.</value>
+  </data>
+  <data name="IDS_INVALID_OFFSET_OR_COUNT_FOR_SOURCE_LENGTH" xml:space="preserve">
+    <value>Invalid offset ({0}) or count ({1}) for source length {2}.</value>
+  </data>
+  <data name="IDS_MAXIMUM_COUNT_CANNOT_BE_LESS_THAN_THE_NUMBER_OF_ELEMENTS_IN_THE_COLLECTION" xml:space="preserve">
+    <value>The maximum count cannot be less than the number of elements in the collection.</value>
+  </data>
+  <data name="IDS_MAXIMUM_COUNT_MUST_BE_GREATER_THAN_ZERO" xml:space="preserve">
+    <value>The maximum count must be greater than zero.</value>
+  </data>
+  <data name="IDS_PARAMETER_CANNOT_NULL_OR_WHITE_SPACE" xml:space="preserve">
+    <value>{0} can not be null, empty or white space.</value>
+  </data>
+  <data name="IDS_PARAMETER_CAN_NOT_BE_NULL" xml:space="preserve">
+    <value>{0} can not be null.</value>
+  </data>
+  <data name="IDS_PARAMETER_IS_NOT_MATCH_WITH_PATTERN" xml:space="preserve">
+    <value>{0} is not match with {1}.</value>
+  </data>
+  <data name="IDS_PARAMETER_LENGTH_MUST_BE_EQUAL_OR_GREATER_THAN" xml:space="preserve">
+    <value>{0} length must be equal to or greater than {1}.</value>
+  </data>
+  <data name="IDS_PARAMETER_LENGTH_MUST_BE_EQUAL_OR_LOWER_THAN" xml:space="preserve">
+    <value>{0} length must be equal to or lower than {1}.</value>
   </data>
 </root>

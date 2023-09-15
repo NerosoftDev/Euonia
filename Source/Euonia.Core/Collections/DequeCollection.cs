@@ -409,7 +409,7 @@ public sealed class DequeCollection<T> : IList<T>, IReadOnlyList<T>, IList
 	{
 		if (array == null)
 		{
-			throw new ArgumentNullException(nameof(array), "Destination array cannot be null.");
+			throw new ArgumentNullException(nameof(array), Resources.IDS_DESTINATION_ARRAY_CANNOT_BE_NULL);
 		}
 
 		CheckRangeArguments(array.Length, index, Count);
@@ -420,11 +420,11 @@ public sealed class DequeCollection<T> : IList<T>, IReadOnlyList<T>, IList
 		}
 		catch (ArrayTypeMismatchException ex)
 		{
-			throw new ArgumentException("Destination array is of incorrect type.", nameof(array), ex);
+			throw new ArgumentException(Resources.IDS_DESTINATION_ARRAY_IS_OF_INCORRECT_TYPE, nameof(array), ex);
 		}
 		catch (RankException ex)
 		{
-			throw new ArgumentException("Destination array must be single dimensional.", nameof(array), ex);
+			throw new ArgumentException(Resources.IDS_DESTINATION_ARRAY_MUST_BE_SINGLE_DIMENSIONAL, nameof(array), ex);
 		}
 	}
 
@@ -454,7 +454,7 @@ public sealed class DequeCollection<T> : IList<T>, IReadOnlyList<T>, IList
 	{
 		if (index < 0 || index > sourceLength)
 		{
-			throw new ArgumentOutOfRangeException(nameof(index), "Invalid new index " + index + " for source length " + sourceLength);
+			throw new ArgumentOutOfRangeException(nameof(index), string.Format(Resources.IDS_INVALID_NEW_INDEX_FOR_SOURCE_LENGTH, index, sourceLength));
 		}
 	}
 
@@ -468,7 +468,7 @@ public sealed class DequeCollection<T> : IList<T>, IReadOnlyList<T>, IList
 	{
 		if (index < 0 || index >= sourceLength)
 		{
-			throw new ArgumentOutOfRangeException(nameof(index), "Invalid existing index " + index + " for source length " + sourceLength);
+			throw new ArgumentOutOfRangeException(nameof(index), string.Format(Resources.IDS_INVALID_EXISTING_INDEX_FOR_SOURCE_LENGTH, index, sourceLength));
 		}
 	}
 
@@ -484,17 +484,17 @@ public sealed class DequeCollection<T> : IList<T>, IReadOnlyList<T>, IList
 	{
 		if (offset < 0)
 		{
-			throw new ArgumentOutOfRangeException(nameof(offset), "Invalid offset " + offset);
+			throw new ArgumentOutOfRangeException(nameof(offset), string.Format(Resources.IDS_INVALID_OFFSET, offset));
 		}
 
 		if (count < 0)
 		{
-			throw new ArgumentOutOfRangeException(nameof(count), "Invalid count " + count);
+			throw new ArgumentOutOfRangeException(nameof(count), string.Format(Resources.IDS_INVALID_COUNT, count));
 		}
 
 		if (sourceLength - offset < count)
 		{
-			throw new ArgumentException("Invalid offset (" + offset + ") or count + (" + count + ") for source length " + sourceLength);
+			throw new ArgumentException(string.Format(Resources.IDS_INVALID_OFFSET_OR_COUNT_FOR_SOURCE_LENGTH, offset, count, sourceLength));
 		}
 	}
 

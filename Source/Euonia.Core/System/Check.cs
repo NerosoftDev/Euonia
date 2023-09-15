@@ -147,17 +147,17 @@ public static class Check
 	{
 		if (value == null)
 		{
-			throw new ArgumentException($"{parameter} can not be null!", parameter);
+			throw new ArgumentException(string.Format(Resources.IDS_PARAMETER_CAN_NOT_BE_NULL, parameter), parameter);
 		}
 
 		if (value.Length > maxLength)
 		{
-			throw new ArgumentException($"{parameter} length must be equal to or lower than {maxLength}!", parameter);
+			throw new ArgumentException(string.Format(Resources.IDS_PARAMETER_LENGTH_MUST_BE_EQUAL_OR_LOWER_THAN, parameter, maxLength), parameter);
 		}
 
 		if (minLength > 0 && value.Length < minLength)
 		{
-			throw new ArgumentException($"{parameter} length must be equal to or bigger than {minLength}!", parameter);
+			throw new ArgumentException(string.Format(Resources.IDS_PARAMETER_LENGTH_MUST_BE_EQUAL_OR_GREATER_THAN, parameter, maxLength), parameter);
 		}
 
 		return value;
@@ -174,7 +174,7 @@ public static class Check
 	{
 		if (value.IsNullOrWhiteSpace())
 		{
-			throw new ArgumentException($"{parameter} can not be null, empty or white space!", parameter);
+			throw new ArgumentException(string.Format(Resources.IDS_PARAMETER_CANNOT_NULL_OR_WHITE_SPACE, parameter), parameter);
 		}
 
 		return value;
@@ -205,7 +205,7 @@ public static class Check
 	{
 		if (value.IsNullOrEmpty())
 		{
-			throw new ArgumentException($"{parameter} can not be null or empty!", parameter);
+			throw new ArgumentException(string.Format(Resources.IDS_PARAMETER_CANNOT_NULL_OR_EMPTY, parameter), parameter);
 		}
 
 		return value;
@@ -239,7 +239,7 @@ public static class Check
 	{
 		if (!Regex.IsMatch(value, pattern, options))
 		{
-			throw new ArgumentException($"{parameter} is not match with {pattern}!", parameter);
+			throw new ArgumentException(string.Format(Resources.IDS_PARAMETER_IS_NOT_MATCH_WITH_PATTERN, parameter, pattern), parameter);
 		}
 
 		return value;
@@ -270,7 +270,7 @@ public static class Check
 	/// <typeparam name="T"></typeparam>
 	/// <returns></returns>
 	/// <exception cref="ArgumentException"></exception>
-	public static ICollection<T> EnsureNotNullOrEmpty<T>(ICollection<T> collection, [NotNull] string parameter)
+	public static IEnumerable<T> EnsureNotNullOrEmpty<T>(IEnumerable<T> collection, [NotNull] string parameter)
 	{
 		if (collection.IsNullOrEmpty())
 		{
@@ -320,13 +320,13 @@ public static class Check
 
 			if (value.Length < minLength)
 			{
-				throw new ArgumentException($"{parameter} length must be equal to or bigger than {minLength}!", parameter);
+				throw new ArgumentException(string.Format(Resources.IDS_PARAMETER_LENGTH_MUST_BE_EQUAL_OR_GREATER_THAN, parameter, minLength), parameter);
 			}
 		}
 
 		if (value != null && value.Length > maxLength)
 		{
-			throw new ArgumentException($"{parameter} length must be equal to or lower than {maxLength}!", parameter);
+			throw new ArgumentException(string.Format(Resources.IDS_PARAMETER_LENGTH_MUST_BE_EQUAL_OR_LOWER_THAN, parameter, maxLength), parameter);
 		}
 
 		return value;
