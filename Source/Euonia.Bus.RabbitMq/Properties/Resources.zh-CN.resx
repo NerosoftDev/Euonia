@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,9 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="IDS_EXCHANGE_NAME_IS_REQUIRED" xml:space="preserve">
-    <value>Exchange name is required.</value>
+    <value>必须指定Exchange的名称。</value>
   </data>
   <data name="IDS_EXCHANGE_TYPE_IS_REQUIRED" xml:space="preserve">
-    <value>Exchange type is required.</value>
+    <value>必须指定Exchange的类型。</value>
   </data>
 </root>

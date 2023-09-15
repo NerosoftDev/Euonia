@@ -101,7 +101,7 @@
     <value>无法锁定过期状态的互斥体。</value>
   </data>
   <data name="IDS_PARAMETER_CANNOT_NULL_OR_EMPTY" xml:space="preserve">
-    <value>{0}不能为空！</value>
+    <value>{0} 不能为空。</value>
   </data>
   <data name="IDS_CAPACITY_CANNOT_BE_SET_TO_A_VALUE_LESS_THAN_COUNT" xml:space="preserve">
     <value>元素容量不能设置为小于 Count 的值。</value>
@@ -132,5 +132,50 @@
   </data>
   <data name="IDS_VALUE_IS_OF_INCORRECT_TYPE" xml:space="preserve">
     <value>值的类型不正确。</value>
+  </data>
+  <data name="IDS_DESTINATION_ARRAY_CANNOT_BE_NULL" xml:space="preserve">
+    <value>目标数组不能为空。</value>
+  </data>
+  <data name="IDS_DESTINATION_ARRAY_IS_OF_INCORRECT_TYPE" xml:space="preserve">
+    <value>目标数组类型不正确。</value>
+  </data>
+  <data name="IDS_DESTINATION_ARRAY_MUST_BE_SINGLE_DIMENSIONAL" xml:space="preserve">
+    <value>目标数组必须是一维的。</value>
+  </data>
+  <data name="IDS_INVALID_COUNT" xml:space="preserve">
+    <value>无效计数 {0}。</value>
+  </data>
+  <data name="IDS_INVALID_EXISTING_INDEX_FOR_SOURCE_LENGTH" xml:space="preserve">
+    <value>长度 {0} 的已有索引 {1} 无效。</value>
+  </data>
+  <data name="IDS_INVALID_NEW_INDEX_FOR_SOURCE_LENGTH" xml:space="preserve">
+    <value>长度 {0} 的新索引 {1} 无效。</value>
+  </data>
+  <data name="IDS_INVALID_OFFSET" xml:space="preserve">
+    <value>无效偏移值 {0}。</value>
+  </data>
+  <data name="IDS_INVALID_OFFSET_OR_COUNT_FOR_SOURCE_LENGTH" xml:space="preserve">
+    <value>长度 {2} 的偏移值 ({0}) 或计数 ({1}) 无效。</value>
+  </data>
+  <data name="IDS_MAXIMUM_COUNT_CANNOT_BE_LESS_THAN_THE_NUMBER_OF_ELEMENTS_IN_THE_COLLECTION" xml:space="preserve">
+    <value>最大计数不能少于集合中的元素数。</value>
+  </data>
+  <data name="IDS_MAXIMUM_COUNT_MUST_BE_GREATER_THAN_ZERO" xml:space="preserve">
+    <value>最大计数必须大于零。</value>
+  </data>
+  <data name="IDS_PARAMETER_CAN_NOT_BE_NULL" xml:space="preserve">
+    <value>{0} 不能为空。</value>
+  </data>
+  <data name="IDS_PARAMETER_CANNOT_NULL_OR_WHITE_SPACE" xml:space="preserve">
+    <value>{0} 不能为空或空白。</value>
+  </data>
+  <data name="IDS_PARAMETER_IS_NOT_MATCH_WITH_PATTERN" xml:space="preserve">
+    <value>{0} 不能匹配正则表达式 {1}。</value>
+  </data>
+  <data name="IDS_PARAMETER_LENGTH_MUST_BE_EQUAL_OR_GREATER_THAN" xml:space="preserve">
+    <value>{0} 长度必须等于或大于 {1}。</value>
+  </data>
+  <data name="IDS_PARAMETER_LENGTH_MUST_BE_EQUAL_OR_LOWER_THAN" xml:space="preserve">
+    <value>{0} 长度必须等于或小于 {1}。</value>
   </data>
 </root>

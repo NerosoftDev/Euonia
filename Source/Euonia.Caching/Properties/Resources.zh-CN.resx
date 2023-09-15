@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,10 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="IDS_EXCHANGE_NAME_IS_REQUIRED" xml:space="preserve">
-    <value>Exchange name is required.</value>
+  <data name="IDS_DATE_KIND_OF_PARAMETER_MUST_BE" xml:space="preserve">
+    <value>参数{0}时间类型必须是{1}.</value>
   </data>
-  <data name="IDS_EXCHANGE_TYPE_IS_REQUIRED" xml:space="preserve">
-    <value>Exchange type is required.</value>
+  <data name="IDS_EXPIRATION_TIMEOUT_MUST_BE_BETWEEN" xml:space="preserve">
+    <value>过期时间必须在 {0} 和 {1} 之间。</value>
+  </data>
+  <data name="IDS_EXPIRATION_TIMEOUT_MUST_BE_GREATER_THAN_ZERO_IF_EXPIRATION_MODE_IS_DEFINED" xml:space="preserve">
+    <value>如果定义了过期模式，过期超时必须大于零。</value>
+  </data>
+  <data name="IDS_EXPIRATION_VALUE_MUST_BE_GREATER_THAN_ZERO" xml:space="preserve">
+    <value>有效期值必须大于零。</value>
+  </data>
+  <data name="IDS_VALUE_MUST_BE_GREATER_THAN" xml:space="preserve">
+    <value>值必须大于 {0}。</value>
   </data>
 </root>

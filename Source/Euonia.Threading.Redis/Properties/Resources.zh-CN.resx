@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,10 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="IDS_EXCHANGE_NAME_IS_REQUIRED" xml:space="preserve">
-    <value>Exchange name is required.</value>
+  <data name="IDS_ONE_OR_MORE_DATABASES_ARE_NULL" xml:space="preserve">
+    <value>一个或多个数据库实例为空。</value>
   </data>
-  <data name="IDS_EXCHANGE_TYPE_IS_REQUIRED" xml:space="preserve">
-    <value>Exchange type is required.</value>
+  <data name="IDS_TIME_MUST_BE_LESS_THAN_EXPIRY" xml:space="preserve">
+    <value>{0}必须小于{1}（{2}）。</value>
+  </data>
+  <data name="IDS_VALUE_MUST_BE_GREATER_OR_EQUALS_AND_LESS_THAN" xml:space="preserve">
+    <value>必须 &gt;= {0}且 &lt; {1}。</value>
+  </data>
+  <data name="IDS_VALUE_MUST_BE_POSITIVE" xml:space="preserve">
+    <value>值必须为正数。</value>
   </data>
 </root>
