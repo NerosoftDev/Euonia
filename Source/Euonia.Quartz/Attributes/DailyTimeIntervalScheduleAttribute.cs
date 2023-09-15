@@ -36,12 +36,6 @@ public class DailyTimeIntervalScheduleAttribute : BackgroundJobScheduleAttribute
 	/// </summary>
 	public int? RepeatCount { get; set; }
 
-	/// <summary>
-	/// Instructs the <see cref="IScheduler" /> that the <see cref="ITrigger"/> will never be evaluated for a misfire situation.
-	/// and that the scheduler will simply try to fire it as soon as it can,and then update the Trigger as if it had fired at the proper time.
-	/// </summary>
-	public int? MisfirePolicy { get; set; }
-
 	/// <inheritdoc />
 	public override IScheduleBuilder Configure()
 	{

@@ -3,8 +3,9 @@
 namespace Nerosoft.Euonia.Quartz;
 
 /// <summary>
-/// Represents a calendar-based trigger, which is based on repeating calendar time intervals.
+/// Configure a <see cref="IScheduleBuilder" /> that defines calendar time (day, week, month, year) interval-based schedules for Triggers.
 /// </summary>
+/// <seealso cref="CalendarIntervalScheduleBuilder"/>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 public class CalendarIntervalScheduleAttribute : BackgroundJobScheduleAttribute
 {
@@ -30,16 +31,6 @@ public class CalendarIntervalScheduleAttribute : BackgroundJobScheduleAttribute
 	/// Gets the time unit of the interval.
 	/// </summary>
 	public IntervalUnit Unit { get; }
-
-	/// <summary>
-	/// Instructs the <see cref="IScheduler" /> that the <see cref="ITrigger"/> will never be evaluated for a misfire situation.
-	/// and that the scheduler will simply try to fire it as soon as it can,and then update the Trigger as if it had fired at the proper time.
-	/// <para><see cref="MisfireInstruction.IgnoreMisfirePolicy"/> - WithMisfireHandlingInstructionIgnoreMisfires;</para>
-	/// <para><see cref="MisfireInstruction.CalendarIntervalTrigger.DoNothing"/> - WithMisfireHandlingInstructionDoNothing;</para>
-	/// <para><see cref="MisfireInstruction.CalendarIntervalTrigger.FireOnceNow"/> - WithMisfireHandlingInstructionFireAndProceed;</para>
-	/// <para>Others - Use default value <see cref="MisfireInstruction.SmartPolicy"/>.</para>
-	/// </summary>
-	public int? MisfirePolicy { get; set; }
 
 	/// <summary>
 	/// 

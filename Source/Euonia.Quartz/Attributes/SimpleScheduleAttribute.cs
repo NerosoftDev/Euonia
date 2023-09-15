@@ -3,8 +3,9 @@
 namespace Nerosoft.Euonia.Quartz;
 
 /// <summary>
-/// 
+/// Configure a <see cref="IScheduleBuilder" /> that defines strict/literal interval-based schedules for <see cref="ITrigger" />s.
 /// </summary>
+/// <seealso cref="SimpleScheduleBuilder"/>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 public class SimpleScheduleAttribute : BackgroundJobScheduleAttribute
 {
@@ -44,12 +45,6 @@ public class SimpleScheduleAttribute : BackgroundJobScheduleAttribute
 	/// </summary>
 	public int? RepeatCount { get; set; }
 
-	/// <summary>
-	/// Instructs the <see cref="IScheduler" /> that the <see cref="ITrigger"/> will never be evaluated for a misfire situation.
-	/// and that the scheduler will simply try to fire it as soon as it can,and then update the Trigger as if it had fired at the proper time.
-	/// </summary>
-	public int? MisfirePolicy { get; set; }
-
 	/// <inheritdoc/>
 	public override IScheduleBuilder Configure()
 	{
@@ -66,8 +61,8 @@ public class SimpleScheduleAttribute : BackgroundJobScheduleAttribute
 				break;
 			case < 0:
 				throw new InvalidOperationException("RepeatCount must be greater than or equal to 0. Leave it null if you want to repeat forever.");
-
 		}
+
 		if (RepeatCount >= 0)
 		{
 			builder.WithRepeatCount(RepeatCount.Value);
@@ -76,6 +71,7 @@ public class SimpleScheduleAttribute : BackgroundJobScheduleAttribute
 		{
 			builder.RepeatForever();
 		}
+
 		switch (MisfirePolicy)
 		{
 			case MisfireInstruction.SimpleTrigger.FireNow:

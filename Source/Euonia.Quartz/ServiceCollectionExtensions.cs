@@ -1,5 +1,4 @@
 ﻿using Nerosoft.Euonia.Quartz;
-using Nerosoft.Euonia.Reflection;
 using Quartz;
 
 // ReSharper disable UnusedMember.Global
@@ -16,17 +15,36 @@ public static class ServiceCollectionExtensions
 	/// Adds Quartz services to the specified <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />.
 	/// </summary>
 	/// <param name="services"></param>
+	/// <param name="options"></param>
+	/// <param name="configure"></param>
+	/// <returns></returns>
+	public static IServiceCollection AddQuartz(this IServiceCollection services, Action<QuartzOptions> options, Action<IServiceCollectionQuartzConfigurator> configure)
+	{
+		services.Configure(options);
+		services.AddQuartz(configure);
+		services.AddQuartzHostedService(host =>
+		{
+			host.WaitForJobsToComplete = true;
+			host.AwaitApplicationStarted = true;
+		});
+		return services;
+	}
+
+	/// <summary>
+	/// Adds Quartz services to the specified <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />.
+	/// </summary>
+	/// <param name="services"></param>
 	/// <param name="optionsAction"></param>
 	/// <returns></returns>
-	public static IServiceCollection AddQuartz(this IServiceCollection services, Action<BackgroundBuildOptions> optionsAction)
+	public static IServiceCollection AddQuartz(this IServiceCollection services, Action<BackgroundBuildOptions> optionsAction = null)
 	{
 		var buildOptions = Singleton<BackgroundBuildOptions>.Instance;
 		optionsAction?.Invoke(buildOptions);
-		// if you are using persistent job store, you might want to alter some options
+
 		services.Configure<QuartzOptions>(options =>
 		{
-			options.Scheduling.IgnoreDuplicates = buildOptions.IgnoreDuplicates; // default: false
-			options.Scheduling.OverWriteExistingData = buildOptions.OverWriteExistingData; // default: true
+			options.Scheduling.IgnoreDuplicates = buildOptions.IgnoreDuplicates;
+			options.Scheduling.OverWriteExistingData = buildOptions.OverWriteExistingData;
 			options.MisfireThreshold = buildOptions.MisfireThreshold;
 		});
 
@@ -34,6 +52,8 @@ public static class ServiceCollectionExtensions
 		{
 			quartz.SchedulerId = buildOptions.SchedulerId;
 			quartz.SchedulerName = buildOptions.SchedulerName;
+
+			/*
 			if (buildOptions.TypeLoader != null)
 			{
 				Reflect.InvokeGenericMethod(quartz, nameof(quartz.UseTypeLoader), new[] { buildOptions.TypeLoader });
@@ -42,19 +62,38 @@ public static class ServiceCollectionExtensions
 			{
 				quartz.UseSimpleTypeLoader();
 			}
+			*/
 
-			quartz.UseInMemoryStore();
-			quartz.UseDefaultThreadPool(tp =>
+			if (buildOptions.MaxBatchSize.HasValue)
 			{
-				tp.MaxConcurrency = 10;
-			});
+				quartz.MaxBatchSize = buildOptions.MaxBatchSize.Value;
+			}
+
+			if (buildOptions.InterruptJobsOnShutdown.HasValue)
+			{
+				quartz.InterruptJobsOnShutdown = buildOptions.InterruptJobsOnShutdown.Value;
+			}
+
+			if (buildOptions.InterruptJobsOnShutdownWithWait.HasValue)
+			{
+				quartz.InterruptJobsOnShutdownWithWait = buildOptions.InterruptJobsOnShutdownWithWait.Value;
+			}
+
+			foreach (var action in buildOptions.Configurations)
+			{
+				action(quartz);
+			}
 
 			foreach (var (type, config) in buildOptions.Jobs)
 			{
 				quartz.AddJob(type, config);
 			}
 		});
-
+		services.AddQuartzHostedService(host =>
+		{
+			host.WaitForJobsToComplete = true;
+			host.AwaitApplicationStarted = true;
+		});
 		return services;
 	}
 }

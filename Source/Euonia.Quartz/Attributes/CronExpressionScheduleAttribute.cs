@@ -78,16 +78,6 @@ public class CronExpressionScheduleAttribute : BackgroundJobScheduleAttribute
 	/// </summary>
 	public string TimeZoneName { get; set; } = "UTC";
 
-	/// <summary>
-	/// Instructs the <see cref="IScheduler" /> that the <see cref="ITrigger"/> will never be evaluated for a misfire situation.
-	/// and that the scheduler will simply try to fire it as soon as it can,and then update the Trigger as if it had fired at the proper time.
-	/// <para><see cref="MisfireInstruction.IgnoreMisfirePolicy"/> - WithMisfireHandlingInstructionIgnoreMisfires;</para>
-	/// <para><see cref="MisfireInstruction.CronTrigger.DoNothing"/> - WithMisfireHandlingInstructionDoNothing;</para>
-	/// <para><see cref="MisfireInstruction.CronTrigger.FireOnceNow"/> - WithMisfireHandlingInstructionFireAndProceed;</para>
-	/// <para>Others - Use default value <see cref="MisfireInstruction.SmartPolicy"/>.</para>
-	/// </summary>
-	public int? MisfirePolicy { get; set; }
-
 	/// <inheritdoc/>
 	public override IScheduleBuilder Configure()
 	{
