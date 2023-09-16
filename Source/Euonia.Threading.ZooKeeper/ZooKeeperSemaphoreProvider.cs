@@ -23,13 +23,12 @@ public sealed partial class ZooKeeperSemaphoreProvider : ISemaphoreProvider<ZooK
 
         if (path == ZooKeeperPath.Root)
         {
-            throw new ArgumentException("Cannot be the root", nameof(path));
+            throw new ArgumentException(Resources.IDS_PATH_CAN_NOT_BE_THE_ROOT, nameof(path));
         }
     }
 
     /// <summary>
     /// Constructs a new semaphore based on the provided <paramref name="name"/>, <paramref name="connectionString"/>, and <paramref name="options"/>.
-    /// 
     /// The semaphore's path will be a parent node of the root directory '/'. If <paramref name="name"/> is not a valid node name, it will be transformed to ensure
     /// validity.
     /// </summary>
@@ -58,7 +57,7 @@ public sealed partial class ZooKeeperSemaphoreProvider : ISemaphoreProvider<ZooK
     {
         if (maxCount < 1)
         {
-            throw new ArgumentOutOfRangeException(nameof(maxCount), maxCount, "must be positive");
+            throw new ArgumentOutOfRangeException(nameof(maxCount), maxCount, ThreadingResources.IDS_VALUE_MUST_BE_POSITIVE);
         }
 
         MaxCount = maxCount;

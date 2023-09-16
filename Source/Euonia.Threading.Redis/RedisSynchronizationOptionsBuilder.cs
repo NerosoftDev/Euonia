@@ -70,7 +70,7 @@ public sealed class RedisSynchronizationOptionsBuilder
 		var minValidityTimeoutValue = new TimeoutValue(minValidityTime);
 		if (minValidityTimeoutValue.IsZero)
 		{
-			throw new ArgumentOutOfRangeException(nameof(minValidityTime), minValidityTime, "may not be zero");
+			throw new ArgumentOutOfRangeException(nameof(minValidityTime), minValidityTime, ThreadingResources.IDS_CAN_NOT_BE_ZERO);
 		}
 
 		_minValidityTime = minValidityTimeoutValue;
@@ -96,12 +96,12 @@ public sealed class RedisSynchronizationOptionsBuilder
 
 		if (minTimeoutValue.IsInfinite)
 		{
-			throw new ArgumentOutOfRangeException(nameof(min), "may not be infinite");
+			throw new ArgumentOutOfRangeException(nameof(min), ThreadingResources.IDS_CAN_NOT_BE_INFINITE);
 		}
 
 		if (maxTimeoutValue.IsInfinite || maxTimeoutValue.CompareTo(min) < 0)
 		{
-			throw new ArgumentOutOfRangeException(nameof(max), max, "must be non-infinite and greater than " + nameof(min));
+			throw new ArgumentOutOfRangeException(nameof(max), max, string.Format(ThreadingResources.IDS_MUST_BE_NON_INFINITE_AND_GREATER_THAN_MIN, nameof(min)));
 		}
 
 		_minBusyWaitSleepTime = minTimeoutValue;

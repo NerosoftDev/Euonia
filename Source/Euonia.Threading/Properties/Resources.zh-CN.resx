@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,15 +118,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="IDS_CAN_NOT_BE_INFINITE" xml:space="preserve">
-    <value>Can not be infinite.</value>
+    <value>不能是无限值。</value>
   </data>
   <data name="IDS_CAN_NOT_BE_ZERO" xml:space="preserve">
-    <value>Can not be zero.</value>
+    <value>不能是零。</value>
   </data>
   <data name="IDS_MUST_BE_NON_INFINITE_AND_GREATER_THAN_MIN" xml:space="preserve">
-    <value>Must be non-infinite and greater than {0}.</value>
+    <value>必须是非无穷大且大于 {0}。</value>
   </data>
   <data name="IDS_VALUE_MUST_BE_POSITIVE" xml:space="preserve">
-    <value>Value must be positive.</value>
+    <value>值必须为正数。</value>
   </data>
 </root>
