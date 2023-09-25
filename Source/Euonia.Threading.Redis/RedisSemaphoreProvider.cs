@@ -28,7 +28,7 @@ public sealed partial class RedisSemaphoreProvider : ISemaphoreProvider<RedisSyn
 
         if (maxCount < 1)
         {
-            throw new ArgumentOutOfRangeException(nameof(maxCount), maxCount, Resources.IDS_VALUE_MUST_BE_POSITIVE);
+            throw new ArgumentOutOfRangeException(nameof(maxCount), maxCount, ThreadingResources.IDS_VALUE_MUST_BE_POSITIVE);
         }
 
         _databases = new[] { database ?? throw new ArgumentNullException(nameof(database)) };

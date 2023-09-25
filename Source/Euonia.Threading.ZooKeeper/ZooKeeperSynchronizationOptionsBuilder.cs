@@ -41,12 +41,12 @@ public sealed class ZooKeeperSynchronizationOptionsBuilder
         var sessionTimeoutValue = new TimeoutValue(sessionTimeout);
         if (sessionTimeoutValue.IsZero)
         {
-            throw new ArgumentOutOfRangeException(nameof(sessionTimeout), "must be positive");
+            throw new ArgumentOutOfRangeException(nameof(sessionTimeout), ThreadingResources.IDS_VALUE_MUST_BE_POSITIVE);
         }
 
         if (sessionTimeoutValue.IsInfinite)
         {
-            throw new ArgumentOutOfRangeException(nameof(sessionTimeout), "must not be infinite");
+            throw new ArgumentOutOfRangeException(nameof(sessionTimeout), ThreadingResources.IDS_CAN_NOT_BE_INFINITE);
         }
 
         _sessionTimeout = sessionTimeoutValue;

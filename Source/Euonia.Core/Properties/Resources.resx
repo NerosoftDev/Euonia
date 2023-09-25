@@ -166,7 +166,7 @@
     <value>Invalid count {0}.</value>
   </data>
   <data name="IDS_INVALID_EXISTING_INDEX_FOR_SOURCE_LENGTH" xml:space="preserve">
-    <value>Invalid existing index {0} for source length {0}.</value>
+    <value>Invalid existing index {0} for source length {1}.</value>
   </data>
   <data name="IDS_INVALID_NEW_INDEX_FOR_SOURCE_LENGTH" xml:space="preserve">
     <value>Invalid new index {0} for source length {1}.</value>

@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="IDS_AT_LEAST_ONE_PARAMETER_IS_REQUIRED" xml:space="preserve">
-    <value>At least one of {0} parameter is required</value>
+    <value>At least one of {0} parameter is required.</value>
   </data>
   <data name="IDS_PROPERTY_EXPRESSION_CAN_NOT_NULL" xml:space="preserve">
     <value>Property expression can not null.</value>

@@ -118,12 +118,12 @@ public class CacheItem<T> : ISerializable, ICacheItemProperties
 
 		if (created.HasValue && created.Value.Kind != DateTimeKind.Utc)
 		{
-			throw new ArgumentException(string.Format(Resources.IDS_CREATED_DATE_KIND_MUST_BE, DateTimeKind.Utc), nameof(created));
+			throw new ArgumentException(string.Format(Resources.IDS_DATE_KIND_OF_PARAMETER_MUST_BE, nameof(created), DateTimeKind.Utc), nameof(created));
 		}
 
 		if (lastAccessed.HasValue && lastAccessed.Value.Kind != DateTimeKind.Utc)
 		{
-			throw new ArgumentException(string.Format(Resources.IDS_LAST_ACCESSED_DATE_KIND_MUST_BE, DateTimeKind.Utc), nameof(lastAccessed));
+			throw new ArgumentException(string.Format(Resources.IDS_DATE_KIND_OF_PARAMETER_MUST_BE, nameof(lastAccessed), DateTimeKind.Utc), nameof(lastAccessed));
 		}
 
 		CreatedUtc = created ?? DateTime.UtcNow;

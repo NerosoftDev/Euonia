@@ -42,7 +42,7 @@ public class QueryHandler<TEntity>
     /// <returns></returns>
     public IList<TEntity> Query()
     {
-        var predication = _predicates.Aggregate<Expression<Func<TEntity, bool>>, Expression<Func<TEntity, bool>>>(null, (current, predicate) => (current == null ? predicate : current.And(predicate)));
+	    var predication = _predicates.Compose();//.Aggregate<Expression<Func<TEntity, bool>>, Expression<Func<TEntity, bool>>>(null, (current, predicate) => (current == null ? predicate : current.And(predicate)));
 
         _query = _query.Where(predication);
 
@@ -76,7 +76,7 @@ public class QueryHandler<TEntity>
     /// <returns></returns>
     public async Task<IList<TEntity>> QueryAsync(Func<IQueryable<TEntity>, Task<IList<TEntity>>> action)
     {
-        var predication = _predicates.Aggregate<Expression<Func<TEntity, bool>>, Expression<Func<TEntity, bool>>>(null, (current, predicate) => (current == null ? predicate : current.And(predicate)));
+	    var predication = _predicates.Compose();//.Aggregate<Expression<Func<TEntity, bool>>, Expression<Func<TEntity, bool>>>(null, (current, predicate) => (current == null ? predicate : current.And(predicate)));
 
         _query = _query.Where(predication);
 

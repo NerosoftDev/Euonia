@@ -75,21 +75,8 @@ public static class ExpressionExtensions
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
     }
-
-    // private static Expression<Func<T,bool>> And<T>(this Expression<Func<T, bool>> left, Expression<Func<T, bool>> right)
-    // {
-    //     var parameter = Expression.Parameter(typeof(T));
-    //
-    //     var leftVisitor = new ReplaceExpressionVisitor(left.Parameters[0], parameter);
-    //     var leftExpression = leftVisitor.Visit(left.Body);
-    //
-    //     var rightVisitor = new ReplaceExpressionVisitor(right.Parameters[0], parameter);
-    //     var rightExpression = rightVisitor.Visit(right.Body);
-    //
-    //     return Expression.Lambda<Func<T, bool>>(Expression.AndAlso(leftExpression, rightExpression), parameter);
-    // }
-
-    #region Property(属性表达式)
+    
+    #region Property
 
     /// <summary>
     /// Creates a <see cref="MemberExpression"/> for the specified property.
@@ -356,10 +343,10 @@ public static class ExpressionExtensions
 
     #endregion
 
-    #region EndsWith(尾匹配)
+    #region EndsWith
 
     /// <summary>
-    /// 尾匹配
+    /// EndsWith
     /// </summary>
     /// <param name="left">左操作数</param>
     /// <param name="value">值</param>
@@ -370,10 +357,10 @@ public static class ExpressionExtensions
 
     #endregion
 
-    #region Contains(模糊匹配)
+    #region Contains
 
     /// <summary>
-    /// 模糊匹配
+    /// Contains
     /// </summary>
     /// <param name="left">左操作数</param>
     /// <param name="value">值</param>
@@ -384,7 +371,7 @@ public static class ExpressionExtensions
 
     #endregion
 
-    #region Operation(操作)
+    #region Operation
 
     /// <summary>
     /// To be added.
@@ -415,7 +402,7 @@ public static class ExpressionExtensions
 
     #endregion
 
-    #region Call(调用方法表达式)
+    #region Call
 
     /// <summary>
     /// To be added.
@@ -499,7 +486,7 @@ public static class ExpressionExtensions
 
     #endregion
 
-    #region Compose(组合表达式)
+    #region Compose
 
     /// <summary>
     /// Combines the first expression with the second using the specified merge function.
@@ -519,7 +506,7 @@ public static class ExpressionExtensions
 
     #endregion
 
-    #region ToLambda(创建Lambda表达式)
+    #region ToLambda
 
     /// <summary>
     /// Creates a lambda expression from the specified expression and parameters.
