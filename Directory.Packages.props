@@ -8,14 +8,14 @@
 		<PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
 		<PackageVersion Include="Autofac.Extras.DynamicProxy" Version="7.1.0" />
 		<PackageVersion Include="AutoMapper" Version="12.0.1" />
-		<PackageVersion Include="Azure.Storage.Blobs" Version="12.17.0" />
+		<PackageVersion Include="Azure.Storage.Blobs" Version="12.18.0" />
 		<PackageVersion Include="Castle.Core" Version="5.1.1" />
 		<PackageVersion Include="Consul" Version="1.6.10.9" />
 		<PackageVersion Include="FluentValidation" Version="11.7.1" />
 		<PackageVersion Include="IdentityModel" Version="6.2.0" />
 		<PackageVersion Include="IdentityModel.AspNetCore.OAuth2Introspection" Version="6.2.0" />
-		<PackageVersion Include="Mapster" Version="7.3.0" />
-		<PackageVersion Include="Mapster.DependencyInjection" Version="1.0.0" />
+		<PackageVersion Include="Mapster" Version="7.4.0" />
+		<PackageVersion Include="Mapster.DependencyInjection" Version="1.0.1" />
 		<PackageVersion Include="MediatR" Version="12.1.1" />
 		<PackageVersion Include="MediatR.Contracts" Version="2.0.1" />
 		<PackageVersion Include="mongocsharpdriver" Version="2.21.0" />
@@ -67,14 +67,14 @@
 	</ItemGroup>
 	<!-- Microsoft.EntityFrameworkCore -->
 	<ItemGroup>
-		<PackageVersion Include="Microsoft.EntityFrameworkCore" Version="7.0.10" />
-		<PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5" />
-		<PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.5" />
-		<PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.10">
+		<PackageVersion Include="Microsoft.EntityFrameworkCore" Version="7.0.11" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.11" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.11" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.11">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageVersion>
-		<PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.10" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.11" />
 	</ItemGroup>
 	<!-- Microsoft.AspNetCore -->
 	<ItemGroup>
@@ -88,33 +88,33 @@
 		<PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.21" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)'=='net7.0'">
-		<PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="7.0.10" />
-		<PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.10" />
-		<PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="7.0.10" />
+		<PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="7.0.11" />
+		<PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.11" />
+		<PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="7.0.11" />
 	</ItemGroup>
 	<!-- Grpc -->
 	<ItemGroup>
 		<PackageVersion Include="Google.Api.CommonProtos" Version="2.10.0"/>
-		<PackageVersion Include="Google.Protobuf" Version="3.24.2" />
+		<PackageVersion Include="Google.Protobuf" Version="3.24.3" />
 		<PackageVersion Include="Grpc" Version="2.46.6" />
-		<PackageVersion Include="Grpc.AspNetCore" Version="2.56.0" />
-		<PackageVersion Include="Grpc.AspNetCore.Server" Version="2.56.0" />
-		<PackageVersion Include="Grpc.AspNetCore.Server.Reflection" Version="2.56.0" />
+		<PackageVersion Include="Grpc.AspNetCore" Version="2.57.0" />
+		<PackageVersion Include="Grpc.AspNetCore.Server" Version="2.57.0" />
+		<PackageVersion Include="Grpc.AspNetCore.Server.Reflection" Version="2.57.0" />
 		<PackageVersion Include="Grpc.Core" Version="2.46.6" />
-		<PackageVersion Include="Grpc.HealthCheck" Version="2.56.0" />
+		<PackageVersion Include="Grpc.HealthCheck" Version="2.57.0" />
 		<PackageVersion Include="Grpc.Tools" Version="2.56.0" />
 	</ItemGroup>
 	<!-- Tests -->
 	<ItemGroup>
 		<PackageVersion Include="BenchmarkDotNet" Version="0.13.4" />
 		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
-		<PackageVersion Include="xunit" Version="2.5.0" />
+		<PackageVersion Include="xunit" Version="2.5.1" />
 		<PackageVersion Include="xunit.runner.visualstudio" Version="2.5.0" />
 		<PackageVersion Include="coverlet.collector" Version="6.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageVersion>
-		<PackageVersion Include="Xunit.DependencyInjection" Version="8.8.2" />
+		<PackageVersion Include="Xunit.DependencyInjection" Version="8.9.0" />
 		<PackageVersion Include="Xunit.DependencyInjection.Logging" Version="8.0.1" />
 		<PackageVersion Include="Moq" Version="4.20.69" />
 	</ItemGroup>
