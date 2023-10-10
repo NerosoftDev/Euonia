@@ -2,6 +2,8 @@
 	<PropertyGroup>
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 		<EnablePackageVersionOverride>true</EnablePackageVersionOverride>
+        <MicrosoftPackageVersion6>6.0.23</MicrosoftPackageVersion6>
+        <MicrosoftPackageVersion7>7.0.12</MicrosoftPackageVersion7>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageVersion Include="Autofac" Version="7.1.0" />
@@ -18,9 +20,9 @@
 		<PackageVersion Include="Mapster.DependencyInjection" Version="1.0.1" />
 		<PackageVersion Include="MediatR" Version="12.1.1" />
 		<PackageVersion Include="MediatR.Contracts" Version="2.0.1" />
-		<PackageVersion Include="mongocsharpdriver" Version="2.21.0" />
+		<PackageVersion Include="mongocsharpdriver" Version="2.22.0" />
 		<PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageVersion Include="Polly" Version="7.2.4" />
+		<PackageVersion Include="Polly" Version="8.0.0" />
 		<PackageVersion Include="protobuf-net" Version="3.1.33" />
 		<PackageVersion Include="Quartz" Version="3.7.0" />
 		<PackageVersion Include="Quartz.Extensions.DependencyInjection" Version="3.7.0" />
@@ -31,7 +33,7 @@
 		<PackageVersion Include="Refit.Newtonsoft.Json" Version="6.3.2" />
 		<PackageVersion Include="Serilog" Version="3.0.1" />
 		<PackageVersion Include="Serilog.AspNetCore" Version="7.0.0" />
-		<PackageVersion Include="Serilog.Enrichers.Environment" Version="2.2.0" />
+		<PackageVersion Include="Serilog.Enrichers.Environment" Version="2.3.0" />
 		<PackageVersion Include="Serilog.Sinks.Elasticsearch" Version="9.0.3" />
 		<PackageVersion Include="Serilog.Sinks.Email" Version="2.4.0" />
 		<PackageVersion Include="Serilog.Sinks.File" Version="5.0.0" />
@@ -67,35 +69,35 @@
 	</ItemGroup>
 	<!-- Microsoft.EntityFrameworkCore -->
 	<ItemGroup>
-		<PackageVersion Include="Microsoft.EntityFrameworkCore" Version="7.0.11" />
-		<PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.11" />
-		<PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.11" />
-		<PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.11">
+		<PackageVersion Include="Microsoft.EntityFrameworkCore" Version="$(MicrosoftPackageVersion7)" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="$(MicrosoftPackageVersion7)" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(MicrosoftPackageVersion7)" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="$(MicrosoftPackageVersion7)">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageVersion>
-		<PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.11" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="$(MicrosoftPackageVersion7)" />
 	</ItemGroup>
 	<!-- Microsoft.AspNetCore -->
 	<ItemGroup>
-		<PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="7.0.10" />
-		<PackageVersion Include="Microsoft.AspNetCore.Connections.Abstractions" Version="7.0.5" />
+		<PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="$(MicrosoftPackageVersion7)" />
+		<PackageVersion Include="Microsoft.AspNetCore.Connections.Abstractions" Version="$(MicrosoftPackageVersion7)" />
 	</ItemGroup>
 	<ItemGroup Condition="$(TargetFramework.Contains('netstandard'))">
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)'=='net6.0'">
-		<PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.21" />
-		<PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.21" />
+		<PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(MicrosoftPackageVersion6)" />
+		<PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="$(MicrosoftPackageVersion6)" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)'=='net7.0'">
-		<PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="7.0.11" />
-		<PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.11" />
-		<PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="7.0.11" />
+		<PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(MicrosoftPackageVersion7)" />
+		<PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(MicrosoftPackageVersion7)" />
+		<PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="$(MicrosoftPackageVersion7)" />
 	</ItemGroup>
 	<!-- Grpc -->
 	<ItemGroup>
 		<PackageVersion Include="Google.Api.CommonProtos" Version="2.10.0"/>
-		<PackageVersion Include="Google.Protobuf" Version="3.24.3" />
+		<PackageVersion Include="Google.Protobuf" Version="3.24.4" />
 		<PackageVersion Include="Grpc" Version="2.46.6" />
 		<PackageVersion Include="Grpc.AspNetCore" Version="2.57.0" />
 		<PackageVersion Include="Grpc.AspNetCore.Server" Version="2.57.0" />
@@ -109,7 +111,7 @@
 		<PackageVersion Include="BenchmarkDotNet" Version="0.13.4" />
 		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
 		<PackageVersion Include="xunit" Version="2.5.1" />
-		<PackageVersion Include="xunit.runner.visualstudio" Version="2.5.0" />
+		<PackageVersion Include="xunit.runner.visualstudio" Version="2.5.1" />
 		<PackageVersion Include="coverlet.collector" Version="6.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
