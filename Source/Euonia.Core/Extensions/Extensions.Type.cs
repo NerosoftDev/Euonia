@@ -3,6 +3,20 @@ using System.Reflection;
 
 public static partial class Extensions
 {
+	private static readonly Type[] _primitiveTypes =
+	{
+		typeof(string),
+		typeof(decimal),
+		typeof(DateTime),
+		typeof(DateTimeOffset),
+		typeof(TimeSpan),
+		typeof(Guid),
+#if NET5_0_OR_GREATER
+		typeof(DateOnly),
+		typeof(TimeOnly),
+#endif
+	};
+
 	/// <summary>
 	/// 
 	/// </summary>
@@ -183,5 +197,18 @@ public static partial class Extensions
 	public static bool IsImplementsGeneric(this Type type, Type targetType)
 	{
 		return type.GetInterfaces().Any(f => f.IsGenericType && f.GetGenericTypeDefinition() == targetType);
+	}
+
+	/// <summary>
+	/// Determines whether the specified type is primitive type.
+	/// </summary>
+	/// <param name="type">The type to detect.</param>
+	/// <returns>
+	/// <c>true</c> if the specified type is primitive type; otherwise, <c>false</c>.
+	/// </returns>
+	public static bool IsPrimitiveType(this Type type)
+	{
+		Check.EnsureNotNull(type, nameof(type));
+		return type.IsPrimitive || type.IsEnum || type.IsIn(_primitiveTypes);
 	}
 }
