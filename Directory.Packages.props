@@ -7,6 +7,7 @@
         <GrpcAspNetCoreVersion>2.59.0</GrpcAspNetCoreVersion>
     </PropertyGroup>
     <ItemGroup>
+        <PackageVersion Include="Apache.NMS.ActiveMQ" Version="2.1.0"/>
         <PackageVersion Include="Autofac" Version="7.1.0"/>
         <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="8.0.0"/>
         <PackageVersion Include="Autofac.Extras.DynamicProxy" Version="7.1.0"/>
@@ -112,7 +113,7 @@
     <!-- Tests -->
     <ItemGroup>
         <PackageVersion Include="BenchmarkDotNet" Version="0.13.4"/>
-        <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.7.2"/>
+        <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0"/>
         <PackageVersion Include="xunit" Version="2.6.1"/>
         <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.3">
             <PrivateAssets>all</PrivateAssets>
