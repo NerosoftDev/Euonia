@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 public static partial class Extensions
 {
@@ -210,5 +211,17 @@ public static partial class Extensions
 	{
 		Check.EnsureNotNull(type, nameof(type));
 		return type.IsPrimitive || type.IsEnum || type.IsIn(_primitiveTypes);
+	}
+
+	/// <summary>
+	/// Determines whether the specified type is anonymous type.
+	/// </summary>
+	/// <param name="type">The type to detect.</param>
+	/// <returns>
+	///	<c>true</c> if the specified type is anonymous type; otherwise, <c>false</c>.
+	/// </returns>
+	public static bool IsAnonymousType(this Type type)
+	{
+		return type.FullName != null && type.HasAttribute<CompilerGeneratedAttribute>() && type.FullName.Contains("AnonymousType");
 	}
 }
