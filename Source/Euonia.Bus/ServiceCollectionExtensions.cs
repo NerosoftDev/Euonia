@@ -1,8 +1,5 @@
-﻿using System.Reflection;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+﻿using Microsoft.Extensions.DependencyInjection.Extensions;
 using Nerosoft.Euonia.Bus;
-using Nerosoft.Euonia.Domain;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -11,169 +8,124 @@ namespace Microsoft.Extensions.DependencyInjection;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
-    private static readonly string[] _handlerTypes =
-    {
-        typeof(INotificationHandler<>).FullName,
-        typeof(IRequestHandler<,>).FullName
-    };
+	/// <summary>
+	/// Add message handler.
+	/// </summary>
+	/// <param name="services"></param>
+	/// <param name="callback"></param>
+	internal static void AddMessageHandler(this IServiceCollection services, Action<object, MessageSubscribedEventArgs> callback = null)
+	{
+		services.AddSingleton<IHandlerContext>(provider =>
+		{
+			var @delegate = provider.GetService<MessageConvert>();
+			var context = new HandlerContext(provider, @delegate);
+			context.MessageSubscribed += (sender, args) =>
+			{
+				callback?.Invoke(sender, args);
+			};
+			return context;
+		});
+	}
 
-    /// <summary>
-    /// Add message handler.
-    /// </summary>
-    /// <param name="services"></param>
-    /// <param name="callback"></param>
-    public static void AddMessageHandler(this IServiceCollection services, Action<object, MessageSubscribedEventArgs> callback = null)
-    {
-        services.AddSingleton<IMessageHandlerContext>(provider =>
-        {
-            var @delegate = provider.GetService<MessageConversionDelegate>();
-            var context = new MessageHandlerContext(provider, @delegate);
-            context.MessageSubscribed += (sender, args) =>
-            {
-                callback?.Invoke(sender, args);
-            };
-            return context;
-        });
-    }
+	/// <summary>
+	/// Add message handler.
+	/// </summary>
+	/// <param name="services"></param>
+	/// <param name="handlerTypesFactory"></param>
+	/// <param name="callback"></param>
+	internal static void AddMessageHandler(this IServiceCollection services, Func<IEnumerable<Type>> handlerTypesFactory, Action<object, MessageSubscribedEventArgs> callback = null)
+	{
+		var handlerTypes = handlerTypesFactory?.Invoke();
 
-    /// <summary>
-    /// Add message handler.
-    /// </summary>
-    /// <param name="services"></param>
-    /// <param name="assembly"></param>
-    /// <param name="callback"></param>
-    public static void AddMessageHandler(this IServiceCollection services, Assembly assembly, Action<object, MessageSubscribedEventArgs> callback = null)
-    {
-        services.AddMessageHandler(() =>
-        {
-            var handlerTypes = assembly.GetTypes().Where(t => t.GetInterface(nameof(IMessageHandler)) != null && t.IsClass && !t.IsAbstract).ToList();
-            return handlerTypes;
-        }, callback);
-    }
+		services.AddMessageHandler(handlerTypes, callback);
+	}
 
-    /// <summary>
-    /// Add message handler.
-    /// </summary>
-    /// <param name="services"></param>
-    /// <param name="handlerTypesFactory"></param>
-    /// <param name="callback"></param>
-    public static void AddMessageHandler(this IServiceCollection services, Func<IEnumerable<Type>> handlerTypesFactory, Action<object, MessageSubscribedEventArgs> callback = null)
-    {
-        var handlerTypes = handlerTypesFactory?.Invoke();
+	/// <summary>
+	/// Add message handler.
+	/// </summary>
+	/// <param name="services"></param>
+	/// <param name="handlerTypes"></param>
+	/// <param name="callback"></param>
+	internal static void AddMessageHandler(this IServiceCollection services, IEnumerable<Type> handlerTypes, Action<object, MessageSubscribedEventArgs> callback = null)
+	{
+		services.AddMessageHandler(callback);
 
-        services.AddMessageHandler(handlerTypes, callback);
-    }
+		if (handlerTypes == null)
+		{
+			return;
+		}
 
-    /// <summary>
-    /// Add message handler.
-    /// </summary>
-    /// <param name="services"></param>
-    /// <param name="handlerTypes"></param>
-    /// <param name="callback"></param>
-    public static void AddMessageHandler(this IServiceCollection services, IEnumerable<Type> handlerTypes, Action<object, MessageSubscribedEventArgs> callback = null)
-    {
-        services.AddMessageHandler(callback);
+		if (!handlerTypes.Any())
+		{
+			return;
+		}
 
-        if (handlerTypes == null)
-        {
-            return;
-        }
+		foreach (var handlerType in handlerTypes)
+		{
+			if (!handlerType.IsClass)
+			{
+				continue;
+			}
 
-        if (!handlerTypes.Any())
-        {
-            return;
-        }
+			if (handlerType.IsAbstract)
+			{
+				continue;
+			}
 
-        foreach (var handlerType in handlerTypes)
-        {
-            if (!handlerType.IsClass)
-            {
-                continue;
-            }
+			if (handlerType.GetInterface(nameof(IHandler)) == null)
+			{
+				continue;
+			}
 
-            if (handlerType.IsAbstract)
-            {
-                continue;
-            }
+			var inheritedTypes = handlerType.GetInterfaces().Where(t => t.IsGenericType);
 
-            if (handlerType.GetInterface(nameof(IMessageHandler)) == null)
-            {
-                continue;
-            }
+			foreach (var inheritedType in inheritedTypes)
+			{
+				if (inheritedType.Name.Contains(nameof(IHandler)))
+				{
+					continue;
+				}
 
-            var inheritedTypes = handlerType.GetInterfaces().Where(t => t.IsGenericType);
+				if (inheritedType.GenericTypeArguments.Length == 0)
+				{
+					continue;
+				}
 
-            foreach (var inheritedType in inheritedTypes)
-            {
-                if (inheritedType.Name.Contains(nameof(IMessageHandler)))
-                {
-                    continue;
-                }
+				services.TryAddScoped(inheritedType, handlerType);
+				services.TryAddScoped(handlerType);
+			}
+		}
+	}
 
-                if (inheritedType.GenericTypeArguments.Length == 0)
-                {
-                    continue;
-                }
+	/// <summary>
+	/// Register message bus.
+	/// </summary>
+	/// <param name="services"></param>
+	/// <param name="config"></param>
+	public static void AddServiceBus(this IServiceCollection services, Action<BusConfigurator> config)
+	{
+		var configurator = Singleton<BusConfigurator>.Get(() => new BusConfigurator(services));
 
-                var messageType = inheritedType.GenericTypeArguments[0];
-                if (messageType.IsSubclassOf(typeof(Command)))
-                {
-                    var interfaceType = typeof(ICommandHandler<>).MakeGenericType(messageType);
-                    services.TryAddScoped(interfaceType, handlerType);
-                    services.TryAddScoped(handlerType);
-                }
-                else if (messageType.IsSubclassOf(typeof(Event)))
-                {
-                    var interfaceType = typeof(IEventHandler<>).MakeGenericType(messageType);
+		config?.Invoke(configurator);
 
-                    services.AddScoped(interfaceType, handlerType);
-                    services.AddScoped(handlerType);
-                }
-            }
-        }
-    }
+		services.AddSingleton<IHandlerContext>(provider =>
+		{
+			var @delegate = provider.GetService<MessageConvert>();
+			var context = new HandlerContext(provider, @delegate);
+			foreach (var subscription in configurator.Registrations)
+			{
+				if (subscription.Type != null)
+				{
+					context.Register(subscription.Type, subscription.HandlerType, subscription.HandleMethod);
+				}
+				else
+				{
+					context.Register(subscription.Name, subscription.HandlerType, subscription.HandleMethod);
+				}
+			}
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="services"></param>
-    /// <param name="assemblies"></param>
-    public static void AddMediatorHandler(this IServiceCollection services, params Assembly[] assemblies)
-    {
-        var types = assemblies.SelectMany(t => t.GetTypes());
-        services.AddMediatorHandler(types.ToArray());
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="services"></param>
-    /// <param name="types"></param>
-    public static void AddMediatorHandler(this IServiceCollection services, params Type[] types)
-    {
-        foreach (var type in types)
-        {
-            if (type.IsAbstract || !type.IsClass)
-            {
-                continue;
-            }
-
-            var interfaces = type.FindInterfaces(HandlerInterfaceFilter, null);
-            if (interfaces.Length == 0)
-            {
-                continue;
-            }
-
-            foreach (var @interface in interfaces)
-            {
-                services.AddTransient(@interface, type);
-            }
-        }
-    }
-
-    private static bool HandlerInterfaceFilter(Type type, object criteria)
-    {
-        var typeName = $"{type.Namespace}.{type.Name}";
-        return _handlerTypes.Contains(typeName);
-    }
+			return context;
+		});
+		services.AddSingleton<IBus, ServiceBus>();
+	}
 }

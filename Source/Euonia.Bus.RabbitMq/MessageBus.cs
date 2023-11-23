@@ -6,7 +6,7 @@ namespace Nerosoft.Euonia.Bus.RabbitMq;
 /// <summary>
 /// 
 /// </summary>
-public abstract class MessageBus : DisposableObject, IMessageBus
+public abstract class MessageBus : DisposableObject, IBus
 {
     private static readonly JsonSerializerSettings _serializerSettings = new()
     {
@@ -19,7 +19,7 @@ public abstract class MessageBus : DisposableObject, IMessageBus
     public event EventHandler<MessageSubscribedEventArgs> MessageSubscribed;
 
     /// <inheritdoc />
-    public event EventHandler<MessageDispatchedEventArgs> MessageDispatched;
+    public event EventHandler<MessageDispatchedEventArgs> Dispatched;
 
     /// <inheritdoc />
     public event EventHandler<MessageReceivedEventArgs> MessageReceived;
@@ -33,7 +33,7 @@ public abstract class MessageBus : DisposableObject, IMessageBus
     /// <param name="handlerContext"></param>
     /// <param name="monitor"></param>
     /// <param name="accessor"></param>
-    internal MessageBus(IMessageHandlerContext handlerContext, IOptionsMonitor<RabbitMqMessageBusOptions> monitor, IServiceAccessor accessor)
+    internal MessageBus(IHandlerContext handlerContext, IOptionsMonitor<RabbitMqMessageBusOptions> monitor, IServiceAccessor accessor)
     {
         HandlerContext = handlerContext;
         ServiceAccessor = accessor;
@@ -57,7 +57,7 @@ public abstract class MessageBus : DisposableObject, IMessageBus
     /// <summary>
     /// Gets the message handler context.
     /// </summary>
-    protected IMessageHandlerContext HandlerContext { get; }
+    protected IHandlerContext HandlerContext { get; }
 
     /// <summary>
     /// Gets the message bus options.
@@ -79,7 +79,7 @@ public abstract class MessageBus : DisposableObject, IMessageBus
     /// <param name="args"></param>
     protected virtual void OnMessageDispatched(MessageDispatchedEventArgs args)
     {
-        MessageDispatched?.Invoke(this, args);
+        Dispatched?.Invoke(this, args);
     }
 
     /// <summary>

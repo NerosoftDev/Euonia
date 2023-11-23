@@ -16,14 +16,9 @@ public abstract class BaseApplicationService : IApplicationService
     public virtual ILazyServiceProvider LazyServiceProvider { get; set; }
 
     /// <summary>
-    /// Gets the <see cref="ICommandBus"/> instance.
+    /// Gets the <see cref="IBus"/> instance.
     /// </summary>
-    protected virtual ICommandBus CommandBus => LazyServiceProvider.GetService<ICommandBus>();
-
-    /// <summary>
-    /// Gets the <see cref="IEventBus"/> instance.
-    /// </summary>
-    protected virtual IEventBus EventBus => LazyServiceProvider.GetService<IEventBus>();
+    protected virtual IBus Bus => LazyServiceProvider.GetService<IBus>();
 
     /// <summary>
     /// Gets the current request user principal.
@@ -36,7 +31,7 @@ public abstract class BaseApplicationService : IApplicationService
     protected virtual TimeSpan CommandTimeout => TimeSpan.FromSeconds(300);
 
     /// <summary>
-    /// Send command message of <typeparamref name="TCommand"/> using <see cref="CommandBus"/>.
+    /// Send command message of <typeparamref name="TCommand"/> using <see cref="Bus"/>.
     /// </summary>
     /// <param name="command"></param>
     /// <param name="responseHandler"></param>
@@ -52,7 +47,7 @@ public abstract class BaseApplicationService : IApplicationService
 
         Validator.Validate(command);
 
-        await CommandBus.SendAsync(command, responseHandler, cancellationToken);
+        await Bus.SendAsync(command, responseHandler, cancellationToken);
     }
 
     /// <summary>
@@ -72,7 +67,7 @@ public abstract class BaseApplicationService : IApplicationService
 
         Validator.Validate(command);
 
-        return await CommandBus.SendAsync<TCommand, CommandResponse>(command, cancellationToken);
+        return await Bus.SendAsync<TCommand, CommandResponse>(command, cancellationToken);
     }
 
     /// <summary>
@@ -93,7 +88,7 @@ public abstract class BaseApplicationService : IApplicationService
 
         Validator.Validate(command);
 
-        await CommandBus.SendAsync(command, responseHandler, cancellationToken);
+        await Bus.SendAsync(command, responseHandler, cancellationToken);
     }
 
     /// <summary>
@@ -114,7 +109,7 @@ public abstract class BaseApplicationService : IApplicationService
 
         Validator.Validate(command);
 
-        return await CommandBus.SendAsync<TCommand, CommandResponse<TResult>>(command, cancellationToken);
+        return await Bus.SendAsync<TCommand, CommandResponse<TResult>>(command, cancellationToken);
     }
 
     /// <summary>
@@ -162,23 +157,23 @@ public abstract class BaseApplicationService : IApplicationService
     }
 
     /// <summary>
-    /// Publish application event message using <see cref="EventBus"/>.
+    /// Publish application event message using <see cref="IBus"/>.
     /// </summary>
     /// <param name="event"></param>
     /// <typeparam name="TEvent"></typeparam>
     protected async void PublishEvent<TEvent>(TEvent @event)
-        where TEvent : class, IEvent
+        where TEvent : class
     {
-        if (EventBus == null)
+        if (Bus == null)
         {
             return;
         }
 
-        await EventBus.PublishAsync(@event);
+        await Bus.PublishAsync(@event);
     }
 
     /// <summary>
-    /// Publish application event message using <see cref="EventBus"/> with specified name.
+    /// Publish application event message using <see cref="IBus"/> with specified name.
     /// </summary>
     /// <param name="name"></param>
     /// <param name="event"></param>
@@ -186,11 +181,11 @@ public abstract class BaseApplicationService : IApplicationService
     protected async void PublishEvent<TEvent>(string name, TEvent @event)
         where TEvent : class
     {
-        if (EventBus == null)
+        if (Bus == null)
         {
             return;
         }
 
-        await EventBus.PublishAsync(name, @event);
+        await Bus.PublishAsync(name, @event);
     }
 }

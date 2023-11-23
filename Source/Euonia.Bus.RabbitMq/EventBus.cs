@@ -13,7 +13,7 @@ namespace Nerosoft.Euonia.Bus.RabbitMq;
 public class EventBus : MessageBus, IEventBus
 {
 	private readonly ConnectionFactory _factory;
-	private readonly IEventStore _eventStore;
+	private readonly IMessageStore _messageStore;
 	private readonly IConnection _connection;
 	private readonly IModel _channel;
 	private readonly ILogger<EventBus> _logger;
@@ -29,7 +29,7 @@ public class EventBus : MessageBus, IEventBus
 	/// <param name="accessor"></param>
 	/// <param name="logger"></param>
 	/// <exception cref="ArgumentNullException"></exception>
-	public EventBus(IMessageHandlerContext handlerContext, IOptionsMonitor<RabbitMqMessageBusOptions> monitor, IServiceAccessor accessor, ILoggerFactory logger)
+	public EventBus(IHandlerContext handlerContext, IOptionsMonitor<RabbitMqMessageBusOptions> monitor, IServiceAccessor accessor, ILoggerFactory logger)
 		: base(handlerContext, monitor, accessor)
 	{
 		_logger = logger.CreateLogger<EventBus>();
@@ -59,12 +59,12 @@ public class EventBus : MessageBus, IEventBus
 	/// <param name="handlerContext"></param>
 	/// <param name="monitor"></param>
 	/// <param name="accessor"></param>
-	/// <param name="eventStore"></param>
+	/// <param name="messageStore"></param>
 	/// <param name="logger"></param>
-	public EventBus(IMessageHandlerContext handlerContext, IOptionsMonitor<RabbitMqMessageBusOptions> monitor, IServiceAccessor accessor, IEventStore eventStore, ILoggerFactory logger)
+	public EventBus(IHandlerContext handlerContext, IOptionsMonitor<RabbitMqMessageBusOptions> monitor, IServiceAccessor accessor, IMessageStore messageStore, ILoggerFactory logger)
 		: this(handlerContext, monitor, accessor, logger)
 	{
-		_eventStore = eventStore;
+		_messageStore = messageStore;
 	}
 
 	private void HandleMessageSubscribed(object sender, MessageSubscribedEventArgs args)
@@ -87,9 +87,9 @@ public class EventBus : MessageBus, IEventBus
 	public async Task PublishAsync<TEvent>(TEvent @event, CancellationToken cancellationToken = default)
 		where TEvent : IEvent
 	{
-		if (_eventStore != null)
+		if (_messageStore != null)
 		{
-			await _eventStore.SaveAsync(@event, cancellationToken);
+			await _messageStore.SaveAsync(@event, cancellationToken);
 		}
 
 		var messageContext = new MessageContext();
@@ -101,13 +101,13 @@ public class EventBus : MessageBus, IEventBus
 				var messageBody = Serialize(@event);
 				var props = _channel.CreateBasicProperties();
 				props.Headers ??= new Dictionary<string, object>();
-				if (@event.HasAttribute(out EventNameAttribute attribute, false))
+				if (@event.HasAttribute(out ChannelAttribute attribute, false))
 				{
 					props.Headers[Constants.MessageHeaderEventAttr] = attribute.Name; //Encoding.UTF8.GetBytes(attribute.Name);
 				}
 				else
 				{
-					props.Headers[Constants.MessageHeaderEventType] = @event.Metadata[Message.MessageTypeKey]; //Encoding.UTF8.GetBytes((@event.Metadata[MessageBase.MESSAGE_TYPE_KEY] as string)!);
+					props.Headers[Constants.MessageHeaderEventType] = @event.Metadata[RoutedMessage<>.MessageTypeKey]; //Encoding.UTF8.GetBytes((@event.Metadata[MessageBase.MESSAGE_TYPE_KEY] as string)!);
 				}
 
 				Policy.Handle<Exception>()
@@ -135,9 +135,9 @@ public class EventBus : MessageBus, IEventBus
 		where TEvent : class
 	{
 		var namedEvent = new NamedEvent(name, @event);
-		if (_eventStore != null)
+		if (_messageStore != null)
 		{
-			await _eventStore.SaveAsync(namedEvent, cancellationToken);
+			await _messageStore.SaveAsync(namedEvent, cancellationToken);
 		}
 
 		var messageContext = new MessageContext();

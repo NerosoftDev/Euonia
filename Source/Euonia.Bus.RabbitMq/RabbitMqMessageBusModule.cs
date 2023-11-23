@@ -13,7 +13,7 @@ public class RabbitMqMessageBusModule : ModuleContextBase
     /// <inheritdoc />
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        context.Services.TryAddSingleton<MessageConversionDelegate>(_ => MessageConverter.Convert);
+        context.Services.TryAddSingleton<MessageConvert>(_ => MessageConverter.Convert);
         context.Services.AddRabbitMqCommandBus();
         context.Services.AddRabbitMqEventBus();
     }

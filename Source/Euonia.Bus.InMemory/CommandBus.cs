@@ -18,7 +18,7 @@ public class CommandBus : MessageBus, ICommandBus
     /// </summary>
     /// <param name="handlerContext">The message handler context.</param>
     /// <param name="accessor"></param>
-    public CommandBus(IMessageHandlerContext handlerContext, IServiceAccessor accessor)
+    public CommandBus(IHandlerContext handlerContext, IServiceAccessor accessor)
         : base(handlerContext, accessor)
     {
         MessageReceived += HandleMessageReceivedEvent;
@@ -112,7 +112,7 @@ public class CommandBus : MessageBus, ICommandBus
             }
 
             var messageContext = new MessageContext(command);
-            messageContext.Replied += (_, args) =>
+            messageContext.OnResponse += (_, args) =>
             {
                 taskCompletion.TrySetResult((TResult)args.Result);
             };
@@ -159,7 +159,7 @@ public class CommandBus : MessageBus, ICommandBus
 
     private async void HandleMessageReceivedEvent(object sender, MessageReceivedEventArgs args)
     {
-        OnMessageAcknowledged(new MessageAcknowledgedEventArgs(args.Message, args.MessageContext));
-        await HandlerContext.HandleAsync(args.Message, args.MessageContext);
+        OnMessageAcknowledged(new MessageAcknowledgedEventArgs(args.Message, args.Context));
+        await HandlerContext.HandleAsync(args.Message, args.Context);
     }
 }

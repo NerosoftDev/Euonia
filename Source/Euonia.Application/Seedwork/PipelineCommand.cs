@@ -1,4 +1,5 @@
-﻿using Nerosoft.Euonia.Domain;
+﻿using Nerosoft.Euonia.Bus;
+using Nerosoft.Euonia.Domain;
 using Nerosoft.Euonia.Pipeline;
 
 namespace Nerosoft.Euonia.Application;

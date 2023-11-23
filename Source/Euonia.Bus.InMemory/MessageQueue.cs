@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
-using Nerosoft.Euonia.Domain;
 
 namespace Nerosoft.Euonia.Bus.InMemory;
 
@@ -16,7 +15,7 @@ internal sealed class MessageQueue
 
     public event EventHandler<MessageProcessedEventArgs> MessagePushed;
 
-    internal void Enqueue(IMessage message, MessageContext messageContext, MessageProcessType processType)
+    internal void Enqueue(IMessage message, IMessageContext messageContext, MessageProcessType processType)
     {
         _queue.Enqueue(message);
 

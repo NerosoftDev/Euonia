@@ -1,18 +1,16 @@
-﻿using Nerosoft.Euonia.Domain;
-
-namespace Nerosoft.Euonia.Bus.InMemory;
+﻿namespace Nerosoft.Euonia.Bus.InMemory;
 
 /// <inheritdoc cref="IEventBus" />
 public class EventBus : MessageBus, IEventBus
 {
-    private readonly IEventStore _eventStore;
+    private readonly IMessageStore _messageStore;
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="handlerContext"></param>
     /// <param name="accessor"></param>
-    public EventBus(IMessageHandlerContext handlerContext, IServiceAccessor accessor)
+    public EventBus(IHandlerContext handlerContext, IServiceAccessor accessor)
         : base(handlerContext, accessor)
     {
         MessageReceived += HandleMessageReceivedEvent;
@@ -23,20 +21,20 @@ public class EventBus : MessageBus, IEventBus
     /// </summary>
     /// <param name="handlerContext"></param>
     /// <param name="accessor"></param>
-    /// <param name="eventStore"></param>
-    public EventBus(IMessageHandlerContext handlerContext, IServiceAccessor accessor, IEventStore eventStore)
+    /// <param name="messageStore"></param>
+    public EventBus(IHandlerContext handlerContext, IServiceAccessor accessor, IMessageStore messageStore)
         : base(handlerContext, accessor)
     {
-        _eventStore = eventStore;
+        _messageStore = messageStore;
     }
 
     /// <inheritdoc />
     public async Task PublishAsync<TEvent>(TEvent @event, CancellationToken cancellationToken = default)
         where TEvent : IEvent
     {
-        if (_eventStore != null)
+        if (_messageStore != null)
         {
-            await _eventStore.SaveAsync(@event, cancellationToken);
+            await _messageStore.SaveAsync(@event, cancellationToken);
         }
 
         await Task.Run(() =>
@@ -58,9 +56,9 @@ public class EventBus : MessageBus, IEventBus
         where TEvent : class
     {
         var namedEvent = new NamedEvent(name, @event);
-        if (_eventStore != null)
+        if (_messageStore != null)
         {
-            await _eventStore.SaveAsync(namedEvent, cancellationToken);
+            await _messageStore.SaveAsync(namedEvent, cancellationToken);
         }
 
         await Task.Run(() =>
@@ -78,8 +76,8 @@ public class EventBus : MessageBus, IEventBus
 
     private async void HandleMessageReceivedEvent(object sender, MessageReceivedEventArgs args)
     {
-        await HandlerContext.HandleAsync(args.Message, args.MessageContext);
+        await HandlerContext.HandleAsync(args.Message, args.Context);
 
-        OnMessageAcknowledged(new MessageAcknowledgedEventArgs(args.Message, args.MessageContext));
+        OnMessageAcknowledged(new MessageAcknowledgedEventArgs(args.Message, args.Context));
     }
 }

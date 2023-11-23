@@ -39,7 +39,7 @@ public class CommandConsumer<TCommand> : CommandConsumer
     private readonly IModel _channel;
     private readonly IConnection _connection;
     private readonly EventingBasicConsumer _consumer;
-    private readonly IMessageHandlerContext _handlerContext;
+    private readonly IHandlerContext _handlerContext;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CommandConsumer{TCommand}"/> class.
@@ -47,7 +47,7 @@ public class CommandConsumer<TCommand> : CommandConsumer
     /// <param name="factory"></param>
     /// <param name="options"></param>
     /// <param name="handlerContext"></param>
-    public CommandConsumer(IConnectionFactory factory, RabbitMqMessageBusOptions options, IMessageHandlerContext handlerContext)
+    public CommandConsumer(IConnectionFactory factory, RabbitMqMessageBusOptions options, IHandlerContext handlerContext)
     {
         _handlerContext = handlerContext;
         _connection = factory.CreateConnection();
@@ -78,7 +78,7 @@ public class CommandConsumer<TCommand> : CommandConsumer
         OnMessageReceived(new MessageReceivedEventArgs(message, messageContext));
 
         var taskCompletion = new TaskCompletionSource<object>();
-        messageContext.Replied += (_, a) =>
+        messageContext.OnResponse += (_, a) =>
         {
             taskCompletion.TrySetResult(a.Result);
         };

@@ -14,9 +14,9 @@ public class EventConsumer : DisposableObject
     private readonly EventingBasicConsumer _consumer;
     private readonly string _messageName;
     private readonly RabbitMqMessageBusOptions _options;
-    private readonly IMessageHandlerContext _handlerContext;
+    private readonly IHandlerContext _handlerContext;
 
-    internal EventConsumer(IConnectionFactory factory, RabbitMqMessageBusOptions options, IMessageHandlerContext handlerContext, string messageName)
+    internal EventConsumer(IConnectionFactory factory, RabbitMqMessageBusOptions options, IHandlerContext handlerContext, string messageName)
     {
         _options = options;
         _handlerContext = handlerContext;

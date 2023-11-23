@@ -25,7 +25,7 @@ public class CommandBus : MessageBus, ICommandBus
     /// <param name="monitor"></param>
     /// <param name="accessor"></param>
     /// <param name="logger"></param>
-    public CommandBus(IMessageHandlerContext handlerContext, IOptionsMonitor<RabbitMqMessageBusOptions> monitor, IServiceAccessor accessor, ILoggerFactory logger)
+    public CommandBus(IHandlerContext handlerContext, IOptionsMonitor<RabbitMqMessageBusOptions> monitor, IServiceAccessor accessor, ILoggerFactory logger)
         : base(handlerContext, monitor, accessor)
     {
         _logger = logger.CreateLogger<CommandBus>();

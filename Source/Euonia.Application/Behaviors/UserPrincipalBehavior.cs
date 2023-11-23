@@ -1,4 +1,5 @@
-﻿using Nerosoft.Euonia.Claims;
+﻿using Nerosoft.Euonia.Bus;
+using Nerosoft.Euonia.Claims;
 using Nerosoft.Euonia.Domain;
 using Nerosoft.Euonia.Pipeline;
 
@@ -7,7 +8,7 @@ namespace Nerosoft.Euonia.Application;
 /// <summary>
 /// A pipeline behavior that adds the user principal to the command metadata.
 /// </summary>
-public class UserPrincipalBehavior : IPipelineBehavior<ICommand, CommandResponse>
+public class UserPrincipalBehavior : IPipelineBehavior<RoutedMessage<object>, CommandResponse>
 {
     private readonly UserPrincipal _user;
 
@@ -28,7 +29,7 @@ public class UserPrincipalBehavior : IPipelineBehavior<ICommand, CommandResponse
     }
 
     /// <inheritdoc />
-    public async Task<CommandResponse> HandleAsync(ICommand context, PipelineDelegate<ICommand, CommandResponse> next)
+    public async Task<CommandResponse> HandleAsync(RoutedMessage<object> context, PipelineDelegate<RoutedMessage<object>, CommandResponse> next)
     {
         if (_user is { IsAuthenticated: true })
         {
