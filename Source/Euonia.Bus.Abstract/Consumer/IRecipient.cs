@@ -1,11 +1,9 @@
 ﻿namespace Nerosoft.Euonia.Bus;
 
 /// <summary>
-/// Interface ISubscriber
-/// Implements the <see cref="IDisposable" />
+/// 
 /// </summary>
-/// <seealso cref="IDisposable" />
-public interface ISubscriber : IDisposable
+public interface IRecipient : IDisposable
 {
 	/// <summary>
 	/// Occurs when [message received].

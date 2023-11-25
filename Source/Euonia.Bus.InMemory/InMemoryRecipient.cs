@@ -3,7 +3,7 @@
 /// <summary>
 /// 
 /// </summary>
-public class InMemorySubscriber : DisposableObject, ISubscriber, IRecipient<MessagePack>
+public class InMemoryRecipient : DisposableObject, IEventSubscriber, ICommandExecutor, IRecipient<MessagePack>
 {
 	/// <summary>
 	/// Occurs when [message received].
@@ -18,16 +18,16 @@ public class InMemorySubscriber : DisposableObject, ISubscriber, IRecipient<Mess
 	private readonly IHandlerContext _handler;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="InMemorySubscriber"/> class.
+	/// Initializes a new instance of the <see cref="InMemoryRecipient"/> class.
 	/// </summary>
 	/// <param name="handler"></param>
-	public InMemorySubscriber(IHandlerContext handler)
+	public InMemoryRecipient(IHandlerContext handler)
 	{
 		_handler = handler;
 	}
 
 	/// <inheritdoc />
-	public string Name { get; } = nameof(InMemorySubscriber);
+	public string Name { get; } = nameof(InMemoryRecipient);
 
 	#region IDisposable
 

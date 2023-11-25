@@ -39,13 +39,13 @@ public static class BusConfiguratorExtensions
 			{
 				foreach (var subscription in configurator.GetSubscriptions())
 				{
-					var subscriber = ActivatorUtilities.GetServiceOrCreateInstance<InMemorySubscriber>(provider);
+					var subscriber = ActivatorUtilities.GetServiceOrCreateInstance<InMemoryRecipient>(provider);
 					messenger.Register(subscriber, subscription);
 				}
 			}
 			else
 			{
-				var subscriber = ActivatorUtilities.GetServiceOrCreateInstance<InMemorySubscriber>(provider);
+				var subscriber = ActivatorUtilities.GetServiceOrCreateInstance<InMemoryRecipient>(provider);
 				foreach (var subscription in configurator.GetSubscriptions())
 				{
 					messenger.Register(subscriber, subscription);
