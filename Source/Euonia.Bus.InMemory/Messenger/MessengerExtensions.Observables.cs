@@ -92,9 +92,9 @@ partial class MessengerExtensions
 			}
 
 			/// <inheritdoc/>
-			public void Receive(TMessage message)
+			public void Receive(TMessage pack)
 			{
-				_observer.OnNext(message);
+				_observer.OnNext(pack);
 			}
 
 			/// <inheritdoc/>
@@ -177,9 +177,9 @@ partial class MessengerExtensions
 			}
 
 			/// <inheritdoc/>
-			public void Receive(TMessage message)
+			public void Receive(TMessage pack)
 			{
-				_observer.OnNext(message);
+				_observer.OnNext(pack);
 			}
 
 			/// <inheritdoc/>

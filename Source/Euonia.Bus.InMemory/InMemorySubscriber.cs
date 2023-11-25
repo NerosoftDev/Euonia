@@ -15,30 +15,19 @@ public class InMemorySubscriber : DisposableObject, ISubscriber, IRecipient<Mess
 	/// </summary>
 	public event EventHandler<MessageAcknowledgedEventArgs> MessageAcknowledged;
 
-	/// <summary>
-	/// 
-	/// </summary>
-	public event EventHandler<MessageSubscribedEventArgs> MessageSubscribed;
-
-	private readonly string _channel;
+	private readonly IHandlerContext _handler;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="InMemorySubscriber"/> class.
 	/// </summary>
-	/// <param name="channel"></param>
-	public InMemorySubscriber(string channel)
+	/// <param name="handler"></param>
+	public InMemorySubscriber(IHandlerContext handler)
 	{
-		_channel = channel;
+		_handler = handler;
 	}
 
 	/// <inheritdoc />
 	public string Name { get; } = nameof(InMemorySubscriber);
-
-	/// <inheritdoc />
-	public void Subscribe(Type messageType, Type handlerType)
-	{
-		//throw new NotImplementedException();
-	}
 
 	#region IDisposable
 
@@ -50,8 +39,10 @@ public class InMemorySubscriber : DisposableObject, ISubscriber, IRecipient<Mess
 	#endregion
 
 	/// <inheritdoc />
-	public void Receive(MessagePack message)
+	public async void Receive(MessagePack pack)
 	{
-		MessageReceived?.Invoke(this, new MessageReceivedEventArgs(message.Message, message.Context));
+		MessageReceived?.Invoke(this, new MessageReceivedEventArgs(pack.Message, pack.Context));
+		await _handler.HandleAsync(pack.Message.Data, pack.Context, pack.Aborted);
+		MessageAcknowledged?.Invoke(this, new MessageAcknowledgedEventArgs(pack.Message, pack.Context));
 	}
 }

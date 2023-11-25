@@ -10,7 +10,7 @@ public sealed class MessagePack
 	/// </summary>
 	/// <param name="message"></param>
 	/// <param name="context"></param>
-	public MessagePack(IRoutedMessage message, IMessageContext context)
+	public MessagePack(IRoutedMessage message, MessageContext context)
 	{
 		Message = message;
 		Context = context;
@@ -24,7 +24,7 @@ public sealed class MessagePack
 	/// <summary>
 	/// Get the message context.
 	/// </summary>
-	public IMessageContext Context { get; }
+	public MessageContext Context { get; }
 
 	/// <summary>
 	/// Gets or sets the cancellation token.

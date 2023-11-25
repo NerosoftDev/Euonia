@@ -49,21 +49,26 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 			Aborted = cancellationToken
 		};
 
-		var taskCompletionSource = new TaskCompletionSource();
+		var taskCompletion = new TaskCompletionSource();
+
+		if (cancellationToken != default)
+		{
+			cancellationToken.Register(() => taskCompletion.SetCanceled(cancellationToken));
+		}
 
 		context.Completed += (_, _) =>
 		{
-			taskCompletionSource.SetResult();
+			taskCompletion.SetResult();
 		};
 
 		_messenger.Send(pack, message.Channel);
 		Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, context));
 
-		await taskCompletionSource.Task;
+		await taskCompletion.Task;
 	}
 
 	/// <inheritdoc />
-	public async Task<TResult> SendAsync<TMessage, TResult>(RoutedMessage<TMessage> message, CancellationToken cancellationToken = default)
+	public async Task<TResponse> SendAsync<TMessage, TResponse>(RoutedMessage<TMessage, TResponse> message, CancellationToken cancellationToken = default)
 		where TMessage : class
 	{
 		var context = new MessageContext(message);
@@ -71,21 +76,27 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 		{
 			Aborted = cancellationToken
 		};
+		
+		// See https://stackoverflow.com/questions/18760252/timeout-an-async-method-implemented-with-taskcompletionsource
+		var taskCompletion = new TaskCompletionSource<TResponse>();
+		if (cancellationToken != default)
+		{
+			cancellationToken.Register(() => taskCompletion.TrySetCanceled(), false);
+		}
 
-		var taskCompletionSource = new TaskCompletionSource<TResult>();
 		context.OnResponse += (_, args) =>
 		{
-			taskCompletionSource.SetResult((TResult)args.Result);
+			taskCompletion.SetResult((TResponse)args.Result);
 		};
 		context.Completed += (_, _) =>
 		{
-			taskCompletionSource.SetResult(default);
+			taskCompletion.TrySetResult(default);
 		};
 
 		_messenger.Send(pack, message.Channel);
 		Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, context));
 
-		return await taskCompletionSource.Task;
+		return await taskCompletion.Task;
 	}
 
 	/// <inheritdoc />

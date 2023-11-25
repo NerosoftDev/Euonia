@@ -10,6 +10,6 @@ public interface IRecipient<in TMessage>
 	/// <summary>
 	/// Receives a given <typeparamref name="TMessage"/> message instance.
 	/// </summary>
-	/// <param name="message">The message being received.</param>
-	void Receive(TMessage message);
+	/// <param name="pack">The message being received.</param>
+	void Receive(TMessage pack);
 }
