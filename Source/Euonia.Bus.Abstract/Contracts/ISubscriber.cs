@@ -18,19 +18,7 @@ public interface ISubscriber : IDisposable
 	event EventHandler<MessageAcknowledgedEventArgs> MessageAcknowledged;
 
 	/// <summary>
-	/// Occurs when [message subscribed].
-	/// </summary>
-	event EventHandler<MessageSubscribedEventArgs> MessageSubscribed;
-
-	/// <summary>
 	/// Gets the subscriber name.
 	/// </summary>
 	string Name { get; }
-
-	/// <summary>
-	/// Subscribes the specified message type.
-	/// </summary>
-	/// <param name="messageType"></param>
-	/// <param name="handlerType"></param>
-	void Subscribe(Type messageType, Type handlerType);
 }

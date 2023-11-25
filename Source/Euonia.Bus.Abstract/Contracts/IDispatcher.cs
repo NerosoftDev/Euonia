@@ -13,31 +13,31 @@ public interface IDispatcher
 	/// <summary>
 	/// Publishes the specified message.
 	/// </summary>
-	/// <param name="pack"></param>
+	/// <param name="message"></param>
 	/// <param name="cancellationToken"></param>
 	/// <typeparam name="TMessage"></typeparam>
 	/// <returns></returns>
-	Task PublishAsync<TMessage>(RoutedMessage<TMessage> pack, CancellationToken cancellationToken = default)
+	Task PublishAsync<TMessage>(RoutedMessage<TMessage> message, CancellationToken cancellationToken = default)
 		where TMessage : class;
 
 	/// <summary>
 	/// Sends the specified message.
 	/// </summary>
-	/// <param name="pack"></param>
+	/// <param name="message"></param>
 	/// <param name="cancellationToken"></param>
 	/// <typeparam name="TMessage"></typeparam>
 	/// <returns></returns>
-	Task SendAsync<TMessage>(RoutedMessage<TMessage> pack, CancellationToken cancellationToken = default)
+	Task SendAsync<TMessage>(RoutedMessage<TMessage> message, CancellationToken cancellationToken = default)
 		where TMessage : class;
 
 	/// <summary>
 	/// Sends the specified message.
 	/// </summary>
-	/// <param name="pack"></param>
+	/// <param name="message"></param>
 	/// <param name="cancellationToken"></param>
 	/// <typeparam name="TMessage"></typeparam>
-	/// <typeparam name="TResult"></typeparam>
+	/// <typeparam name="TResponse"></typeparam>
 	/// <returns></returns>
-	Task<TResult> SendAsync<TMessage, TResult>(RoutedMessage<TMessage> pack, CancellationToken cancellationToken = default)
+	Task<TResponse> SendAsync<TMessage, TResponse>(RoutedMessage<TMessage, TResponse> message, CancellationToken cancellationToken = default)
 		where TMessage : class;
 }

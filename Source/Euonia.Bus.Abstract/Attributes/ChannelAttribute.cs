@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace Nerosoft.Euonia.Bus;
+﻿namespace Nerosoft.Euonia.Bus;
 
 /// <summary>
 /// Represents the attributed event has a specified name.
@@ -26,31 +24,5 @@ public class ChannelAttribute : Attribute
 		}
 
 		Name = name;
-	}
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <typeparam name="TMessage"></typeparam>
-	/// <returns></returns>
-	public static string GetName<TMessage>()
-	{
-		return GetName(typeof(TMessage));
-	}
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="messageType"></param>
-	/// <returns></returns>
-	/// <exception cref="ArgumentNullException"></exception>
-	public static string GetName(Type messageType)
-	{
-		if (messageType == null)
-		{
-			throw new ArgumentNullException(nameof(messageType));
-		}
-
-		return messageType.GetCustomAttribute<ChannelAttribute>()?.Name ?? messageType.Name;
 	}
 }

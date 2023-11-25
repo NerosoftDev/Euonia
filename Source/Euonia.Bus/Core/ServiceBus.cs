@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace Nerosoft.Euonia.Bus;
+﻿namespace Nerosoft.Euonia.Bus;
 
 /// <summary>
 /// 
@@ -22,7 +20,7 @@ public sealed class ServiceBus : IBus
 	}
 
 	/// <inheritdoc />
-	public async Task PublishAsync<TMessage>(TMessage message, CancellationToken cancellationToken = default)
+	public async Task PublishAsync<TMessage>(TMessage message, PublishOptions options, CancellationToken cancellationToken = default)
 		where TMessage : class
 	{
 		if (!_convention.IsEventType(message.GetType()))
@@ -30,25 +28,13 @@ public sealed class ServiceBus : IBus
 			throw new InvalidOperationException("The message type is not an event type.");
 		}
 
-		var pack = new RoutedMessage<TMessage>(message, typeof(void).FullName);
+		var channelName = options?.Channel ?? MessageChannelCache.Default.GetOrAdd<TMessage>();
+		var pack = new RoutedMessage<TMessage>(message, channelName);
 		await _dispatcher.PublishAsync(pack, cancellationToken);
 	}
 
 	/// <inheritdoc />
-	public async Task PublishAsync<TMessage>(string name, TMessage message, CancellationToken cancellationToken = default)
-		where TMessage : class
-	{
-		if (!_convention.IsEventType(message.GetType()))
-		{
-			throw new InvalidOperationException("The message type is not an event type.");
-		}
-
-		var pack = new RoutedMessage<TMessage>(message, name);
-		await _dispatcher.PublishAsync(pack, cancellationToken);
-	}
-
-	/// <inheritdoc />
-	public async Task SendAsync<TMessage>(TMessage message, CancellationToken cancellationToken = default)
+	public async Task SendAsync<TMessage>(TMessage message, SendOptions options, CancellationToken cancellationToken = default)
 		where TMessage : class
 	{
 		if (!_convention.IsCommandType(message.GetType()))
@@ -56,12 +42,12 @@ public sealed class ServiceBus : IBus
 			throw new InvalidOperationException("The message type is not a command type.");
 		}
 
-		var pack = new RoutedMessage<TMessage>(message, typeof(void).FullName);
-		await _dispatcher.SendAsync(pack, cancellationToken);
+		var channelName = options?.Channel ?? MessageChannelCache.Default.GetOrAdd<TMessage>();
+		await _dispatcher.SendAsync(new RoutedMessage<TMessage>(message, channelName), cancellationToken);
 	}
 
 	/// <inheritdoc />
-	public async Task<TResult> SendAsync<TMessage, TResult>(TMessage message, CancellationToken cancellationToken = default)
+	public async Task<TResult> SendAsync<TMessage, TResult>(TMessage message, SendOptions options, CancellationToken cancellationToken = default)
 		where TMessage : class
 	{
 		if (!_convention.IsCommandType(message.GetType()))
@@ -69,14 +55,8 @@ public sealed class ServiceBus : IBus
 			throw new InvalidOperationException("The message type is not a command type.");
 		}
 
-		var pack = new RoutedMessage<TMessage>(message, GetChannelName<TMessage>());
-		await _dispatcher.SendAsync(pack, cancellationToken);
-		return default;
-	}
-
-	private static string GetChannelName<TMessage>()
-	{
-		var attribute = typeof(TMessage).GetCustomAttribute<ChannelAttribute>();
-		return attribute?.Name ?? typeof(TMessage).Name;
+		var channelName = options?.Channel ?? MessageChannelCache.Default.GetOrAdd<TMessage>();
+		var pack = new RoutedMessage<TMessage, TResult>(message, channelName);
+		return await _dispatcher.SendAsync(pack, cancellationToken);
 	}
 }
