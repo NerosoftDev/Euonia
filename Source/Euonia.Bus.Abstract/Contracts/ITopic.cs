@@ -1,8 +1,8 @@
 ﻿namespace Nerosoft.Euonia.Bus;
 
 /// <summary>
-/// The base contract of message.
+/// Represents a topic.
 /// </summary>
-public interface IMessage
+public interface ITopic
 {
 }

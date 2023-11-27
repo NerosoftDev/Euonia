@@ -39,12 +39,52 @@ public interface IMessageSerializer
 	/// <typeparam name="T"></typeparam>
 	/// <returns></returns>
 	T Deserialize<T>(byte[] bytes);
-	
+
+	/// <summary>
+	/// Deserializes json text to the specified type.
+	/// </summary>
+	/// <param name="json"></param>
+	/// <typeparam name="T"></typeparam>
+	/// <returns></returns>
 	T Deserialize<T>(string json);
-	
+
+	/// <summary>
+	/// Deserializes the specified stream to the specified type.
+	/// </summary>
+	/// <param name="stream"></param>
+	/// <typeparam name="T"></typeparam>
+	/// <returns></returns>
 	T Deserialize<T>(Stream stream);
-	
+
+	/// <summary>
+	/// Serializes the specified object to a JSON string.
+	/// </summary>
+	/// <param name="obj"></param>
+	/// <typeparam name="T"></typeparam>
+	/// <returns></returns>
 	string Serialize<T>(T obj);
-	
-	byte[] SerializeToBytes<T>(T obj);
+
+	/// <summary>
+	/// Serializes the specified object to a JSON byte array.
+	/// </summary>
+	/// <param name="obj"></param>
+	/// <typeparam name="T"></typeparam>
+	/// <returns></returns>
+	byte[] SerializeToByteArray<T>(T obj);
+
+	/// <summary>
+	/// Deserializes the json bytes to the specified type.
+	/// </summary>
+	/// <param name="bytes"></param>
+	/// <param name="type"></param>
+	/// <returns></returns>
+	object Deserialize(byte[] bytes, Type type) => Deserialize(Encoding.UTF8.GetString(bytes), type);
+
+	/// <summary>
+	/// Deserializes the json text to the specified type.
+	/// </summary>
+	/// <param name="json"></param>
+	/// <param name="type"></param>
+	/// <returns></returns>
+	object Deserialize(string json, Type type);
 }

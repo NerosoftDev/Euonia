@@ -81,7 +81,7 @@ public sealed class StrongReferenceMessenger : IMessenger
 	/// The <see cref="Mapping"/> and <see cref="Mapping{TToken}"/> instance for types combination.
 	/// </summary>
 	/// <remarks>
-	/// The values are just of type <see cref="ITypeDictionary{T}"/> as we don't know the type parameters in advance.
+	/// The values are just of type <see cref="TypeDictionary{T}"/> as we don't know the type parameters in advance.
 	/// Each method relies on <see cref="GetOrAddMapping{TMessage,TToken}"/> to get the type-safe instance of the
 	/// <see cref="Mapping"/> or <see cref="Mapping{TToken}"/> class for each pair of generic arguments in use.
 	/// </remarks>

@@ -1,9 +1,9 @@
 ﻿namespace Nerosoft.Euonia.Bus;
 
 /// <summary>
-/// Represents the class is a command.
+/// Represents the class is a event.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-public class CommandAttribute : Attribute
+public class TopicAttribute : Attribute
 {
 }

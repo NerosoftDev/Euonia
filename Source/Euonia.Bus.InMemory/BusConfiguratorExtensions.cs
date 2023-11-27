@@ -6,12 +6,12 @@ using Nerosoft.Euonia.Bus.InMemory;
 namespace Nerosoft.Euonia.Bus;
 
 /// <summary>
-/// Message bus extensions for <see cref="IBusConfigurator"/>.
+/// Service bus extensions for <see cref="IBusConfigurator"/>.
 /// </summary>
 public static class BusConfiguratorExtensions
 {
 	/// <summary>
-	/// Adds the in-memory message bus to the service collection.
+	/// Adds the in-memory message transporter.
 	/// </summary>
 	/// <param name="configurator"></param>
 	/// <param name="configuration"></param>

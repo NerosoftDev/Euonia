@@ -9,24 +9,24 @@ public class DefaultMessageConvention : IMessageConvention
 	public string Name => "Default Message Convention";
 
 	/// <inheritdoc />
-	public bool IsCommandType(Type type)
+	public bool IsQueueType(Type type)
 	{
 		if (type == null)
 		{
 			throw new ArgumentNullException(nameof(type), "Type cannot be null.");
 		}
 
-		return type.IsAssignableTo(typeof(ICommand)) && type != typeof(ICommand);
+		return type.IsAssignableTo(typeof(IQueue)) && type != typeof(IQueue);
 	}
 
 	/// <inheritdoc />
-	public bool IsEventType(Type type)
+	public bool IsTopicType(Type type)
 	{
 		if (type == null)
 		{
 			throw new ArgumentNullException(nameof(type), "Type cannot be null.");
 		}
 
-		return type.IsAssignableTo(typeof(IEvent)) && type != typeof(IEvent);
+		return type.IsAssignableTo(typeof(ITopic)) && type != typeof(ITopic);
 	}
 }

@@ -1,7 +1,7 @@
 ﻿namespace Nerosoft.Euonia.Bus;
 
 /// <summary>
-/// A set of conventions for determining if a class represents a message, command, or event.
+/// A set of conventions for determining if a class represents a request, queue, or topic message.
 /// </summary>
 public interface IMessageConvention
 {
@@ -11,16 +11,16 @@ public interface IMessageConvention
 	string Name { get; }
 
 	/// <summary>
-	/// Determine if a type is a command type.
+	/// Determine if a type is a queue type.
 	/// </summary>
 	/// <param name="type">The type to check.</param>.
-	/// <returns>true if <paramref name="type"/> represents a command.</returns>
-	bool IsCommandType(Type type);
+	/// <returns>true if <paramref name="type"/> represents a queue message.</returns>
+	bool IsQueueType(Type type);
 
 	/// <summary>
-	/// Determine if a type is an event type.
+	/// Determine if a type is an topic type.
 	/// </summary>
 	/// <param name="type">The type to check.</param>.
-	/// <returns>true if <paramref name="type"/> represents an event.</returns>
-	bool IsEventType(Type type);
+	/// <returns>true if <paramref name="type"/> represents an topic message.</returns>
+	bool IsTopicType(Type type);
 }

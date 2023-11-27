@@ -12,25 +12,25 @@ internal class OverridableMessageConvention : IMessageConvention
 
 	public string Name => $"Override with {_innerConvention.Name}";
 
-	bool IMessageConvention.IsCommandType(Type type)
+	bool IMessageConvention.IsQueueType(Type type)
 	{
 		return IsCommandType(type);
 	}
 
-	bool IMessageConvention.IsEventType(Type type)
+	bool IMessageConvention.IsTopicType(Type type)
 	{
 		return IsEventType(type);
 	}
 
 	public Func<Type, bool> IsCommandType
 	{
-		get => _isCommandType ?? _innerConvention.IsCommandType;
+		get => _isCommandType ?? _innerConvention.IsQueueType;
 		set => _isCommandType = value;
 	}
 
 	public Func<Type, bool> IsEventType
 	{
-		get => _isEventType ?? _innerConvention.IsEventType;
+		get => _isEventType ?? _innerConvention.IsTopicType;
 		set => _isEventType = value;
 	}
 

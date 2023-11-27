@@ -19,7 +19,7 @@ public class RabbitMqMessageBusOptions
     /// <summary>
     /// Gets or sets the command queue name.
     /// </summary>
-    public string CommandQueueName { get; set; }
+    public string QueueName { get; set; }
 
     /// <summary>
     /// Gets or sets the event queue name.

@@ -11,18 +11,18 @@ internal sealed class MessageQueue
 {
     private static readonly ConcurrentDictionary<string, MessageQueue> _container = new();
 
-    private readonly ConcurrentQueue<IMessage> _queue = new();
+    private readonly ConcurrentQueue<object> _queue = new();
 
     public event EventHandler<MessageProcessedEventArgs> MessagePushed;
 
-    internal void Enqueue(IMessage message, IMessageContext messageContext, MessageProcessType processType)
+    internal void Enqueue(object message, IMessageContext messageContext, MessageProcessType processType)
     {
         _queue.Enqueue(message);
 
         MessagePushed?.Invoke(this, new MessageProcessedEventArgs(message, messageContext, processType));
     }
 
-    internal IMessage Dequeue()
+    internal object Dequeue()
     {
         var succeed = _queue.TryDequeue(out var message);
         return succeed ? message : null;

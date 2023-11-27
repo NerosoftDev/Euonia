@@ -123,10 +123,20 @@ public class RoutedMessage<TData> : RoutedMessage, IRoutedMessage
 	}
 }
 
+/// <summary>
+/// 
+/// </summary>
+/// <typeparam name="TData"></typeparam>
+/// <typeparam name="TResponse"></typeparam>
 [Serializable]
 public class RoutedMessage<TData, TResponse> : RoutedMessage<TData>
 	where TData : class
 {
+	/// <summary>
+	/// Initializes a new instance of the <see cref="RoutedMessage{TData, TResponse}"/> class.
+	/// </summary>
+	/// <param name="data"></param>
+	/// <param name="channel"></param>
 	public RoutedMessage(TData data, string channel)
 		: base(data, channel)
 	{

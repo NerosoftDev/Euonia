@@ -28,7 +28,7 @@ public sealed class ServiceBus : IBus
 			throw new InvalidOperationException("The message type is not an event type.");
 		}
 
-		var channelName = options?.Channel ?? MessageChannelCache.Default.GetOrAdd<TMessage>();
+		var channelName = options?.Channel ?? MessageCache.Default.GetOrAddChannel<TMessage>();
 		var pack = new RoutedMessage<TMessage>(message, channelName);
 		await _dispatcher.PublishAsync(pack, cancellationToken);
 	}
@@ -42,7 +42,7 @@ public sealed class ServiceBus : IBus
 			throw new InvalidOperationException("The message type is not a command type.");
 		}
 
-		var channelName = options?.Channel ?? MessageChannelCache.Default.GetOrAdd<TMessage>();
+		var channelName = options?.Channel ?? MessageCache.Default.GetOrAddChannel<TMessage>();
 		await _dispatcher.SendAsync(new RoutedMessage<TMessage>(message, channelName), cancellationToken);
 	}
 
@@ -55,7 +55,7 @@ public sealed class ServiceBus : IBus
 			throw new InvalidOperationException("The message type is not a command type.");
 		}
 
-		var channelName = options?.Channel ?? MessageChannelCache.Default.GetOrAdd<TMessage>();
+		var channelName = options?.Channel ?? MessageCache.Default.GetOrAddChannel<TMessage>();
 		var pack = new RoutedMessage<TMessage, TResult>(message, channelName);
 		return await _dispatcher.SendAsync(pack, cancellationToken);
 	}

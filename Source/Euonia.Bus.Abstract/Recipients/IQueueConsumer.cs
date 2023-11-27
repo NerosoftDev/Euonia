@@ -3,6 +3,6 @@
 /// <summary>
 /// 
 /// </summary>
-public interface IEvent : IMessage
+public interface IQueueConsumer : IRecipient
 {
 }

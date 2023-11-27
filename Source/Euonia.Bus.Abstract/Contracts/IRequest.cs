@@ -3,6 +3,6 @@
 /// <summary>
 /// 
 /// </summary>
-public interface IRequest : IMessage
+public interface IRequest
 {
 }

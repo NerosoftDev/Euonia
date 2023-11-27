@@ -3,7 +3,7 @@
 /// <summary>
 /// 
 /// </summary>
-public class InMemoryRecipient : DisposableObject, IEventSubscriber, ICommandExecutor, IRecipient<MessagePack>
+public abstract class InMemoryRecipient : DisposableObject, IRecipient<MessagePack>
 {
 	/// <summary>
 	/// Occurs when [message received].
@@ -25,9 +25,6 @@ public class InMemoryRecipient : DisposableObject, IEventSubscriber, ICommandExe
 	{
 		_handler = handler;
 	}
-
-	/// <inheritdoc />
-	public string Name { get; } = nameof(InMemoryRecipient);
 
 	#region IDisposable
 

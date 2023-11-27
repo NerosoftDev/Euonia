@@ -25,7 +25,7 @@ public class MessageConvention
 		return _commandConventionCache.Apply(type, handle =>
 		{
 			var t = Type.GetTypeFromHandle(handle);
-			return _conventions.Any(x => x.IsCommandType(t));
+			return _conventions.Any(x => x.IsQueueType(t));
 		});
 	}
 
@@ -42,7 +42,7 @@ public class MessageConvention
 		return _eventConventionCache.Apply(type, handle =>
 		{
 			var t = Type.GetTypeFromHandle(handle);
-			return _conventions.Any(x => x.IsEventType(t));
+			return _conventions.Any(x => x.IsTopicType(t));
 		});
 	}
 
