@@ -1,9 +1,9 @@
 ﻿namespace Nerosoft.Euonia.Bus.InMemory;
 
 /// <summary>
-/// A base interface masking <see cref="TypeDictionary{TKey,TValue}"/> instances and exposing non-generic functionalities.
+/// A base interface masking <see cref="ITypeDictionary{TKey,TValue}"/> instances and exposing non-generic functionalities.
 /// </summary>
-internal interface TypeDictionary
+internal interface ITypeDictionary
 {
 	/// <summary>
 	/// Gets the count of entries in the dictionary.
@@ -17,10 +17,10 @@ internal interface TypeDictionary
 }
 
 /// <summary>
-/// An interface providing key type contravariant access to a <see cref="TypeDictionary{TKey,TValue}"/> instance.
+/// An interface providing key type contravariant access to a <see cref="ITypeDictionary{TKey,TValue}"/> instance.
 /// </summary>
 /// <typeparam name="TKey">The contravariant type of keys in the dictionary.</typeparam>
-internal interface TypeDictionary<in TKey> : TypeDictionary
+internal interface ITypeDictionary<in TKey> : ITypeDictionary
 	where TKey : IEquatable<TKey>
 {
 	/// <summary>
@@ -33,11 +33,11 @@ internal interface TypeDictionary<in TKey> : TypeDictionary
 
 /// <summary>
 /// An interface providing key type contravariant and value type covariant access
-/// to a <see cref="TypeDictionary{TKey,TValue}"/> instance.
+/// to a <see cref="ITypeDictionary{TKey,TValue}"/> instance.
 /// </summary>
 /// <typeparam name="TKey">The contravariant type of keys in the dictionary.</typeparam>
 /// <typeparam name="TValue">The covariant type of values in the dictionary.</typeparam>
-internal interface ITypeDictionary<in TKey, out TValue> : TypeDictionary<TKey>
+internal interface ITypeDictionary<in TKey, out TValue> : ITypeDictionary<TKey>
 	where TKey : IEquatable<TKey>
 	where TValue : class
 {

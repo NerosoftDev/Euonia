@@ -15,7 +15,7 @@ public sealed class StrongReferenceMessenger : IMessenger
 {
 	// This messenger uses the following logic to link stored instances together:
 	// --------------------------------------------------------------------------------------------------------
-	//   TypeDictionary<Recipient, HashSet<IMapping>> recipientsMap;
+	//   ITypeDictionary<Recipient, HashSet<IMapping>> recipientsMap;
 	//                   |                 \________________[*]ITypeDictionary<Recipient, ITypeDictionary<TToken>>
 	//                   |                  \_______________[*]ITypeDictionary<Recipient, object?>       /
 	//                   |                                           \_________/_________/___        / 
@@ -23,16 +23,16 @@ public sealed class StrongReferenceMessenger : IMessenger
 	//                   | \__________________   /    _____(channel registrations)_____/______\____/
 	//                   |                    \ /    /      __________________________/        \
 	//                   |                     /    /      /                                    \
-	//                   |      TypeDictionary<Recipient, object?> mapping = Mapping________________\
+	//                   |      ITypeDictionary<Recipient, object?> mapping = Mapping________________\
 	//                   | __________________/    /                |         /                    \
 	//                   |/                      /                 |        /                      \
-	//    TypeDictionary<Recipient, TypeDictionary<TToken, object?>> mapping = Mapping<TToken>____________\
+	//    ITypeDictionary<Recipient, ITypeDictionary<TToken, object?>> mapping = Mapping<TToken>____________\
 	//                                         /                  /       /  /
 	//                   ___(EquatableType.TToken)____/                  /       /  /
 	//                  /________________(EquatableType.TMessage)_______/_______/__/
 	//                 /       ________________________________/
 	//                /       /
-	// TypeDictionary<EquatableType, IMapping> typesMap;
+	// ITypeDictionary<EquatableType, IMapping> typesMap;
 	// --------------------------------------------------------------------------------------------------------
 	// Each combination of <TMessage, TToken> results in a concrete Mapping type (if TToken is Unit) or Mapping<Token> type,
 	// which holds the references from registered recipients to handlers. Mapping is used when the default channel is being
@@ -81,7 +81,7 @@ public sealed class StrongReferenceMessenger : IMessenger
 	/// The <see cref="Mapping"/> and <see cref="Mapping{TToken}"/> instance for types combination.
 	/// </summary>
 	/// <remarks>
-	/// The values are just of type <see cref="TypeDictionary{T}"/> as we don't know the type parameters in advance.
+	/// The values are just of type <see cref="ITypeDictionary{T}"/> as we don't know the type parameters in advance.
 	/// Each method relies on <see cref="GetOrAddMapping{TMessage,TToken}"/> to get the type-safe instance of the
 	/// <see cref="Mapping"/> or <see cref="Mapping{TToken}"/> class for each pair of generic arguments in use.
 	/// </remarks>
@@ -307,7 +307,7 @@ public sealed class StrongReferenceMessenger : IMessenger
 			foreach (var item in set)
 			{
 				// Select all mappings using the same token type
-				if (item is ITypeDictionary<Recipient, TypeDictionary<TToken>> mapping)
+				if (item is ITypeDictionary<Recipient, ITypeDictionary<TToken>> mapping)
 				{
 					maps[i++] = mapping;
 				}
@@ -322,7 +322,7 @@ public sealed class StrongReferenceMessenger : IMessenger
 			// matches with the token type currently in use, and operate on those instances.
 			foreach (var obj in maps.AsSpan(0, i))
 			{
-				var handlersMap = Unsafe.As<ITypeDictionary<Recipient, TypeDictionary<TToken>>>(obj);
+				var handlersMap = Unsafe.As<ITypeDictionary<Recipient, ITypeDictionary<TToken>>>(obj);
 
 				// We don't need whether or not the map contains the recipient, as the
 				// sequence of maps has already been copied from the set containing all
@@ -783,7 +783,7 @@ public sealed class StrongReferenceMessenger : IMessenger
 	/// An interface for the <see cref="Mapping"/> and <see cref="Mapping{TToken}"/> types which allows to retrieve
 	/// the type arguments from a given generic instance without having any prior knowledge about those arguments.
 	/// </summary>
-	private interface IMapping : TypeDictionary<Recipient>
+	private interface IMapping : ITypeDictionary<Recipient>
 	{
 		/// <summary>
 		/// Gets the <see cref="EquatableType"/> instance representing the current type arguments.

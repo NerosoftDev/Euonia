@@ -21,20 +21,20 @@ public sealed class WeakReferenceMessenger : IMessenger
 {
 	// This messenger uses the following logic to link stored instances together:
 	// --------------------------------------------------------------------------------------------------------
-	//                          TypeDictionary<TToken, MessageHandlerDispatcher?> mapping
+	//                          ITypeDictionary<TToken, MessageHandlerDispatcher?> mapping
 	//                                        /                   /             /
 	//                   ___(EquatableType.TToken)___/                   /             /         ___(if EquatableType.TToken is Unit)
 	//                  /_________(EquatableType.TMessage)______________/             /         /
 	//                 /                                    _________________/___MessageHandlerDispatcher?
 	//                /                                    /                         \
-	// TypeDictionary<EquatableType, ConditionalWeakTable<object, object?>> recipientsMap;       \___(null if using IRecipient<TMessage>)
+	// ITypeDictionary<EquatableType, ConditionalWeakTable<object, object?>> recipientsMap;       \___(null if using IRecipient<TMessage>)
 	// --------------------------------------------------------------------------------------------------------
 	// Just like in the strong reference variant, each pair of message and token types is used as a key in the
 	// recipients map. In this case, the values in the dictionary are ConditionalWeakTable2<,> instances, that
 	// link each registered recipient to a map of currently registered handlers, through dependent handles. This
 	// ensures that handlers will remain alive as long as their associated recipient is also alive (so there is no
 	// need for users to manually indicate whether a given handler should be kept alive in case it creates a closure).
-	// The value in each conditional table can either be TypeDictionary<TToken, MessageHandlerDispatcher> or object. The
+	// The value in each conditional table can either be ITypeDictionary<TToken, MessageHandlerDispatcher> or object. The
 	// first case is used when any token type other than the default Unit type is used, as in this case there could be
 	// multiple handlers for each recipient that need to be tracked separately. In order to invoke all the handlers from
 	// a context where their type parameters is not known, handlers are stored as MessageHandlerDispatcher instances. There
@@ -498,7 +498,7 @@ public sealed class WeakReferenceMessenger : IMessenger
 				{
 					while (recipientsEnumerator.MoveNext())
 					{
-						if (Unsafe.As<TypeDictionary>(recipientsEnumerator.GetValue()!).Count == 0)
+						if (Unsafe.As<ITypeDictionary>(recipientsEnumerator.GetValue()!).Count == 0)
 						{
 							emptyRecipients.Add(recipientsEnumerator.GetKey());
 						}

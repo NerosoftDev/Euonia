@@ -52,7 +52,7 @@ internal class TypeDictionary<TKey, TValue> : ITypeDictionary<TKey, TValue>
 	private int _freeCount;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="TypeDictionary{TKey,TValue}"/> class.
+	/// Initializes a new instance of the <see cref="ITypeDictionary{TKey,TValue}"/> class.
 	/// </summary>
 	public TypeDictionary()
 	{
@@ -256,7 +256,7 @@ internal class TypeDictionary<TKey, TValue> : ITypeDictionary<TKey, TValue>
 	public Enumerator GetEnumerator() => new(this);
 
 	/// <summary>
-	/// Enumerator for <see cref="TypeDictionary{TKey,TValue}"/>.
+	/// Enumerator for <see cref="ITypeDictionary{TKey,TValue}"/>.
 	/// </summary>
 	public ref struct Enumerator
 	{
