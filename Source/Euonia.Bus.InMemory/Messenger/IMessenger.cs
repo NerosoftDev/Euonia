@@ -1,9 +1,3 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-using System;
-
 namespace Nerosoft.Euonia.Bus.InMemory;
 
 /// <summary>
@@ -48,105 +42,97 @@ namespace Nerosoft.Euonia.Bus.InMemory;
 /// <code>
 /// Messenger.Default.Register(this, Receive);
 /// </code>
-/// The C# compiler will automatically convert that expression to a <see cref="MessageHandler{TRecipient,TMessage}"/> instance
-/// compatible with <see cref="MessengerExtensions.Register{TRecipient,TMessage}(IMessenger,TRecipient,MessageHandler{TRecipient,TMessage})"/>.
-/// This will also work if multiple overloads of that method are available, each handling a different
-/// message type: the C# compiler will automatically pick the right one for the current message type.
-/// It is also possible to register message handlers explicitly using the <see cref="IRecipient{TMessage}"/> interface.
-/// To do so, the recipient just needs to implement the interface and then call the
-/// <see cref="MessengerExtensions.RegisterAll(IMessenger,object)"/> extension, which will automatically register
-/// all the handlers that are declared by the recipient type. Registration for individual handlers is supported as well.
 /// </summary>
 public interface IMessenger
 {
-    /// <summary>
-    /// Checks whether or not a given recipient has already been registered for a message.
-    /// </summary>
-    /// <typeparam name="TMessage">The type of message to check for the given recipient.</typeparam>
-    /// <typeparam name="TToken">The type of token to check the channel for.</typeparam>
-    /// <param name="recipient">The target recipient to check the registration for.</param>
-    /// <param name="token">The token used to identify the target channel to check.</param>
-    /// <returns>Whether or not <paramref name="recipient"/> has already been registered for the specified message.</returns>
-    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="recipient"/> or <paramref name="token"/> are <see langword="null"/>.</exception>
-    bool IsRegistered<TMessage, TToken>(object recipient, TToken token)
-        where TMessage : class
-        where TToken : IEquatable<TToken>;
+	/// <summary>
+	/// Checks whether or not a given recipient has already been registered for a message.
+	/// </summary>
+	/// <typeparam name="TMessage">The type of message to check for the given recipient.</typeparam>
+	/// <typeparam name="TToken">The type of token to check the channel for.</typeparam>
+	/// <param name="recipient">The target recipient to check the registration for.</param>
+	/// <param name="token">The token used to identify the target channel to check.</param>
+	/// <returns>Whether or not <paramref name="recipient"/> has already been registered for the specified message.</returns>
+	/// <exception cref="System.ArgumentNullException">Thrown if <paramref name="recipient"/> or <paramref name="token"/> are <see langword="null"/>.</exception>
+	bool IsRegistered<TMessage, TToken>(object recipient, TToken token)
+		where TMessage : class
+		where TToken : IEquatable<TToken>;
 
-    /// <summary>
-    /// Registers a recipient for a given type of message.
-    /// </summary>
-    /// <typeparam name="TRecipient">The type of recipient for the message.</typeparam>
-    /// <typeparam name="TMessage">The type of message to receive.</typeparam>
-    /// <typeparam name="TToken">The type of token to use to pick the messages to receive.</typeparam>
-    /// <param name="recipient">The recipient that will receive the messages.</param>
-    /// <param name="token">A token used to determine the receiving channel to use.</param>
-    /// <param name="handler">The <see cref="MessageHandler{TRecipient,TMessage}"/> to invoke when a message is received.</param>
-    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="recipient"/>, <paramref name="token"/> or <paramref name="handler"/> are <see langword="null"/>.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when trying to register the same message twice.</exception>
-    void Register<TRecipient, TMessage, TToken>(TRecipient recipient, TToken token, MessageHandler<TRecipient, TMessage> handler)
-        where TRecipient : class
-        where TMessage : class
-        where TToken : IEquatable<TToken>;
+	/// <summary>
+	/// Registers a recipient for a given type of message.
+	/// </summary>
+	/// <typeparam name="TRecipient">The type of recipient for the message.</typeparam>
+	/// <typeparam name="TMessage">The type of message to receive.</typeparam>
+	/// <typeparam name="TToken">The type of token to use to pick the messages to receive.</typeparam>
+	/// <param name="recipient">The recipient that will receive the messages.</param>
+	/// <param name="token">A token used to determine the receiving channel to use.</param>
+	/// <param name="handler">The <see cref="MessageHandler{TRecipient,TMessage}"/> to invoke when a message is received.</param>
+	/// <exception cref="System.ArgumentNullException">Thrown if <paramref name="recipient"/>, <paramref name="token"/> or <paramref name="handler"/> are <see langword="null"/>.</exception>
+	/// <exception cref="InvalidOperationException">Thrown when trying to register the same message twice.</exception>
+	void Register<TRecipient, TMessage, TToken>(TRecipient recipient, TToken token, MessageHandler<TRecipient, TMessage> handler)
+		where TRecipient : class
+		where TMessage : class
+		where TToken : IEquatable<TToken>;
 
-    /// <summary>
-    /// Unregisters a recipient from all registered messages.
-    /// </summary>
-    /// <param name="recipient">The recipient to unregister.</param>
-    /// <remarks>
-    /// This method will unregister the target recipient across all channels.
-    /// Use this method as an easy way to lose all references to a target recipient.
-    /// If the recipient has no registered handler, this method does nothing.
-    /// </remarks>
-    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="recipient"/> is <see langword="null"/>.</exception>
-    void UnregisterAll(object recipient);
+	/// <summary>
+	/// Unregisters a recipient from all registered messages.
+	/// </summary>
+	/// <param name="recipient">The recipient to unregister.</param>
+	/// <remarks>
+	/// This method will unregister the target recipient across all channels.
+	/// Use this method as an easy way to lose all references to a target recipient.
+	/// If the recipient has no registered handler, this method does nothing.
+	/// </remarks>
+	/// <exception cref="System.ArgumentNullException">Thrown if <paramref name="recipient"/> is <see langword="null"/>.</exception>
+	void UnregisterAll(object recipient);
 
-    /// <summary>
-    /// Unregisters a recipient from all messages on a specific channel.
-    /// </summary>
-    /// <typeparam name="TToken">The type of token to identify what channel to unregister from.</typeparam>
-    /// <param name="recipient">The recipient to unregister.</param>
-    /// <param name="token">The token to use to identify which handlers to unregister.</param>
-    /// <remarks>If the recipient has no registered handler, this method does nothing.</remarks>
-    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="recipient"/> or <paramref name="token"/> are <see langword="null"/>.</exception>
-    void UnregisterAll<TToken>(object recipient, TToken token)
-        where TToken : IEquatable<TToken>;
+	/// <summary>
+	/// Unregisters a recipient from all messages on a specific channel.
+	/// </summary>
+	/// <typeparam name="TToken">The type of token to identify what channel to unregister from.</typeparam>
+	/// <param name="recipient">The recipient to unregister.</param>
+	/// <param name="token">The token to use to identify which handlers to unregister.</param>
+	/// <remarks>If the recipient has no registered handler, this method does nothing.</remarks>
+	/// <exception cref="System.ArgumentNullException">Thrown if <paramref name="recipient"/> or <paramref name="token"/> are <see langword="null"/>.</exception>
+	void UnregisterAll<TToken>(object recipient, TToken token)
+		where TToken : IEquatable<TToken>;
 
-    /// <summary>
-    /// Unregisters a recipient from messages of a given type.
-    /// </summary>
-    /// <typeparam name="TMessage">The type of message to stop receiving.</typeparam>
-    /// <typeparam name="TToken">The type of token to identify what channel to unregister from.</typeparam>
-    /// <param name="recipient">The recipient to unregister.</param>
-    /// <param name="token">The token to use to identify which handlers to unregister.</param>
-    /// <remarks>If the recipient has no registered handler, this method does nothing.</remarks>
-    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="recipient"/> or <paramref name="token"/> are <see langword="null"/>.</exception>
-    void Unregister<TMessage, TToken>(object recipient, TToken token)
-        where TMessage : class
-        where TToken : IEquatable<TToken>;
+	/// <summary>
+	/// Unregisters a recipient from messages of a given type.
+	/// </summary>
+	/// <typeparam name="TMessage">The type of message to stop receiving.</typeparam>
+	/// <typeparam name="TToken">The type of token to identify what channel to unregister from.</typeparam>
+	/// <param name="recipient">The recipient to unregister.</param>
+	/// <param name="token">The token to use to identify which handlers to unregister.</param>
+	/// <remarks>If the recipient has no registered handler, this method does nothing.</remarks>
+	/// <exception cref="System.ArgumentNullException">Thrown if <paramref name="recipient"/> or <paramref name="token"/> are <see langword="null"/>.</exception>
+	void Unregister<TMessage, TToken>(object recipient, TToken token)
+		where TMessage : class
+		where TToken : IEquatable<TToken>;
 
-    /// <summary>
-    /// Sends a message of the specified type to all registered recipients.
-    /// </summary>
-    /// <typeparam name="TMessage">The type of message to send.</typeparam>
-    /// <typeparam name="TToken">The type of token to identify what channel to use to send the message.</typeparam>
-    /// <param name="message">The message to send.</param>
-    /// <param name="token">The token indicating what channel to use.</param>
-    /// <returns>The message that was sent (ie. <paramref name="message"/>).</returns>
-    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="message"/> or <paramref name="token"/> are <see langword="null"/>.</exception>
-    TMessage Send<TMessage, TToken>(TMessage message, TToken token)
-        where TMessage : class
-        where TToken : IEquatable<TToken>;
+	/// <summary>
+	/// Sends a message of the specified type to all registered recipients.
+	/// </summary>
+	/// <typeparam name="TMessage">The type of message to send.</typeparam>
+	/// <typeparam name="TToken">The type of token to identify what channel to use to send the message.</typeparam>
+	/// <param name="message">The message to send.</param>
+	/// <param name="token">The token indicating what channel to use.</param>
+	/// <returns>The message that was sent (ie. <paramref name="message"/>).</returns>
+	/// <exception cref="System.ArgumentNullException">Thrown if <paramref name="message"/> or <paramref name="token"/> are <see langword="null"/>.</exception>
+	TMessage Send<TMessage, TToken>(TMessage message, TToken token)
+		where TMessage : class
+		where TToken : IEquatable<TToken>;
 
-    /// <summary>
-    /// Performs a cleanup on the current messenger.
-    /// Invoking this method does not unregister any of the currently registered
-    /// recipient, and it can be used to perform cleanup operations such as
-    /// trimming the internal data structures of a messenger implementation.
-    /// </summary>
-    void Cleanup();
+	/// <summary>
+	/// Performs a cleanup on the current messenger.
+	/// Invoking this method does not unregister any of the currently registered
+	/// recipient, and it can be used to perform cleanup operations such as
+	/// trimming the internal data structures of a messenger implementation.
+	/// </summary>
+	void Cleanup();
 
-    /// <summary>
-    /// Resets the <see cref="IMessenger"/> instance and unregisters all the existing recipients.
-    /// </summary>
-    void Reset();
+	/// <summary>
+	/// Resets the <see cref="IMessenger"/> instance and unregisters all the existing recipients.
+	/// </summary>
+	void Reset();
 }

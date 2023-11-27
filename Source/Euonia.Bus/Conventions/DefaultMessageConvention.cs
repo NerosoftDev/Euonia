@@ -13,7 +13,7 @@ public class DefaultMessageConvention : IMessageConvention
 	{
 		if (type == null)
 		{
-			throw new ArgumentNullException(nameof(type), "Type cannot be null.");
+			throw new ArgumentNullException(nameof(type), Resources.IDS_TYPE_CANNOT_NULL);
 		}
 
 		return type.IsAssignableTo(typeof(IQueue)) && type != typeof(IQueue);
@@ -24,7 +24,7 @@ public class DefaultMessageConvention : IMessageConvention
 	{
 		if (type == null)
 		{
-			throw new ArgumentNullException(nameof(type), "Type cannot be null.");
+			throw new ArgumentNullException(nameof(type), Resources.IDS_TYPE_CANNOT_NULL);
 		}
 
 		return type.IsAssignableTo(typeof(ITopic)) && type != typeof(ITopic);
