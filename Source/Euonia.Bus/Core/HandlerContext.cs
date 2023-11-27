@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Linq.Expressions;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -15,46 +16,55 @@ public class HandlerContext : IHandlerContext
 	/// </summary>
 	public event EventHandler<MessageSubscribedEventArgs> MessageSubscribed;
 
-	private readonly ConcurrentDictionary<string, List<(Type, MethodInfo)>> _handlerContainer = new();
-	private static readonly ConcurrentDictionary<string, Type> _messageTypeMapping = new();
+	private readonly ConcurrentDictionary<string, List<MessageHandlerFactory>> _handlerContainer = new();
 	private readonly IServiceProvider _provider;
-	private readonly MessageConvert _convert;
 	private readonly ILogger<HandlerContext> _logger;
 
 	/// <summary>
 	/// Initialize a new instance of <see cref="HandlerContext"/>
 	/// </summary>
 	/// <param name="provider"></param>
-	/// <param name="convert"></param>
-	public HandlerContext(IServiceProvider provider, MessageConvert convert)
+	public HandlerContext(IServiceProvider provider)
 	{
 		_provider = provider;
-		_convert = convert;
 		_logger = provider.GetService<ILoggerFactory>()?.CreateLogger<HandlerContext>();
 	}
 
-	#region Handler register
+	#region Handling register
 
 	internal virtual void Register<TMessage, THandler>()
 		where TMessage : class
 		where THandler : IHandler<TMessage>
 	{
-		Register(typeof(TMessage), typeof(THandler), typeof(THandler).GetMethod(nameof(IHandler<TMessage>.HandleAsync), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+		var channel = MessageCache.Default.GetOrAddChannel<TMessage>();
+
+		MessageHandler Handling(IServiceProvider provider)
+		{
+			var handler = provider.GetService<THandler>();
+			return (message, context, token) => handler.HandleAsync((TMessage)message, context, token);
+		}
+
+		ConcurrentDictionarySafeRegister(channel, Handling, _handlerContainer);
+		MessageSubscribed?.Invoke(this, new MessageSubscribedEventArgs(channel, typeof(TMessage), typeof(THandler)));
 	}
 
-	internal virtual void Register(Type messageType, Type handlerType, MethodInfo method)
+	internal void Register(MessageRegistration registration)
 	{
-		var messageName = messageType.FullName;
+		MessageHandler Handling(IServiceProvider provider)
+		{
+			var handler = ActivatorUtilities.GetServiceOrCreateInstance(provider, registration.HandlerType);
 
-		_messageTypeMapping.GetOrAdd(messageName, messageType);
-		ConcurrentDictionarySafeRegister(messageName, (handlerType, method), _handlerContainer);
-		MessageSubscribed?.Invoke(this, new MessageSubscribedEventArgs(messageType, handlerType));
-	}
+			return (message, context, token) =>
+			{
+				var arguments = GetArguments(registration.Method, message, context, token);
+				var expression = Expression.Call(Expression.Constant(handler), registration.Method, arguments);
 
-	internal void Register(string messageName, Type handlerType, MethodInfo method)
-	{
-		ConcurrentDictionarySafeRegister(messageName, (handlerType, method), _handlerContainer);
-		MessageSubscribed?.Invoke(this, new MessageSubscribedEventArgs(messageName, method.DeclaringType));
+				return Expression.Lambda<Func<Task>>(expression).Compile()();
+			};
+		}
+
+		ConcurrentDictionarySafeRegister(registration.Channel, Handling, _handlerContainer);
+		MessageSubscribed?.Invoke(this, new MessageSubscribedEventArgs(registration.Channel, registration.MessageType, registration.HandlerType));
 	}
 
 	#endregion
@@ -69,12 +79,12 @@ public class HandlerContext : IHandlerContext
 			return;
 		}
 
-		var name = message.GetType().FullName;
+		var name = MessageCache.Default.GetOrAddChannel(message.GetType());
 		await HandleAsync(name, message, context, cancellationToken);
 	}
 
 	/// <inheritdoc />
-	public virtual async Task HandleAsync(string name, object message, MessageContext context, CancellationToken cancellationToken = default)
+	public virtual async Task HandleAsync(string channel, object message, MessageContext context, CancellationToken cancellationToken = default)
 	{
 		if (message == null)
 		{
@@ -84,24 +94,28 @@ public class HandlerContext : IHandlerContext
 		var tasks = new List<Task>();
 		using var scope = _provider.GetRequiredService<IServiceScopeFactory>().CreateScope();
 
-		if (!_handlerContainer.TryGetValue(name, out var handlerTypes))
+		if (!_handlerContainer.TryGetValue(channel, out var handling))
 		{
 			throw new InvalidOperationException("No handler registered for message");
 		}
 
-		foreach (var (handlerType, handleMethod) in handlerTypes)
-		{
-			var handler = ActivatorUtilities.GetServiceOrCreateInstance(scope.ServiceProvider, handlerType);
+		// Get handler instance from service provider using Expression Tree
 
-			var parameters = GetMethodArguments(handleMethod, context, context, cancellationToken);
-			if (parameters == null)
-			{
-				_logger.LogWarning("Method '{Name}' parameter number not matches", handleMethod.Name);
-			}
-			else
-			{
-				tasks.Add(Invoke(handleMethod, handler, parameters));
-			}
+		foreach (var factory in handling)
+		{
+			var handler = factory(scope.ServiceProvider);
+			tasks.Add(handler(message, context, cancellationToken));
+			// var handler = ActivatorUtilities.GetServiceOrCreateInstance(scope.ServiceProvider, handlerType);
+			//
+			// var arguments = GetMethodArguments(handleMethod, message, context, cancellationToken);
+			// if (arguments == null)
+			// {
+			// 	_logger.LogWarning("Method '{Name}' parameter number not matches", handleMethod.Name);
+			// }
+			// else
+			// {
+			// 	tasks.Add(Invoke(handleMethod, handler, arguments));
+			// }
 		}
 
 		if (tasks.Count == 0)
@@ -113,6 +127,8 @@ public class HandlerContext : IHandlerContext
 		{
 			_logger?.LogInformation("Message {Id} was completed handled", context.MessageId);
 		}, cancellationToken);
+
+		context.Dispose();
 	}
 
 	#endregion
@@ -144,10 +160,10 @@ public class HandlerContext : IHandlerContext
 		}
 	}
 
-	private object[] GetMethodArguments(MethodBase method, object message, MessageContext context, CancellationToken cancellationToken)
+	private static Expression[] GetArguments(MethodBase method, object message, MessageContext context, CancellationToken cancellationToken)
 	{
 		var parameterInfos = method.GetParameters();
-		var parameters = new object[parameterInfos.Length];
+		var arguments = new Expression[parameterInfos.Length];
 		switch (parameterInfos.Length)
 		{
 			case 0:
@@ -158,42 +174,42 @@ public class HandlerContext : IHandlerContext
 
 				if (parameterType == typeof(MessageContext))
 				{
-					parameters[0] = context;
+					arguments[0] = Expression.Constant(context);
 				}
 				else if (parameterType == typeof(CancellationToken))
 				{
-					parameters[0] = cancellationToken;
+					arguments[0] = Expression.Constant(cancellationToken);
 				}
 				else
 				{
-					parameters[0] = _convert(message, parameterType);
+					arguments[0] = Expression.Constant(message);
 				}
 			}
 				break;
 			case 2:
 			case 3:
 			{
-				for (var index = 0; index < parameterInfos.Length; index++)
+				arguments[0] ??= Expression.Constant(message);
+
+				for (var index = 1; index < parameterInfos.Length; index++)
 				{
 					if (parameterInfos[index].ParameterType == typeof(MessageContext))
 					{
-						parameters[index] = context;
+						arguments[index] = Expression.Constant(context);
 					}
 
 					if (parameterInfos[index].ParameterType == typeof(CancellationToken))
 					{
-						parameters[index] = cancellationToken;
+						arguments[index] = Expression.Constant(cancellationToken);
 					}
 				}
-
-				parameters[0] ??= _convert(message, parameterInfos[0].ParameterType);
 			}
 				break;
 			default:
 				return null;
 		}
 
-		return parameters;
+		return arguments;
 	}
 
 	private static Task Invoke(MethodInfo method, object handler, params object[] parameters)

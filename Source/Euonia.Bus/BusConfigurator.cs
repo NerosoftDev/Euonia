@@ -18,7 +18,7 @@ public class BusConfigurator : IBusConfigurator
 	/// <summary>
 	/// The message handler types.
 	/// </summary>
-	internal List<MessageSubscription> Registrations { get; } = new();
+	internal List<MessageRegistration> Registrations { get; } = new();
 
 	/// <summary>
 	/// Initialize a new instance of <see cref="BusConfigurator"/>
@@ -35,7 +35,7 @@ public class BusConfigurator : IBusConfigurator
 	/// <inheritdoc />
 	public IEnumerable<string> GetSubscriptions()
 	{
-		return Registrations.Select(t => t.Name);
+		return Registrations.Select(t => t.Channel);
 	}
 
 	/// <summary>
@@ -162,7 +162,7 @@ public class BusConfigurator : IBusConfigurator
 
 			if (handlerType.IsImplementsGeneric(typeof(IHandler<>)))
 			{
-				var interfaces = handlerType.GetInterfaces().Where(t => t.IsImplementsGeneric(typeof(IHandler<>)));
+				var interfaces = handlerType.GetInterfaces().Where(t => t.IsGenericType);
 
 				foreach (var @interface in interfaces)
 				{
@@ -173,10 +173,16 @@ public class BusConfigurator : IBusConfigurator
 						continue;
 					}
 
-					Registrations.Add(new MessageSubscription(messageType, handlerType, @interface.GetRuntimeMethod(nameof(IHandler.HandleAsync), new[] { messageType, typeof(MessageContext), typeof(CancellationToken) })));
+					var method = @interface.GetMethod(nameof(IHandler<object>.HandleAsync), BINDING_FLAGS, null, new[] { messageType, typeof(MessageContext), typeof(CancellationToken) }, null);
+
+					var registration = new MessageRegistration(MessageCache.Default.GetOrAddChannel(messageType), messageType, handlerType, method);
+
+					Registrations.Add(registration);
+
+					Service.TryAddScoped(typeof(IHandler<>).MakeGenericType(messageType), handlerType);
 				}
 
-				Service.TryAddScoped(typeof(IHandler<>), handlerType);
+				Service.TryAddScoped(handlerType);
 			}
 			else
 			{
@@ -193,7 +199,7 @@ public class BusConfigurator : IBusConfigurator
 
 					if (!parameters.Any(t => t.ParameterType != typeof(CancellationToken) && t.ParameterType != typeof(MessageContext)))
 					{
-						throw new InvalidOperationException("Invalid handler method");
+						throw new InvalidOperationException("Invalid handler method.");
 					}
 
 					var firstParameter = parameters[0];
@@ -215,7 +221,8 @@ public class BusConfigurator : IBusConfigurator
 
 					foreach (var attribute in attributes)
 					{
-						Registrations.Add(new MessageSubscription(attribute.Name, handlerType, method));
+						var registration = new MessageRegistration(attribute.Name, firstParameter.ParameterType, handlerType, method);
+						Registrations.Add(registration);
 					}
 				}
 
@@ -224,6 +231,29 @@ public class BusConfigurator : IBusConfigurator
 		}
 
 		return this;
+
+		void ValidateMessageType(Type messageType)
+		{
+			if (messageType.IsPrimitiveType())
+			{
+				throw new InvalidOperationException("The message type cannot be a primitive type.");
+			}
+
+			if (messageType.IsClass)
+			{
+				throw new InvalidOperationException("The message type must be a class.");
+			}
+
+			if (messageType.IsAbstract)
+			{
+				throw new InvalidOperationException("The message type cannot be an abstract class.");
+			}
+
+			if (messageType.IsInterface)
+			{
+				throw new InvalidOperationException("The message type cannot be an interface.");
+			}
+		}
 	}
 
 	/// <summary>

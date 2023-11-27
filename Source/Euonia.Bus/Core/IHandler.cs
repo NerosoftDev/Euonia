@@ -11,15 +11,6 @@ public interface IHandler
 	/// <param name="messageType">Type of the message to be checked.</param>
 	/// <returns><c>true</c> if the current message handler can handle the message with the specified message type; otherwise, <c>false</c>.</returns>
 	bool CanHandle(Type messageType);
-	
-	/// <summary>
-	/// Handle message.
-	/// </summary>
-	/// <param name="message"></param>
-	/// <param name="messageContext"></param>
-	/// <param name="cancellationToken"></param>
-	/// <returns></returns>
-	Task HandleAsync(object message, MessageContext messageContext, CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -29,14 +20,6 @@ public interface IHandler
 public interface IHandler<in TMessage> : IHandler
 	where TMessage : class
 {
-	async Task IHandler.HandleAsync(object message, MessageContext messageContext, CancellationToken cancellationToken)
-	{
-		if (message is TMessage knownMessage)
-		{
-			await HandleAsync(knownMessage, messageContext, cancellationToken);
-		}
-	}
-
 	/// <summary>
 	/// Handle message.
 	/// </summary>

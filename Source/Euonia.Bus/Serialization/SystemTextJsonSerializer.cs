@@ -65,6 +65,7 @@ public class SystemTextJsonSerializer : IMessageSerializer
 		return JsonSerializer.Deserialize(json, type);
 	}
 
+	// ReSharper disable once UnusedMember.Local
 	private static JsonSerializerOptions ConvertSettings(MessageSerializerSettings settings)
 	{
 		if (settings == null)
@@ -73,19 +74,12 @@ public class SystemTextJsonSerializer : IMessageSerializer
 		}
 
 		var options = new JsonSerializerOptions();
-		switch (settings.ReferenceLoop)
+		options.ReferenceHandler = settings.ReferenceLoop switch
 		{
-			case MessageSerializerSettings.ReferenceLoopStrategy.Ignore:
-				options.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-				break;
-			case MessageSerializerSettings.ReferenceLoopStrategy.Preserve:
-				options.ReferenceHandler = ReferenceHandler.Preserve;
-				break;
-			case MessageSerializerSettings.ReferenceLoopStrategy.Serialize:
-			case null:
-			default:
-				break;
-		}
+			MessageSerializerSettings.ReferenceLoopStrategy.Ignore => ReferenceHandler.IgnoreCycles,
+			MessageSerializerSettings.ReferenceLoopStrategy.Preserve => ReferenceHandler.Preserve,
+			_ => options.ReferenceHandler
+		};
 
 		return options;
 	}

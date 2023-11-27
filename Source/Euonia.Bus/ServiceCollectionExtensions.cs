@@ -17,8 +17,7 @@ public static class ServiceCollectionExtensions
 	{
 		services.AddSingleton<IHandlerContext>(provider =>
 		{
-			var @delegate = provider.GetService<MessageConvert>();
-			var context = new HandlerContext(provider, @delegate);
+			var context = new HandlerContext(provider);
 			context.MessageSubscribed += (sender, args) =>
 			{
 				callback?.Invoke(sender, args);
@@ -110,22 +109,15 @@ public static class ServiceCollectionExtensions
 
 		services.AddSingleton<IHandlerContext>(provider =>
 		{
-			var @delegate = provider.GetService<MessageConvert>();
-			var context = new HandlerContext(provider, @delegate);
+			var context = new HandlerContext(provider);
 			foreach (var subscription in configurator.Registrations)
 			{
-				if (subscription.Type != null)
-				{
-					context.Register(subscription.Type, subscription.HandlerType, subscription.HandleMethod);
-				}
-				else
-				{
-					context.Register(subscription.Name, subscription.HandlerType, subscription.HandleMethod);
-				}
+				context.Register(subscription);
 			}
 
 			return context;
 		});
+		services.TryAddSingleton<MessageConvention>();
 		services.AddSingleton<IBus, ServiceBus>();
 	}
 }
