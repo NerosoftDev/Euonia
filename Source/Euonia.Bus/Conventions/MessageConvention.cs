@@ -18,7 +18,7 @@ public class MessageConvention
 	/// <param name="type"></param>
 	/// <returns></returns>
 	/// <exception cref="ArgumentNullException"></exception>
-	public bool IsCommandType(Type type)
+	public bool IsQueueType(Type type)
 	{
 		ArgumentAssert.ThrowIfNull(type);
 
@@ -35,7 +35,7 @@ public class MessageConvention
 	/// <param name="type"></param>
 	/// <returns></returns>
 	/// <exception cref="ArgumentNullException"></exception>
-	public bool IsEventType(Type type)
+	public bool IsTopicType(Type type)
 	{
 		ArgumentAssert.ThrowIfNull(type);
 
@@ -60,7 +60,7 @@ public class MessageConvention
 	{
 		if (conventions == null || conventions.Length == 0)
 		{
-			throw new ArgumentException("At least one convention must be provided.", nameof(conventions));
+			throw new ArgumentException(Resources.IDS_CONVENTION_PROVIDER_REQUIRED, nameof(conventions));
 		}
 
 		_conventions.AddRange(conventions);
