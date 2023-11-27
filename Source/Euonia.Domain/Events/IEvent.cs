@@ -3,7 +3,7 @@
 /// <summary>
 /// The event interface.
 /// </summary>
-public interface IEvent
+public interface IEvent : IMessage
 {
 	/// <summary>
 	/// Gets the intent of the event.

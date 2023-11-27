@@ -1,4 +1,4 @@
-﻿namespace Nerosoft.Euonia.Bus;
+﻿namespace Nerosoft.Euonia.Domain;
 
 /// <summary>
 /// 
