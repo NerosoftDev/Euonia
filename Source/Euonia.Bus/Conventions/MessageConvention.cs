@@ -9,8 +9,8 @@ public class MessageConvention : IMessageConvention
 {
 	private readonly OverridableMessageConvention _defaultConvention = new(new DefaultMessageConvention());
 	private readonly List<IMessageConvention> _conventions = [];
-	private readonly ConventionCache _commandConventionCache = new();
-	private readonly ConventionCache _eventConventionCache = new();
+	private readonly ConventionCache _topicConventionCache = new();
+	private readonly ConventionCache _queueConventionCache = new();
 
 	/// <summary>
 	/// Determines whether the specified type is a command.
@@ -22,7 +22,7 @@ public class MessageConvention : IMessageConvention
 	{
 		ArgumentAssert.ThrowIfNull(type);
 
-		return _commandConventionCache.Apply(type, handle =>
+		return _topicConventionCache.Apply(type, handle =>
 		{
 			var t = Type.GetTypeFromHandle(handle);
 			return _conventions.Any(x => x.IsQueueType(t));
@@ -39,21 +39,26 @@ public class MessageConvention : IMessageConvention
 	{
 		ArgumentAssert.ThrowIfNull(type);
 
-		return _eventConventionCache.Apply(type, handle =>
+		return _queueConventionCache.Apply(type, handle =>
 		{
 			var t = Type.GetTypeFromHandle(handle);
 			return _conventions.Any(x => x.IsTopicType(t));
 		});
 	}
 
-	internal void DefineCommandTypeConvention(Func<Type, bool> convention)
+	internal void DefineQueueTypeConvention(Func<Type, bool> convention)
 	{
-		_defaultConvention.DefineCommandType(convention);
+		_defaultConvention.DefineQueueType(convention);
 	}
 
-	internal void DefineEventTypeConvention(Func<Type, bool> convention)
+	internal void DefineTopicTypeConvention(Func<Type, bool> convention)
 	{
-		_defaultConvention.DefineEventType(convention);
+		_defaultConvention.DefineTopicType(convention);
+	}
+
+	internal void DefineTypeConvention(Func<Type, MessageConventionType> convention)
+	{
+
 	}
 
 	internal void Add(params IMessageConvention[] conventions)

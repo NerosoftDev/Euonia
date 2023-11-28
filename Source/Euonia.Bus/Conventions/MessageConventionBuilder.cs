@@ -12,10 +12,10 @@ public class MessageConventionBuilder
 	/// </summary>
 	/// <param name="convention"></param>
 	/// <returns></returns>
-	public MessageConventionBuilder EvaluateCommand(Func<Type, bool> convention)
+	public MessageConventionBuilder EvaluateQueue(Func<Type, bool> convention)
 	{
 		ArgumentAssert.ThrowIfNull(convention);
-		Convention.DefineCommandTypeConvention(convention);
+		Convention.DefineQueueTypeConvention(convention);
 		return this;
 	}
 
@@ -24,10 +24,10 @@ public class MessageConventionBuilder
 	/// </summary>
 	/// <param name="convention"></param>
 	/// <returns></returns>
-	public MessageConventionBuilder EvaluateEvent(Func<Type, bool> convention)
+	public MessageConventionBuilder EvaluateTopic(Func<Type, bool> convention)
 	{
 		ArgumentAssert.ThrowIfNull(convention);
-		Convention.DefineEventTypeConvention(convention);
+		Convention.DefineTopicTypeConvention(convention);
 		return this;
 	}
 

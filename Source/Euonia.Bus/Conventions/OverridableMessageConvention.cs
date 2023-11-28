@@ -34,12 +34,12 @@ internal class OverridableMessageConvention : IMessageConvention
 		set => _isTopicType = value;
 	}
 
-	public void DefineCommandType(Func<Type, bool> convention)
+	public void DefineQueueType(Func<Type, bool> convention)
 	{
 		_isQueueType = convention;
 	}
 
-	public void DefineEventType(Func<Type, bool> convention)
+	public void DefineTopicType(Func<Type, bool> convention)
 	{
 		_isTopicType = convention;
 	}

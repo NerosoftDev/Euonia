@@ -1,23 +1,14 @@
 ﻿namespace Nerosoft.Euonia.Bus;
 
 /// <summary>
-/// 
+/// The implementation of <see cref="IBus"/> interface.
 /// </summary>
-public sealed class ServiceBus : IBus
+/// <param name="factory"></param>
+/// <param name="convention"></param>
+public sealed class ServiceBus(IBusFactory factory, IMessageConvention convention) : IBus
 {
-	private readonly IDispatcher _dispatcher;
-	private readonly MessageConvention _convention;
-
-	/// <summary>
-	/// Initialize a new instance of <see cref="ServiceBus"/>
-	/// </summary>
-	/// <param name="factory"></param>
-	/// <param name="convention"></param>
-	public ServiceBus(IBusFactory factory, MessageConvention convention)
-	{
-		_convention = convention;
-		_dispatcher = factory.CreateDispatcher();
-	}
+	private readonly IDispatcher _dispatcher = factory.CreateDispatcher();
+	private readonly IMessageConvention _convention = convention;
 
 	/// <inheritdoc />
 	public async Task PublishAsync<TMessage>(TMessage message, PublishOptions options, CancellationToken cancellationToken = default)
