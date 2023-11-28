@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-
-namespace Nerosoft.Euonia.Bus.InMemory;
+﻿namespace Nerosoft.Euonia.Bus.InMemory;
 
 /// <summary>
 /// 
@@ -10,18 +8,14 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 	/// <inheritdoc />
 	public event EventHandler<MessageDispatchedEventArgs> Delivered;
 
-	private readonly InMemoryBusOptions _options;
-
 	private readonly IMessenger _messenger;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="InMemoryDispatcher"/> class.
 	/// </summary>
 	/// <param name="messenger"></param>
-	/// <param name="options"></param>
-	public InMemoryDispatcher(IMessenger messenger, IOptions<InMemoryBusOptions> options)
+	public InMemoryDispatcher(IMessenger messenger)
 	{
-		_options = options.Value;
 		_messenger = messenger;
 	}
 
@@ -76,7 +70,7 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 		{
 			Aborted = cancellationToken
 		};
-		
+
 		// See https://stackoverflow.com/questions/18760252/timeout-an-async-method-implemented-with-taskcompletionsource
 		var taskCompletion = new TaskCompletionSource<TResponse>();
 		if (cancellationToken != default)

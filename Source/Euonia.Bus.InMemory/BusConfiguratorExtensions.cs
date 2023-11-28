@@ -35,20 +35,46 @@ public static class BusConfiguratorExtensions
 				_ => throw new ArgumentOutOfRangeException(nameof(options.MessengerReference), options.MessengerReference, null)
 			};
 
+			var convention = provider.GetService<IMessageConvention>();
+
 			if (options.MultipleSubscriberInstance)
 			{
-				foreach (var subscription in configurator.GetSubscriptions())
+				foreach (var registration in configurator.Registrations)
 				{
-					var subscriber = ActivatorUtilities.GetServiceOrCreateInstance<InMemoryRecipient>(provider);
-					messenger.Register(subscriber, subscription);
+					InMemoryRecipient recipient;
+					if (convention.IsQueueType(registration.MessageType))
+					{
+						recipient = ActivatorUtilities.GetServiceOrCreateInstance<InMemoryQueueConsumer>(provider);
+					}
+					else if (convention.IsTopicType(registration.MessageType))
+					{
+						recipient = ActivatorUtilities.GetServiceOrCreateInstance<InMemoryTopicSubscriber>(provider);
+					}
+					else
+					{
+						throw new InvalidOperationException();
+					}
+					messenger.Register(recipient, registration.Channel);
 				}
 			}
 			else
 			{
-				var subscriber = ActivatorUtilities.GetServiceOrCreateInstance<InMemoryRecipient>(provider);
-				foreach (var subscription in configurator.GetSubscriptions())
+				foreach (var registration in configurator.Registrations)
 				{
-					messenger.Register(subscriber, subscription);
+					InMemoryRecipient recipient;
+					if (convention.IsQueueType(registration.MessageType))
+					{
+						recipient = Singleton<InMemoryQueueConsumer>.Get(() => ActivatorUtilities.GetServiceOrCreateInstance<InMemoryQueueConsumer>(provider));
+					}
+					else if (convention.IsTopicType(registration.MessageType))
+					{
+						recipient = Singleton<InMemoryTopicSubscriber>.Get(() => ActivatorUtilities.GetServiceOrCreateInstance<InMemoryTopicSubscriber>(provider));
+					}
+					else
+					{
+						throw new InvalidOperationException();
+					}
+					messenger.Register(recipient, registration.Channel);
 				}
 			}
 

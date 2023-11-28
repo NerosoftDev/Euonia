@@ -26,5 +26,5 @@ public class InMemoryBusOptions
 	/// <summary>
 	/// Gets or sets the messenger reference type.
 	/// </summary>
-	public MessengerReferenceType MessengerReference { get; init; } = MessengerReferenceType.StrongReference;
+	public MessengerReferenceType MessengerReference { get; set; } = MessengerReferenceType.StrongReference;
 }
