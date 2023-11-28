@@ -32,12 +32,6 @@ public class BusConfigurator : IBusConfigurator
 	/// <inheritdoc />
 	public IServiceCollection Service { get; }
 
-	/// <inheritdoc />
-	public IEnumerable<string> GetSubscriptions()
-	{
-		return Registrations.Select(t => t.Channel);
-	}
-
 	/// <summary>
 	/// 
 	/// </summary>

@@ -13,12 +13,6 @@ public interface IBusConfigurator
 	IServiceCollection Service { get; }
 
 	/// <summary>
-	/// Get the message subscriptions.
-	/// </summary>
-	/// <returns></returns>
-	IEnumerable<string> GetSubscriptions();
-
-	/// <summary>
 	/// Set the service bus factory.
 	/// </summary>
 	/// <typeparam name="TFactory"></typeparam>

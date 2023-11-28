@@ -22,10 +22,10 @@ public interface IHandlerContext
 	/// <summary>
 	/// Handle message asynchronously.
 	/// </summary>
-	/// <param name="name"></param>
+	/// <param name="channel"></param>
 	/// <param name="message"></param>
 	/// <param name="context"></param>
 	/// <param name="cancellationToken"></param>
 	/// <returns></returns>
-	Task HandleAsync(string name, object message, MessageContext context, CancellationToken cancellationToken = default);
+	Task HandleAsync(string channel, object message, MessageContext context, CancellationToken cancellationToken = default);
 }
