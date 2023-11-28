@@ -5,10 +5,10 @@ namespace Nerosoft.Euonia.Bus;
 /// <summary>
 /// 
 /// </summary>
-public class MessageConvention
+public class MessageConvention : IMessageConvention
 {
 	private readonly OverridableMessageConvention _defaultConvention = new(new DefaultMessageConvention());
-	private readonly List<IMessageConvention> _conventions = new();
+	private readonly List<IMessageConvention> _conventions = [];
 	private readonly ConventionCache _commandConventionCache = new();
 	private readonly ConventionCache _eventConventionCache = new();
 
@@ -70,6 +70,9 @@ public class MessageConvention
 	/// Gets the registered conventions.
 	/// </summary>
 	internal string[] RegisteredConventions => _conventions.Select(x => x.Name).ToArray();
+
+	/// <inheritdoc/>
+	public string Name { get; }
 
 	private class ConventionCache
 	{

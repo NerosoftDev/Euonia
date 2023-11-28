@@ -258,7 +258,7 @@ public class BusConfigurator : IBusConfigurator
 	public BusConfigurator SetConventions(Action<MessageConventionBuilder> configure)
 	{
 		configure?.Invoke(ConventionBuilder);
-		Service.TryAddSingleton(ConventionBuilder.Convention);
+		Service.TryAddSingleton<IMessageConvention>(ConventionBuilder.Convention);
 		return this;
 	}
 }
