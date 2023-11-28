@@ -7,7 +7,7 @@ public sealed class MessageContext : IMessageContext
 {
 	private readonly WeakEventManager _events = new();
 
-	private readonly IDictionary<string, string> _headers = new Dictionary<string, string>();
+	private readonly Dictionary<string, string> _headers = new();
 
 	private bool _disposedValue;
 
@@ -38,6 +38,7 @@ public sealed class MessageContext : IMessageContext
 		CorrelationId = pack.CorrelationId;
 		ConversationId = pack.ConversationId;
 		RequestTraceId = pack.RequestTraceId;
+		Authorization = pack.Authorization;
 	}
 
 	/// <summary>
@@ -62,19 +63,42 @@ public sealed class MessageContext : IMessageContext
 	public object Message { get; }
 
 	/// <inheritdoc />
-	public string MessageId { get; set; }
+	public string MessageId
+	{
+		get => _headers.TryGetValue(nameof(MessageId), out var value) ? value : null;
+		set => _headers[nameof(MessageId)] = value;
+	}
 
 	/// <inheritdoc />
-	public string CorrelationId { get; set; }
+	public string CorrelationId
+	{
+		get => _headers.TryGetValue(nameof(CorrelationId), out var value) ? value : null;
+		set => _headers[nameof(CorrelationId)] = value;
+	}
 
 	/// <inheritdoc />
-	public string ConversationId { get; set; }
+	public string ConversationId
+	{
+		get => _headers.TryGetValue(nameof(ConversationId), out var value) ? value : null;
+		set => _headers[nameof(ConversationId)] = value;
+	}
 
 	/// <inheritdoc />
-	public string RequestTraceId { get; set; }
+	public string RequestTraceId
+	{
+		get => _headers.TryGetValue(nameof(RequestTraceId), out var value) ? value : null;
+		set => _headers[nameof(RequestTraceId)] = value;
+	}
 
 	/// <inheritdoc />
-	public IReadOnlyDictionary<string, string> Headers { get; set; }
+	public string Authorization
+	{
+		get => _headers.TryGetValue(nameof(Authorization), out var value) ? value : null;
+		set => _headers[nameof(Authorization)] = value;
+	}
+
+	/// <inheritdoc />
+	public IReadOnlyDictionary<string, string> Headers => _headers;
 
 	/// <summary>
 	/// Replies message handling result to message dispatcher.

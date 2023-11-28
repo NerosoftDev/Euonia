@@ -31,7 +31,12 @@ public interface IMessageContext : IDisposable
 	string RequestTraceId { get; set; }
 
 	/// <summary>
-	/// Gets or sets the message request headers.
+	/// Gets or sets the authorization.
 	/// </summary>
-	IReadOnlyDictionary<string, string> Headers { get; set; }
+	string Authorization { get; set; }
+
+	/// <summary>
+	/// Gets the message request headers.
+	/// </summary>
+	IReadOnlyDictionary<string, string> Headers { get; }
 }

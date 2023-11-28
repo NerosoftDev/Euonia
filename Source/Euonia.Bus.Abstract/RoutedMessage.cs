@@ -51,6 +51,12 @@ public abstract class RoutedMessage
 	public virtual string Channel { get; set; }
 
 	/// <summary>
+	/// 
+	/// </summary>
+	[DataMember]
+	public virtual string Authorization { get; set; }
+
+	/// <summary>
 	/// Gets or sets the timestamp that describes when the message occurs.
 	/// </summary>
 	/// <value>

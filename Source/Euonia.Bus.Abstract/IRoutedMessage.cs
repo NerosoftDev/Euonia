@@ -19,4 +19,9 @@ public interface IRoutedMessage : IMessageEnvelope
 	/// Gets the data of the message.
 	/// </summary>
 	object Data { get; }
+
+	/// <summary>
+	/// Gets the request authorization.
+	/// </summary>
+	string Authorization { get; set; }
 }
