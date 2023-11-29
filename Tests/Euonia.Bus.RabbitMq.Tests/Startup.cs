@@ -3,7 +3,7 @@ using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Nerosoft.Euonia.Bus.InMemory;
+using Nerosoft.Euonia.Bus.RabbitMq;
 
 namespace Nerosoft.Euonia.Bus.Tests;
 
@@ -38,10 +38,13 @@ public class Startup
 				builder.EvaluateQueue(t => t.Name.EndsWith("Command"));
 				builder.EvaluateTopic(t => t.Name.EndsWith("Event"));
 			});
-			config.UseInMemory(options =>
+			config.UseRabbitMq(options =>
 			{
-				options.MessengerReference = MessengerReferenceType.StrongReference;
-				options.MultipleSubscriberInstance = false;
+				options.Connection = "amqp://127.0.0.1";
+				options.QueueName = "nerosoft.euonia.test.command";
+				options.TopicName = "nerosoft.euonia.test.event";
+				options.ExchangeName = $"nerosoft.euonia.test.exchange.{options.ExchangeType}";
+				options.RoutingKey = "*";
 			});
 		});
 	}

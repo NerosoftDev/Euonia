@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Nerosoft.Euonia.Bus.InMemory.Tests.Commands;
+using Nerosoft.Euonia.Bus.Tests.Commands;
 
-namespace Nerosoft.Euonia.Bus.InMemory.Tests.Handlers
+namespace Nerosoft.Euonia.Bus.Tests.Handlers
 {
 	public class UserCommandHandler : IHandler<UserCreateCommand>, IHandler<UserUpdateCommand>
 	{

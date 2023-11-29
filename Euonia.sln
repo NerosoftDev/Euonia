@@ -123,9 +123,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Bus.Abstract", "Sour
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bus", "Bus", "{66B49F2D-FBC6-45A0-82B0-A099CABD37C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euonia.Bus.Tests", "Tests\Euonia.Bus.Tests\Euonia.Bus.Tests.csproj", "{F7ABE0BA-9659-4975-B03D-C383CA13B3D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Bus.Tests", "Tests\Euonia.Bus.Tests\Euonia.Bus.Tests.csproj", "{F7ABE0BA-9659-4975-B03D-C383CA13B3D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euonia.Bus.InMemory.Tests", "Tests\Euonia.Bus.InMemory.Tests\Euonia.Bus.InMemory.Tests.csproj", "{AA073AAD-9290-4D55-BFF1-DC1B3357FF8B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Bus.InMemory.Tests", "Tests\Euonia.Bus.InMemory.Tests\Euonia.Bus.InMemory.Tests.csproj", "{AA073AAD-9290-4D55-BFF1-DC1B3357FF8B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Bus.RabbitMq.Tests", "Tests\Euonia.Bus.RabbitMq.Tests\Euonia.Bus.RabbitMq.Tests.csproj", "{C1262DAB-43DB-480A-8064-634C50872258}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Euonia.Bus.Tests.Shared", "Tests\Euonia.Bus.Tests.Shared\Euonia.Bus.Tests.Shared.shproj", "{B2B6A902-17A7-4926-9B7F-22DE8A092231}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -374,6 +378,12 @@ Global
 		{AA073AAD-9290-4D55-BFF1-DC1B3357FF8B}.Product|Any CPU.Build.0 = Debug|Any CPU
 		{AA073AAD-9290-4D55-BFF1-DC1B3357FF8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA073AAD-9290-4D55-BFF1-DC1B3357FF8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1262DAB-43DB-480A-8064-634C50872258}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1262DAB-43DB-480A-8064-634C50872258}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1262DAB-43DB-480A-8064-634C50872258}.Product|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1262DAB-43DB-480A-8064-634C50872258}.Product|Any CPU.Build.0 = Debug|Any CPU
+		{C1262DAB-43DB-480A-8064-634C50872258}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1262DAB-43DB-480A-8064-634C50872258}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -430,6 +440,8 @@ Global
 		{66B49F2D-FBC6-45A0-82B0-A099CABD37C6} = {E048931D-EC51-448A-A737-3C62CF100813}
 		{F7ABE0BA-9659-4975-B03D-C383CA13B3D2} = {66B49F2D-FBC6-45A0-82B0-A099CABD37C6}
 		{AA073AAD-9290-4D55-BFF1-DC1B3357FF8B} = {66B49F2D-FBC6-45A0-82B0-A099CABD37C6}
+		{C1262DAB-43DB-480A-8064-634C50872258} = {66B49F2D-FBC6-45A0-82B0-A099CABD37C6}
+		{B2B6A902-17A7-4926-9B7F-22DE8A092231} = {66B49F2D-FBC6-45A0-82B0-A099CABD37C6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {84CDDCF4-F3D0-45FC-87C5-557845F58F55}
@@ -438,6 +450,9 @@ Global
 		Tests\Euonia.Mapping.Tests.Shared\Euonia.Mapping.Tests.Shared.projitems*{34b067d7-7126-4b02-a4e8-e1afc77f3485}*SharedItemsImports = 5
 		Tests\Euonia.Caching.Tests.Shared\Euonia.Caching.Tests.Shared.projitems*{4a28cd6b-0c75-4d39-b613-66de6b693675}*SharedItemsImports = 13
 		Tests\Euonia.Mapping.Tests.Shared\Euonia.Mapping.Tests.Shared.projitems*{4c27eeef-6837-47ba-bb5c-b0e96fa3504d}*SharedItemsImports = 5
+		Tests\Euonia.Bus.Tests.Shared\Euonia.Bus.Tests.Shared.projitems*{aa073aad-9290-4d55-bff1-dc1b3357ff8b}*SharedItemsImports = 5
+		Tests\Euonia.Bus.Tests.Shared\Euonia.Bus.Tests.Shared.projitems*{b2b6a902-17a7-4926-9b7f-22de8a092231}*SharedItemsImports = 13
+		Tests\Euonia.Bus.Tests.Shared\Euonia.Bus.Tests.Shared.projitems*{c1262dab-43db-480a-8064-634c50872258}*SharedItemsImports = 5
 		Tests\Euonia.Mapping.Tests.Shared\Euonia.Mapping.Tests.Shared.projitems*{de31e135-48a1-40d8-afef-768cebb4819a}*SharedItemsImports = 13
 		Tests\Euonia.Caching.Tests.Shared\Euonia.Caching.Tests.Shared.projitems*{efa1cd9d-4b53-483c-bf9d-f21b9b2c6fde}*SharedItemsImports = 5
 		Tests\Euonia.Caching.Tests.Shared\Euonia.Caching.Tests.Shared.projitems*{f827303e-92c2-46d3-bd8a-50db8885e6ce}*SharedItemsImports = 5
