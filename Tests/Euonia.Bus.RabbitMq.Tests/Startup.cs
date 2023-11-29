@@ -28,6 +28,7 @@ public class Startup
 	// ConfigureServices(HostBuilderContext hostBuilderContext, IServiceCollection services)
 	public void ConfigureServices(IServiceCollection services, HostBuilderContext hostBuilderContext)
 	{
+#if DEBUG
 		services.AddServiceBus(config =>
 		{
 			config.RegisterHandlers(Assembly.GetExecutingAssembly());
@@ -47,6 +48,7 @@ public class Startup
 				options.RoutingKey = "*";
 			});
 		});
+#endif
 	}
 
 	//public void Configure(IServiceProvider applicationServices, IIdGenerator idGenerator)
