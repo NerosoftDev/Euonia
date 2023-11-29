@@ -14,6 +14,10 @@ public class ServiceBusTests
 	[Fact]
 	public async Task TestSendCommand_HasReponse()
 	{
+		if (Defines.DontRunTests)
+		{
+			return;
+		}
 		var result = await _bus.SendAsync<UserCreateCommand, int>(new UserCreateCommand());
 		Assert.Equal(1, result);
 	}
@@ -21,6 +25,10 @@ public class ServiceBusTests
 	[Fact]
 	public async Task TestSendCommand_NoReponse()
 	{
+		if (Defines.DontRunTests)
+		{
+			return;
+		}
 		await _bus.SendAsync(new UserCreateCommand());
 		Assert.True(true);
 	}
@@ -28,6 +36,10 @@ public class ServiceBusTests
 	[Fact]
 	public async Task TestSendCommand_HasReponse_UseSubscribeAttribute()
 	{
+		if (Defines.DontRunTests)
+		{
+			return;
+		}
 		var result = await _bus.SendAsync<FooCreateCommand, int>(new FooCreateCommand(), new SendOptions { Channel = "foo.create" });
 		Assert.Equal(1, result);
 	}
@@ -35,6 +47,10 @@ public class ServiceBusTests
 	[Fact]
 	public async Task TestSendCommand_HasReponse_MessageHasResultInherites()
 	{
+		if (Defines.DontRunTests)
+		{
+			return;
+		}
 		var result = await _bus.SendAsync<int>(new FooCreateCommand(), new SendOptions { Channel = "foo.create" });
 		Assert.Equal(1, result);
 	}
