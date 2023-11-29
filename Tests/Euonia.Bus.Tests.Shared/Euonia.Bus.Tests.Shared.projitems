@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Commands\FooCreateCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\UserCreateCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\UserUpdateCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Defines.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Handlers\FooCommandHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Handlers\UserCommandHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TestNotificationBucket.cs" />
