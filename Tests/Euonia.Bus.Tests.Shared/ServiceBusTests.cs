@@ -1,20 +1,23 @@
-﻿using Nerosoft.Euonia.Bus.Tests.Commands;
+﻿using Microsoft.Extensions.Configuration;
+using Nerosoft.Euonia.Bus.Tests.Commands;
 
 namespace Nerosoft.Euonia.Bus.Tests;
 
 public class ServiceBusTests
 {
 	private readonly IBus _bus;
+	private readonly bool _dontRunTests;
 
-	public ServiceBusTests(IBus bus)
+	public ServiceBusTests(IBus bus, IConfiguration configuration)
 	{
 		_bus = bus;
+		_dontRunTests = configuration.GetValue<bool>("DontRunTests");
 	}
 
 	[Fact]
 	public async Task TestSendCommand_HasReponse()
 	{
-		if (Defines.DontRunTests)
+		if (_dontRunTests)
 		{
 			return;
 		}
@@ -25,7 +28,7 @@ public class ServiceBusTests
 	[Fact]
 	public async Task TestSendCommand_NoReponse()
 	{
-		if (Defines.DontRunTests)
+		if (_dontRunTests)
 		{
 			return;
 		}
@@ -36,7 +39,7 @@ public class ServiceBusTests
 	[Fact]
 	public async Task TestSendCommand_HasReponse_UseSubscribeAttribute()
 	{
-		if (Defines.DontRunTests)
+		if (_dontRunTests)
 		{
 			return;
 		}
@@ -47,7 +50,7 @@ public class ServiceBusTests
 	[Fact]
 	public async Task TestSendCommand_HasReponse_MessageHasResultInherites()
 	{
-		if (Defines.DontRunTests)
+		if (_dontRunTests)
 		{
 			return;
 		}
