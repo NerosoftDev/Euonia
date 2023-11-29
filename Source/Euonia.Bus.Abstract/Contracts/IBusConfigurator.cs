@@ -13,11 +13,6 @@ public interface IBusConfigurator
 	IServiceCollection Service { get; }
 
 	/// <summary>
-	/// Gets the message handle registrations.
-	/// </summary>
-	IReadOnlyList<MessageRegistration> Registrations { get; }
-
-	/// <summary>
 	/// Set the service bus factory.
 	/// </summary>
 	/// <typeparam name="TFactory"></typeparam>

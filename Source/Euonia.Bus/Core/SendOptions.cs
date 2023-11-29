@@ -5,4 +5,5 @@
 /// </summary>
 public class SendOptions : ExtendableOptions
 {
+	public string CorrelationId { get; set; }
 }

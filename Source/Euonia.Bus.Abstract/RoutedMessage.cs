@@ -30,7 +30,7 @@ public abstract class RoutedMessage
 	/// Gets or sets the correlation identifier.
 	/// </summary>
 	[DataMember]
-	public virtual string CorrelationId { get; }
+	public virtual string CorrelationId { get; set; } = Guid.NewGuid().ToString();
 
 	/// <summary>
 	/// Gets or sets the conversation identifier.
@@ -123,7 +123,7 @@ public class RoutedMessage<TData> : RoutedMessage, IRoutedMessage
 			_data = value;
 			if (value != null)
 			{
-				Metadata[MessageTypeKey] = value.GetType().AssemblyQualifiedName;
+				Metadata[MessageTypeKey] = value.GetType().GetFullNameWithAssemblyName();
 			}
 		}
 	}

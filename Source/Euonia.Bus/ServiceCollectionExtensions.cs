@@ -9,94 +9,6 @@ namespace Microsoft.Extensions.DependencyInjection;
 public static class ServiceCollectionExtensions
 {
 	/// <summary>
-	/// Add message handler.
-	/// </summary>
-	/// <param name="services"></param>
-	/// <param name="callback"></param>
-	internal static void AddMessageHandler(this IServiceCollection services, Action<object, MessageSubscribedEventArgs> callback = null)
-	{
-		services.AddSingleton<IHandlerContext>(provider =>
-		{
-			var context = new HandlerContext(provider);
-			context.MessageSubscribed += (sender, args) =>
-			{
-				callback?.Invoke(sender, args);
-			};
-			return context;
-		});
-	}
-
-	/// <summary>
-	/// Add message handler.
-	/// </summary>
-	/// <param name="services"></param>
-	/// <param name="handlerTypesFactory"></param>
-	/// <param name="callback"></param>
-	internal static void AddMessageHandler(this IServiceCollection services, Func<IEnumerable<Type>> handlerTypesFactory, Action<object, MessageSubscribedEventArgs> callback = null)
-	{
-		var handlerTypes = handlerTypesFactory?.Invoke();
-
-		services.AddMessageHandler(handlerTypes, callback);
-	}
-
-	/// <summary>
-	/// Add message handler.
-	/// </summary>
-	/// <param name="services"></param>
-	/// <param name="handlerTypes"></param>
-	/// <param name="callback"></param>
-	internal static void AddMessageHandler(this IServiceCollection services, IEnumerable<Type> handlerTypes, Action<object, MessageSubscribedEventArgs> callback = null)
-	{
-		services.AddMessageHandler(callback);
-
-		if (handlerTypes == null)
-		{
-			return;
-		}
-
-		if (!handlerTypes.Any())
-		{
-			return;
-		}
-
-		foreach (var handlerType in handlerTypes)
-		{
-			if (!handlerType.IsClass)
-			{
-				continue;
-			}
-
-			if (handlerType.IsAbstract)
-			{
-				continue;
-			}
-
-			if (handlerType.GetInterface(nameof(IHandler)) == null)
-			{
-				continue;
-			}
-
-			var inheritedTypes = handlerType.GetInterfaces().Where(t => t.IsGenericType);
-
-			foreach (var inheritedType in inheritedTypes)
-			{
-				if (inheritedType.Name.Contains(nameof(IHandler)))
-				{
-					continue;
-				}
-
-				if (inheritedType.GenericTypeArguments.Length == 0)
-				{
-					continue;
-				}
-
-				services.TryAddScoped(inheritedType, handlerType);
-				services.TryAddScoped(handlerType);
-			}
-		}
-	}
-
-	/// <summary>
 	/// Register message bus.
 	/// </summary>
 	/// <param name="services"></param>
@@ -110,14 +22,15 @@ public static class ServiceCollectionExtensions
 		services.AddSingleton<IHandlerContext>(provider =>
 		{
 			var context = new HandlerContext(provider);
-			foreach (var subscription in configurator.Registrations)
+			foreach (var registration in configurator.Registrations)
 			{
-				context.Register(subscription);
+				context.Register(registration);
 			}
 
 			return context;
 		});
 		services.TryAddSingleton<MessageConvention>();
 		services.AddSingleton<IBus, ServiceBus>();
+		services.AddHostedService<RecipientActivator>();
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Polly;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -16,19 +17,19 @@ public class RabbitMqDispatcher : IDispatcher
 	public event EventHandler<MessageDispatchedEventArgs> Delivered;
 
 	private readonly RabbitMqMessageBusOptions _options;
-	private readonly IConnection _connection;
+	private readonly ConnectionFactory _factory;
 	private readonly ILogger<RabbitMqDispatcher> _logger;
 
 	/// <summary>
 	/// Initialize a new instance of <see cref="RabbitMqDispatcher"/>.
 	/// </summary>
-	/// <param name="connection"></param>
+	/// <param name="factory"></param>
 	/// <param name="options"></param>
 	/// <param name="logger"></param>
-	public RabbitMqDispatcher(IConnection connection, IOptions<RabbitMqMessageBusOptions> options, ILoggerFactory logger)
+	public RabbitMqDispatcher(ConnectionFactory factory, IOptions<RabbitMqMessageBusOptions> options, ILoggerFactory logger)
 	{
 		_logger = logger.CreateLogger<RabbitMqDispatcher>();
-		_connection = connection;
+		_factory = factory;
 		_options = options.Value;
 	}
 
@@ -36,58 +37,57 @@ public class RabbitMqDispatcher : IDispatcher
 	public async Task PublishAsync<TMessage>(RoutedMessage<TMessage> message, CancellationToken cancellationToken = default)
 		where TMessage : class
 	{
-		using (var channel = _connection.CreateModel())
-		{
-			var typeName = message.Data.GetType().GetFullNameWithAssemblyName();
+		using var connection = _factory.CreateConnection();
+		using var channel = connection.CreateModel();
 
-			var props = channel.CreateBasicProperties();
-			props.Headers ??= new Dictionary<string, object>();
-			props.Headers[Constants.MessageHeaders.MessageType] = typeName;
-			props.Type = typeName;
+		var typeName = message.GetTypeName();
 
-			await Policy.Handle<Exception>()
-			            .WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(3), (exception, _, retryCount, _) =>
-			            {
-				            _logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
-			            })
-			            .ExecuteAsync(async () =>
-			            {
-				            var messageBody = await SerializeAsync(message, cancellationToken);
+		var props = channel.CreateBasicProperties();
+		props.Headers ??= new Dictionary<string, object>();
+		props.Headers[Constants.MessageHeaders.MessageType] = typeName;
+		props.Type = typeName;
 
-				            channel.ExchangeDeclare(_options.ExchangeName, _options.ExchangeType);
-				            channel.BasicPublish(_options.ExchangeName, message.Channel, props, messageBody);
+		await Policy.Handle<Exception>()
+					.WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(3), (exception, _, retryCount, _) =>
+					{
+						_logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
+					})
+					.ExecuteAsync(async () =>
+					{
+						var messageBody = await SerializeAsync(message, cancellationToken);
 
-				            Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
-			            });
-		}
+						channel.ExchangeDeclare(_options.ExchangeName, _options.ExchangeType);
+						channel.BasicPublish(_options.ExchangeName, $"{_options.TopicName}${message.Channel}$", props, messageBody);
+
+						Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
+					});
 	}
 
 	/// <inheritdoc />
 	public async Task SendAsync<TMessage>(RoutedMessage<TMessage> message, CancellationToken cancellationToken = default) where TMessage : class
 	{
-		using (var channel = _connection.CreateModel())
-		{
-			var typeName = message.Data.GetType().GetFullNameWithAssemblyName();
+		using var connection = _factory.CreateConnection();
+		using var channel = connection.CreateModel();
+		var typeName = message.GetTypeName();
 
-			var props = channel.CreateBasicProperties();
-			props.Headers ??= new Dictionary<string, object>();
-			props.Headers[Constants.MessageHeaders.MessageType] = typeName;
-			props.Type = typeName;
+		var props = channel.CreateBasicProperties();
+		props.Headers ??= new Dictionary<string, object>();
+		props.Headers[Constants.MessageHeaders.MessageType] = typeName;
+		props.Type = typeName;
 
-			await Policy.Handle<Exception>()
-			            .WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(3), (exception, _, retryCount, _) =>
-			            {
-				            _logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
-			            })
-			            .ExecuteAsync(async () =>
-			            {
-				            var messageBody = await SerializeAsync(message, cancellationToken);
+		await Policy.Handle<Exception>()
+					.WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(3), (exception, _, retryCount, _) =>
+					{
+						_logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
+					})
+					.ExecuteAsync(async () =>
+					{
+						var messageBody = await SerializeAsync(message, cancellationToken);
 
-				            channel.BasicPublish("", $"{_options.QueueName}${message.Channel}$", props, messageBody);
+						channel.BasicPublish("", $"{_options.QueueName}${message.Channel}$", props, messageBody);
 
-				            Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
-			            });
-		}
+						Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
+					});
 	}
 
 	/// <inheritdoc />
@@ -95,68 +95,82 @@ public class RabbitMqDispatcher : IDispatcher
 	{
 		var task = new TaskCompletionSource<TResponse>();
 
-		using (var channel = _connection.CreateModel())
+		using var connection = _factory.CreateConnection();
+
+		using var channel = connection.CreateModel();
+
+		var replyQueueName = channel.QueueDeclare().QueueName;
+		var consumer = new EventingBasicConsumer(channel);
+
+		consumer.Received += OnReceived;
+
+		var typeName = message.GetTypeName();
+
+		var props = channel.CreateBasicProperties();
+		props.Headers ??= new Dictionary<string, object>();
+		props.Headers[Constants.MessageHeaders.MessageType] = typeName;
+		props.Type = typeName;
+		props.CorrelationId = message.CorrelationId;
+		props.ReplyTo = replyQueueName;
+
+		await Policy.Handle<Exception>()
+					.WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(1), (exception, _, retryCount, _) =>
+					{
+						_logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
+					})
+					.ExecuteAsync(async () =>
+					{
+						var messageBody = await SerializeAsync(message, cancellationToken);
+						channel.BasicPublish("", $"{_options.QueueName}${message.Channel}$", props, messageBody);
+						channel.BasicConsume(consumer, replyQueueName, true);
+
+						Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
+					});
+
+		var result = await task.Task;
+		consumer.Received -= OnReceived;
+		return result;
+
+		void OnReceived(object sender, BasicDeliverEventArgs args)
 		{
-			var replyQueueName = channel.QueueDeclare().QueueName;
-			var consumer = new EventingBasicConsumer(channel);
-
-			consumer.Received += (_, args) =>
+			if (args.BasicProperties.CorrelationId != message.CorrelationId)
 			{
-				if (args.BasicProperties.CorrelationId != message.CorrelationId)
-				{
-					return;
-				}
+				return;
+			}
 
-				var body = args.Body.ToArray();
-				var response = JsonConvert.DeserializeObject<TResponse>(Encoding.UTF8.GetString(body), Constants.SerializerSettings);
+			var body = args.Body.ToArray();
+			var response = JsonConvert.DeserializeObject<TResponse>(Encoding.UTF8.GetString(body), Constants.SerializerSettings);
 
-				task.SetResult(response);
-			};
-
-			var typeName = message.Data.GetType().GetFullNameWithAssemblyName();
-
-			var props = channel.CreateBasicProperties();
-			props.Headers ??= new Dictionary<string, object>();
-			props.Headers[Constants.MessageHeaders.MessageType] = typeName;
-			props.Type = typeName;
-			props.CorrelationId = message.CorrelationId;
-			props.ReplyTo = replyQueueName;
-
-			await Policy.Handle<Exception>()
-			            .WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(1), (exception, _, retryCount, _) =>
-			            {
-				            _logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
-			            })
-			            .ExecuteAsync(async () =>
-			            {
-				            var messageBody = await SerializeAsync(message, cancellationToken);
-				            channel.BasicPublish("", $"{_options.QueueName}${message.Channel}$", props, messageBody);
-				            channel.BasicConsume(consumer, replyQueueName, true);
-
-				            Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
-			            });
+			task.SetResult(response);
 		}
-
-		return await task.Task;
 	}
 
+	/// <summary>
+	/// Serializes the message to bytes.
+	/// </summary>
+	/// <typeparam name="TMessage"></typeparam>
+	/// <param name="message"></param>
+	/// <param name="cancellationToken"></param>
+	/// <returns></returns>
 	private static async Task<byte[]> SerializeAsync<TMessage>(RoutedMessage<TMessage> message, CancellationToken cancellationToken = default)
 		where TMessage : class
 	{
 		if (message == null)
 		{
-			return Array.Empty<byte>();
+			return [];
 		}
 
 		await using var stream = new MemoryStream();
-		await using var writer = new StreamWriter(stream, Encoding.UTF8, 1024, true);
-		using var jsonWriter = new JsonTextWriter(writer);
+		// The default UTF8Encoding emits the BOM will cause the RabbitMQ client to fail to deserialize the message.
+		using (var writer = new StreamWriter(stream, new UTF8Encoding(false))) 
+		{
+			using var jsonWriter = new JsonTextWriter(writer);
 
-		JsonSerializer.Create(Constants.SerializerSettings).Serialize(jsonWriter, message);
+			JsonSerializer.CreateDefault().Serialize(jsonWriter, message);
 
-		await jsonWriter.FlushAsync(cancellationToken);
-		await writer.FlushAsync();
-
+			await jsonWriter.FlushAsync(cancellationToken);
+			await writer.FlushAsync();
+		}
 		return stream.ToArray();
 	}
 }

@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+using RabbitMQ.Client;
 
 namespace Nerosoft.Euonia.Bus.RabbitMq;
 
@@ -18,9 +18,25 @@ public static class BusConfiguratorExtensions
 	public static void UseRabbitMq(this IBusConfigurator configurator, Action<RabbitMqMessageBusOptions> configuration)
 	{
 		configurator.Service.Configure(configuration);
+
+		configurator.Service.TryAddSingleton(provider =>
+		{
+			var options = provider.GetService<IOptions<RabbitMqMessageBusOptions>>()?.Value;
+
+			if (options == null)
+			{
+				throw new InvalidOperationException("RabbitMqMessageBusOptions was not configured.");
+			}
+
+			var factory = new ConnectionFactory { Uri = new Uri(options.Connection) };
+			return factory;
+		});
+
+		configurator.Service.TryAddTransient<RabbitMqQueueConsumer>();
+		configurator.Service.TryAddTransient<RabbitMqTopicSubscriber>();
+
 		configurator.Service.TryAddSingleton<RabbitMqDispatcher>();
-		configurator.Service.AddTransient<RabbitMqQueueConsumer>();
-		configurator.Service.AddTransient<RabbitMqTopicSubscriber>();
+		configurator.Service.AddTransient<IRecipientRegistrar, RabbitMqRecipientRegistrar>();
 		configurator.SerFactory<RabbitMqBusFactory>();
 	}
 }

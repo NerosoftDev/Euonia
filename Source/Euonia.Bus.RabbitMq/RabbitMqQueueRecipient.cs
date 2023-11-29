@@ -23,32 +23,25 @@ public abstract class RabbitMqQueueRecipient : DisposableObject
 	/// <summary>
 	/// Initializes a new instance of the <see cref="RabbitMqQueueRecipient"/> class.
 	/// </summary>
-	/// <param name="connection"></param>
+	/// <param name="factory"></param>
 	/// <param name="handler"></param>
 	/// <param name="options"></param>
-	protected RabbitMqQueueRecipient(IConnection connection, IHandlerContext handler, IOptions<RabbitMqMessageBusOptions> options)
+	protected RabbitMqQueueRecipient(ConnectionFactory factory, IHandlerContext handler, IOptions<RabbitMqMessageBusOptions> options)
 	{
 		Options = options.Value;
 		Handler = handler;
-		Channel = connection.CreateModel();
-		Consumer = new EventingBasicConsumer(Channel);
-		Consumer.Received += HandleMessageReceived;
+		ConnectionFactory = factory;
 	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	protected ConnectionFactory ConnectionFactory { get; }
 
 	/// <summary>
 	/// Gets the RabbitMQ message bus options.
 	/// </summary>
 	protected virtual RabbitMqMessageBusOptions Options { get; }
-
-	/// <summary>
-	/// Gets the RabbitMQ message channel.
-	/// </summary>
-	protected virtual IModel Channel { get; }
-
-	/// <summary>
-	/// Gets the RabbitMQ consumer instance.
-	/// </summary>
-	protected virtual EventingBasicConsumer Consumer { get; }
 
 	/// <summary>
 	/// Gets the message handler context instance.
@@ -112,7 +105,8 @@ public abstract class RabbitMqQueueRecipient : DisposableObject
 	protected virtual IRoutedMessage DeserializeMessage(byte[] message, Type messageType)
 	{
 		var type = typeof(RoutedMessage<>).MakeGenericType(messageType);
-		return JsonConvert.DeserializeObject(Encoding.UTF8.GetString(message), type, Constants.SerializerSettings) as IRoutedMessage;
+		var json = Encoding.UTF8.GetString(message);
+		return JsonConvert.DeserializeObject(json, type, Constants.SerializerSettings) as IRoutedMessage;
 	}
 
 	/// <summary>
@@ -140,17 +134,5 @@ public abstract class RabbitMqQueueRecipient : DisposableObject
 		}
 
 		return string.Empty;
-	}
-
-	/// <inheritdoc />
-	protected override void Dispose(bool disposing)
-	{
-		if (!disposing)
-		{
-			return;
-		}
-
-		Consumer.Received -= HandleMessageReceived;
-		Channel?.Dispose();
 	}
 }

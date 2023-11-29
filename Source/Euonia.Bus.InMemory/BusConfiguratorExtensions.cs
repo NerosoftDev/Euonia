@@ -34,53 +34,10 @@ public static class BusConfiguratorExtensions
 				MessengerReferenceType.WeakReference => WeakReferenceMessenger.Default,
 				_ => throw new ArgumentOutOfRangeException(nameof(options.MessengerReference), options.MessengerReference, null)
 			};
-
-			var convention = provider.GetService<IMessageConvention>();
-
-			if (options.MultipleSubscriberInstance)
-			{
-				foreach (var registration in configurator.Registrations)
-				{
-					InMemoryRecipient recipient;
-					if (convention.IsQueueType(registration.MessageType))
-					{
-						recipient = ActivatorUtilities.GetServiceOrCreateInstance<InMemoryQueueConsumer>(provider);
-					}
-					else if (convention.IsTopicType(registration.MessageType))
-					{
-						recipient = ActivatorUtilities.GetServiceOrCreateInstance<InMemoryTopicSubscriber>(provider);
-					}
-					else
-					{
-						throw new InvalidOperationException();
-					}
-					messenger.Register(recipient, registration.Channel);
-				}
-			}
-			else
-			{
-				foreach (var registration in configurator.Registrations)
-				{
-					InMemoryRecipient recipient;
-					if (convention.IsQueueType(registration.MessageType))
-					{
-						recipient = Singleton<InMemoryQueueConsumer>.Get(() => ActivatorUtilities.GetServiceOrCreateInstance<InMemoryQueueConsumer>(provider));
-					}
-					else if (convention.IsTopicType(registration.MessageType))
-					{
-						recipient = Singleton<InMemoryTopicSubscriber>.Get(() => ActivatorUtilities.GetServiceOrCreateInstance<InMemoryTopicSubscriber>(provider));
-					}
-					else
-					{
-						throw new InvalidOperationException();
-					}
-					messenger.Register(recipient, registration.Channel);
-				}
-			}
-
 			return messenger;
 		});
 		configurator.Service.TryAddSingleton<InMemoryDispatcher>();
+		configurator.Service.AddTransient<IRecipientRegistrar, InMemoryRecipientRegistrar>();
 		configurator.SerFactory<InMemoryBusFactory>();
 	}
 }

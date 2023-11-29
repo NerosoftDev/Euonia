@@ -11,12 +11,12 @@ namespace Nerosoft.Euonia.Bus;
 /// </summary>
 public class BusConfigurator : IBusConfigurator
 {
-	private readonly List<MessageRegistration> _registrations = new();
+	private readonly List<MessageRegistration> _registrations = [];
 
 	private MessageConventionBuilder ConventionBuilder { get; } = new();
 
 	/// <summary>
-	/// The message handler types.
+	/// Gets the message handle registrations.
 	/// </summary>
 	public IReadOnlyList<MessageRegistration> Registrations => _registrations;
 
@@ -40,7 +40,7 @@ public class BusConfigurator : IBusConfigurator
 	public IBusConfigurator SerFactory<TFactory>()
 		where TFactory : class, IBusFactory
 	{
-		Service.AddSingleton<IBusFactory, TFactory>();
+		Service.TryAddSingleton<IBusFactory, TFactory>();
 		return this;
 	}
 
@@ -53,7 +53,7 @@ public class BusConfigurator : IBusConfigurator
 	public IBusConfigurator SerFactory<TFactory>(TFactory factory)
 		where TFactory : class, IBusFactory
 	{
-		Service.AddSingleton<IBusFactory>(factory);
+		Service.TryAddSingleton<IBusFactory>(factory);
 		return this;
 	}
 

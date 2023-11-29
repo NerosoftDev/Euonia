@@ -39,7 +39,8 @@ public sealed class ServiceBus(IBusFactory factory, IMessageConvention conventio
 		var channelName = options?.Channel ?? MessageCache.Default.GetOrAddChannel<TMessage>();
 		var pack = new RoutedMessage<TMessage>(message, channelName)
 		{
-			MessageId = options?.MessageId ?? Guid.NewGuid().ToString()
+			MessageId = options?.MessageId ?? Guid.NewGuid().ToString(),
+			CorrelationId = options?.CorrelationId ?? Guid.NewGuid().ToString()
 		};
 		await _dispatcher.SendAsync(pack, cancellationToken);
 	}
@@ -56,7 +57,8 @@ public sealed class ServiceBus(IBusFactory factory, IMessageConvention conventio
 		var channelName = options?.Channel ?? MessageCache.Default.GetOrAddChannel<TMessage>();
 		var pack = new RoutedMessage<TMessage, TResult>(message, channelName)
 		{
-			MessageId = options?.MessageId ?? Guid.NewGuid().ToString()
+			MessageId = options?.MessageId ?? Guid.NewGuid().ToString(),
+			CorrelationId = options?.CorrelationId ?? Guid.NewGuid().ToString()
 		};
 		return await _dispatcher.SendAsync(pack, cancellationToken);
 	}
@@ -67,7 +69,8 @@ public sealed class ServiceBus(IBusFactory factory, IMessageConvention conventio
 		var channelName = options?.Channel ?? MessageCache.Default.GetOrAddChannel(message.GetType());
 		var pack = new RoutedMessage<IQueue<TResult>, TResult>(message, channelName)
 		{
-			MessageId = options?.MessageId ?? Guid.NewGuid().ToString()
+			MessageId = options?.MessageId ?? Guid.NewGuid().ToString(),
+			CorrelationId = options?.CorrelationId ?? Guid.NewGuid().ToString()
 		};
 		return await _dispatcher.SendAsync(pack, cancellationToken);
 	}

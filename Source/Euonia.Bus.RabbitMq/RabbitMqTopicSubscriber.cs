@@ -15,7 +15,7 @@ public class RabbitMqTopicSubscriber : RabbitMqQueueRecipient, ITopicSubscriber
 	/// <param name="connection"></param>
 	/// <param name="handler"></param>
 	/// <param name="options"></param>
-	public RabbitMqTopicSubscriber(IConnection connection, IHandlerContext handler, IOptions<RabbitMqMessageBusOptions> options)
+	public RabbitMqTopicSubscriber(ConnectionFactory connection, IHandlerContext handler, IOptions<RabbitMqMessageBusOptions> options)
 		: base(connection, handler, options)
 	{
 	}
@@ -23,20 +23,38 @@ public class RabbitMqTopicSubscriber : RabbitMqQueueRecipient, ITopicSubscriber
 	/// <inheritdoc />
 	public string Name => nameof(RabbitMqTopicSubscriber);
 
+	private IConnection Connection { get; set; }
+
+	/// <summary>
+	/// Gets the RabbitMQ message channel.
+	/// </summary>
+	private IModel Channel { get; set; }
+
+	/// <summary>
+	/// Gets the RabbitMQ consumer instance.
+	/// </summary>
+	private EventingBasicConsumer Consumer { get; set; }
+
 	internal override void Start(string channel)
 	{
+		Connection = ConnectionFactory.CreateConnection();
+		Channel = Connection.CreateModel();
+
 		string queueName;
-		if (string.IsNullOrWhiteSpace(Options.EventQueueName))
+		if (string.IsNullOrWhiteSpace(Options.TopicName))
 		{
 			Channel.ExchangeDeclare(channel, Options.ExchangeType);
 			queueName = Channel.QueueDeclare().QueueName;
 		}
 		else
 		{
-			Channel.QueueDeclare(Options.EventQueueName, true, false, false, null);
-			queueName = Options.EventQueueName;
+			Channel.QueueDeclare(Options.TopicName, true, false, false, null);
+			queueName = Options.TopicName;
 		}
-		
+
+		Consumer = new EventingBasicConsumer(Channel);
+		Consumer.Received += HandleMessageReceived;
+
 		Channel.QueueBind(queueName, channel, Options.RoutingKey ?? "*");
 		Channel.BasicConsume(string.Empty, Options.AutoAck, Consumer);
 	}
@@ -60,5 +78,18 @@ public class RabbitMqTopicSubscriber : RabbitMqQueueRecipient, ITopicSubscriber
 		}
 
 		OnMessageAcknowledged(new MessageAcknowledgedEventArgs(message.Data, context));
+	}
+
+	/// <inheritdoc />
+	protected override void Dispose(bool disposing)
+	{
+		if (!disposing)
+		{
+			return;
+		}
+
+		Consumer.Received -= HandleMessageReceived;
+		Channel?.Dispose();
+		Connection?.Dispose();
 	}
 }
