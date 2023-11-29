@@ -2,7 +2,7 @@
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
 		<RootNamespace>Nerosoft.Euonia.Sample</RootNamespace>
-        <Version>7.2.0</Version>
+        <Version>7.6.0</Version>
         <Authors>damon</Authors>
         <Company>Nerosoft Co., Ltd.</Company>
         <Product>Euonia</Product>

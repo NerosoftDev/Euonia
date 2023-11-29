@@ -1,4 +1,5 @@
-﻿using Nerosoft.Euonia.Domain;
+﻿using Nerosoft.Euonia.Bus;
+using Nerosoft.Euonia.Domain;
 using Nerosoft.Euonia.Pipeline;
 
 namespace Nerosoft.Euonia.Application;
@@ -6,7 +7,7 @@ namespace Nerosoft.Euonia.Application;
 /// <summary>
 /// A pipeline behavior that adds the bearer token to the command metadata.
 /// </summary>
-public class BearerTokenBehavior : IPipelineBehavior<ICommand, CommandResponse>
+public class BearerTokenBehavior : IPipelineBehavior<RoutedMessage<object>, CommandResponse>
 {
     private readonly IRequestContextAccessor _contextAccessor;
 
@@ -27,7 +28,7 @@ public class BearerTokenBehavior : IPipelineBehavior<ICommand, CommandResponse>
     }
 
     /// <inheritdoc />
-    public async Task<CommandResponse> HandleAsync(ICommand context, PipelineDelegate<ICommand, CommandResponse> next)
+    public async Task<CommandResponse> HandleAsync(RoutedMessage<object> context, PipelineDelegate<RoutedMessage<object>, CommandResponse> next)
     {
         if (_contextAccessor?.RequestHeaders.TryGetValue("Authorization", out var values) == true)
         {
