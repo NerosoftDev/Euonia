@@ -4,6 +4,7 @@
         <EnablePackageVersionOverride>true</EnablePackageVersionOverride>
         <MicrosoftPackageVersion6>6.0.24</MicrosoftPackageVersion6>
         <MicrosoftPackageVersion7>7.0.13</MicrosoftPackageVersion7>
+        <MicrosoftPackageVersion8>8.0.8</MicrosoftPackageVersion8>
         <GrpcAspNetCoreVersion>2.59.0</GrpcAspNetCoreVersion>
     </PropertyGroup>
     <ItemGroup>
@@ -12,7 +13,7 @@
         <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="8.0.0"/>
         <PackageVersion Include="Autofac.Extras.DynamicProxy" Version="7.1.0"/>
         <PackageVersion Include="AutoMapper" Version="12.0.1"/>
-        <PackageVersion Include="Azure.Storage.Blobs" Version="12.19.0"/>
+        <PackageVersion Include="Azure.Storage.Blobs" Version="12.19.1"/>
         <PackageVersion Include="Castle.Core" Version="5.1.1"/>
         <PackageVersion Include="Consul" Version="1.6.10.9"/>
         <PackageVersion Include="FluentValidation" Version="11.8.0"/>
@@ -95,6 +96,11 @@
         <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(MicrosoftPackageVersion7)"/>
         <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(MicrosoftPackageVersion7)"/>
         <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="$(MicrosoftPackageVersion7)"/>
+    </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)'=='net8.0'">
+        <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(MicrosoftPackageVersion7)"/>
+        <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(MicrosoftPackageVersion8)"/>
+        <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="$(MicrosoftPackageVersion8)"/>
     </ItemGroup>
     <!-- Grpc -->
     <ItemGroup>
