@@ -74,7 +74,7 @@ public class CronExpressionScheduleAttribute : BackgroundJobScheduleAttribute
 	/// <summary>
 	/// Gets or sets the job time zone name.
 	/// Please check https://docs.microsoft.com/en-us/dotnet/standard/base-types/time-zone-names-and-ids
-	/// Or you can get the time zone names using method <see cref="TimeZoneInfo.GetSystemTimeZones"/>
+	/// Or you can get the time zone names using method <see cref="TimeZoneInfo.GetSystemTimeZones()"/>
 	/// </summary>
 	public string TimeZoneName { get; set; } = "UTC";
 

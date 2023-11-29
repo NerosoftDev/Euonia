@@ -3,7 +3,7 @@
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
         <EnablePackageVersionOverride>true</EnablePackageVersionOverride>
         <MicrosoftPackageVersion6>6.0.24</MicrosoftPackageVersion6>
-        <MicrosoftPackageVersion7>7.0.13</MicrosoftPackageVersion7>
+        <MicrosoftPackageVersion7>7.0.14</MicrosoftPackageVersion7>
         <MicrosoftPackageVersion8>8.0.0</MicrosoftPackageVersion8>
         <GrpcAspNetCoreVersion>2.59.0</GrpcAspNetCoreVersion>
     </PropertyGroup>
@@ -93,8 +93,8 @@
     </ItemGroup>
     <!-- Microsoft.AspNetCore -->
     <ItemGroup>
-        <PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="$(MicrosoftPackageVersion7)"/>
-        <PackageVersion Include="Microsoft.AspNetCore.Connections.Abstractions" Version="$(MicrosoftPackageVersion7)"/>
+        <PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="$(MicrosoftPackageVersion8)"/>
+        <PackageVersion Include="Microsoft.AspNetCore.Connections.Abstractions" Version="$(MicrosoftPackageVersion8)"/>
     </ItemGroup>
     <ItemGroup Condition="$(TargetFramework.Contains('netstandard'))">
     </ItemGroup>
