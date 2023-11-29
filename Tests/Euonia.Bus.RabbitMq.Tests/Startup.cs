@@ -28,27 +28,29 @@ public class Startup
 	// ConfigureServices(HostBuilderContext hostBuilderContext, IServiceCollection services)
 	public void ConfigureServices(IServiceCollection services, HostBuilderContext hostBuilderContext)
 	{
-#if DEBUG
-		services.AddServiceBus(config =>
+		var preventUnitTest = hostBuilderContext.Configuration.GetValue<bool>("PreventRunTests");
+		if (!preventUnitTest)
 		{
-			config.RegisterHandlers(Assembly.GetExecutingAssembly());
-			config.SetConventions(builder =>
+			services.AddServiceBus(config =>
 			{
-				builder.Add<DefaultMessageConvention>();
-				builder.Add<AttributeMessageConvention>();
-				builder.EvaluateQueue(t => t.Name.EndsWith("Command"));
-				builder.EvaluateTopic(t => t.Name.EndsWith("Event"));
+				config.RegisterHandlers(Assembly.GetExecutingAssembly());
+				config.SetConventions(builder =>
+				{
+					builder.Add<DefaultMessageConvention>();
+					builder.Add<AttributeMessageConvention>();
+					builder.EvaluateQueue(t => t.Name.EndsWith("Command"));
+					builder.EvaluateTopic(t => t.Name.EndsWith("Event"));
+				});
+				config.UseRabbitMq(options =>
+				{
+					options.Connection = "amqp://127.0.0.1";
+					options.QueueName = "nerosoft.euonia.test.command";
+					options.TopicName = "nerosoft.euonia.test.event";
+					options.ExchangeName = $"nerosoft.euonia.test.exchange.{options.ExchangeType}";
+					options.RoutingKey = "*";
+				});
 			});
-			config.UseRabbitMq(options =>
-			{
-				options.Connection = "amqp://127.0.0.1";
-				options.QueueName = "nerosoft.euonia.test.command";
-				options.TopicName = "nerosoft.euonia.test.event";
-				options.ExchangeName = $"nerosoft.euonia.test.exchange.{options.ExchangeType}";
-				options.RoutingKey = "*";
-			});
-		});
-#endif
+		}
 	}
 
 	//public void Configure(IServiceProvider applicationServices, IIdGenerator idGenerator)
