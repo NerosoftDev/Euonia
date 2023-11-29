@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>b2b6a902-17a7-4926-9b7f-22de8a092231</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Nerosoft.Euonia.Bus.Tests</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\FooCreateCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\UserCreateCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\UserUpdateCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Defines.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Handlers\FooCommandHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Handlers\UserCommandHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TestNotificationBucket.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ServiceBusTests.cs" />
+  </ItemGroup>
+</Project>

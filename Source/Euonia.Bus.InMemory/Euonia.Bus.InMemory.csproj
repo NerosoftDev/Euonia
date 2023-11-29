@@ -1,19 +1,25 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-    <Import Project="..\common.props" />
-
+    
+    <Import Project="..\common.props"/>
+    
     <PropertyGroup>
         <Nullable>disable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
-
+    
     <ItemGroup>
-        <PackageReference Include="Newtonsoft.Json" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"/>
+        <PackageReference Include="Microsoft.Extensions.Options"/>
+        <PackageReference Include="Newtonsoft.Json"/>
     </ItemGroup>
-
+    
     <ItemGroup>
-        <ProjectReference Include="..\Euonia.Bus\Euonia.Bus.csproj" />
+        <ProjectReference Include="..\Euonia.Bus.Abstract\Euonia.Bus.Abstract.csproj"/>
+        <ProjectReference Include="..\Euonia.Core\Euonia.Core.csproj"/>
+        <ProjectReference Include="..\Euonia.Modularity\Euonia.Modularity.csproj" />
     </ItemGroup>
-
+    
     <ItemGroup>
         <Compile Update="Properties\Resources.Designer.cs">
             <DesignTime>True</DesignTime>
@@ -21,7 +27,7 @@
             <DependentUpon>Resources.resx</DependentUpon>
         </Compile>
     </ItemGroup>
-
+    
     <ItemGroup>
         <EmbeddedResource Update="Properties\Resources.resx">
             <Generator>ResXFileCodeGenerator</Generator>

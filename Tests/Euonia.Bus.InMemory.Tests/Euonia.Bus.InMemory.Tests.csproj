@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="..\Euonia.Bus.Tests.Shared\Euonia.Bus.Tests.Shared.projitems" Label="Shared" />
+
+    <Import Project="..\common.props" />
+
+    <ItemGroup>
+        <None Update="appsettings.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Source\Euonia.Bus.InMemory\Euonia.Bus.InMemory.csproj" />
+        <ProjectReference Include="..\..\Source\Euonia.Bus\Euonia.Bus.csproj" />
+    </ItemGroup>
+
+</Project>

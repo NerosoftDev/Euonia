@@ -7,13 +7,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="MediatR" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+        <PackageReference Include="Newtonsoft.Json" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Euonia.Domain\Euonia.Domain.csproj" />
+        <ProjectReference Include="..\Euonia.Bus.Abstract\Euonia.Bus.Abstract.csproj" />
         <ProjectReference Include="..\Euonia.Modularity\Euonia.Modularity.csproj" />
+        <ProjectReference Include="..\Euonia.Pipeline\Euonia.Pipeline.csproj" />
     </ItemGroup>
 
     <ItemGroup>
