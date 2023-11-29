@@ -3,6 +3,9 @@ using Microsoft.Extensions.Options;
 
 namespace Nerosoft.Euonia.Bus.InMemory;
 
+/// <summary>
+/// The in-memory message recipient registrar.
+/// </summary>
 public sealed class InMemoryRecipientRegistrar : IRecipientRegistrar
 {
 	private readonly InMemoryBusOptions _options;
@@ -10,6 +13,13 @@ public sealed class InMemoryRecipientRegistrar : IRecipientRegistrar
 	private readonly IServiceProvider _provider;
 	private readonly IMessenger _messenger;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="InMemoryRecipientRegistrar"/>.
+	/// </summary>
+	/// <param name="messenger"></param>
+	/// <param name="convention"></param>
+	/// <param name="provider"></param>
+	/// <param name="options"></param>
 	public InMemoryRecipientRegistrar(IMessenger messenger, IMessageConvention convention, IServiceProvider provider, IOptions<InMemoryBusOptions> options)
 	{
 		_options = options.Value;
@@ -18,6 +28,7 @@ public sealed class InMemoryRecipientRegistrar : IRecipientRegistrar
 		_messenger = messenger;
 	}
 
+	/// <inheritdoc/>
 	public async Task RegisterAsync(IReadOnlyList<MessageRegistration> registrations, CancellationToken cancellationToken = default)
 	{
 		if (_options.MultipleSubscriberInstance)
@@ -60,5 +71,7 @@ public sealed class InMemoryRecipientRegistrar : IRecipientRegistrar
 				_messenger.Register(recipient, registration.Channel);
 			}
 		}
+
+		await Task.CompletedTask;
 	}
 }

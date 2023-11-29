@@ -153,6 +153,7 @@ public class BusConfigurator : IBusConfigurator
 		{
 			Service.TryAddScoped(handlerType);
 		}
+
 		_registrations.AddRange(registrations);
 		return this;
 	}

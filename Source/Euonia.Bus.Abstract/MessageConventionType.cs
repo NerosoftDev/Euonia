@@ -1,5 +1,8 @@
 ﻿namespace Nerosoft.Euonia.Bus;
 
+/// <summary>
+/// Defines the message convention type.
+/// </summary>
 public enum MessageConventionType
 {
 	/// <summary>

@@ -212,17 +212,5 @@ public class HandlerContext : IHandlerContext
 		return arguments;
 	}
 
-	private static Task Invoke(MethodInfo method, object handler, params object[] parameters)
-	{
-		if (method.ReturnType.IsAssignableTo(typeof(IAsyncResult)))
-		{
-			return (Task)method.Invoke(handler, parameters);
-		}
-		else
-		{
-			return Task.Run(() => method.Invoke(handler, parameters));
-		}
-	}
-
 	#endregion
 }

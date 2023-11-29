@@ -77,7 +77,7 @@ public class MessageConvention : IMessageConvention
 	internal string[] RegisteredConventions => _conventions.Select(x => x.Name).ToArray();
 
 	/// <inheritdoc/>
-	public string Name { get; }
+	public string Name => "Default";
 
 	private class ConventionCache
 	{

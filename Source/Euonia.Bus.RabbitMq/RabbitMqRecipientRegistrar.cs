@@ -2,11 +2,19 @@
 
 namespace Nerosoft.Euonia.Bus.RabbitMq;
 
+/// <summary>
+/// The RabbitMQ recipient registrar.
+/// </summary>
 public sealed class RabbitMqRecipientRegistrar : IRecipientRegistrar
 {
 	private readonly IMessageConvention _convention;
 	private readonly IServiceProvider _provider;
 
+	/// <summary>
+	/// Initialize a new instance of <see cref="RabbitMqRecipientRegistrar"/>.
+	/// </summary>
+	/// <param name="convention"></param>
+	/// <param name="provider"></param>
 	public RabbitMqRecipientRegistrar(IMessageConvention convention, IServiceProvider provider)
 	{
 		_convention = convention;
@@ -34,6 +42,7 @@ public sealed class RabbitMqRecipientRegistrar : IRecipientRegistrar
 
 			recipient.Start(registration.Channel);
 		}
+
 		await Task.CompletedTask;
 	}
 }
