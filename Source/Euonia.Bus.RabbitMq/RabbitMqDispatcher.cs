@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Polly;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -48,19 +47,19 @@ public class RabbitMqDispatcher : IDispatcher
 		props.Type = typeName;
 
 		await Policy.Handle<Exception>()
-					.WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(3), (exception, _, retryCount, _) =>
-					{
-						_logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
-					})
-					.ExecuteAsync(async () =>
-					{
-						var messageBody = await SerializeAsync(message, cancellationToken);
+		            .WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(3), (exception, _, retryCount, _) =>
+		            {
+			            _logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
+		            })
+		            .ExecuteAsync(async () =>
+		            {
+			            var messageBody = await SerializeAsync(message, cancellationToken);
 
-						channel.ExchangeDeclare(_options.ExchangeName, _options.ExchangeType);
-						channel.BasicPublish(_options.ExchangeName, $"{_options.TopicName}${message.Channel}$", props, messageBody);
+			            channel.ExchangeDeclare(_options.ExchangeName, _options.ExchangeType);
+			            channel.BasicPublish(_options.ExchangeName, $"{_options.TopicName}${message.Channel}$", props, messageBody);
 
-						Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
-					});
+			            Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
+		            });
 	}
 
 	/// <inheritdoc />
@@ -76,18 +75,18 @@ public class RabbitMqDispatcher : IDispatcher
 		props.Type = typeName;
 
 		await Policy.Handle<Exception>()
-					.WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(3), (exception, _, retryCount, _) =>
-					{
-						_logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
-					})
-					.ExecuteAsync(async () =>
-					{
-						var messageBody = await SerializeAsync(message, cancellationToken);
+		            .WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(3), (exception, _, retryCount, _) =>
+		            {
+			            _logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
+		            })
+		            .ExecuteAsync(async () =>
+		            {
+			            var messageBody = await SerializeAsync(message, cancellationToken);
 
-						channel.BasicPublish("", $"{_options.QueueName}${message.Channel}$", props, messageBody);
+			            channel.BasicPublish("", $"{_options.QueueName}${message.Channel}$", props, messageBody);
 
-						Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
-					});
+			            Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
+		            });
 	}
 
 	/// <inheritdoc />
@@ -114,18 +113,18 @@ public class RabbitMqDispatcher : IDispatcher
 		props.ReplyTo = replyQueueName;
 
 		await Policy.Handle<Exception>()
-					.WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(1), (exception, _, retryCount, _) =>
-					{
-						_logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
-					})
-					.ExecuteAsync(async () =>
-					{
-						var messageBody = await SerializeAsync(message, cancellationToken);
-						channel.BasicPublish("", $"{_options.QueueName}${message.Channel}$", props, messageBody);
-						channel.BasicConsume(consumer, replyQueueName, true);
+		            .WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(1), (exception, _, retryCount, _) =>
+		            {
+			            _logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
+		            })
+		            .ExecuteAsync(async () =>
+		            {
+			            var messageBody = await SerializeAsync(message, cancellationToken);
+			            channel.BasicPublish("", $"{_options.QueueName}${message.Channel}$", props, messageBody);
+			            channel.BasicConsume(consumer, replyQueueName, true);
 
-						Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
-					});
+			            Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
+		            });
 
 		var result = await task.Task;
 		consumer.Received -= OnReceived;
@@ -157,12 +156,12 @@ public class RabbitMqDispatcher : IDispatcher
 	{
 		if (message == null)
 		{
-			return [];
+			return Array.Empty<byte>();
 		}
 
 		await using var stream = new MemoryStream();
 		// The default UTF8Encoding emits the BOM will cause the RabbitMQ client to fail to deserialize the message.
-		using (var writer = new StreamWriter(stream, new UTF8Encoding(false))) 
+		using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
 		{
 			using var jsonWriter = new JsonTextWriter(writer);
 
@@ -171,6 +170,7 @@ public class RabbitMqDispatcher : IDispatcher
 			await jsonWriter.FlushAsync(cancellationToken);
 			await writer.FlushAsync();
 		}
+
 		return stream.ToArray();
 	}
 }

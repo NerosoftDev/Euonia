@@ -8,7 +8,7 @@ namespace Nerosoft.Euonia.Bus;
 public class MessageConvention : IMessageConvention
 {
 	private readonly OverridableMessageConvention _defaultConvention = new(new DefaultMessageConvention());
-	private readonly List<IMessageConvention> _conventions = [];
+	private readonly List<IMessageConvention> _conventions = new();
 	private readonly ConventionCache _topicConventionCache = new();
 	private readonly ConventionCache _queueConventionCache = new();
 
@@ -58,7 +58,6 @@ public class MessageConvention : IMessageConvention
 
 	internal void DefineTypeConvention(Func<Type, MessageConventionType> convention)
 	{
-
 	}
 
 	internal void Add(params IMessageConvention[] conventions)
@@ -86,6 +85,11 @@ public class MessageConvention : IMessageConvention
 			return _cache.GetOrAdd(type.TypeHandle, convention);
 		}
 
+		// ReSharper disable once UnusedMember.Local
+
+		/// <summary>
+		/// Reset cache.
+		/// </summary>
 		public void Reset()
 		{
 			_cache.Clear();
