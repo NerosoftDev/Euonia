@@ -6,10 +6,18 @@ namespace Nerosoft.Euonia.Bus;
 /// <summary>
 /// The background service to active the recipients.
 /// </summary>
-/// <param name="provider"></param>
-public class RecipientActivator(IServiceProvider provider) : BackgroundService
+public class RecipientActivator : BackgroundService
 {
-	private readonly IServiceProvider _provider = provider;
+	private readonly IServiceProvider _provider;
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="RecipientActivator"/> class.
+	/// </summary>
+	/// <param name="provider"></param>
+	public RecipientActivator(IServiceProvider provider)
+	{
+		_provider = provider;
+	}
 
 	/// <inheritdoc/>
 	protected override Task ExecuteAsync(CancellationToken stoppingToken)

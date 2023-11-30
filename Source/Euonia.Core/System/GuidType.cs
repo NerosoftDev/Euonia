@@ -22,7 +22,7 @@ public enum GuidType
     SequentialAsString,
 
     /// <summary>
-    /// The GUID should be sequential when formatted using the <see cref="Guid.ToByteArray" /> method.
+    /// The GUID should be sequential when formatted using the <see cref="Guid.ToByteArray()" /> method.
     /// Used by Oracle.
     /// </summary>
     SequentialAsBinary,
