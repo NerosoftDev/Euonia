@@ -29,7 +29,7 @@ public sealed class InMemoryRecipientRegistrar : IRecipientRegistrar
 	}
 
 	/// <inheritdoc/>
-	public async Task RegisterAsync(IReadOnlyList<MessageRegistration> registrations, CancellationToken cancellationToken = default)
+	public async Task RegisterAsync(IEnumerable<MessageRegistration> registrations, CancellationToken cancellationToken = default)
 	{
 		if (_options.MultipleSubscriberInstance)
 		{

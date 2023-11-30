@@ -25,7 +25,7 @@ public class RequestTraceMiddleware
     /// <returns></returns>
     public async Task InvokeAsync(HttpContext context)
     {
-        context.Response.Headers.Add("x-request-trace-id", context.TraceIdentifier);
+        context.Response.Headers.Append("x-request-trace-id", context.TraceIdentifier);
 
         await _next(context);
     }

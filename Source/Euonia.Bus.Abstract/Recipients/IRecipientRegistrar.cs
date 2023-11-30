@@ -11,5 +11,5 @@ public interface IRecipientRegistrar
 	/// <param name="registrations"></param>
 	/// <param name="cancellationToken"></param>
 	/// <returns></returns>
-	Task RegisterAsync(IReadOnlyList<MessageRegistration> registrations, CancellationToken cancellationToken = default);
+	Task RegisterAsync(IEnumerable<MessageRegistration> registrations, CancellationToken cancellationToken = default);
 }

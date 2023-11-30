@@ -3,12 +3,21 @@
 /// <summary>
 /// The implementation of <see cref="IBus"/> interface.
 /// </summary>
-/// <param name="factory"></param>
-/// <param name="convention"></param>
-public sealed class ServiceBus(IBusFactory factory, IMessageConvention convention) : IBus
+public sealed class ServiceBus : IBus
 {
-	private readonly IDispatcher _dispatcher = factory.CreateDispatcher();
-	private readonly IMessageConvention _convention = convention;
+	private readonly IDispatcher _dispatcher;
+	private readonly IMessageConvention _convention;
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ServiceBus"/> class.
+	/// </summary>
+	/// <param name="factory"></param>
+	/// <param name="convention"></param>
+	public ServiceBus(IBusFactory factory, IMessageConvention convention)
+	{
+		_dispatcher = factory.CreateDispatcher();
+		_convention = convention;
+	}
 
 	/// <inheritdoc />
 	public async Task PublishAsync<TMessage>(TMessage message, PublishOptions options, CancellationToken cancellationToken = default)
