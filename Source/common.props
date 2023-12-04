@@ -1,15 +1,9 @@
 <Project>
+    <Import Project="..\project.props" />
+    
     <PropertyGroup>
-        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+        <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
         <RootNamespace>Nerosoft.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
-        <Version>7.2.3</Version>
-        <Authors>damon</Authors>
-        <Company>Nerosoft Co., Ltd.</Company>
-        <Product>Euonia</Product>
-        <Copyright>© 2018-2023 Nerosoft. All Rights Reserved.</Copyright>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>disable</Nullable>
-        <LangVersion>latest</LangVersion>
         <Description>Euonia development framework and toolkit library for .NET application/service. Powered by Nerosoft.</Description>
         <PackageProjectUrl>https://github.com/NerosoftDev/Euonia/</PackageProjectUrl>
         <PackageTags>.net, asp.net, core, framework, ddd, distributed, architecture, EventBus, ServiceBug, EF, EFCore, Caching, Redis, Mapping, Mapper, ObjectMap, DistributedLock, OOP, RPC, Grpc, proto, Validate, Validation, FluentValidation</PackageTags>
@@ -21,21 +15,21 @@
         <DebugType>full</DebugType>
         <DebugSymbols>true</DebugSymbols>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <NoWarn>CS2002</NoWarn>
+        <NoWarn>CS2002;IDE0290</NoWarn>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)'=='Release' ">
         <DebugType>pdbonly</DebugType>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <NoWarn>1591;CS2002</NoWarn>
+        <NoWarn>1591;CS2002;IDE0290</NoWarn>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)'=='Product' ">
         <DebugType>pdbonly</DebugType>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <NoWarn>1591;CS2002</NoWarn>
+        <NoWarn>1591;CS2002;IDE0290</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>

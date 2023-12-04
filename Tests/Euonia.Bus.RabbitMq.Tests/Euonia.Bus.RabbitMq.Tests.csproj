@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <DefineConstants>$(DefineConstants);RABBIT_MQ</DefineConstants>
+    </PropertyGroup>
+
+    <Import Project="..\Euonia.Bus.Tests.Shared\Euonia.Bus.Tests.Shared.projitems" Label="Shared" />
+
+    <Import Project="..\common.props" />
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Source\Euonia.Bus.RabbitMq\Euonia.Bus.RabbitMq.csproj" />
+        <ProjectReference Include="..\..\Source\Euonia.Bus\Euonia.Bus.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="appsettings.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+</Project>

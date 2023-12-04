@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using System.Runtime.Serialization;
 
 namespace Nerosoft.Euonia.Core;
 
@@ -17,11 +16,13 @@ public class ConflictException : Exception
     {
     }
 
-    /// <inheritdoc />
-    protected ConflictException(SerializationInfo info, StreamingContext context)
-        : base(info, context)
-    {
-    }
+#if !NET8_0_OR_GREATER
+	/// <inheritdoc />
+	public ConflictException(SerializationInfo info, StreamingContext context)
+		: base(info, context)
+	{
+	}
+#endif
 
     /// <inheritdoc />
     public ConflictException(string message)
