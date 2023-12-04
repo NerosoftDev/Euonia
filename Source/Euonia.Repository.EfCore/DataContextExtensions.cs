@@ -48,14 +48,14 @@ public static class DataContextExtensions
     /// 
     /// </summary>
     /// <param name="modelBuilder"></param>
-    public static void SetSoftDeleteQueryFilter(this ModelBuilder modelBuilder)
+    public static void SetTombstoneQueryFilter(this ModelBuilder modelBuilder)
     {
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
             //other automated configurations left out
             if (typeof(ITombstone).IsAssignableFrom(entityType.ClrType))
             {
-                entityType.SetSoftDeleteQueryFilter();
+                entityType.SetTombstoneQueryFilter();
             }
         }
     }
@@ -66,10 +66,10 @@ public static class DataContextExtensions
     /// <remarks>
     /// https://www.thereformedprogrammer.net/ef-core-in-depth-soft-deleting-data-with-global-query-filters/
     /// </remarks>
-    public static void SetSoftDeleteQueryFilter(this IMutableEntityType entity)
+    public static void SetTombstoneQueryFilter(this IMutableEntityType entity)
     {
         var methodToCall = typeof(DataContextExtensions)
-                           .GetMethod(nameof(GetSoftDeleteFilter), BindingFlags.NonPublic | BindingFlags.Static)
+                           .GetMethod(nameof(GetTombstoneFilter), BindingFlags.NonPublic | BindingFlags.Static)
                            ?.MakeGenericMethod(entity.ClrType);
         if (methodToCall == null)
         {
@@ -80,7 +80,7 @@ public static class DataContextExtensions
         entity.SetQueryFilter((LambdaExpression)filter!);
     }
 
-    private static LambdaExpression GetSoftDeleteFilter<TEntity>()
+    private static LambdaExpression GetTombstoneFilter<TEntity>()
         where TEntity : class, ITombstone
     {
         Expression<Func<TEntity, bool>> filter = x => !x.IsDeleted;

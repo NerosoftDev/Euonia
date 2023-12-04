@@ -40,7 +40,7 @@ public abstract class Event : IEvent
 	{
 		return new EventAggregate
 		{
-			Id = Guid.NewGuid(),
+			Id = Guid.NewGuid().ToString(),
 			TypeName = GetType().AssemblyQualifiedName,
 			EventIntent = EventIntent,
 			Timestamp = DateTime.UtcNow,
