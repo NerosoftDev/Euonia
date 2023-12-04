@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using System.Runtime.Serialization;
 
 namespace Nerosoft.Euonia.Core;
 
@@ -29,9 +28,11 @@ public class NotFoundException : Exception
     {
     }
 
-    /// <inheritdoc />
-    protected NotFoundException(SerializationInfo info, StreamingContext context)
-        : base(info, context)
-    {
-    }
+#if !NET8_0_OR_GREATER
+	/// <inheritdoc />
+	public NotFoundException(SerializationInfo info, StreamingContext context)
+		: base(info, context)
+	{
+	} 
+#endif
 }

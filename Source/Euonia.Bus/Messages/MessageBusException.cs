@@ -1,4 +1,6 @@
-﻿using System.Runtime.Serialization;
+﻿#if !NET8_0_OR_GREATER
+using System.Runtime.Serialization;
+#endif
 
 namespace Nerosoft.Euonia.Bus;
 
@@ -10,7 +12,7 @@ namespace Nerosoft.Euonia.Bus;
 [Serializable]
 public class MessageBusException : Exception
 {
-	private object _message;
+	private readonly object _message;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="MessageBusException"/> class.
@@ -50,6 +52,7 @@ public class MessageBusException : Exception
 	/// <value>The type of the message.</value>
 	public virtual object MessageContext => _message;
 
+#if !NET8_0_OR_GREATER
 	/// <inheritdoc />
 	public MessageBusException(SerializationInfo info, StreamingContext context)
 		: base(info, context)
@@ -63,4 +66,5 @@ public class MessageBusException : Exception
 		base.GetObjectData(info, context);
 		info.AddValue(nameof(MessageContext), _message, MessageContext.GetType());
 	}
+#endif
 }

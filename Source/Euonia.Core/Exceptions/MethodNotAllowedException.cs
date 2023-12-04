@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using System.Runtime.Serialization;
 
 namespace Nerosoft.Euonia.Core;
 
@@ -17,14 +16,16 @@ public class MethodNotAllowedException : Exception
     {
     }
 
-    /// <inheritdoc />
-    protected MethodNotAllowedException(SerializationInfo info, StreamingContext context)
-        : base(info, context)
-    {
-    }
+#if !NET8_0_OR_GREATER
+	/// <inheritdoc />
+	public MethodNotAllowedException(SerializationInfo info, StreamingContext context)
+		: base(info, context)
+	{
+	} 
+#endif
 
-    /// <inheritdoc />
-    public MethodNotAllowedException(string message)
+	/// <inheritdoc />
+	public MethodNotAllowedException(string message)
         : base(message)
     {
     }
