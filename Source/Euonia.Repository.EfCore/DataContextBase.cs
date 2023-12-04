@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -21,7 +22,7 @@ public abstract class DataContextBase<TContext> : DbContext, IRepositoryContext
     }
 
     /// <summary>
-    /// 
+    /// Gets a value indicate whether the entry values are automatically set or not.
     /// </summary>
     protected abstract bool AutoSetEntryValues { get; }
 
@@ -29,6 +30,11 @@ public abstract class DataContextBase<TContext> : DbContext, IRepositoryContext
     /// Gets a value indicate whether the domain events publishing are enabled or not.
     /// </summary>
     protected abstract bool EnabledPublishEvents { get; }
+
+	/// <summary>
+	/// Gets the kind of the date time.
+	/// </summary>
+	protected virtual DateTimeKind DateTimeKind { get; } = DateTimeKind.Unspecified;
 
     /// <inheritdoc />
     public override int SaveChanges()
@@ -88,10 +94,10 @@ public abstract class DataContextBase<TContext> : DbContext, IRepositoryContext
         await Database.RollbackTransactionAsync(cancellationToken);
     }
 
-    #endregion
+	#endregion
 
-    /// <inheritdoc cref="DbContext.SaveChangesAsync(System.Threading.CancellationToken)" />
-    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+	/// <inheritdoc cref="DbContext.SaveChangesAsync(CancellationToken)" />
+	public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         return await SaveChangesAsync(true, cancellationToken);
     }
@@ -136,7 +142,7 @@ public abstract class DataContextBase<TContext> : DbContext, IRepositoryContext
     }
 
     /// <summary>
-    /// 
+    /// Sets the entry values.
     /// </summary>
     /// <param name="entries"></param>
     protected virtual void SetEntryValues(IEnumerable<EntityEntry> entries)
@@ -148,9 +154,9 @@ public abstract class DataContextBase<TContext> : DbContext, IRepositoryContext
 
         foreach (var entry in entries)
         {
-            var time = DateTime.UtcNow;
+			var time = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified);
 
-            switch (entry.State)
+			switch (entry.State)
             {
                 case EntityState.Added:
                     if (entry.Entity is IHasCreateTime)
@@ -221,7 +227,7 @@ public abstract class DataContextBase<TContext> : DbContext, IRepositoryContext
             //other automated configurations left out
             if (typeof(ITombstone).IsAssignableFrom(entityType.ClrType))
             {
-                entityType.SetSoftDeleteQueryFilter();
+                entityType.SetTombstoneQueryFilter();
             }
         }
     }
@@ -249,7 +255,7 @@ public abstract class DataContextBase<TContext> : DbContext, IRepositoryContext
         catch (Exception exception)
         {
             _logger.LogError(exception, "PublishEvents Error");
-            Console.WriteLine(exception);
+            Debug.WriteLine(exception);
         }
     }
 
