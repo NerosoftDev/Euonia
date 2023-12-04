@@ -8,5 +8,6 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
         <LangVersion>latest</LangVersion>
+        <NoWarn>CS2002;IDE0290;IDE0300;IDE0301;IDE0028</NoWarn>
     </PropertyGroup>
 </Project>
