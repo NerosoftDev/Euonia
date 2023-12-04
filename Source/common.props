@@ -21,21 +21,21 @@
         <DebugType>full</DebugType>
         <DebugSymbols>true</DebugSymbols>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <NoWarn>CS2002</NoWarn>
+        <NoWarn>CS2002;IDE0290</NoWarn>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)'=='Release' ">
         <DebugType>pdbonly</DebugType>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <NoWarn>1591;CS2002</NoWarn>
+        <NoWarn>1591;CS2002;IDE0290</NoWarn>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)'=='Product' ">
         <DebugType>pdbonly</DebugType>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <NoWarn>1591;CS2002</NoWarn>
+        <NoWarn>1591;CS2002;IDE0290</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
