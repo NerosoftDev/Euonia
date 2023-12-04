@@ -1,15 +1,9 @@
 <Project>
+    <Import Project="..\project.props" />
+
     <PropertyGroup>
         <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
 		<RootNamespace>Nerosoft.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
-        <Version>8.0.0</Version>
-        <Authors>damon</Authors>
-        <Company>Nerosoft Co., Ltd.</Company>
-        <Product>Euonia</Product>
-        <Copyright>© 2018-2023 Nerosoft. All Rights Reserved.</Copyright>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>disable</Nullable>
-        <LangVersion>latest</LangVersion>
 		<IsPackable>false</IsPackable>
     </PropertyGroup>
 

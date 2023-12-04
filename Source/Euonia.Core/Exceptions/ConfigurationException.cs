@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace Nerosoft.Euonia.Core;
+﻿namespace Nerosoft.Euonia.Core;
 
 /// <summary>
 /// Represents errors that occur during application configuration.
@@ -34,9 +32,11 @@ public class ConfigurationException : Exception
     {
     }
 
-    /// <inheritdoc />
-    protected ConfigurationException(SerializationInfo info, StreamingContext context)
-        : base(info, context)
-    {
-    }
+#if !NET8_0_OR_GREATER
+	/// <inheritdoc />
+	public ConfigurationException(SerializationInfo info, StreamingContext context)
+		: base(info, context)
+	{
+	}
+#endif
 }

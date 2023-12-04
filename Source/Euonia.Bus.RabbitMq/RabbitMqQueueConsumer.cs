@@ -1,12 +1,11 @@
-﻿using System.Threading.Channels;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
 namespace Nerosoft.Euonia.Bus.RabbitMq;
 
 /// <summary>
-/// 
+/// The RabbitMQ implementation of <see cref="IQueueConsumer"/>.
 /// </summary>
 public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 {

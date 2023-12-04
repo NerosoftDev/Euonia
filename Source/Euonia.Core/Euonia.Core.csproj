@@ -33,4 +33,7 @@
         </EmbeddedResource>
     </ItemGroup>
 
+    <ItemGroup>
+        <Using Include="System.Runtime.Serialization" />
+    </ItemGroup>
 </Project>
