@@ -22,9 +22,4 @@ public class InMemoryBusOptions
 	/// <c>true</c> if the subscriber should create for each message channel; otherwise, <c>false</c>. default is <c>false</c>.
 	/// </value>
 	public bool MultipleSubscriberInstance { get; set; }
-
-	/// <summary>
-	/// Gets or sets the messenger reference type.
-	/// </summary>
-	public MessengerReferenceType MessengerReference { get; set; } = MessengerReferenceType.StrongReference;
 }

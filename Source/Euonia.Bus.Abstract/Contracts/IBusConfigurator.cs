@@ -17,7 +17,7 @@ public interface IBusConfigurator
 	/// </summary>
 	/// <typeparam name="TFactory"></typeparam>
 	/// <returns></returns>
-	IBusConfigurator SerFactory<TFactory>()
+	IBusConfigurator SetFactory<TFactory>()
 		where TFactory : class, IBusFactory;
 
 	/// <summary>
@@ -26,7 +26,7 @@ public interface IBusConfigurator
 	/// <param name="factory"></param>
 	/// <typeparam name="TFactory"></typeparam>
 	/// <returns></returns>
-	IBusConfigurator SerFactory<TFactory>(TFactory factory)
+	IBusConfigurator SetFactory<TFactory>(TFactory factory)
 		where TFactory : class, IBusFactory;
 
 	/// <summary>
@@ -35,7 +35,7 @@ public interface IBusConfigurator
 	/// <param name="factory"></param>
 	/// <typeparam name="TFactory"></typeparam>
 	/// <returns></returns>
-	IBusConfigurator SerFactory<TFactory>(Func<IServiceProvider, TFactory> factory)
+	IBusConfigurator SetFactory<TFactory>(Func<IServiceProvider, TFactory> factory)
 		where TFactory : class, IBusFactory;
 
 	/// <summary>

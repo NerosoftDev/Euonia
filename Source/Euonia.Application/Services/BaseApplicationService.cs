@@ -22,4 +22,9 @@ public abstract class BaseApplicationService : IApplicationService
 	/// Gets the current request user principal.
 	/// </summary>
 	protected virtual UserPrincipal User => LazyServiceProvider.GetService<UserPrincipal>();
+
+	/// <summary>
+	/// Gets the current request context accessor.
+	/// </summary>
+	protected virtual IRequestContextAccessor HttpRequestAccessor => LazyServiceProvider.GetService<IRequestContextAccessor>();
 }

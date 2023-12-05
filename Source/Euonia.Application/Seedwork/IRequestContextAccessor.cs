@@ -1,4 +1,6 @@
-﻿using System.Security.Claims;
+﻿using System.Net;
+using System.Security.Claims;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Primitives;
 
 namespace Nerosoft.Euonia.Application;
@@ -8,35 +10,65 @@ namespace Nerosoft.Euonia.Application;
 /// </summary>
 public interface IRequestContextAccessor
 {
-    /// <summary>
-    /// Gets the authenticated user information for the current request.
-    /// </summary>
-    ClaimsPrincipal User { get; }
+	/// <summary>
+	/// Gets a unique identifier to represent the connection.
+	/// </summary>
+	string ConnectionId { get; }
 
-    /// <summary>
-    /// Gets the items for the current request.
-    /// </summary>
-    IDictionary<object, object> Items { get; }
+	/// <summary>
+	/// Gets the IP address of the remote target. Can be null.
+	/// </summary>
+	IPAddress RemoteIpAddress { get; }
 
-    /// <summary>
-    /// Gets the request trace identifier.
-    /// </summary>
-    string TraceIdentifier { get; }
+	/// <summary>
+	/// Gets the port of the remote target.
+	/// </summary>
+	int RemotePort { get; }
 
-    /// <summary>
-    /// Gets the injected service provider for the current request.
-    /// </summary>
-    IServiceProvider RequestServices { get; }
+	/// <summary>
+	/// 
+	/// </summary>
+	bool IsWebSocketRequest { get; }
 
-    /// <summary>
-    /// Gets the request cancellation token.
-    /// </summary>
-    CancellationToken RequestAborted { get; }
+	/// <summary>
+	/// Gets the authenticated user information for the current request.
+	/// </summary>
+	ClaimsPrincipal User { get; }
 
-    /// <summary>
-    /// Gets the request headers.
-    /// </summary>
-    IDictionary<string, StringValues> RequestHeaders { get; }
+	/// <summary>
+	/// Gets the items for the current request.
+	/// </summary>
+	IDictionary<object, object> Items { get; }
+
+	/// <summary>
+	/// Gets the request trace identifier.
+	/// </summary>
+	string TraceIdentifier { get; }
+
+	/// <summary>
+	/// Gets the injected service provider for the current request.
+	/// </summary>
+	IServiceProvider RequestServices { get; }
+
+	/// <summary>
+	/// Gets the request cancellation token.
+	/// </summary>
+	CancellationToken RequestAborted { get; }
+
+	/// <summary>
+	/// Gets the request headers.
+	/// </summary>
+	IDictionary<string, StringValues> RequestHeaders { get; }
+
+	/// <summary>
+	/// Gets the Authorization HTTP header.
+	/// </summary>
+	StringValues Authorization => RequestHeaders?.TryGetValue(nameof(Authorization)) ?? default;
+
+	/// <summary>
+	/// Gets or sets the Request-Id HTTP header.
+	/// </summary>
+	StringValues RequestId => RequestHeaders?.TryGetValue("Request-Id") ?? default;
 }
 
 /// <summary>
@@ -70,63 +102,71 @@ public delegate CancellationToken GetRequestAbortedDelegate();
 public delegate IDictionary<string, StringValues> GetRequestHeadersDelegate();
 
 /// <summary>
+/// Define delegation to get connection information of current request.
+/// </summary>
+/// <returns></returns>
+public delegate Tuple<string, IPAddress, int, bool> GetConnectionInfoDelegate();
+
+/// <summary>
 /// An implementation of <see cref="IRequestContextAccessor"/> using delegate methods.
 /// </summary>
 public class DelegateRequestContextAccessor : IRequestContextAccessor
 {
-    private readonly GetRequestUserDelegate _getUser;
-    private readonly GetRequestItemsDelegate _getItems;
-    private readonly GetRequestTraceIdentifierDelegate _getTraceIdentifier;
-    private readonly GetRequestServicesDelegate _getServices;
-    private readonly GetRequestAbortedDelegate _getAborted;
-    private readonly GetRequestHeadersDelegate _getHeaders;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DelegateRequestContextAccessor"/> class.
-    /// </summary>
-    public DelegateRequestContextAccessor()
-    {
-    }
+	private readonly IServiceProvider _provider;
 
-    /// <inheritdoc />
-    public DelegateRequestContextAccessor(GetRequestUserDelegate getUser, GetRequestItemsDelegate getItems, GetRequestTraceIdentifierDelegate getTraceIdentifier, GetRequestServicesDelegate getServices, GetRequestAbortedDelegate getAborted, GetRequestHeadersDelegate getHeaders)
-        : this()
-    {
-        _getUser = getUser;
-        _getItems = getItems;
-        _getTraceIdentifier = getTraceIdentifier;
-        _getServices = getServices;
-        _getAborted = getAborted;
-        _getHeaders = getHeaders;
-    }
+	/// <summary>
+	/// Initializes a new instance of the <see cref="DelegateRequestContextAccessor"/> class.
+	/// </summary>
+	public DelegateRequestContextAccessor(IServiceProvider provider)
+	{
+		_provider = provider;
+		var (connectionId, remoteIpAddress, remotePort, isWebSocketRequest) = provider.GetService<GetConnectionInfoDelegate>()?.Invoke() ?? default;
+		ConnectionId = connectionId;
+		RemoteIpAddress = remoteIpAddress;
+		RemotePort = remotePort;
+		IsWebSocketRequest = isWebSocketRequest;
+	}
 
-    /// <summary>
-    /// Gets the authenticated user information for the current request.
-    /// </summary>
-    public ClaimsPrincipal User => _getUser?.Invoke();
+	/// <inheritdoc/>
+	public string ConnectionId { get; }
 
-    /// <summary>
-    /// Gets the items for the current request.
-    /// </summary>
-    public IDictionary<object, object> Items => _getItems?.Invoke();
+	/// <inheritdoc/>
+	public IPAddress RemoteIpAddress { get; }
 
-    /// <summary>
-    /// Gets the request trace identifier.
-    /// </summary>
-    public string TraceIdentifier => _getTraceIdentifier?.Invoke();
+	/// <inheritdoc/>
+	public int RemotePort { get; }
 
-    /// <summary>
-    /// Gets the injected service provider for the current request.
-    /// </summary>
-    public IServiceProvider RequestServices => _getServices?.Invoke();
+	/// <inheritdoc/>
+	public bool IsWebSocketRequest { get; }
 
-    /// <summary>
-    /// Gets the request cancellation token.
-    /// </summary>
-    public CancellationToken RequestAborted => _getAborted?.Invoke() ?? default;
+	/// <summary>
+	/// Gets the authenticated user information for the current request.
+	/// </summary>
+	public ClaimsPrincipal User => _provider.GetService<GetRequestUserDelegate>()?.Invoke();
 
-    /// <summary>
-    /// Gets the request headers.
-    /// </summary>
-    public IDictionary<string, StringValues> RequestHeaders => _getHeaders?.Invoke();
+	/// <summary>
+	/// Gets the items for the current request.
+	/// </summary>
+	public IDictionary<object, object> Items => _provider.GetService<GetRequestItemsDelegate>()?.Invoke();
+
+	/// <summary>
+	/// Gets the request trace identifier.
+	/// </summary>
+	public string TraceIdentifier => _provider.GetService<GetRequestTraceIdentifierDelegate>()?.Invoke();
+
+	/// <summary>
+	/// Gets the injected service provider for the current request.
+	/// </summary>
+	public IServiceProvider RequestServices => _provider.GetService<GetRequestServicesDelegate>()?.Invoke();
+
+	/// <summary>
+	/// Gets the request cancellation token.
+	/// </summary>
+	public CancellationToken RequestAborted => _provider.GetService<GetRequestAbortedDelegate>()?.Invoke() ?? default;
+
+	/// <summary>
+	/// Gets the request headers.
+	/// </summary>
+	public IDictionary<string, StringValues> RequestHeaders => _provider.GetService<GetRequestHeadersDelegate>()?.Invoke();
 }

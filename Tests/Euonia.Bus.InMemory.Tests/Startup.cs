@@ -40,7 +40,6 @@ public class Startup
 			});
 			config.UseInMemory(options =>
 			{
-				options.MessengerReference = MessengerReferenceType.StrongReference;
 				options.MultipleSubscriberInstance = false;
 			});
 		});

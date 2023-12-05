@@ -5,12 +5,14 @@
 /// </summary>
 public interface IHandler
 {
+	/*
 	/// <summary>
 	/// Determines whether the current message handler can handle the message with the specified message type.
 	/// </summary>
 	/// <param name="messageType">Type of the message to be checked.</param>
 	/// <returns><c>true</c> if the current message handler can handle the message with the specified message type; otherwise, <c>false</c>.</returns>
 	bool CanHandle(Type messageType);
+	*/
 }
 
 /// <summary>
@@ -26,6 +28,6 @@ public interface IHandler<in TMessage> : IHandler
 	/// <param name="message">The message.</param>
 	/// <param name="messageContext">The message context.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
-	/// <returns>Task&lt;System.Boolean&gt;.</returns>
+	/// <returns></returns>
 	Task HandleAsync(TMessage message, MessageContext messageContext, CancellationToken cancellationToken = default);
 }
