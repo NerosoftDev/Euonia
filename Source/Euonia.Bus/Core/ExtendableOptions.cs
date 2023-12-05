@@ -31,4 +31,9 @@ public abstract class ExtendableOptions
 	/// Gets or sets the queue priority.
 	/// </summary>
 	public virtual int Priority { get; set; }
+
+	/// <summary>
+	/// Gets or sets the request trace id.
+	/// </summary>
+	public virtual string RequestTraceId { get; set; }
 }

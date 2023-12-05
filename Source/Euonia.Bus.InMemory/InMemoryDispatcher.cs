@@ -8,17 +8,6 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 	/// <inheritdoc />
 	public event EventHandler<MessageDispatchedEventArgs> Delivered;
 
-	private readonly IMessenger _messenger;
-
-	/// <summary>
-	/// Initializes a new instance of the <see cref="InMemoryDispatcher"/> class.
-	/// </summary>
-	/// <param name="messenger"></param>
-	public InMemoryDispatcher(IMessenger messenger)
-	{
-		_messenger = messenger;
-	}
-
 	/// <inheritdoc />
 	public async Task PublishAsync<TMessage>(RoutedMessage<TMessage> message, CancellationToken cancellationToken = default)
 		where TMessage : class
@@ -28,7 +17,7 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 		{
 			Aborted = cancellationToken
 		};
-		_messenger.Send(pack, message.Channel);
+		WeakReferenceMessenger.Default.Send(pack, message.Channel);
 		Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, context));
 		await Task.CompletedTask;
 	}
@@ -55,7 +44,8 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 			taskCompletion.SetResult();
 		};
 
-		_messenger.Send(pack, message.Channel);
+		StrongReferenceMessenger.Default.UnsafeSend(pack, message.Channel);
+
 		Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, context));
 
 		await taskCompletion.Task;
@@ -87,7 +77,7 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 			taskCompletion.TrySetResult(default);
 		};
 
-		_messenger.Send(pack, message.Channel);
+		StrongReferenceMessenger.Default.UnsafeSend(pack, message.Channel);
 		Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, context));
 
 		return await taskCompletion.Task;
@@ -96,6 +86,7 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 	/// <inheritdoc />
 	protected override void Dispose(bool disposing)
 	{
-		_messenger.Cleanup();
+		StrongReferenceMessenger.Default.Reset();
+		WeakReferenceMessenger.Default.Reset();
 	}
 }

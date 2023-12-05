@@ -36,13 +36,13 @@ public abstract class RoutedMessage
 	/// Gets or sets the conversation identifier.
 	/// </summary>
 	[DataMember]
-	public virtual string ConversationId { get; }
+	public virtual string ConversationId { get; set; } = Guid.NewGuid().ToString();
 
 	/// <summary>
 	/// Gets or sets the request trace identifier.
 	/// </summary>
 	[DataMember]
-	public virtual string RequestTraceId { get; }
+	public virtual string RequestTraceId { get; set; }
 
 	/// <summary>
 	/// Gets or sets the channel that the message send to.
