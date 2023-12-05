@@ -33,11 +33,11 @@ public class BusConfigurator : IBusConfigurator
 	public IServiceCollection Service { get; }
 
 	/// <summary>
-	/// 
+	/// Sets the bus factory.
 	/// </summary>
 	/// <typeparam name="TFactory"></typeparam>
 	/// <returns></returns>
-	public IBusConfigurator SerFactory<TFactory>()
+	public IBusConfigurator SetFactory<TFactory>()
 		where TFactory : class, IBusFactory
 	{
 		Service.TryAddSingleton<IBusFactory, TFactory>();
@@ -45,12 +45,12 @@ public class BusConfigurator : IBusConfigurator
 	}
 
 	/// <summary>
-	/// 
+	/// Sets the bus factory.
 	/// </summary>
 	/// <param name="factory"></param>
 	/// <typeparam name="TFactory"></typeparam>
 	/// <returns></returns>
-	public IBusConfigurator SerFactory<TFactory>(TFactory factory)
+	public IBusConfigurator SetFactory<TFactory>(TFactory factory)
 		where TFactory : class, IBusFactory
 	{
 		Service.TryAddSingleton<IBusFactory>(factory);
@@ -58,12 +58,12 @@ public class BusConfigurator : IBusConfigurator
 	}
 
 	/// <summary>
-	/// 
+	/// Sets the message serializer.
 	/// </summary>
 	/// <param name="factory"></param>
 	/// <typeparam name="TFactory"></typeparam>
 	/// <returns></returns>
-	public IBusConfigurator SerFactory<TFactory>(Func<IServiceProvider, TFactory> factory)
+	public IBusConfigurator SetFactory<TFactory>(Func<IServiceProvider, TFactory> factory)
 		where TFactory : class, IBusFactory
 	{
 		Service.TryAddSingleton<IBusFactory>(factory);
@@ -71,7 +71,7 @@ public class BusConfigurator : IBusConfigurator
 	}
 
 	/// <summary>
-	/// Set the message serializer.
+	/// Sets the message serializer.
 	/// </summary>
 	/// <typeparam name="TSerializer"></typeparam>
 	/// <returns></returns>
@@ -83,7 +83,7 @@ public class BusConfigurator : IBusConfigurator
 	}
 
 	/// <summary>
-	/// Set the message serializer.
+	/// Sets the message serializer.
 	/// </summary>
 	/// <param name="serializer"></param>
 	/// <typeparam name="TSerializer"></typeparam>
@@ -96,7 +96,7 @@ public class BusConfigurator : IBusConfigurator
 	}
 
 	/// <summary>
-	/// Set the message store provider.
+	/// Sets the message store provider.
 	/// </summary>
 	/// <typeparam name="TStore"></typeparam>
 	/// <returns></returns>
@@ -108,7 +108,7 @@ public class BusConfigurator : IBusConfigurator
 	}
 
 	/// <summary>
-	/// Set the message store provider.
+	/// Sets the message store provider.
 	/// </summary>
 	/// <param name="store"></param>
 	/// <typeparam name="TStore"></typeparam>
@@ -159,7 +159,7 @@ public class BusConfigurator : IBusConfigurator
 	}
 
 	/// <summary>
-	/// Set the message convention.
+	/// Sets the message convention.
 	/// </summary>
 	/// <param name="configure"></param>
 	/// <returns></returns>
@@ -167,6 +167,17 @@ public class BusConfigurator : IBusConfigurator
 	{
 		configure?.Invoke(ConventionBuilder);
 		Service.TryAddSingleton<IMessageConvention>(ConventionBuilder.Convention);
+		return this;
+	}
+
+	/// <summary>
+	/// Sets the request context accessor.
+	/// </summary>
+	/// <param name="accessor"></param>
+	/// <returns></returns>
+	public BusConfigurator SetRequestContextAccessor(RequestContextAccessor accessor)
+	{
+		Service.TryAddScoped(provider => accessor);
 		return this;
 	}
 }

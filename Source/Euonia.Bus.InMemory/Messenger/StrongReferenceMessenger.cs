@@ -233,7 +233,7 @@ public sealed class StrongReferenceMessenger : IMessenger
 			foreach (var mapping in set)
 			{
 				if (mapping.TryRemove(key) &&
-				    mapping.Count == 0)
+					mapping.Count == 0)
 				{
 					// Maps here are really of type Mapping<,> and with unknown type arguments.
 					// If after removing the current recipient a given map becomes empty, it means
@@ -332,7 +332,7 @@ public sealed class StrongReferenceMessenger : IMessenger
 				// Try to remove the registered handler for the input token,
 				// for the current message type (unknown from here).
 				if (holder.TryRemove(token) &&
-				    holder.Count == 0)
+					holder.Count == 0)
 				{
 					// If the map is empty, remove the recipient entirely from its container
 					_ = handlersMap.TryRemove(key);
@@ -450,7 +450,7 @@ public sealed class StrongReferenceMessenger : IMessenger
 
 				// Remove the target handler
 				if (dictionary.TryRemove(token) &&
-				    dictionary.Count == 0)
+					dictionary.Count == 0)
 				{
 					// If the map is empty, it means that the current recipient has no remaining
 					// registered handlers for the current <TMessage, TToken> combination, regardless,
@@ -593,7 +593,136 @@ public sealed class StrongReferenceMessenger : IMessenger
 			ArrayPool<object>.Shared.Return(rentedArray);
 		}
 
-		End:
+	End:
+		return message;
+	}
+
+	/// <summary>
+	/// Sends a message of the specified type to all registered recipients.
+	/// </summary>
+	/// <typeparam name="TMessage">The type of message to send.</typeparam>
+	/// <typeparam name="TToken">The type of token to identify what channel to use to send the message.</typeparam>
+	/// <param name="message">The message to send.</param>
+	/// <param name="token">The token indicating what channel to use.</param>
+	/// <returns>The message that was sent (ie. <paramref name="message"/>).</returns>
+	/// <exception cref="System.ArgumentNullException">Thrown if <paramref name="message"/> or <paramref name="token"/> are <see langword="null"/>.</exception>
+	public TMessage UnsafeSend<TMessage, TToken>(TMessage message, TToken token)
+		where TMessage : class
+		where TToken : IEquatable<TToken>
+	{
+		ArgumentAssert.ThrowIfNull(message);
+		ArgumentAssert.For<TToken>.ThrowIfNull(token);
+
+		object[] rentedArray;
+		Span<object> pairs;
+		var i = 0;
+
+		lock (_recipientsMap)
+		{
+			if (typeof(TToken) == typeof(Unit))
+			{
+				// Check whether there are any registered recipients
+				if (!TryGetMapping<TMessage>(out var mapping))
+				{
+					throw new InvalidOperationException("No recipients registered for the input message type.");
+				}
+
+				// Check the number of remaining handlers, see below
+				var totalHandlersCount = mapping.Count;
+
+				if (totalHandlersCount == 0)
+				{
+					throw new InvalidOperationException("No recipients registered for the input message type.");
+				}
+
+				pairs = rentedArray = ArrayPool<object>.Shared.Rent(2 * totalHandlersCount);
+
+				// Same logic as below, except here we're only traversing one handler per recipient
+				var mappingEnumerator = mapping.GetEnumerator();
+
+				while (mappingEnumerator.MoveNext())
+				{
+					pairs[2 * i] = mappingEnumerator.GetValue();
+					pairs[(2 * i) + 1] = mappingEnumerator.GetKey().Target;
+					i++;
+				}
+			}
+			else
+			{
+				// Check whether there are any registered recipients
+				if (!TryGetMapping<TMessage, TToken>(out var mapping))
+				{
+					throw new InvalidOperationException("No recipients registered for the input message type and token.");
+				}
+
+				// We need to make a local copy of the currently registered handlers, since users might
+				// try to unregister (or register) new handlers from inside one of the currently existing
+				// handlers. We can use memory pooling to reuse arrays, to minimize the average memory
+				// usage. In practice, we usually just need to pay the small overhead of copying the items.
+				// The current mapping contains all the currently registered recipients and handlers for
+				// the <TMessage, TToken> combination in use. In the worst case scenario, all recipients
+				// will have a registered handler with a token matching the input one, meaning that we could
+				// have at worst a number of pending handlers to invoke equal to the total number of recipient
+				// in the mapping. This relies on the fact that tokens are unique, and that there is only
+				// one handler associated with a given token. We can use this upper bound as the requested
+				// size for each array rented from the pool, which guarantees that we'll have enough space.
+				var totalHandlersCount = mapping.Count;
+
+				if (totalHandlersCount == 0)
+				{
+					throw new InvalidOperationException("No recipients registered for the input message type.");
+				}
+
+				// Rent the array and also assign it to a span, which will be used to access values.
+				// We're doing this to avoid the array covariance checks slowdown in the loops below.
+				pairs = rentedArray = ArrayPool<object>.Shared.Rent(2 * totalHandlersCount);
+
+				// Copy the handlers to the local collection.
+				// The array is oversized at this point, since it also includes
+				// handlers for different tokens. We can reuse the same variable
+				// to count the number of matching handlers to invoke later on.
+				// This will be the array slice with valid handler in the rented buffer.
+				var mappingEnumerator = mapping.GetEnumerator();
+
+				// Explicit enumerator usage here as we're using a custom one
+				// that doesn't expose the single standard Current property.
+				while (mappingEnumerator.MoveNext())
+				{
+					// Pick the target handler, if the token is a match for the recipient
+					if (mappingEnumerator.GetValue().TryGetValue(token, out var handler))
+					{
+						// This span access should always guaranteed to be valid due to the size of the
+						// array being set according to the current total number of registered handlers,
+						// which will always be greater or equal than the ones matching the previous test.
+						// We're still using a checked span accesses here though to make sure an out of
+						// bounds write can never happen even if an error was present in the logic above.
+						pairs[2 * i] = handler;
+						pairs[(2 * i) + 1] = mappingEnumerator.GetKey().Target;
+						i++;
+					}
+				}
+
+				if (i == 0)
+				{
+					throw new InvalidOperationException("No recipients registered for the input message type and token.");
+				}
+			}
+		}
+
+		try
+		{
+			// The core broadcasting logic is the same as the weak reference messenger one
+			WeakReferenceMessenger.SendAll(pairs, i, message);
+		}
+		finally
+		{
+			// As before, we also need to clear it first to avoid having potentially long
+			// lasting memory leaks due to leftover references being stored in the pool.
+			Array.Clear(rentedArray, 0, 2 * i);
+
+			ArrayPool<object>.Shared.Return(rentedArray);
+		}
+
 		return message;
 	}
 
