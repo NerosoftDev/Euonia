@@ -1,0 +1,13 @@
+<Project>
+    <PropertyGroup>
+        <Version>8.0.1</Version>
+        <Authors>damon</Authors>
+        <Company>Nerosoft Ltd.</Company>
+        <Product>Euonia</Product>
+        <Copyright>© 2018-2023 Nerosoft. All Rights Reserved.</Copyright>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <LangVersion>latest</LangVersion>
+        <NoWarn>CS2002;IDE0290;IDE0300;IDE0301;IDE0028</NoWarn>
+    </PropertyGroup>
+</Project>

@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using System.Runtime.Serialization;
 
 namespace Nerosoft.Euonia.Core;
 
@@ -17,14 +16,16 @@ public class ServiceUnavailableException : Exception
     {
     }
 
-    /// <inheritdoc />
-    protected ServiceUnavailableException(SerializationInfo info, StreamingContext context)
-        : base(info, context)
-    {
-    }
+#if !NET8_0_OR_GREATER
+	/// <inheritdoc />
+	public ServiceUnavailableException(SerializationInfo info, StreamingContext context)
+		: base(info, context)
+	{
+	} 
+#endif
 
-    /// <inheritdoc />
-    public ServiceUnavailableException(string message)
+	/// <inheritdoc />
+	public ServiceUnavailableException(string message)
         : base(message)
     {
     }

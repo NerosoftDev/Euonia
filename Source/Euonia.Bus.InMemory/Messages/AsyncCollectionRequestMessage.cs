@@ -38,7 +38,7 @@ public class AsyncCollectionRequestMessage<T> : IAsyncEnumerable<T>
 	/// </code>
 	/// If we also want to control the cancellation of the token passed to each subscriber to the message,
 	/// we can do so by passing a token we control to the returned message before starting the enumeration
-	/// (<see cref="TaskAsyncEnumerableExtensions.WithCancellation{T}(IAsyncEnumerable{T}, CancellationToken)"/>).
+	/// (<see cref="TaskAsyncEnumerableExtensions.WithCancellation{T}"/>).
 	/// The previous snippet with this additional change looks as follows:
 	/// <code>
 	/// await foreach (var document in Messenger.Default.Send&lt;OpenDocumentsRequestMessage&gt;().WithCancellation(cts.Token))
@@ -52,7 +52,7 @@ public class AsyncCollectionRequestMessage<T> : IAsyncEnumerable<T>
 	/// itself will automatically be linked and canceled with the one passed to the enumerator.
 	/// </summary>
 	public CancellationToken CancellationToken => _cancellationTokenSource.Token;
-
+	
 	/// <summary>
 	/// Replies to the current request message.
 	/// </summary>

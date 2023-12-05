@@ -3,23 +3,23 @@
 /// <summary>
 /// The event aggregate root.
 /// </summary>
-public class EventAggregate : IAggregateRoot<Guid>
+public class EventAggregate : IAggregateRoot<string>
 {
     /// <inheritdoc />
     public object[] GetKeys()
     {
-        return new object[] { Id };
+		return new object[] { Id };
     }
 
     /// <summary>
     /// Gets or sets the identifier of current instance.
     /// </summary>
-    public Guid Id { get; set; }
+    public string Id { get; set; }
 
     /// <summary>
     /// Gets or sets then event identifier.
     /// </summary>
-    public Guid EventId { get; set; }
+    public string EventId { get; set; }
 
     /// <summary>
     /// Gets or sets the timestamp.
@@ -56,9 +56,9 @@ public class EventAggregate : IAggregateRoot<Guid>
     /// </summary>
     public long EventSequence { get; set; }
 
-    /// <summary>
-    /// Returns a <see cref="System.String" /> that represents this instance.
-    /// </summary>
-    /// <returns>A <see cref="System.String" /> that represents this instance.</returns>
-    public override string ToString() => EventIntent;
+	/// <summary>
+	/// Returns a <see cref="string" /> that represents this instance.
+	/// </summary>
+	/// <returns>A <see cref="string" /> that represents this instance.</returns>
+	public override string ToString() => EventIntent;
 }

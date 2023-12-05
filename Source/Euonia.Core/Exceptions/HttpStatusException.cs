@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using System.Runtime.Serialization;
 
 namespace Nerosoft.Euonia.Core;
 
@@ -21,19 +20,21 @@ public class HttpStatusException : Exception
         _statusCode = statusCode;
     }
 
-    /// <inheritdoc />
-    protected HttpStatusException(SerializationInfo info, StreamingContext context)
-        : base(info, context)
-    {
-        _statusCode = (HttpStatusCode)info.GetInt32(nameof(StatusCode));
-    }
+#if !NET8_0_OR_GREATER
+	/// <inheritdoc />
+	public HttpStatusException(SerializationInfo info, StreamingContext context)
+		: base(info, context)
+	{
+		_statusCode = (HttpStatusCode)info.GetInt32(nameof(StatusCode));
+	} 
+#endif
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="HttpStatusException"/> class.
-    /// </summary>
-    /// <param name="statusCode"></param>
-    /// <param name="message"></param>
-    public HttpStatusException(HttpStatusCode statusCode, string message)
+	/// <summary>
+	/// Initializes a new instance of the <see cref="HttpStatusException"/> class.
+	/// </summary>
+	/// <param name="statusCode"></param>
+	/// <param name="message"></param>
+	public HttpStatusException(HttpStatusCode statusCode, string message)
         : base(message)
     {
         _statusCode = statusCode;
@@ -51,15 +52,17 @@ public class HttpStatusException : Exception
         _statusCode = statusCode;
     }
 
-    /// <inheritdoc />
-    public override void GetObjectData(SerializationInfo info, StreamingContext context)
-    {
-        base.GetObjectData(info, context);
-        info.AddValue(nameof(StatusCode), (int)_statusCode, typeof(int));
-    }
+#if !NET8_0_OR_GREATER
+	/// <inheritdoc />
+	public override void GetObjectData(SerializationInfo info, StreamingContext context)
+	{
+		base.GetObjectData(info, context);
+		info.AddValue(nameof(StatusCode), (int)_statusCode, typeof(int));
+	} 
+#endif
 
-    /// <summary>
-    /// Gets the HTTP status code.
-    /// </summary>
-    public virtual HttpStatusCode StatusCode => _statusCode;
+	/// <summary>
+	/// Gets the HTTP status code.
+	/// </summary>
+	public virtual HttpStatusCode StatusCode => _statusCode;
 }

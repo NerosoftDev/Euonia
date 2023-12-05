@@ -11,7 +11,7 @@ namespace Nerosoft.Euonia.Bus;
 /// </summary>
 public class BusConfigurator : IBusConfigurator
 {
-	private readonly List<MessageRegistration> _registrations = [];
+	private readonly List<MessageRegistration> _registrations = new();
 
 	private MessageConventionBuilder ConventionBuilder { get; } = new();
 

@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using System.Runtime.Serialization;
 
 namespace Nerosoft.Euonia.Core;
 
@@ -17,14 +16,16 @@ public class GatewayTimeoutException : Exception
     {
     }
 
-    /// <inheritdoc />
-    protected GatewayTimeoutException(SerializationInfo info, StreamingContext context)
-        : base(info, context)
-    {
-    }
+#if !NET8_0_OR_GREATER
+	/// <inheritdoc />
+	public GatewayTimeoutException(SerializationInfo info, StreamingContext context)
+		: base(info, context)
+	{
+	} 
+#endif
 
-    /// <inheritdoc />
-    public GatewayTimeoutException(string message)
+	/// <inheritdoc />
+	public GatewayTimeoutException(string message)
         : base(message)
     {
     }

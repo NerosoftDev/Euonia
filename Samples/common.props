@@ -1,17 +1,12 @@
 <Project>
+    <Import Project="..\project.props" />
+
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
 		<RootNamespace>Nerosoft.Euonia.Sample</RootNamespace>
-        <Version>7.6.0</Version>
-        <Authors>damon</Authors>
-        <Company>Nerosoft Co., Ltd.</Company>
-        <Product>Euonia</Product>
-        <Copyright>© 2018-2023 Nerosoft. All Rights Reserved.</Copyright>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>disable</Nullable>
-        <LangVersion>latest</LangVersion>
         <Description>Euonia development framework and toolkit library for .NET application/service. Powered by Nerosoft.</Description>
         <Configurations>Debug;Release;Product</Configurations>
+        <IsPackable>false</IsPackable>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)'=='Debug' ">

@@ -9,7 +9,7 @@ public class CommandResponse
     /// Initialize a new instance of <see cref="CommandResponse"/>.
     /// </summary>
     /// <param name="commandId">The unique id of command to execute.</param>
-    public CommandResponse(Guid commandId)
+    public CommandResponse(string commandId)
     {
         CommandId = commandId;
     }
@@ -18,7 +18,7 @@ public class CommandResponse
     /// Gets the command id.
     /// </summary>
     /// <value>The unique id of a <see cref="Command"/> instance.</value>
-    public Guid CommandId { get; }
+    public string CommandId { get; }
 
     /// <summary>
     /// Gets or sets the command execution status
@@ -56,7 +56,7 @@ public class CommandResponse<TResult> : CommandResponse
     /// Initialize a new instance of <see cref="CommandResponse{TResult}"/>.
     /// </summary>
     /// <param name="commandId">The unique id of command to execute.</param>
-    public CommandResponse(Guid commandId)
+    public CommandResponse(string commandId)
         : base(commandId)
     {
     }

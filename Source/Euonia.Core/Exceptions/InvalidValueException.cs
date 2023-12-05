@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace Nerosoft.Euonia.Core;
+﻿namespace Nerosoft.Euonia.Core;
 
 /// <summary>
 /// Represents the errors occurring when a value is invalid.
@@ -34,13 +32,15 @@ public class InvalidValueException : Exception
     {
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="InvalidValueException"/> class with serialized data.
-    /// </summary>
-    /// <param name="info">The exception data serialize information.</param>
-    /// <param name="context"></param>
-    protected InvalidValueException(SerializationInfo info, StreamingContext context)
-        : base(info, context)
-    {
-    }
+#if !NET8_0_OR_GREATER
+	/// <summary>
+	/// Initializes a new instance of the <see cref="InvalidValueException"/> class with serialized data.
+	/// </summary>
+	/// <param name="info">The exception data serialize information.</param>
+	/// <param name="context"></param>
+	public InvalidValueException(SerializationInfo info, StreamingContext context)
+		: base(info, context)
+	{
+	} 
+#endif
 }
