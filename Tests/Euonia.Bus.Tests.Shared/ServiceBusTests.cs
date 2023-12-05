@@ -52,7 +52,7 @@ public partial class ServiceBusTests
 		}
 		else
 		{
-			var result = await _provider.GetService<IBus>().SendAsync<FooCreateCommand, int>(new FooCreateCommand(), new SendOptions { Channel = "foo.create" });
+			var result = await _provider.GetService<IBus>().SendAsync(new FooCreateCommand(), new SendOptions { Channel = "foo.create" }, null, (int i) => Console.Write(i));
 			Assert.Equal(1, result);
 		}
 	}
@@ -68,6 +68,22 @@ public partial class ServiceBusTests
 		{
 			var result = await _provider.GetService<IBus>().SendAsync<int>(new FooCreateCommand(), new SendOptions { Channel = "foo.create" });
 			Assert.Equal(1, result);
+		}
+	}
+
+	[Fact]
+	public async Task TestSendCommand_HasReponse_MessageHasResultInherites_NoRecipient()
+	{
+		if (_preventRunTests)
+		{
+			Assert.True(true);
+		}
+		else
+		{
+			await Assert.ThrowsAnyAsync<InvalidOperationException>(async () =>
+			{
+				var result = await _provider.GetService<IBus>().SendAsync<int>(new FooCreateCommand());
+			});
 		}
 	}
 }
