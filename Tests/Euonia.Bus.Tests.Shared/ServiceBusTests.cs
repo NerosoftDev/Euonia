@@ -4,7 +4,7 @@ using Nerosoft.Euonia.Bus.Tests.Commands;
 
 namespace Nerosoft.Euonia.Bus.Tests;
 
-public partial class ServiceBusTests
+public class ServiceBusTests
 {
 	private readonly IServiceProvider _provider;
 	private readonly bool _preventRunTests;
@@ -16,7 +16,7 @@ public partial class ServiceBusTests
 	}
 
 	[Fact]
-	public async Task TestSendCommand_HasReponse()
+	public async Task TestSendCommand_HasResponse()
 	{
 		if (_preventRunTests)
 		{

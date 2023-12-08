@@ -26,3 +26,6 @@ resharper_move_local_function_after_jump_statement = false;
 resharper_static_member_in_generic_type_highlighting = none;
 resharper_virtual_member_call_in_constructor_highlighting = none;
 resharper_inconsistently_synchronized_field_highlighting = hint;
+resharper_redundant_type_declaration_body_highlighting = none;
+resharper_separate_local_functions_with_jump_statement_highlighting = none;
+resharper_convert_to_primary_constructor_highlighting = none;

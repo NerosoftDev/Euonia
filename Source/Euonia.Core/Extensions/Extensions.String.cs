@@ -812,4 +812,30 @@ public static partial class Extensions
 
 		return source[..start] + "".PadLeft(length, maskChar) + source[end..];
 	}
+
+	/// <summary>
+	/// Returns a value if the string is null or white space.
+	/// </summary>
+	/// <param name="source">The source string.</param>
+	/// <param name="default">The string to return if source string is null or white space.</param>
+	/// <returns>The <paramref name="source"/> or <paramref name="default"/>.</returns>
+	public static string DefaultIfNullOrWhiteSpace(this string source, [NotNull] string @default)
+	{
+		return string.IsNullOrWhiteSpace(source) ? @default : source;
+	}
+
+	/// <summary>
+	/// Encoding the given string using Base64 and returns a new string.
+	/// </summary>
+	/// <param name="source">The source string to encoding.</param>
+	/// <returns></returns>
+	public static string ToBase64(this string source)
+	{
+		if (string.IsNullOrWhiteSpace(source))
+		{
+			return string.Empty;
+		}
+		var plainTextBytes = Encoding.UTF8.GetBytes(source);
+		return System.Convert.ToBase64String(plainTextBytes);
+	}
 }

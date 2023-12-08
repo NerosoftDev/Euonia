@@ -16,19 +16,19 @@ public class RabbitMqDispatcher : IDispatcher
 	public event EventHandler<MessageDispatchedEventArgs> Delivered;
 
 	private readonly RabbitMqMessageBusOptions _options;
-	private readonly ConnectionFactory _factory;
+	private readonly IPersistentConnection _connection;
 	private readonly ILogger<RabbitMqDispatcher> _logger;
 
 	/// <summary>
 	/// Initialize a new instance of <see cref="RabbitMqDispatcher"/>.
 	/// </summary>
-	/// <param name="factory"></param>
+	/// <param name="connection"></param>
 	/// <param name="options"></param>
 	/// <param name="logger"></param>
-	public RabbitMqDispatcher(ConnectionFactory factory, IOptions<RabbitMqMessageBusOptions> options, ILoggerFactory logger)
+	public RabbitMqDispatcher(IPersistentConnection connection, IOptions<RabbitMqMessageBusOptions> options, ILoggerFactory logger)
 	{
 		_logger = logger.CreateLogger<RabbitMqDispatcher>();
-		_factory = factory;
+		_connection = connection;
 		_options = options.Value;
 	}
 
@@ -36,8 +36,7 @@ public class RabbitMqDispatcher : IDispatcher
 	public async Task PublishAsync<TMessage>(RoutedMessage<TMessage> message, CancellationToken cancellationToken = default)
 		where TMessage : class
 	{
-		using var connection = _factory.CreateConnection();
-		using var channel = connection.CreateModel();
+		using var channel = _connection.CreateChannel();
 
 		var typeName = message.GetTypeName();
 
@@ -47,26 +46,42 @@ public class RabbitMqDispatcher : IDispatcher
 		props.Type = typeName;
 
 		await Policy.Handle<Exception>()
-		            .WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(3), (exception, _, retryCount, _) =>
-		            {
-			            _logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
-		            })
-		            .ExecuteAsync(async () =>
-		            {
-			            var messageBody = await SerializeAsync(message, cancellationToken);
+					.WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(3), (exception, _, retryCount, _) =>
+					{
+						_logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
+					})
+					.ExecuteAsync(async () =>
+					{
+						var messageBody = await SerializeAsync(message, cancellationToken);
 
-			            channel.ExchangeDeclare(_options.ExchangeName, _options.ExchangeType);
-			            channel.BasicPublish(_options.ExchangeName, $"{_options.TopicName}${message.Channel}$", props, messageBody);
+						channel.ExchangeDeclare(_options.ExchangeName, _options.ExchangeType);
+						channel.BasicPublish(_options.ExchangeName, $"{_options.TopicName}${message.Channel}$", props, messageBody);
 
-			            Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
-		            });
+						Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
+					});
 	}
 
 	/// <inheritdoc />
 	public async Task SendAsync<TMessage>(RoutedMessage<TMessage> message, CancellationToken cancellationToken = default) where TMessage : class
 	{
-		using var connection = _factory.CreateConnection();
-		using var channel = connection.CreateModel();
+		using var channel = _connection.CreateChannel();
+
+		{
+			var queueDeclare = channel.DeclareQueuePassively($"{_options.QueueName}${message.Channel}$");
+
+			if (queueDeclare == null)
+			{
+				throw new InvalidOperationException("Channel not found in vhost '/'.");
+				//channel.QueueDeclare($"{_options.QueueName}${message.Channel}$", true, false, false, null);
+				//channel.BasicQos(0, 1, false);
+			}
+
+			if (queueDeclare.ConsumerCount < 1)
+			{
+				throw new InvalidOperationException("No consumer found for the channel.");
+			}
+		}
+
 		var typeName = message.GetTypeName();
 
 		var props = channel.CreateBasicProperties();
@@ -75,18 +90,18 @@ public class RabbitMqDispatcher : IDispatcher
 		props.Type = typeName;
 
 		await Policy.Handle<Exception>()
-		            .WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(3), (exception, _, retryCount, _) =>
-		            {
-			            _logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
-		            })
-		            .ExecuteAsync(async () =>
-		            {
-			            var messageBody = await SerializeAsync(message, cancellationToken);
+					.WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(3), (exception, _, retryCount, _) =>
+					{
+						_logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
+					})
+					.ExecuteAsync(async () =>
+					{
+						var messageBody = await SerializeAsync(message, cancellationToken);
 
-			            channel.BasicPublish("", $"{_options.QueueName}${message.Channel}$", props, messageBody);
+						channel.BasicPublish("", $"{_options.QueueName}${message.Channel}$", props, messageBody);
 
-			            Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
-		            });
+						Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
+					});
 	}
 
 	/// <inheritdoc />
@@ -94,11 +109,27 @@ public class RabbitMqDispatcher : IDispatcher
 	{
 		var task = new TaskCompletionSource<TResponse>();
 
-		using var connection = _factory.CreateConnection();
+		var requestQueueName = $"{_options.QueueName}${message.Channel}$";
 
-		using var channel = connection.CreateModel();
+		using var channel = _connection.CreateChannel();
 
-		var replyQueueName = channel.QueueDeclare().QueueName;
+		{
+			var queueDeclare = channel.DeclareQueuePassively(requestQueueName);
+
+			if (queueDeclare == null)
+			{
+				throw new InvalidOperationException("Channel not found in vhost '/'.");
+				//channel.QueueDeclare($"{_options.QueueName}${message.Channel}$", true, false, false, null);
+				//channel.BasicQos(0, 1, false);
+			}
+
+			if(queueDeclare.ConsumerCount < 1)
+			{
+				throw new InvalidOperationException("No consumer found for the channel.");
+			}
+		}
+
+		var responseQueueName = channel.QueueDeclare().QueueName;
 		var consumer = new EventingBasicConsumer(channel);
 
 		consumer.Received += OnReceived;
@@ -110,21 +141,21 @@ public class RabbitMqDispatcher : IDispatcher
 		props.Headers[Constants.MessageHeaders.MessageType] = typeName;
 		props.Type = typeName;
 		props.CorrelationId = message.CorrelationId;
-		props.ReplyTo = replyQueueName;
+		props.ReplyTo = responseQueueName;
 
 		await Policy.Handle<Exception>()
-		            .WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(1), (exception, _, retryCount, _) =>
-		            {
-			            _logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
-		            })
-		            .ExecuteAsync(async () =>
-		            {
-			            var messageBody = await SerializeAsync(message, cancellationToken);
-			            channel.BasicPublish("", $"{_options.QueueName}${message.Channel}$", props, messageBody);
-			            channel.BasicConsume(consumer, replyQueueName, true);
+					.WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(1), (exception, _, retryCount, _) =>
+					{
+						_logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
+					})
+					.ExecuteAsync(async () =>
+					{
+						var messageBody = await SerializeAsync(message, cancellationToken);
+						channel.BasicPublish("", requestQueueName, props, messageBody);
+						channel.BasicConsume(consumer, responseQueueName, true);
 
-			            Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
-		            });
+						Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
+					});
 
 		var result = await task.Task;
 		consumer.Received -= OnReceived;
@@ -168,7 +199,11 @@ public class RabbitMqDispatcher : IDispatcher
 			JsonSerializer.CreateDefault().Serialize(jsonWriter, message);
 
 			await jsonWriter.FlushAsync(cancellationToken);
+#if NET8_0_OR_GREATER
+			await writer.FlushAsync(cancellationToken);
+#else
 			await writer.FlushAsync();
+#endif
 		}
 
 		return stream.ToArray();

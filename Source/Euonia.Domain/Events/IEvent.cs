@@ -6,6 +6,11 @@
 public interface IEvent : IMessage
 {
 	/// <summary>
+	/// Gets or sets the sequence of the current event.
+	/// </summary>
+	long Sequence { get; set; }
+
+	/// <summary>
 	/// Gets the intent of the event.
 	/// </summary>
 	/// <returns>
@@ -28,10 +33,4 @@ public interface IEvent : IMessage
 	/// The originator identifier.
 	/// </returns>
 	string OriginatorId { get; set; }
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <returns></returns>
-	EventAggregate GetEventAggregate();
 }

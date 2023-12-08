@@ -10,20 +10,18 @@ namespace Nerosoft.Euonia.Bus.RabbitMq;
 public class RabbitMqTopicSubscriber : RabbitMqQueueRecipient, ITopicSubscriber
 {
 	/// <summary>
-	/// Initializes a new instance of the &lt;see cref="RabbitMqTopicSubscriber"/&gt; class.
+	/// Initializes a new instance of the <see cref="RabbitMqTopicSubscriber"/> class.
 	/// </summary>
 	/// <param name="connection"></param>
 	/// <param name="handler"></param>
 	/// <param name="options"></param>
-	public RabbitMqTopicSubscriber(ConnectionFactory connection, IHandlerContext handler, IOptions<RabbitMqMessageBusOptions> options)
+	public RabbitMqTopicSubscriber(IPersistentConnection connection, IHandlerContext handler, IOptions<RabbitMqMessageBusOptions> options)
 		: base(connection, handler, options)
 	{
 	}
 
 	/// <inheritdoc />
 	public string Name => nameof(RabbitMqTopicSubscriber);
-
-	private IConnection Connection { get; set; }
 
 	/// <summary>
 	/// Gets the RabbitMQ message channel.
@@ -37,8 +35,12 @@ public class RabbitMqTopicSubscriber : RabbitMqQueueRecipient, ITopicSubscriber
 
 	internal override void Start(string channel)
 	{
-		Connection = ConnectionFactory.CreateConnection();
-		Channel = Connection.CreateModel();
+		if (!Connection.IsConnected)
+		{
+			Connection.TryConnect();
+		}
+
+		Channel = Connection.CreateChannel();
 
 		string queueName;
 		if (string.IsNullOrWhiteSpace(Options.TopicName))
@@ -90,6 +92,5 @@ public class RabbitMqTopicSubscriber : RabbitMqQueueRecipient, ITopicSubscriber
 
 		Consumer.Received -= HandleMessageReceived;
 		Channel?.Dispose();
-		Connection?.Dispose();
 	}
 }

@@ -1,4 +1,4 @@
-﻿namespace Nerosoft.Euonia.Bus;
+﻿namespace System;
 
 /// <summary>
 /// The delegate to get the <see cref="RequestContext"/> instance of current request.

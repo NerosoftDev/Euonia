@@ -9,8 +9,16 @@ public class SubscribeAttribute : Attribute
 	/// <summary>
 	/// Initializes a new instance of the <see cref="SubscribeAttribute"/> class.
 	/// </summary>
+	public SubscribeAttribute()
+	{
+	}
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="SubscribeAttribute"/> class.
+	/// </summary>
 	/// <param name="name"></param>
 	public SubscribeAttribute(string name)
+		: this()
 	{
 		Name = name;
 	}

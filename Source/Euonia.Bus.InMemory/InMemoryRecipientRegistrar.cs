@@ -59,7 +59,7 @@ public sealed class InMemoryRecipientRegistrar : IRecipientRegistrar
 			}
 			else
 			{
-				return (TRecipient)recipients.GetOrAdd(typeof(TRecipient), type => _provider.GetService<TRecipient>());
+				return (TRecipient)recipients.GetOrAdd(typeof(TRecipient), _ => _provider.GetService<TRecipient>());
 			}
 		}
 

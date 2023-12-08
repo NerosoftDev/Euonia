@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
+using Nerosoft.Euonia.Modularity;
 
 namespace Nerosoft.Euonia.Application;
 
