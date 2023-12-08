@@ -5,51 +5,65 @@
 /// </summary>
 /// <typeparam name="TKey">The identifier type.</typeparam>
 public abstract class Aggregate<TKey> : Entity<TKey>, IAggregateRoot<TKey>, IHasDomainEvents
-    where TKey : IEquatable<TKey>
+	where TKey : IEquatable<TKey>
 {
-    private readonly List<DomainEvent> _events = new();
+	private readonly Dictionary<Type, Action<object>> _handlers = new();
 
-    /// <summary>
-    /// The events.
-    /// </summary>
-    public IEnumerable<DomainEvent> GetEvents() => _events?.AsReadOnly();
+	private readonly List<DomainEvent> _events = new();
 
-    /// <summary>
-    /// Raise up a new event.
-    /// </summary>
-    /// <param name="event"></param>
-    public virtual void RaiseEvent<TEvent>(TEvent @event)
-        where TEvent : DomainEvent
-    {
-        _events.Add(@event);
-    }
+	/// <summary>
+	/// The events.
+	/// </summary>
+	public IEnumerable<DomainEvent> GetEvents() => _events?.AsReadOnly();
 
-    /// <summary>
-    /// Remove event.
-    /// </summary>
-    /// <param name="event"></param>
-    public virtual void RemoveEvent<TEvent>(TEvent @event)
-        where TEvent : DomainEvent
-    {
-        _events.Remove(@event);
-    }
+	/// <summary>
+	/// Register a handler for the specific event type.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <param name="when"></param>
+	protected void Register<T>(Action<T> when)
+	{
+		_handlers.Add(typeof(T), @event => when((T)@event));
+	}
 
-    /// <summary>
-    /// Clear events.
-    /// </summary>
-    public virtual void ClearEvents()
-    {
-        _events.Clear();
-    }
+	/// <summary>
+	/// Raise up a new event.
+	/// </summary>
+	/// <param name="event"></param>
+	public virtual void RaiseEvent<TEvent>(TEvent @event)
+		where TEvent : DomainEvent
+	{
+		_handlers[typeof(TEvent)](@event);
+		_events.Add(@event);
+	}
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public virtual void AttachToEvents()
-    {
-        foreach (var @event in _events)
-        {
-            @event.Attach(this);
-        }
-    }
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <typeparam name="TEvent"></typeparam>
+	/// <param name="event"></param>
+	public void Apply<TEvent>(TEvent @event)
+		where TEvent : DomainEvent
+	{
+		_handlers[typeof(TEvent)](@event);
+	}
+
+	/// <summary>
+	/// Clear events.
+	/// </summary>
+	public virtual void ClearEvents()
+	{
+		_events.Clear();
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	public virtual void AttachToEvents()
+	{
+		foreach (var @event in _events)
+		{
+			@event.Attach(this);
+		}
+	}
 }

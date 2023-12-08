@@ -10,11 +10,6 @@
 public abstract class DomainEvent : Event, IDomainEvent
 {
 	/// <summary>
-	/// Gets or sets the sequence of the current event.
-	/// </summary>
-	public long Sequence { get; set; } = DateTime.UtcNow.Ticks;
-
-	/// <summary>
 	/// Attaches the current event to the specified event.
 	/// </summary>
 	/// <typeparam name="TKey"></typeparam>
@@ -27,16 +22,23 @@ public abstract class DomainEvent : Event, IDomainEvent
 		AggregatePayload = aggregate;
 	}
 
-	/// <inheritdoc/>
 	/// <summary>
+	/// Gets the event aggregate.
 	/// </summary>
-	/// <returns></returns>
-	public override EventAggregate GetEventAggregate()
+	/// <returns>EventAggregate.</returns>
+	public virtual EventAggregate GetEventAggregate()
 	{
-		var aggregate = base.GetEventAggregate();
-		aggregate.EventSequence = Sequence;
-		aggregate.EventPayload = this;
-		return aggregate;
+		return new EventAggregate
+		{
+			Id = Guid.NewGuid().ToString(),
+			TypeName = GetType().AssemblyQualifiedName,
+			EventIntent = EventIntent,
+			Timestamp = DateTime.UtcNow,
+			OriginatorId = OriginatorId,
+			OriginatorType = OriginatorType,
+			EventSequence = Sequence,
+			EventPayload = this
+		};
 	}
 
 	/// <summary>
