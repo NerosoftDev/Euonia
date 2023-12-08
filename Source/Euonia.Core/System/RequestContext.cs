@@ -21,12 +21,12 @@ public sealed class RequestContext
 	/// <summary>
 	/// Gets or sets the port of the remote target.
 	/// </summary>
-	public int RemotePort { get; }
+	public int RemotePort { get; set; }
 
 	/// <summary>
 	/// Gets a value indicating whether the request is a WebSocket establishment request.
 	/// </summary>
-	public bool IsWebSocketRequest { get; }
+	public bool IsWebSocketRequest { get; set; }
 
 	/// <summary>
 	/// Gets or sets the user for this request.
@@ -42,12 +42,12 @@ public sealed class RequestContext
 	/// <summary>
 	/// Gets the Authorization HTTP header.
 	/// </summary>
-	public string Authorization => RequestHeaders?.TryGetValue(nameof(Authorization)) ?? default;
+	public string Authorization => RequestHeaders?.TryGetValue(nameof(Authorization));
 
 	/// <summary>
 	/// Gets or sets the Request-Id HTTP header.
 	/// </summary>
-	public string RequestId => RequestHeaders?.TryGetValue("Request-Id") ?? default;
+	public string RequestId => RequestHeaders?.TryGetValue("Request-Id");
 
 	/// <summary>
 	/// Gets or sets the <see cref="IServiceProvider"/> that provides access to the request's service container.

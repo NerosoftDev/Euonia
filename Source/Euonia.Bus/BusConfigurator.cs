@@ -169,15 +169,4 @@ public class BusConfigurator : IBusConfigurator
 		Service.TryAddSingleton<IMessageConvention>(ConventionBuilder.Convention);
 		return this;
 	}
-
-	/// <summary>
-	/// Sets the request context accessor.
-	/// </summary>
-	/// <param name="accessor"></param>
-	/// <returns></returns>
-	public BusConfigurator SetRequestContextAccessor(RequestContextAccessor accessor)
-	{
-		Service.TryAddScoped(provider => accessor);
-		return this;
-	}
 }
