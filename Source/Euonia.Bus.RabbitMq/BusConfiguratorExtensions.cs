@@ -19,7 +19,7 @@ public static class BusConfiguratorExtensions
 	{
 		configurator.Service.Configure(configuration);
 
-		configurator.Service.TryAddSingleton(provider =>
+		configurator.Service.TryAddSingleton<IConnectionFactory>(provider =>
 		{
 			var options = provider.GetService<IOptions<RabbitMqMessageBusOptions>>()?.Value;
 
@@ -31,6 +31,7 @@ public static class BusConfiguratorExtensions
 			var factory = new ConnectionFactory { Uri = new Uri(options.Connection) };
 			return factory;
 		});
+		configurator.Service.TryAddSingleton<IPersistentConnection, DefaultPersistentConnection>();
 
 		configurator.Service.TryAddTransient<RabbitMqQueueConsumer>();
 		configurator.Service.TryAddTransient<RabbitMqTopicSubscriber>();
