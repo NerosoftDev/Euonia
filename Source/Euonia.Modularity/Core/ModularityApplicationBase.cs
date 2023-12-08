@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Nerosoft.Euonia.Modularity;
 
@@ -21,7 +22,8 @@ public abstract class ModularityApplicationBase : IModularityApplication
 
         services.AddSingleton<IModularityApplication>(this);
         services.AddSingleton<IModuleContainer>(this);
-
+        services.TryAddSingleton<IServiceAccessor, ServiceAccessor>();
+        services.TryAddScoped<IRequestContextAccessor, DelegateRequestContextAccessor>();
         services.AddCoreServices();
         services.AddCoreServices(this, options);
 

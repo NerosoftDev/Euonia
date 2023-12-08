@@ -14,9 +14,7 @@ public class HostingModule : ModuleContextBase
 	/// <inheritdoc />
 	public override void ConfigureServices(ServiceConfigurationContext context)
 	{
-		context.Services.TryAddScoped<RequestContextAccessor>(provider => GetRequestContext);
-		context.Services.AddSingleton<IServiceAccessor, ServiceAccessor>();
-		context.Services.TryAddScoped<IRequestContextAccessor, DelegateRequestContextAccessor>();
+		context.Services.TryAddScoped<RequestContextAccessor>(_ => GetRequestContext);
 		context.Services.AddSerilog();
 		context.Services.AddScopeTransformation();
 		context.Services.AddUserPrincipal();
@@ -30,11 +28,20 @@ public class HostingModule : ModuleContextBase
 			{
 				return null;
 			}
+
 			return new RequestContext
 			{
-				RequestHeaders = (IDictionary<string, string>)(context?.Request?.Headers),
-				ConnectionId = context?.Connection?.Id,
-
+				RequestHeaders = context.Request
+				                        .Headers
+				                        .ToDictionary(t => t.Key, t => t.Value.ToString()),
+				ConnectionId = context.Connection.Id,
+				User = context.User,
+				RemotePort = context.Connection.RemotePort,
+				RemoteIpAddress = context.Connection.RemoteIpAddress,
+				RequestAborted = context.RequestAborted,
+				IsWebSocketRequest = context.WebSockets.IsWebSocketRequest, 
+				TraceIdentifier = context.TraceIdentifier, 
+				RequestServices = context.RequestServices
 			};
 		}
 	}
@@ -48,7 +55,7 @@ public class HostingModule : ModuleContextBase
 		app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 		// Setup the ServiceProvider for IServiceAccessor.
-		app.Use(async (httpContext, next) =>
+		app.Use((httpContext, next) =>
 		{
 			var accessor = httpContext.RequestServices.GetService<IServiceAccessor>();
 			if (accessor != null)
@@ -56,7 +63,7 @@ public class HostingModule : ModuleContextBase
 				accessor.ServiceProvider = httpContext.RequestServices;
 			}
 
-			await next();
+			return next();
 		});
 	}
 }
