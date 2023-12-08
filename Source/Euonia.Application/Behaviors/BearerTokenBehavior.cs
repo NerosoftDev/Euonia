@@ -35,7 +35,7 @@ public class BearerTokenBehavior : IPipelineBehavior<IRoutedMessage, CommandResp
 		{
 			if (!string.IsNullOrWhiteSpace(value) && value.StartsWith("Bearer") && !value.Equals("Bearer null", StringComparison.OrdinalIgnoreCase))
 			{
-				context.Metadata.Set("$nerosoft:token", (object)value);
+				context.Metadata.Set("$nerosoft:token", value);
 			}
 		}
 

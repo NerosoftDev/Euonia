@@ -3,7 +3,6 @@ using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Nerosoft.Euonia.Bus.InMemory;
 
 namespace Nerosoft.Euonia.Bus.Tests;
 
