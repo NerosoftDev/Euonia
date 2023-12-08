@@ -9,6 +9,4 @@
 /// <seealso cref="IApplicationEvent" />
 public abstract class ApplicationEvent : Event, IApplicationEvent
 {
-    /// <inheritdoc />
-    public virtual long Sequence { get; set; } = DateTime.UtcNow.Ticks;
 }

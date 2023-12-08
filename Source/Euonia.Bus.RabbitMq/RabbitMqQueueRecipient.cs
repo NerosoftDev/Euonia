@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
 namespace Nerosoft.Euonia.Bus.RabbitMq;
@@ -26,17 +25,17 @@ public abstract class RabbitMqQueueRecipient : DisposableObject
 	/// <param name="factory"></param>
 	/// <param name="handler"></param>
 	/// <param name="options"></param>
-	protected RabbitMqQueueRecipient(ConnectionFactory factory, IHandlerContext handler, IOptions<RabbitMqMessageBusOptions> options)
+	protected RabbitMqQueueRecipient(IPersistentConnection factory, IHandlerContext handler, IOptions<RabbitMqMessageBusOptions> options)
 	{
 		Options = options.Value;
 		Handler = handler;
-		ConnectionFactory = factory;
+		Connection = factory;
 	}
 
 	/// <summary>
 	/// 
 	/// </summary>
-	protected ConnectionFactory ConnectionFactory { get; }
+	protected IPersistentConnection Connection { get; }
 
 	/// <summary>
 	/// Gets the RabbitMQ message bus options.

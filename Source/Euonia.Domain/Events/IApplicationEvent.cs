@@ -5,8 +5,4 @@
 /// </summary>
 public interface IApplicationEvent : IEvent
 {
-    /// <summary>
-    /// Gets or sets the sequence of the current event.
-    /// </summary>
-    long Sequence { get; set; }
 }

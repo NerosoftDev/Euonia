@@ -64,7 +64,8 @@ internal class MessageHandlerFinder
 
 				foreach (var attribute in attributes)
 				{
-					var registration = new MessageRegistration(attribute.Name, firstParameter.ParameterType, type, method);
+					var channel = attribute.Name.DefaultIfNullOrWhiteSpace(MessageCache.Default.GetOrAddChannel(firstParameter.ParameterType));
+					var registration = new MessageRegistration(channel, firstParameter.ParameterType, type, method);
 					registrations.Add(registration);
 				}
 			}

@@ -1,5 +1,6 @@
 ﻿using Nerosoft.Euonia.Bus;
 using Nerosoft.Euonia.Domain;
+using Nerosoft.Euonia.Modularity;
 using Nerosoft.Euonia.Pipeline;
 
 namespace Nerosoft.Euonia.Application;
@@ -30,15 +31,11 @@ public class BearerTokenBehavior : IPipelineBehavior<IRoutedMessage, CommandResp
 	/// <inheritdoc />
 	public async Task<CommandResponse> HandleAsync(IRoutedMessage context, PipelineDelegate<IRoutedMessage, CommandResponse> next)
 	{
-		if (_contextAccessor?.RequestHeaders.TryGetValue("Authorization", out var values) == true)
+		if (_contextAccessor?.Context?.RequestHeaders.TryGetValue("Authorization", out var value) == true)
 		{
-			if (values.Count > 0)
+			if (!string.IsNullOrWhiteSpace(value) && value.StartsWith("Bearer") && !value.Equals("Bearer null", StringComparison.OrdinalIgnoreCase))
 			{
-				var value = values[0];
-				if (!string.IsNullOrWhiteSpace(value) && value.StartsWith("Bearer") && !value.Equals("Bearer null", StringComparison.OrdinalIgnoreCase))
-				{
-					context.Metadata.Set("$nerosoft:token", value);
-				}
+				context.Metadata.Set("$nerosoft:token", value);
 			}
 		}
 

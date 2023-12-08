@@ -12,18 +12,16 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 	/// <summary>
 	/// Initializes a new instance of the <see cref="RabbitMqQueueConsumer"/> class.
 	/// </summary>
-	/// <param name="factory"></param>
+	/// <param name="connection"></param>
 	/// <param name="handler"></param>
 	/// <param name="options"></param>
-	public RabbitMqQueueConsumer(ConnectionFactory factory, IHandlerContext handler, IOptions<RabbitMqMessageBusOptions> options)
-		: base(factory, handler, options)
+	public RabbitMqQueueConsumer(IPersistentConnection connection, IHandlerContext handler, IOptions<RabbitMqMessageBusOptions> options)
+		: base(connection, handler, options)
 	{
 	}
 
 	/// <inheritdoc />
 	public string Name => nameof(RabbitMqQueueConsumer);
-
-	private IConnection Connection { get; set; }
 
 	/// <summary>
 	/// Gets the RabbitMQ message channel.
@@ -38,10 +36,11 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 	internal override void Start(string channel)
 	{
 		var queueName = $"{Options.QueueName}${channel}$";
-
-		Connection = ConnectionFactory.CreateConnection();
-
-		Channel = Connection.CreateModel();
+		if (!Connection.IsConnected)
+		{
+			Connection.TryConnect();
+		}
+		Channel = Connection.CreateChannel();
 
 		Channel.QueueDeclare(queueName, true, false, false, null);
 		Channel.BasicQos(0, 1, false);

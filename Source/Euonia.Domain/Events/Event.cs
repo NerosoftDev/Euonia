@@ -15,6 +15,11 @@ public abstract class Event : IEvent
 	}
 
 	/// <summary>
+	/// Gets or sets the sequence of the current event.
+	/// </summary>
+	public long Sequence { get; set; } = DateTime.UtcNow.Ticks;
+
+	/// <summary>
 	/// Gets the intent of the event.
 	/// </summary>
 	/// <returns>The intent of the event.</returns>
@@ -31,22 +36,4 @@ public abstract class Event : IEvent
 	/// </summary>
 	/// <returns>The originator identifier.</returns>
 	public virtual string OriginatorId { get; set; }
-
-	/// <summary>
-	/// Gets the event aggregate.
-	/// </summary>
-	/// <returns>EventAggregate.</returns>
-	public virtual EventAggregate GetEventAggregate()
-	{
-		return new EventAggregate
-		{
-			Id = Guid.NewGuid().ToString(),
-			TypeName = GetType().AssemblyQualifiedName,
-			EventIntent = EventIntent,
-			Timestamp = DateTime.UtcNow,
-			OriginatorId = OriginatorId,
-			OriginatorType = OriginatorType,
-			EventPayload = this
-		};
-	}
 }
