@@ -65,8 +65,8 @@ if (result[2] and result[2] == '2') then
 end
 return result";
 
-	private readonly IDictionary<ScriptType, LoadedLuaScript> _shaScripts = new Dictionary<ScriptType, LoadedLuaScript>();
-	private readonly IDictionary<ScriptType, LuaScript> _luaScripts = new Dictionary<ScriptType, LuaScript>();
+	private readonly Dictionary<ScriptType, LoadedLuaScript> _shaScripts = new();
+	private readonly Dictionary<ScriptType, LuaScript> _luaScripts = new();
 	private readonly CacheManagerConfiguration _managerConfiguration;
 	private readonly RedisValueConverter _valueConverter;
 	private readonly RedisConnectionManager _connection;

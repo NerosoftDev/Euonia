@@ -9,7 +9,7 @@ public class RedisConfigurationBuilder
     private bool _allowAdmin;
     private int _connectionTimeout = 5000;
     private int _database;
-    private readonly IList<ServerEndPoint> _endpoints = new List<ServerEndPoint>();
+    private readonly List<ServerEndPoint> _endpoints = new();
     private bool _isSsl;
     private readonly string _key;
     private string _password;

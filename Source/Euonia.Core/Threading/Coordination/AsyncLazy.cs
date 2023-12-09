@@ -74,8 +74,8 @@ public sealed class AsyncLazy<T>
     /// <param name="flags">Flags to influence async lazy semantics.</param>
     public AsyncLazy(Func<Task<T>> factory, AsyncLazyFlags flags = AsyncLazyFlags.None)
     {
-        if (factory == null)
-            throw new ArgumentNullException(nameof(factory));
+		ArgumentAssert.ThrowIfNull(factory);
+
         _factory = factory;
         if ((flags & AsyncLazyFlags.RetryOnFailure) == AsyncLazyFlags.RetryOnFailure)
             _factory = RetryOnFailure(_factory);

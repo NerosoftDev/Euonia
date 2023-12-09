@@ -18,12 +18,9 @@ public static class HostBuilderExtensions
     /// <exception cref="ArgumentNullException"></exception>
     public static IHostBuilder ConfigureSerilog(this IHostBuilder host)
     {
-        if (host == null)
-        {
-            throw new ArgumentNullException(nameof(host));
-        }
+		ArgumentNullException.ThrowIfNull(host);
 
-        host = host.UseSerilog((context, configuration) =>
+		host = host.UseSerilog((context, configuration) =>
         {
             configuration.ReadFrom.Configuration(context.Configuration)
                          .Enrich.FromLogContext()

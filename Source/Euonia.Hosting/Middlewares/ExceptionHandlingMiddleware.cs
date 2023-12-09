@@ -4,7 +4,6 @@ using System.Security.Authentication;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Nerosoft.Euonia.Core;
 
 namespace Nerosoft.Euonia.Hosting;
 

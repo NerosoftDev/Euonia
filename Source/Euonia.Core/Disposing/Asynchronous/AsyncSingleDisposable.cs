@@ -14,7 +14,7 @@ public abstract class AsyncSingleDisposable<T> : IAsyncDisposable
     /// </summary>
     private readonly AsyncBoundActionField<T> _context;
 
-    private readonly TaskCompletionSource<object> _tcs = new TaskCompletionSource<object>(TaskCreationOptions.DenyChildAttach);
+    private readonly TaskCompletionSource<object> _tcs = new(TaskCreationOptions.DenyChildAttach);
 
     /// <summary>
     /// Creates a disposable for the specified context.

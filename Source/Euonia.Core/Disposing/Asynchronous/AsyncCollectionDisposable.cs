@@ -72,11 +72,11 @@ public sealed class AsyncCollectionDisposable : AsyncSingleDisposable<ImmutableQ
     /// Creates a disposable that disposes a collection of disposables.
     /// </summary>
     /// <param name="disposables">The disposables to dispose.</param>
-    public static CollectionDisposable Create(params IDisposable[] disposables) => new CollectionDisposable(disposables);
+    public static CollectionDisposable Create(params IDisposable[] disposables) => new(disposables);
 
     /// <summary>
     /// Creates a disposable that disposes a collection of disposables.
     /// </summary>
     /// <param name="disposables">The disposables to dispose.</param>
-    public static CollectionDisposable Create(IEnumerable<IDisposable> disposables) => new CollectionDisposable(disposables);
+    public static CollectionDisposable Create(IEnumerable<IDisposable> disposables) => new(disposables);
 }

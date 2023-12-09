@@ -35,7 +35,7 @@ public class TokenValidation
     /// <returns></returns>
     public static (string, string) GetSchemeAndCredential(HttpContext context)
     {
-        var header = context.Request.Headers["Authorization"].FirstOrDefault();
+        var header = context.Request.Headers.Authorization.FirstOrDefault();
 
         if (string.IsNullOrEmpty(header))
         {

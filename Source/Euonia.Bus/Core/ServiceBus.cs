@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Nerosoft.Euonia.Modularity;
+﻿using Nerosoft.Euonia.Modularity;
 
 namespace Nerosoft.Euonia.Bus;
 
@@ -10,7 +9,7 @@ public sealed class ServiceBus : IBus
 {
 	private readonly IDispatcher _dispatcher;
 	private readonly IMessageConvention _convention;
-	private readonly IServiceAccessor _serviceAccessor;
+	private readonly IRequestContextAccessor _requestAccessor;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ServiceBus"/> class.
@@ -28,11 +27,11 @@ public sealed class ServiceBus : IBus
 	/// </summary>
 	/// <param name="factory"></param>
 	/// <param name="convention"></param>
-	/// <param name="serviceAccessor"></param>
-	public ServiceBus(IBusFactory factory, IMessageConvention convention, IServiceAccessor serviceAccessor)
+	/// <param name="requestAccessor"></param>
+	public ServiceBus(IBusFactory factory, IMessageConvention convention, IRequestContextAccessor requestAccessor)
 		: this(factory, convention)
 	{
-		_serviceAccessor = serviceAccessor;
+		_requestAccessor = requestAccessor;
 	}
 
 	/// <inheritdoc />
@@ -46,7 +45,7 @@ public sealed class ServiceBus : IBus
 			throw new MessageTypeException("The message type is not an event type.");
 		}
 
-		var context = GetRequestContext();
+		var context = _requestAccessor?.Context;
 
 		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel<TMessage>();
 		var pack = new RoutedMessage<TMessage>(message, channelName)
@@ -69,7 +68,7 @@ public sealed class ServiceBus : IBus
 			throw new MessageTypeException("The message type is not a queue type.");
 		}
 
-		var context = GetRequestContext();
+		var context = _requestAccessor?.Context;
 
 		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel<TMessage>();
 		var pack = new RoutedMessage<TMessage>(message, channelName)
@@ -96,7 +95,7 @@ public sealed class ServiceBus : IBus
 			throw new MessageTypeException("The message type is not a queue type.");
 		}
 
-		var context = GetRequestContext();
+		var context = _requestAccessor?.Context;
 
 		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel<TMessage>();
 		var pack = new RoutedMessage<TMessage, TResult>(message, channelName)
@@ -110,13 +109,13 @@ public sealed class ServiceBus : IBus
 		metadataSetter?.Invoke(pack.Metadata);
 
 		return _dispatcher.SendAsync(pack, cancellationToken)
-		                  .ContinueWith(task =>
-		                  {
-			                  task.WaitAndUnwrapException();
-			                  var result = task.Result;
-			                  callback?.Invoke(result);
-			                  return result;
-		                  }, cancellationToken);
+						  .ContinueWith(task =>
+						  {
+							  task.WaitAndUnwrapException();
+							  var result = task.Result;
+							  callback?.Invoke(result);
+							  return result;
+						  }, cancellationToken);
 	}
 
 	/// <inheritdoc />
@@ -124,7 +123,7 @@ public sealed class ServiceBus : IBus
 	{
 		options ??= new SendOptions();
 
-		var context = GetRequestContext();
+		var context = _requestAccessor?.Context;
 
 		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel(message.GetType());
 		var pack = new RoutedMessage<IQueue<TResult>, TResult>(message, channelName)
@@ -138,18 +137,12 @@ public sealed class ServiceBus : IBus
 		metadataSetter?.Invoke(pack.Metadata);
 
 		return _dispatcher.SendAsync(pack, cancellationToken)
-		                  .ContinueWith(task =>
-		                  {
-			                  task.WaitAndUnwrapException();
-			                  var result = task.Result;
-			                  callback?.Invoke(result);
-			                  return result;
-		                  }, cancellationToken);
-	}
-
-	private RequestContext GetRequestContext()
-	{
-		var contextAccessor = _serviceAccessor?.ServiceProvider.GetService<IRequestContextAccessor>();
-		return contextAccessor?.Context;
+						  .ContinueWith(task =>
+						  {
+							  task.WaitAndUnwrapException();
+							  var result = task.Result;
+							  callback?.Invoke(result);
+							  return result;
+						  }, cancellationToken);
 	}
 }

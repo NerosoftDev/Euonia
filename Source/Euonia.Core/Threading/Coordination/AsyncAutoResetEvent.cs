@@ -109,7 +109,7 @@ public sealed class AsyncAutoResetEvent
     /// <param name="cancellationToken">The cancellation token used to cancel this wait.</param>
     public void Wait(CancellationToken cancellationToken)
     {
-        WaitAsync(cancellationToken).WaitAndUnwrapException();
+        WaitAsync(cancellationToken).WaitAndUnwrapException(cancellationToken);
     }
 
     /// <summary>

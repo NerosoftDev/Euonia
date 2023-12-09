@@ -59,7 +59,7 @@ public partial class BaseCacheManager<TValue>
         while (tries <= maxRetries);
 
         // exceeded max retries, failing the operation... (should not happen in 99,99% of the cases though, better throw?)
-        return default(TValue);
+        return default;
     }
 
     /// <inheritdoc />
@@ -143,7 +143,7 @@ public partial class BaseCacheManager<TValue>
         CheckDisposed();
 
         // assign null
-        value = default(TValue);
+        value = default;
 
         if (handles.Length == 0)
         {

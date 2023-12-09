@@ -70,5 +70,5 @@ public sealed class AsyncAnonymousDisposable : AsyncSingleDisposable<Func<ValueT
     /// Creates a new disposable that executes <paramref name="dispose"/> when disposed.
     /// </summary>
     /// <param name="dispose">The delegate to execute when disposed. May not be <c>null</c>.</param>
-    public static AsyncAnonymousDisposable Create(Func<ValueTask> dispose) => new AsyncAnonymousDisposable(dispose);
+    public static AsyncAnonymousDisposable Create(Func<ValueTask> dispose) => new(dispose);
 }

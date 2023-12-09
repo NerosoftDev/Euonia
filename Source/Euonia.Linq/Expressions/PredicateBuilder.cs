@@ -53,32 +53,16 @@ public static class PredicateBuilder
 		var exp = Expression.Constant(value);
 		var structure = propertyName.Split('.').ToList();
 		MemberExpression member = SearchMember(param, structure);
-		Expression condition;
-
-		switch (@operator)
+		Expression condition = @operator switch
 		{
-			case QueryOperator.Equal:
-				condition = Expression.Equal(member, exp);
-				break;
-			case QueryOperator.NotEqual:
-				condition = Expression.NotEqual(member, exp);
-				break;
-			case QueryOperator.GreaterThanOrEqual:
-				condition = Expression.GreaterThanOrEqual(member, exp);
-				break;
-			case QueryOperator.LessThanOrEqual:
-				condition = Expression.LessThanOrEqual(member, exp);
-				break;
-			case QueryOperator.GreaterThan:
-				condition = Expression.GreaterThan(member, exp);
-				break;
-			case QueryOperator.LessThan:
-				condition = Expression.LessThan(member, exp);
-				break;
-			default:
-				throw new InvalidOperationException();
-		}
-
+			QueryOperator.Equal => Expression.Equal(member, exp),
+			QueryOperator.NotEqual => Expression.NotEqual(member, exp),
+			QueryOperator.GreaterThanOrEqual => Expression.GreaterThanOrEqual(member, exp),
+			QueryOperator.LessThanOrEqual => Expression.LessThanOrEqual(member, exp),
+			QueryOperator.GreaterThan => Expression.GreaterThan(member, exp),
+			QueryOperator.LessThan => Expression.LessThan(member, exp),
+			_ => throw new InvalidOperationException(),
+		};
 		var lambda = Expression.Lambda<Func<T, bool>>(condition, param);
 		return lambda;
 	}

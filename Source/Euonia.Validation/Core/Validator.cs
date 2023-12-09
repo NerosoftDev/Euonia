@@ -1,5 +1,3 @@
-using Nerosoft.Euonia.Core;
-
 namespace Nerosoft.Euonia.Validation;
 
 /// <summary>
@@ -16,11 +14,8 @@ public class Validator
     public static void Validate<T>(T item)
         where T : class
     {
-        if (item == null)
-        {
-            throw new ArgumentNullException(nameof(item));
-        }
-
+		ArgumentAssert.ThrowIfNull(item, nameof(item));
+		
         if (item is IValidatableObject @object)
         {
             @object.Validate();

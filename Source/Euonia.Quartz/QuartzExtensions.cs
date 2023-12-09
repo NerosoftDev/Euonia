@@ -34,16 +34,9 @@ public static class QuartzExtensions
 	/// <exception cref="ArgumentException"></exception>
 	public static IServiceCollectionQuartzConfigurator AddJob(this IServiceCollectionQuartzConfigurator configurator, Type jobType, BackgroundJobOptions options = null)
 	{
-		if (jobType == null)
-		{
-			throw new ArgumentNullException(nameof(jobType));
-		}
-
-		if (configurator == null)
-		{
-			throw new ArgumentNullException(nameof(configurator));
-		}
-
+		ArgumentNullException.ThrowIfNull(jobType);
+		ArgumentNullException.ThrowIfNull(configurator);
+		
 		if (!typeof(IJob).IsAssignableFrom(jobType))
 		{
 			throw new ArgumentException($"The type {jobType.FullName} must be a job type.");
@@ -52,7 +45,7 @@ public static class QuartzExtensions
 		var attribute = jobType.GetCustomAttribute<BackgroundJobAttribute>();
 
 		var triggers = jobType.GetCustomAttributes<BackgroundJobScheduleAttribute>(true)
-		                      .ToList();
+							  .ToList();
 
 		options ??= new BackgroundJobOptions();
 		if (string.IsNullOrWhiteSpace(options.Name))
@@ -113,13 +106,10 @@ public static class QuartzExtensions
 	/// <returns></returns>
 	public static IServiceCollectionQuartzConfigurator AddJobs(this IServiceCollectionQuartzConfigurator configurator, Assembly assembly)
 	{
-		if (assembly == null)
-		{
-			throw new ArgumentNullException(nameof(assembly));
-		}
+		ArgumentNullException.ThrowIfNull(assembly);
 
 		var types = assembly.GetExportedTypes()
-		                    .Where(type => typeof(IJob).IsAssignableFrom(type));
+							.Where(type => typeof(IJob).IsAssignableFrom(type));
 		foreach (var type in types)
 		{
 			configurator.AddJob(type);
@@ -138,10 +128,10 @@ public static class QuartzExtensions
 	public static ITriggerConfigurator Configure(this ITriggerConfigurator config, BackgroundJobScheduleAttribute attribute, JobKey jobKey)
 	{
 		config.WithIdentity($"{attribute.Identity}.trigger")
-		      .ForJob(jobKey)
-		      .WithSchedule(attribute.Configure())
-		      .WithPriority(attribute.Priority)
-		      .WithDescription(attribute.Description);
+			  .ForJob(jobKey)
+			  .WithSchedule(attribute.Configure())
+			  .WithPriority(attribute.Priority)
+			  .WithDescription(attribute.Description);
 		if (attribute.Delay > 0)
 		{
 			config.StartAt(DateBuilder.EvenSecondDate(DateTimeOffset.UtcNow.AddSeconds(attribute.Delay)));
@@ -166,10 +156,10 @@ public static class QuartzExtensions
 		where TSchedule : BackgroundJobScheduleAttribute
 	{
 		config.WithIdentity($"{attribute.Identity}.trigger")
-		      .ForJob(jobKey)
-		      .WithSchedule(attribute.Configure())
-		      .WithPriority(attribute.Priority)
-		      .WithDescription(attribute.Description);
+			  .ForJob(jobKey)
+			  .WithSchedule(attribute.Configure())
+			  .WithPriority(attribute.Priority)
+			  .WithDescription(attribute.Description);
 		if (attribute.Delay > 0)
 		{
 			config.StartAt(DateBuilder.EvenSecondDate(DateTimeOffset.UtcNow.AddSeconds(attribute.Delay)));

@@ -133,7 +133,7 @@ internal static class ZooKeeperSequentialPathHelper
         // "The counter has a format of %010d -- that is 10 digits with 0 (zero) padding (the counter is formatted in this way to simplify sorting), 
         // i.e. "<path>0000000001". See Queue Recipe for an example use of this feature. Note: the counter used to store the next sequence number 
         // is a signed int (4bytes) maintained by the parent node, the counter will overflow when incremented beyond 2147483647 (resulting in a name "<path>-2147483648")."
-        var counterSuffix = pathOrName.Substring(prefixStartIndex + prefix.Length);
+        var counterSuffix = pathOrName[(prefixStartIndex + prefix.Length)..];
         return (
                    (counterSuffix.Length == 10 && counterSuffix[0] != '+') // 10-char number; don't allow leading +
                    || (counterSuffix.Length == 11 && counterSuffix[0] == '-') // 11-char number MUST be - and then 10 digits
