@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace Nerosoft.Euonia.Core;
+namespace System;
 
 /// <summary>
 /// Represents errors that occur if request is bad.

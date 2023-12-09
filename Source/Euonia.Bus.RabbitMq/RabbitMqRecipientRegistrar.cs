@@ -37,7 +37,7 @@ public sealed class RabbitMqRecipientRegistrar : IRecipientRegistrar
 			}
 			else
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("The message type is neither a queue nor a topic.");
 			}
 
 			recipient.Start(registration.Channel);

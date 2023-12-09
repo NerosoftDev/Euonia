@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace Nerosoft.Euonia.Core;
+namespace System;
 
 /// <summary>
 /// Represents the exception that is thrown when an internal server error occurs.

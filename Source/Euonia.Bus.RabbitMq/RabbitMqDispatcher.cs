@@ -1,9 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Net.Sockets;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Polly;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Exceptions;
 
 namespace Nerosoft.Euonia.Bus.RabbitMq;
 
@@ -45,7 +47,8 @@ public class RabbitMqDispatcher : IDispatcher
 		props.Headers[Constants.MessageHeaders.MessageType] = typeName;
 		props.Type = typeName;
 
-		await Policy.Handle<Exception>()
+		await Policy.Handle<SocketException>()
+					.Or<BrokerUnreachableException>()
 					.WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(3), (exception, _, retryCount, _) =>
 					{
 						_logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
@@ -66,21 +69,9 @@ public class RabbitMqDispatcher : IDispatcher
 	{
 		using var channel = _connection.CreateChannel();
 
-		{
-			var queueDeclare = channel.DeclareQueuePassively($"{_options.QueueName}${message.Channel}$");
+		var requestQueueName = $"{_options.QueueName}${message.Channel}$";
 
-			if (queueDeclare == null)
-			{
-				throw new InvalidOperationException("Channel not found in vhost '/'.");
-				//channel.QueueDeclare($"{_options.QueueName}${message.Channel}$", true, false, false, null);
-				//channel.BasicQos(0, 1, false);
-			}
-
-			if (queueDeclare.ConsumerCount < 1)
-			{
-				throw new InvalidOperationException("No consumer found for the channel.");
-			}
-		}
+		CheckQueue(channel, requestQueueName);
 
 		var typeName = message.GetTypeName();
 
@@ -89,7 +80,8 @@ public class RabbitMqDispatcher : IDispatcher
 		props.Headers[Constants.MessageHeaders.MessageType] = typeName;
 		props.Type = typeName;
 
-		await Policy.Handle<Exception>()
+		await Policy.Handle<SocketException>()
+					.Or<BrokerUnreachableException>()
 					.WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(3), (exception, _, retryCount, _) =>
 					{
 						_logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
@@ -98,7 +90,7 @@ public class RabbitMqDispatcher : IDispatcher
 					{
 						var messageBody = await SerializeAsync(message, cancellationToken);
 
-						channel.BasicPublish("", $"{_options.QueueName}${message.Channel}$", props, messageBody);
+						channel.BasicPublish("", requestQueueName, props, messageBody);
 
 						Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
 					});
@@ -113,21 +105,7 @@ public class RabbitMqDispatcher : IDispatcher
 
 		using var channel = _connection.CreateChannel();
 
-		{
-			var queueDeclare = channel.DeclareQueuePassively(requestQueueName);
-
-			if (queueDeclare == null)
-			{
-				throw new InvalidOperationException("Channel not found in vhost '/'.");
-				//channel.QueueDeclare($"{_options.QueueName}${message.Channel}$", true, false, false, null);
-				//channel.BasicQos(0, 1, false);
-			}
-
-			if(queueDeclare.ConsumerCount < 1)
-			{
-				throw new InvalidOperationException("No consumer found for the channel.");
-			}
-		}
+		CheckQueue(channel, requestQueueName);
 
 		var responseQueueName = channel.QueueDeclare().QueueName;
 		var consumer = new EventingBasicConsumer(channel);
@@ -143,7 +121,8 @@ public class RabbitMqDispatcher : IDispatcher
 		props.CorrelationId = message.CorrelationId;
 		props.ReplyTo = responseQueueName;
 
-		await Policy.Handle<Exception>()
+		await Policy.Handle<SocketException>()
+					.Or<BrokerUnreachableException>()
 					.WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(1), (exception, _, retryCount, _) =>
 					{
 						_logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
@@ -172,6 +151,21 @@ public class RabbitMqDispatcher : IDispatcher
 			var response = JsonConvert.DeserializeObject<TResponse>(Encoding.UTF8.GetString(body), Constants.SerializerSettings);
 
 			task.SetResult(response);
+		}
+	}
+
+	private static void CheckQueue(IModel channel, string requestQueueName)
+	{
+		var queueDeclare = channel.DeclareQueuePassively(requestQueueName);
+
+		if (queueDeclare == null)
+		{
+			throw new MessageDeliverException("Channel not found in vhost '/'.");
+		}
+
+		if (queueDeclare.ConsumerCount < 1)
+		{
+			throw new MessageDeliverException("No consumer found for the channel.");
 		}
 	}
 

@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace Nerosoft.Euonia.Core;
+namespace System;
 
 /// <inheritdoc />
 [AttributeUsage(AttributeTargets.Class, Inherited = false)]
