@@ -43,7 +43,7 @@ public sealed class ServiceBus : IBus
 
 		if (!_convention.IsTopicType(message.GetType()))
 		{
-			throw new InvalidOperationException("The message type is not an event type.");
+			throw new MessageTypeException("The message type is not an event type.");
 		}
 
 		var context = GetRequestContext();
@@ -66,7 +66,7 @@ public sealed class ServiceBus : IBus
 
 		if (!_convention.IsQueueType(message.GetType()))
 		{
-			throw new InvalidOperationException("The message type is not a queue type.");
+			throw new MessageTypeException("The message type is not a queue type.");
 		}
 
 		var context = GetRequestContext();
@@ -93,7 +93,7 @@ public sealed class ServiceBus : IBus
 
 		if (!_convention.IsQueueType(message.GetType()))
 		{
-			throw new InvalidOperationException("The message type is not a queue type.");
+			throw new MessageTypeException("The message type is not a queue type.");
 		}
 
 		var context = GetRequestContext();

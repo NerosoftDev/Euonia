@@ -46,7 +46,7 @@ public sealed class InMemoryRecipientRegistrar : IRecipientRegistrar
 			}
 			else
 			{
-				throw new InvalidOperationException();
+				throw new MessageTypeException("The message type is neither a queue nor a topic.");
 			}
 		}
 

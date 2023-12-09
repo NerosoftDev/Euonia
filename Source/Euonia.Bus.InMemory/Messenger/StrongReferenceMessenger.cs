@@ -606,7 +606,7 @@ public sealed class StrongReferenceMessenger : IMessenger
 	/// <param name="token">The token indicating what channel to use.</param>
 	/// <returns>The message that was sent (ie. <paramref name="message"/>).</returns>
 	/// <exception cref="System.ArgumentNullException">Thrown if <paramref name="message"/> or <paramref name="token"/> are <see langword="null"/>.</exception>
-	public TMessage UnsafeSend<TMessage, TToken>(TMessage message, TToken token)
+	internal TMessage UnsafeSend<TMessage, TToken>(TMessage message, TToken token)
 		where TMessage : class
 		where TToken : IEquatable<TToken>
 	{
@@ -624,7 +624,7 @@ public sealed class StrongReferenceMessenger : IMessenger
 				// Check whether there are any registered recipients
 				if (!TryGetMapping<TMessage>(out var mapping))
 				{
-					throw new InvalidOperationException("No recipients registered for the input message type.");
+					throw new MessageDeliverException("No recipients registered for the input message type.");
 				}
 
 				// Check the number of remaining handlers, see below
@@ -632,7 +632,7 @@ public sealed class StrongReferenceMessenger : IMessenger
 
 				if (totalHandlersCount == 0)
 				{
-					throw new InvalidOperationException("No recipients registered for the input message type.");
+					throw new MessageDeliverException("No recipients registered for the input message type.");
 				}
 
 				pairs = rentedArray = ArrayPool<object>.Shared.Rent(2 * totalHandlersCount);
@@ -670,7 +670,7 @@ public sealed class StrongReferenceMessenger : IMessenger
 
 				if (totalHandlersCount == 0)
 				{
-					throw new InvalidOperationException("No recipients registered for the input message type.");
+					throw new MessageDeliverException("No recipients registered for the input message type.");
 				}
 
 				// Rent the array and also assign it to a span, which will be used to access values.
@@ -704,7 +704,7 @@ public sealed class StrongReferenceMessenger : IMessenger
 
 				if (i == 0)
 				{
-					throw new InvalidOperationException("No recipients registered for the input message type and token.");
+					throw new MessageDeliverException("No recipients registered for the input message type and token.");
 				}
 			}
 		}
