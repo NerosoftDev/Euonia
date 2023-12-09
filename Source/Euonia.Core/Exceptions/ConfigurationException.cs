@@ -1,4 +1,4 @@
-﻿namespace Nerosoft.Euonia.Core;
+﻿namespace System;
 
 /// <summary>
 /// Represents errors that occur during application configuration.

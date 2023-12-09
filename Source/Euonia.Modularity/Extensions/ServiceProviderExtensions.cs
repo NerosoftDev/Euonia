@@ -12,7 +12,7 @@ public static class ServiceProviderExtensions
     /// <param name="name">The registered service name.</param>
     /// <typeparam name="TService">The service type.</typeparam>
     /// <returns></returns>
-    public static TService GetService<TService>(this IServiceProvider provider, string name)
+    public static TService GetNamedService<TService>(this IServiceProvider provider, string name)
         where TService : class
     {
         var @delegate = (NamedService<TService>)provider.GetService(typeof(NamedService<TService>));
@@ -27,7 +27,7 @@ public static class ServiceProviderExtensions
     /// <typeparam name="TService">The service type.</typeparam>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException">Throws if service with specified name was not resolved.</exception>
-    public static TService GetRequiredService<TService>(this IServiceProvider provider, string name)
+    public static TService GetNamedRequiredService<TService>(this IServiceProvider provider, string name)
         where TService : class
     {
         var @delegate = (NamedService<TService>)provider.GetService(typeof(NamedService<TService>));

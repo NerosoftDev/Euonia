@@ -1,4 +1,4 @@
-﻿namespace Nerosoft.Euonia.Core;
+﻿namespace System;
 
 /// <summary>
 /// To be added.

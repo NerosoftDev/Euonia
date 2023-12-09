@@ -1,4 +1,4 @@
-﻿namespace Nerosoft.Euonia.Core;
+﻿namespace System;
 
 /// <summary>
 /// Represents the exception that is thrown when given data is not valid.
