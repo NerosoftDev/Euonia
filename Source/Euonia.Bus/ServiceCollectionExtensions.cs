@@ -30,7 +30,7 @@ public static class ServiceCollectionExtensions
 			return context;
 		});
 		services.TryAddSingleton<IMessageConvention>(configurator.ConventionBuilder.Convention);
-		services.AddSingleton<IBus, ServiceBus>();
+		services.TryAddScoped<IBus, ServiceBus>();
 		services.AddHostedService<RecipientActivator>();
 	}
 }

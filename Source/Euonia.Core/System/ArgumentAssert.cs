@@ -56,7 +56,7 @@ public sealed class ArgumentAssert
 	}
 
 	/// <summary>
-	/// Throws an <see cref="System.ArgumentNullException"/>.
+	/// Throws an <see cref="ArgumentNullException"/>.
 	/// </summary>
 	/// <param name="paramName">The name of the parameter that failed validation.</param>
 	[DoesNotReturn]

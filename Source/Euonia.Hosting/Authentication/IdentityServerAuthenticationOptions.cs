@@ -11,7 +11,7 @@ namespace Microsoft.AspNetCore.Authentication;
 /// <summary>
 /// Options for IdentityServer authentication
 /// </summary>
-/// <seealso cref="Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions" />
+/// <seealso cref="AuthenticationSchemeOptions" />
 public class IdentityServerAuthenticationOptions : AuthenticationSchemeOptions
 {
     private static readonly Func<HttpRequest, string> _internalTokenRetriever = request => request.HttpContext.Items[IdentityServerAuthenticationDefaults.TokenItemsKey] as string;
@@ -205,11 +205,13 @@ public class IdentityServerAuthenticationOptions : AuthenticationSchemeOptions
             MapInboundClaims = false
         };
 
-        jwtOptions.SecurityTokenValidators.Clear();
-        jwtOptions.SecurityTokenValidators.Add(handler);
-    }
+#pragma warning disable CS0618 // 类型或成员已过时
+		jwtOptions.SecurityTokenValidators.Clear();
+		jwtOptions.SecurityTokenValidators.Add(handler);
+#pragma warning restore CS0618 // 类型或成员已过时
+	}
 
-    internal void ConfigureIntrospection(OAuth2IntrospectionOptions introspectionOptions)
+	internal void ConfigureIntrospection(OAuth2IntrospectionOptions introspectionOptions)
     {
         if (string.IsNullOrWhiteSpace(ApiSecret))
         {

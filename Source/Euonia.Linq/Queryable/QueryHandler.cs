@@ -8,7 +8,7 @@ namespace Nerosoft.Euonia.Linq;
 /// <typeparam name="TEntity"></typeparam>
 public class QueryHandler<TEntity>
 {
-    private readonly IList<Expression<Func<TEntity, bool>>> _predicates;
+    private readonly List<Expression<Func<TEntity, bool>>> _predicates;
 
     private IQueryable<TEntity> _query;
 

@@ -8,7 +8,7 @@ public sealed class PauseTokenSource
     /// <summary>
     /// The MRE that manages the "pause" logic. When the MRE is set, the token is not paused; when the MRE is not set, the token is paused.
     /// </summary>
-    private readonly AsyncManualResetEvent _mre = new AsyncManualResetEvent(true);
+    private readonly AsyncManualResetEvent _mre = new(true);
 
     /// <summary>
     /// Whether or not this source (and its tokens) are in the paused state. This member is seldom used; code using this member has a high possibility of race conditions.
@@ -32,7 +32,7 @@ public sealed class PauseTokenSource
     /// <summary>
     /// Gets a pause token controlled by this source.
     /// </summary>
-    public PauseToken Token => new PauseToken(_mre);
+    public PauseToken Token => new(_mre);
 }
 
 /// <summary>

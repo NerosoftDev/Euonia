@@ -1,5 +1,4 @@
-﻿using Nerosoft.Euonia.Core;
-using Nerosoft.Euonia.Reflection;
+﻿using Nerosoft.Euonia.Reflection;
 
 namespace Nerosoft.Euonia.Business;
 

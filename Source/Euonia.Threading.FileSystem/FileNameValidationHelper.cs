@@ -38,16 +38,9 @@ internal static class FileNameValidationHelper
 
     public static string GetLockFileName(DirectoryInfo lockFileDirectory, string name)
     {
-        if (lockFileDirectory == null)
-        {
-            throw new ArgumentNullException(nameof(lockFileDirectory));
-        }
-
-        if (name == null)
-        {
-            throw new ArgumentNullException(nameof(name));
-        }
-
+		ArgumentNullException.ThrowIfNull(lockFileDirectory);
+		ArgumentNullException.ThrowIfNull(name);
+        
         var directoryPath = lockFileDirectory.FullName;
         var directoryPathWithTrailingSeparator = directoryPath[^1] == Path.DirectorySeparatorChar
             ? directoryPath
@@ -75,7 +68,7 @@ internal static class FileNameValidationHelper
         }
 
         // finally, try using just a portion of the hash
-        var minimumLengthFileName = directoryPathWithTrailingSeparator + nameHash.Substring(0, MIN_FILE_NAME_LENGTH);
+        var minimumLengthFileName = directoryPathWithTrailingSeparator + nameHash[..MIN_FILE_NAME_LENGTH];
         if (!IsTooLong(minimumLengthFileName))
         {
             return minimumLengthFileName;

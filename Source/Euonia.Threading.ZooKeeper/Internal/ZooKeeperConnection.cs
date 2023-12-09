@@ -69,7 +69,7 @@ internal class ZooKeeperConnection : IDisposable
                     UserCount = 2
                 };
                 _connections.Add(connectionInfo, newEntry);
-                newConnectionTask.ContinueWith(OnConnectionTaskCompleted);
+                newConnectionTask.ContinueWith(OnConnectionTaskCompleted, cancellationToken);
                 return ToResultAsync(newEntry);
 
                 void OnConnectionTaskCompleted(Task<InternalConnection> internalConnectionTask)
@@ -85,7 +85,7 @@ internal class ZooKeeperConnection : IDisposable
                     else
                     {
                         Task.Delay(_maxAge.TimeSpan, internalConnectionTask.Result.ConnectionLostToken)
-                            .ContinueWith(_ => ReleaseEntry(connectionInfo, newEntry, remove: true));
+                            .ContinueWith(_ => ReleaseEntry(connectionInfo, newEntry, remove: true), cancellationToken);
                     }
                 }
             }

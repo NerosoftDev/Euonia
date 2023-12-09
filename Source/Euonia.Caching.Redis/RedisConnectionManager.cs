@@ -7,7 +7,7 @@ namespace Nerosoft.Euonia.Caching.Redis;
 
 internal class RedisConnectionManager
 {
-    private static readonly IDictionary<string, IConnectionMultiplexer> _connections = new Dictionary<string, IConnectionMultiplexer>();
+    private static readonly Dictionary<string, IConnectionMultiplexer> _connections = new();
     private static readonly object _connectLock = new();
 
     private readonly string _connectionString;

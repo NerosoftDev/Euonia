@@ -104,7 +104,7 @@ public sealed class AsyncSemaphore
     /// <param name="cancellationToken">The cancellation token used to cancel the wait. If this is already set, then this method will attempt to take the slot immediately (succeeding if a slot is currently available).</param>
     public void Wait(CancellationToken cancellationToken)
     {
-        WaitAsync(cancellationToken).WaitAndUnwrapException();
+        WaitAsync(cancellationToken).WaitAndUnwrapException(cancellationToken);
     }
 
     /// <summary>

@@ -6,6 +6,16 @@
 public interface IEvent : IMessage
 {
 	/// <summary>
+	/// Gets the event identifier.
+	/// </summary>
+	string EventId { get; }
+
+	/// <summary>
+	/// Override the message identifier with event identifier.
+	/// </summary>
+	string IMessage.MessageId => EventId;
+
+	/// <summary>
 	/// Gets or sets the sequence of the current event.
 	/// </summary>
 	long Sequence { get; set; }

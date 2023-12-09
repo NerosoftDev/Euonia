@@ -10,7 +10,7 @@ namespace Nerosoft.Euonia.Reflection;
 public static class PropertyAccessorCache<T> where T : class
 {
     // ReSharper disable once StaticMemberInGenericType
-    private static readonly IDictionary<string, LambdaExpression> _cache = new Dictionary<string, LambdaExpression>();
+    private static readonly Dictionary<string, LambdaExpression> _cache = new();
 
     static PropertyAccessorCache()
     {

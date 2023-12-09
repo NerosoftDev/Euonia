@@ -5,4 +5,8 @@
 /// </summary>
 public interface IMessage
 {
+	/// <summary>
+	/// Gets the message identifier.
+	/// </summary>
+	string MessageId { get; }
 }

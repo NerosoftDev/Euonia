@@ -108,10 +108,10 @@ internal static class Helpers
 
         if (hash.Length >= maxNameLength)
         {
-            return hash.Substring(0, length: maxNameLength);
+            return hash[..maxNameLength];
         }
 
-        var prefix = validBaseLockName.Substring(0, Math.Min(validBaseLockName.Length, maxNameLength - hash.Length));
+        var prefix = validBaseLockName[..Math.Min(validBaseLockName.Length, maxNameLength - hash.Length)];
         return prefix + hash;
     }
 

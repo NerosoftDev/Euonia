@@ -62,9 +62,6 @@ public class DefaultContextProvider : IContextProvider
             return;
         }
 
-        if (_functions.ContainsKey(type))
-        {
-            _functions.Remove(type);
-        }
-    }
+		_functions.Remove(type);
+	}
 }

@@ -128,7 +128,7 @@ public sealed class AsyncConditionVariable
     /// <param name="cancellationToken">The cancellation signal used to cancel this wait.</param>
     public void Wait(CancellationToken cancellationToken)
     {
-        WaitAsync(cancellationToken).WaitAndUnwrapException();
+        WaitAsync(cancellationToken).WaitAndUnwrapException(cancellationToken);
     }
 
     /// <summary>

@@ -1,24 +1,33 @@
 ﻿using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
+using Nerosoft.Euonia.Reflection;
 
 namespace Nerosoft.Euonia.Domain;
 
 /// <summary>
 /// The abstract implement of <see cref="ICommand"/>
 /// </summary>
-[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
-public abstract class Command
+public abstract class Command : ICommand
 {
+	private const string PROPERTY_ID = "nerosoft.euonia.internal.command.id";
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="Command"/> class.
+	/// </summary>
+	protected Command()
+	{
+		Properties[PROPERTY_ID] = Guid.NewGuid().ToString();
+	}
+
 	/// <summary>
 	/// Gets the extended properties of command.
 	/// </summary>
-	public IDictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
+	public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
 
 	/// <summary>
 	/// Gets or sets the command property with specified name.
 	/// </summary>
 	/// <param name="name"></param>
-	public object this[string name]
+	public string this[string name]
 	{
 		get => Properties.TryGetValue(name, out var value) ? value : default;
 		set => Properties[name] = value;
@@ -32,12 +41,20 @@ public abstract class Command
 	/// <returns></returns>
 	public virtual T GetProperty<T>(string name)
 	{
-		return (T)this[name];
+		return TypeHelper.CoerceValue<T, string>(this[name]);
+	}
+
+	/// <summary>
+	/// Gets or sets the command identifier.
+	/// </summary>
+	public string CommandId
+	{
+		get => this[PROPERTY_ID];
+		set => this[PROPERTY_ID] = value;
 	}
 }
 
 /// <inheritdoc />
-[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 public abstract class Command<T1> : Command
 {
 	/// <inheritdoc />
@@ -105,7 +122,6 @@ public abstract class Command<T1> : Command
 }
 
 /// <inheritdoc />
-[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 public abstract class Command<T1, T2> : Command
 {
 	/// <inheritdoc />
@@ -179,7 +195,6 @@ public abstract class Command<T1, T2> : Command
 }
 
 /// <inheritdoc />
-[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 public abstract class Command<T1, T2, T3> : Command
 {
 	/// <inheritdoc />
@@ -259,7 +274,6 @@ public abstract class Command<T1, T2, T3> : Command
 }
 
 /// <inheritdoc />
-[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 public abstract class Command<T1, T2, T3, T4> : Command
 {
 	/// <inheritdoc />
@@ -345,7 +359,6 @@ public abstract class Command<T1, T2, T3, T4> : Command
 }
 
 /// <inheritdoc />
-[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 public abstract class Command<T1, T2, T3, T4, T5> : Command
 {
 	/// <inheritdoc />
@@ -437,7 +450,6 @@ public abstract class Command<T1, T2, T3, T4, T5> : Command
 }
 
 /// <inheritdoc />
-[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 public abstract class Command<T1, T2, T3, T4, T5, T6> : Command
 {
 	/// <inheritdoc />
@@ -534,7 +546,6 @@ public abstract class Command<T1, T2, T3, T4, T5, T6> : Command
 }
 
 /// <inheritdoc />
-[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 public abstract class Command<T1, T2, T3, T4, T5, T6, T7> : Command
 {
 	/// <inheritdoc />
