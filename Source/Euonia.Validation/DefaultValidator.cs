@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
-using Nerosoft.Euonia.Core;
 
-using ValidationException = Nerosoft.Euonia.Core.ValidationException;
+using ValidationException = System.ValidationException;
 
 namespace Nerosoft.Euonia.Validation;
 

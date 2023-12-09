@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace Nerosoft.Euonia.Core;
+namespace System;
 
 /// <summary>
 /// Represents errors that occur when HTTP status code is not 200.

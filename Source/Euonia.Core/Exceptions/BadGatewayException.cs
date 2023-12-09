@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace Nerosoft.Euonia.Core;
+namespace System;
 
 /// <summary>
 /// Represents errors that occur when a server acting as a gateway or proxy received an invalid response

@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+using ValidationResult = System.ComponentModel.DataAnnotations.ValidationResult;
+
 namespace Nerosoft.Euonia.Business;
 
 /// <summary>
