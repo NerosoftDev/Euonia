@@ -40,14 +40,16 @@ public sealed class ServiceBus : IBus
 	{
 		options ??= new PublishOptions();
 
-		if (!_convention.IsTopicType(message.GetType()))
+		var messageType = message.GetType();
+
+		if (!_convention.IsTopicType(messageType))
 		{
-			throw new MessageTypeException("The message type is not an event type.");
+			throw new MessageTypeException("The message type is not an topic type.");
 		}
 
 		var context = _requestAccessor?.Context;
 
-		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel<TMessage>();
+		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel(messageType);
 		var pack = new RoutedMessage<TMessage>(message, channelName)
 		{
 			MessageId = options.MessageId ?? Guid.NewGuid().ToString(),
@@ -63,14 +65,16 @@ public sealed class ServiceBus : IBus
 	{
 		options ??= new SendOptions();
 
-		if (!_convention.IsQueueType(message.GetType()))
+		var messageType = message.GetType();
+
+		if (!_convention.IsQueueType(messageType))
 		{
 			throw new MessageTypeException("The message type is not a queue type.");
 		}
 
 		var context = _requestAccessor?.Context;
 
-		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel<TMessage>();
+		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel(messageType);
 		var pack = new RoutedMessage<TMessage>(message, channelName)
 		{
 			MessageId = options.MessageId ?? Guid.NewGuid().ToString(),
@@ -90,14 +94,16 @@ public sealed class ServiceBus : IBus
 	{
 		options ??= new SendOptions();
 
-		if (!_convention.IsQueueType(message.GetType()))
+		var messageType = message.GetType();
+
+		if (!_convention.IsQueueType(messageType))
 		{
 			throw new MessageTypeException("The message type is not a queue type.");
 		}
 
 		var context = _requestAccessor?.Context;
 
-		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel<TMessage>();
+		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel(messageType);
 		var pack = new RoutedMessage<TMessage, TResult>(message, channelName)
 		{
 			MessageId = options.MessageId ?? Guid.NewGuid().ToString(),
@@ -123,9 +129,16 @@ public sealed class ServiceBus : IBus
 	{
 		options ??= new SendOptions();
 
+		var messageType = message.GetType();
+
+		if (!_convention.IsQueueType(messageType))
+		{
+			throw new MessageTypeException("The message type is not a queue type.");
+		}
+
 		var context = _requestAccessor?.Context;
 
-		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel(message.GetType());
+		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel(messageType);
 		var pack = new RoutedMessage<IQueue<TResult>, TResult>(message, channelName)
 		{
 			MessageId = options.MessageId ?? Guid.NewGuid().ToString(),
