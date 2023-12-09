@@ -1,6 +1,6 @@
 <Project>
     <PropertyGroup>
-        <Version>8.1.0</Version>
+        <Version>8.1.1</Version>
         <Authors>damon</Authors>
         <Company>Nerosoft Ltd.</Company>
         <Product>Euonia</Product>
@@ -8,6 +8,6 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
         <LangVersion>latest</LangVersion>
-        <NoWarn>CS2002;IDE0290;IDE0300;IDE0301;IDE0028</NoWarn>
+        <NoWarn>CS2002;IDE0290;IDE0300;IDE0301;IDE0305;IDE0028</NoWarn>
     </PropertyGroup>
 </Project>
