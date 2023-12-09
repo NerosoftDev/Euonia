@@ -191,7 +191,7 @@ public abstract class BaseCache<TValue> : ICache<TValue>
             return item.Value;
         }
 
-        return default(TValue);
+        return default;
     }
 
     /// <summary>
@@ -214,7 +214,7 @@ public abstract class BaseCache<TValue> : ICache<TValue>
             return item.Value;
         }
 
-        return default(TValue);
+        return default;
     }
 
     /// <summary>
@@ -474,7 +474,7 @@ public abstract class BaseCache<TValue> : ICache<TValue>
     {
         if (value == null)
         {
-            return default(TOut);
+            return default;
         }
 
         try

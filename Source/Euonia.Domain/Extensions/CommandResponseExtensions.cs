@@ -1,6 +1,4 @@
-﻿using Nerosoft.Euonia.Core;
-
-namespace Nerosoft.Euonia.Domain;
+﻿namespace Nerosoft.Euonia.Domain;
 
 /// <summary>
 /// Extension methods for <see cref="CommandResponse"/>.

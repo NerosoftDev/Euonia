@@ -17,7 +17,12 @@ public class NewtonsoftJsonSerializer : IMessageSerializer
 		JsonSerializer.Create().Serialize(jsonWriter, message);
 
 		await jsonWriter.FlushAsync(cancellationToken);
+
+#if NET8_0_OR_GREATER
+		await writer.FlushAsync(cancellationToken);
+#else
 		await writer.FlushAsync();
+#endif
 
 		return stream.ToArray();
 	}

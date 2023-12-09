@@ -128,7 +128,7 @@ public sealed partial class AzureLockProvider : ILockProvider<AzureSynchronizati
                     {
                         // handle the race condition where we try to create and someone else creates it first
                         return createException.ErrorCode == AzureErrors.LeaseIdMissing
-                            ? default(AzureSynchronizationHandle)
+                            ? default
                             : throw new AggregateException($"Blob {BlobClient.Name} does not exist and could not be created. See inner exceptions for details", acquireException, createException);
                     }
 

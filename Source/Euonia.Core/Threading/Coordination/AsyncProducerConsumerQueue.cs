@@ -168,7 +168,7 @@ public sealed class AsyncProducerConsumerQueue<T>
 	/// <exception cref="InvalidOperationException">The producer/consumer queue has been marked complete for adding.</exception>
 	public void Enqueue(T item, CancellationToken cancellationToken)
 	{
-		DoEnqueueAsync(item, cancellationToken, sync: true).WaitAndUnwrapException();
+		DoEnqueueAsync(item, cancellationToken, sync: true).WaitAndUnwrapException(cancellationToken);
 	}
 
 	/// <summary>
@@ -225,7 +225,7 @@ public sealed class AsyncProducerConsumerQueue<T>
 	/// <param name="cancellationToken">A cancellation token that can be used to abort the asynchronous wait.</param>
 	public bool OutputAvailable(CancellationToken cancellationToken)
 	{
-		return DoOutputAvailableAsync(cancellationToken, sync: true).WaitAndUnwrapException();
+		return DoOutputAvailableAsync(cancellationToken, sync: true).WaitAndUnwrapException(cancellationToken);
 	}
 
 	/// <summary>
@@ -328,7 +328,7 @@ public sealed class AsyncProducerConsumerQueue<T>
 	/// <exception cref="InvalidOperationException">The producer/consumer queue has been marked complete for adding and is empty.</exception>
 	public T Dequeue(CancellationToken cancellationToken)
 	{
-		return DoDequeueAsync(cancellationToken, sync: true).WaitAndUnwrapException();
+		return DoDequeueAsync(cancellationToken, sync: true).WaitAndUnwrapException(cancellationToken);
 	}
 
 	/// <summary>

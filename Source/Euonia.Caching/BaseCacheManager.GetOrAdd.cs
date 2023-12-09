@@ -68,7 +68,7 @@ public partial class BaseCacheManager<TValue>
             return true;
         }
 
-        value = default(TValue);
+        value = default;
         return false;
     }
 
@@ -93,7 +93,7 @@ public partial class BaseCacheManager<TValue>
             return true;
         }
 
-        value = default(TValue);
+        value = default;
         return false;
     }
 
@@ -130,10 +130,7 @@ public partial class BaseCacheManager<TValue>
             }
 
             // changed logic to invoke the factory only once in case of retries
-            if (newItem == null)
-            {
-                newItem = valueFactory(key, region);
-            }
+            newItem ??= valueFactory(key, region);
 
             if (newItem == null)
             {
@@ -165,10 +162,7 @@ public partial class BaseCacheManager<TValue>
             }
 
             // changed logic to invoke the factory only once in case of retries
-            if (newItem == null)
-            {
-                newItem = valueFactory(key, region);
-            }
+            newItem ??= valueFactory(key, region);
 
             // Throw explicit to me more consistent. Otherwise it would throw later eventually...
             if (newItem == null)

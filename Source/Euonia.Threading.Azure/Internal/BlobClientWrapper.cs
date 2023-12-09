@@ -18,7 +18,7 @@ internal class BlobClientWrapper
 
     public string Name => _blobClient.Name;
 
-    public BlobLeaseClientWrapper GetBlobLeaseClient() => new BlobLeaseClientWrapper(_blobClient.GetBlobLeaseClient());
+    public BlobLeaseClientWrapper GetBlobLeaseClient() => new(_blobClient.GetBlobLeaseClient());
 
     public async ValueTask<IDictionary<string, string>> GetMetadataAsync(string leaseId, CancellationToken cancellationToken)
     {

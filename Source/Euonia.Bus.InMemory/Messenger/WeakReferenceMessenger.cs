@@ -367,7 +367,7 @@ public sealed class WeakReferenceMessenger : IMessenger
 		// has exactly 2 * i elements (due to this slicing), and each loop iteration processes a pair.
 		// The loops ends when the initial reference reaches the end, and that's incremented by 2 at
 		// the end of each iteration. The target being a span, obviously means the length is constant.
-		var slice = pairs.Slice(0, 2 * i);
+		var slice = pairs[..(2 * i)];
 
 		ref var sliceStart = ref MemoryMarshal.GetReference(slice);
 		ref var sliceEnd = ref Unsafe.Add(ref sliceStart, slice.Length);

@@ -80,7 +80,7 @@ public class ServiceBusTests
 		}
 		else
 		{
-			await Assert.ThrowsAnyAsync<InvalidOperationException>(async () =>
+			await Assert.ThrowsAnyAsync<MessageDeliverException>(async () =>
 			{
 				var result = await _provider.GetService<IBus>().SendAsync<int>(new FooCreateCommand());
 			});

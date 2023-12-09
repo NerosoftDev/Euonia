@@ -12,7 +12,7 @@ public class DefaultCacheSignal : ICacheSignal
     /// <summary>
     /// The tokens
     /// </summary>
-    private readonly IDictionary<object, VolatileToken> _tokens = new Dictionary<object, VolatileToken>();
+    private readonly Dictionary<object, VolatileToken> _tokens = new();
 
     /// <summary>
     /// Triggers the specified signal.
