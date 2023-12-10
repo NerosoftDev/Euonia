@@ -16,11 +16,6 @@ public interface IUseCase<in TInput, TOutput>
 	/// <param name="cancellationToken"></param>
 	/// <returns></returns>
 	Task<TOutput> ExecuteAsync(TInput input, CancellationToken cancellationToken = default);
-
-	/// <summary>
-	/// Gets the presenter of the use case.
-	/// </summary>
-	IUseCasePresenter<TOutput> Presenter { get; }
 }
 
 /// <summary>
