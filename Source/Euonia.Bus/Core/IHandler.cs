@@ -26,8 +26,8 @@ public interface IHandler<in TMessage> : IHandler
 	/// Handle message.
 	/// </summary>
 	/// <param name="message">The message.</param>
-	/// <param name="messageContext">The message context.</param>
+	/// <param name="context">The message context.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns></returns>
-	Task HandleAsync(TMessage message, MessageContext messageContext, CancellationToken cancellationToken = default);
+	Task HandleAsync(TMessage message, MessageContext context, CancellationToken cancellationToken = default);
 }
