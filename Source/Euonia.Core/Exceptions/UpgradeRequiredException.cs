@@ -16,14 +16,6 @@ public class UpgradeRequiredException : Exception
     {
     }
 
-#if !NET8_0_OR_GREATER
-	/// <inheritdoc />
-	public UpgradeRequiredException(SerializationInfo info, StreamingContext context)
-		: base(info, context)
-	{
-	}
-#endif
-
     /// <inheritdoc />
     public UpgradeRequiredException(string message)
         : base(message)
@@ -35,4 +27,12 @@ public class UpgradeRequiredException : Exception
         : base(message, innerException)
     {
     }
+    
+#pragma warning disable SYSLIB0051
+    /// <inheritdoc />
+    public UpgradeRequiredException(SerializationInfo info, StreamingContext context)
+	    : base(info, context)
+    {
+    }
+#pragma warning restore SYSLIB0051
 }

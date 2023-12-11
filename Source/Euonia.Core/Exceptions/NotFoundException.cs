@@ -8,31 +8,31 @@ namespace System;
 [Serializable, HttpStatusCode(HttpStatusCode.NotFound)]
 public class NotFoundException : Exception
 {
-    private const string DEFAULT_MESSAGE = "Not Found";
+	private const string DEFAULT_MESSAGE = "Not Found";
 
-    /// <inheritdoc />
-    public NotFoundException()
-        : base(DEFAULT_MESSAGE)
-    {
-    }
+	/// <inheritdoc />
+	public NotFoundException()
+		: base(DEFAULT_MESSAGE)
+	{
+	}
 
-    /// <inheritdoc />
-    public NotFoundException(string message)
-        : base(message)
-    {
-    }
+	/// <inheritdoc />
+	public NotFoundException(string message)
+		: base(message)
+	{
+	}
 
-    /// <inheritdoc />
-    public NotFoundException(string message, Exception innerException)
-        : base(message, innerException)
-    {
-    }
+	/// <inheritdoc />
+	public NotFoundException(string message, Exception innerException)
+		: base(message, innerException)
+	{
+	}
 
-#if !NET8_0_OR_GREATER
+#pragma warning disable SYSLIB0051
 	/// <inheritdoc />
 	public NotFoundException(SerializationInfo info, StreamingContext context)
 		: base(info, context)
 	{
-	} 
-#endif
+	}
+#pragma warning restore SYSLIB0051
 }

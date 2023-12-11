@@ -6,33 +6,33 @@
 [Serializable]
 public class InvalidValueException : Exception
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="InvalidValueException"/> class.
-    /// </summary>
-    public InvalidValueException()
-    {
-    }
+	/// <summary>
+	/// Initializes a new instance of the <see cref="InvalidValueException"/> class.
+	/// </summary>
+	public InvalidValueException()
+	{
+	}
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="InvalidValueException"/> class with a specified error message.
-    /// </summary>
-    /// <param name="message">The error message.</param>
-    public InvalidValueException(string message)
-        : base(message)
-    {
-    }
+	/// <summary>
+	/// Initializes a new instance of the <see cref="InvalidValueException"/> class with a specified error message.
+	/// </summary>
+	/// <param name="message">The error message.</param>
+	public InvalidValueException(string message)
+		: base(message)
+	{
+	}
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="InvalidValueException"/> class with a specified error message and a reference to the inner exception that is the cause of this exception.
-    /// </summary>
-    /// <param name="message">The error message.</param>
-    /// <param name="innerException">The inner exception that is the cause of this exception.</param>
-    public InvalidValueException(string message, Exception innerException)
-        : base(message, innerException)
-    {
-    }
+	/// <summary>
+	/// Initializes a new instance of the <see cref="InvalidValueException"/> class with a specified error message and a reference to the inner exception that is the cause of this exception.
+	/// </summary>
+	/// <param name="message">The error message.</param>
+	/// <param name="innerException">The inner exception that is the cause of this exception.</param>
+	public InvalidValueException(string message, Exception innerException)
+		: base(message, innerException)
+	{
+	}
 
-#if !NET8_0_OR_GREATER
+#pragma warning disable SYSLIB0051
 	/// <summary>
 	/// Initializes a new instance of the <see cref="InvalidValueException"/> class with serialized data.
 	/// </summary>
@@ -41,6 +41,6 @@ public class InvalidValueException : Exception
 	public InvalidValueException(SerializationInfo info, StreamingContext context)
 		: base(info, context)
 	{
-	} 
-#endif
+	}
+#pragma warning restore SYSLIB0051
 }

@@ -8,31 +8,31 @@ namespace System;
 [Serializable, HttpStatusCode(HttpStatusCode.RequestTimeout)]
 public class RequestTimeoutException : Exception
 {
-    private const string DEFAULT_MESSAGE = "Request Timeout";
+	private const string DEFAULT_MESSAGE = "Request Timeout";
 
-    /// <inheritdoc />
-    public RequestTimeoutException()
-        : base(DEFAULT_MESSAGE)
-    {
-    }
+	/// <inheritdoc />
+	public RequestTimeoutException()
+		: base(DEFAULT_MESSAGE)
+	{
+	}
 
-#if !NET8_0_OR_GREATER
+	/// <inheritdoc />
+	public RequestTimeoutException(string message)
+		: base(message)
+	{
+	}
+
+	/// <inheritdoc />
+	public RequestTimeoutException(string message, Exception innerException)
+		: base(message, innerException)
+	{
+	}
+
+#pragma warning disable SYSLIB0051
 	/// <inheritdoc />
 	public RequestTimeoutException(SerializationInfo info, StreamingContext context)
 		: base(info, context)
 	{
 	}
-#endif
-
-    /// <inheritdoc />
-    public RequestTimeoutException(string message)
-        : base(message)
-    {
-    }
-
-    /// <inheritdoc />
-    public RequestTimeoutException(string message, Exception innerException)
-        : base(message, innerException)
-    {
-    }
+#pragma warning restore SYSLIB0051
 }
