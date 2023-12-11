@@ -38,7 +38,7 @@ public class ExceptionHandlingMiddleware : IMiddleware
 		}
 	}
 
-	private static async Task HandleExceptionAsync(HttpContext httpContext, Exception exception)
+	private static Task HandleExceptionAsync(HttpContext httpContext, Exception exception)
 	{
 		var statusCode = GetStatusCode(exception);
 
@@ -53,7 +53,7 @@ public class ExceptionHandlingMiddleware : IMiddleware
 
 		httpContext.Response.StatusCode = statusCode;
 
-		await httpContext.Response.WriteAsync(JsonSerializer.Serialize(response));
+		return httpContext.Response.WriteAsync(JsonSerializer.Serialize(response));
 	}
 
 	private static int GetStatusCode(Exception exception)
