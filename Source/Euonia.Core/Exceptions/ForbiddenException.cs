@@ -8,31 +8,31 @@ namespace System;
 [Serializable, HttpStatusCode(HttpStatusCode.Forbidden)]
 public class ForbiddenException : Exception
 {
-    private const string DEFAULT_MESSAGE = "Forbidden";
+	private const string DEFAULT_MESSAGE = "Forbidden";
 
-    /// <inheritdoc />
-    public ForbiddenException()
-        : base(DEFAULT_MESSAGE)
-    {
-    }
+	/// <inheritdoc />
+	public ForbiddenException()
+		: base(DEFAULT_MESSAGE)
+	{
+	}
 
-#if !NET8_0_OR_GREATER
+	/// <inheritdoc />
+	public ForbiddenException(string message)
+		: base(message)
+	{
+	}
+
+	/// <inheritdoc />
+	public ForbiddenException(string message, Exception innerException)
+		: base(message, innerException)
+	{
+	}
+
+#pragma warning disable SYSLIB0051
 	/// <inheritdoc />
 	public ForbiddenException(SerializationInfo info, StreamingContext context)
 		: base(info, context)
 	{
 	}
-#endif
-
-    /// <inheritdoc />
-    public ForbiddenException(string message)
-        : base(message)
-    {
-    }
-
-    /// <inheritdoc />
-    public ForbiddenException(string message, Exception innerException)
-        : base(message, innerException)
-    {
-    }
+#pragma warning restore SYSLIB0051
 }

@@ -39,6 +39,11 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 			cancellationToken.Register(() => taskCompletion.SetCanceled(cancellationToken));
 		}
 
+		context.Failed += (_, exception) =>
+		{
+			taskCompletion.TrySetException(exception);
+		};
+
 		context.Completed += (_, _) =>
 		{
 			taskCompletion.SetResult();
@@ -68,13 +73,17 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 			cancellationToken.Register(() => taskCompletion.TrySetCanceled(), false);
 		}
 
-		context.OnResponse += (_, args) =>
+		context.Responded += (_, args) =>
 		{
 			taskCompletion.SetResult((TResponse)args.Result);
 		};
+		context.Failed += (_, exception) =>
+		{
+			taskCompletion.TrySetException(exception);
+		};
 		context.Completed += (_, _) =>
 		{
-			taskCompletion.TrySetResult(default);
+			taskCompletion.TryCompleteFromCompletedTask(Task.FromResult(default(TResponse)));
 		};
 
 		StrongReferenceMessenger.Default.UnsafeSend(pack, message.Channel);

@@ -1,9 +1,7 @@
 ﻿using System.Data;
-using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.Logging;
 using Nerosoft.Euonia.Domain;
 
 namespace Nerosoft.Euonia.Repository.EfCore;

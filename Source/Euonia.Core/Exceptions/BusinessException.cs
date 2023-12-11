@@ -50,7 +50,7 @@ public class BusinessException : Exception
 		_code = code;
 	}
 
-#if !NET8_0_OR_GREATER
+#pragma warning disable SYSLIB0051
 	/// <inheritdoc />
 	public BusinessException(SerializationInfo info, StreamingContext context)
 		: base(info, context)
@@ -58,11 +58,14 @@ public class BusinessException : Exception
 		_code = info.GetString(nameof(Code));
 	}
 
+#pragma warning disable CS0672 // Member overrides obsolete member
 	/// <inheritdoc />
 	public override void GetObjectData(SerializationInfo info, StreamingContext context)
 	{
 		base.GetObjectData(info, context);
 		info.AddValue(nameof(Code), _code, typeof(string));
 	}
-#endif
+#pragma warning restore CS0672 // Member overrides obsolete member
+
+#pragma warning restore SYSLIB0051
 }

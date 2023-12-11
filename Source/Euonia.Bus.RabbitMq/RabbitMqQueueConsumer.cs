@@ -40,6 +40,7 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 		{
 			Connection.TryConnect();
 		}
+
 		Channel = Connection.CreateChannel();
 
 		Channel.QueueDeclare(queueName, true, false, false, null);
@@ -65,27 +66,40 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 		OnMessageReceived(new MessageReceivedEventArgs(message.Data, context));
 
 		var taskCompletion = new TaskCompletionSource<object>();
-		context.OnResponse += (_, a) =>
+		context.Responded += (_, a) =>
 		{
 			taskCompletion.TrySetResult(a.Result);
+		};
+		context.Failed += (_, exception) =>
+		{
+			taskCompletion.TrySetException(exception);
 		};
 		context.Completed += (_, _) =>
 		{
 			taskCompletion.TryCompleteFromCompletedTask(Task.FromResult(default(object)));
 		};
 
+		RabbitMqReply<object> reply;
+
 		await Handler.HandleAsync(message.Channel, message.Data, context);
 
-		var result = await taskCompletion.Task;
+		try
+		{
+			var result = await taskCompletion.Task;
+			reply = RabbitMqReply<object>.Success(result);
+		}
+		catch (Exception exception)
+		{
+			reply = RabbitMqReply<object>.Failure(exception);
+		}
 
 		if (!string.IsNullOrEmpty(props.CorrelationId) || !string.IsNullOrWhiteSpace(props.ReplyTo))
 		{
 			var replyProps = Channel.CreateBasicProperties();
 			replyProps.Headers ??= new Dictionary<string, object>();
-			replyProps.Headers.Add(Constants.MessageHeaders.MessageType, result.GetType().GetFullNameWithAssemblyName());
 			replyProps.CorrelationId = props.CorrelationId;
 
-			var response = SerializeMessage(result);
+			var response = SerializeMessage(reply);
 			Channel.BasicPublish(string.Empty, props.ReplyTo, replyProps, response);
 		}
 

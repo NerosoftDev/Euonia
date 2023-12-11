@@ -8,31 +8,31 @@ namespace System;
 [Serializable, HttpStatusCode(HttpStatusCode.GatewayTimeout)]
 public class GatewayTimeoutException : Exception
 {
-    private const string DEFAULT_MESSAGE = "Gateway Timeout";
+	private const string DEFAULT_MESSAGE = "Gateway Timeout";
 
-    /// <inheritdoc />
-    public GatewayTimeoutException()
-        : base(DEFAULT_MESSAGE)
-    {
-    }
+	/// <inheritdoc />
+	public GatewayTimeoutException()
+		: base(DEFAULT_MESSAGE)
+	{
+	}
 
-#if !NET8_0_OR_GREATER
+	/// <inheritdoc />
+	public GatewayTimeoutException(string message)
+		: base(message)
+	{
+	}
+
+	/// <inheritdoc />
+	public GatewayTimeoutException(string message, Exception innerException)
+		: base(message, innerException)
+	{
+	}
+
+#pragma warning disable SYSLIB0051
 	/// <inheritdoc />
 	public GatewayTimeoutException(SerializationInfo info, StreamingContext context)
 		: base(info, context)
 	{
-	} 
-#endif
-
-	/// <inheritdoc />
-	public GatewayTimeoutException(string message)
-        : base(message)
-    {
-    }
-
-    /// <inheritdoc />
-    public GatewayTimeoutException(string message, Exception innerException)
-        : base(message, innerException)
-    {
-    }
+	}
+#pragma warning restore SYSLIB0051
 }

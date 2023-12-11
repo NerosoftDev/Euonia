@@ -95,9 +95,7 @@ public sealed class AsyncManualResetEvent
     public Task WaitAsync(CancellationToken cancellationToken)
     {
         var waitTask = WaitAsync(cancellationToken);
-        if (waitTask.IsCompleted)
-            return waitTask;
-        return waitTask.WaitAsync(cancellationToken);
+        return waitTask.IsCompleted ? waitTask : waitTask.WaitAsync(cancellationToken);
     }
 
     /// <summary>
