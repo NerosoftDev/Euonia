@@ -105,17 +105,6 @@ public class HandlerContext : IHandlerContext
 		{
 			var handler = factory(scope.ServiceProvider);
 			tasks.Add(handler(message, context, cancellationToken));
-			// var handler = ActivatorUtilities.GetServiceOrCreateInstance(scope.ServiceProvider, handlerType);
-			//
-			// var arguments = GetMethodArguments(handleMethod, message, context, cancellationToken);
-			// if (arguments == null)
-			// {
-			// 	_logger.LogWarning("Method '{Name}' parameter number not matches", handleMethod.Name);
-			// }
-			// else
-			// {
-			// 	tasks.Add(Invoke(handleMethod, handler, arguments));
-			// }
 		}
 
 		if (tasks.Count == 0)

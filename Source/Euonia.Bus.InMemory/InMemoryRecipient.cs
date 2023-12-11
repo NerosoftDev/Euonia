@@ -39,7 +39,15 @@ public abstract class InMemoryRecipient : DisposableObject, IRecipient<MessagePa
 	public async void Receive(MessagePack pack)
 	{
 		MessageReceived?.Invoke(this, new MessageReceivedEventArgs(pack.Message, pack.Context));
-		await _handler.HandleAsync(pack.Message.Channel, pack.Message.Data, pack.Context, pack.Aborted);
+		try
+		{
+			await _handler.HandleAsync(pack.Message.Channel, pack.Message.Data, pack.Context, pack.Aborted);
+		}
+		catch (Exception exception)
+		{
+			pack.Context.Failure(exception);
+		}
+
 		MessageAcknowledged?.Invoke(this, new MessageAcknowledgedEventArgs(pack.Message, pack.Context));
 	}
 }

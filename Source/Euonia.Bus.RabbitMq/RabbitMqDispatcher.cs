@@ -48,20 +48,20 @@ public class RabbitMqDispatcher : IDispatcher
 		props.Type = typeName;
 
 		await Policy.Handle<SocketException>()
-					.Or<BrokerUnreachableException>()
-					.WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(3), (exception, _, retryCount, _) =>
-					{
-						_logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
-					})
-					.ExecuteAsync(async () =>
-					{
-						var messageBody = await SerializeAsync(message, cancellationToken);
+		            .Or<BrokerUnreachableException>()
+		            .WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(3), (exception, _, retryCount, _) =>
+		            {
+			            _logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
+		            })
+		            .ExecuteAsync(async () =>
+		            {
+			            var messageBody = await SerializeAsync(message, cancellationToken);
 
-						channel.ExchangeDeclare(_options.ExchangeName, _options.ExchangeType);
-						channel.BasicPublish(_options.ExchangeName, $"{_options.TopicName}${message.Channel}$", props, messageBody);
+			            channel.ExchangeDeclare(_options.ExchangeName, _options.ExchangeType);
+			            channel.BasicPublish(_options.ExchangeName, $"{_options.TopicName}${message.Channel}$", props, messageBody);
 
-						Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
-					});
+			            Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
+		            });
 	}
 
 	/// <inheritdoc />
@@ -81,19 +81,19 @@ public class RabbitMqDispatcher : IDispatcher
 		props.Type = typeName;
 
 		await Policy.Handle<SocketException>()
-					.Or<BrokerUnreachableException>()
-					.WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(3), (exception, _, retryCount, _) =>
-					{
-						_logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
-					})
-					.ExecuteAsync(async () =>
-					{
-						var messageBody = await SerializeAsync(message, cancellationToken);
+		            .Or<BrokerUnreachableException>()
+		            .WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(3), (exception, _, retryCount, _) =>
+		            {
+			            _logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
+		            })
+		            .ExecuteAsync(async () =>
+		            {
+			            var messageBody = await SerializeAsync(message, cancellationToken);
 
-						channel.BasicPublish("", requestQueueName, props, messageBody);
+			            channel.BasicPublish("", requestQueueName, props, messageBody);
 
-						Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
-					});
+			            Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
+		            });
 	}
 
 	/// <inheritdoc />
@@ -122,19 +122,19 @@ public class RabbitMqDispatcher : IDispatcher
 		props.ReplyTo = responseQueueName;
 
 		await Policy.Handle<SocketException>()
-					.Or<BrokerUnreachableException>()
-					.WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(1), (exception, _, retryCount, _) =>
-					{
-						_logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
-					})
-					.ExecuteAsync(async () =>
-					{
-						var messageBody = await SerializeAsync(message, cancellationToken);
-						channel.BasicPublish("", requestQueueName, props, messageBody);
-						channel.BasicConsume(consumer, responseQueueName, true);
+		            .Or<BrokerUnreachableException>()
+		            .WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(1), (exception, _, retryCount, _) =>
+		            {
+			            _logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
+		            })
+		            .ExecuteAsync(async () =>
+		            {
+			            var messageBody = await SerializeAsync(message, cancellationToken);
+			            channel.BasicPublish("", requestQueueName, props, messageBody);
+			            channel.BasicConsume(consumer, responseQueueName, true);
 
-						Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
-					});
+			            Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
+		            });
 
 		var result = await task.Task;
 		consumer.Received -= OnReceived;
@@ -146,11 +146,10 @@ public class RabbitMqDispatcher : IDispatcher
 			{
 				return;
 			}
-
+			
 			var body = args.Body.ToArray();
-			var response = JsonConvert.DeserializeObject<TResponse>(Encoding.UTF8.GetString(body), Constants.SerializerSettings);
-
-			task.SetResult(response);
+			var response = JsonConvert.DeserializeObject<RabbitMqReply<TResponse>>(Encoding.UTF8.GetString(body), Constants.SerializerSettings);
+			task.SetResult(response.Result);
 		}
 	}
 
