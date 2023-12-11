@@ -81,10 +81,10 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 
 		RabbitMqReply<object> reply;
 
+		await Handler.HandleAsync(message.Channel, message.Data, context);
+
 		try
 		{
-			await Handler.HandleAsync(message.Channel, message.Data, context);
-
 			var result = await taskCompletion.Task;
 			reply = RabbitMqReply<object>.Success(result);
 		}
@@ -97,7 +97,6 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 		{
 			var replyProps = Channel.CreateBasicProperties();
 			replyProps.Headers ??= new Dictionary<string, object>();
-			replyProps.Headers.Add(Constants.MessageHeaders.MessageType, reply.Result.GetType().GetFullNameWithAssemblyName());
 			replyProps.CorrelationId = props.CorrelationId;
 
 			var response = SerializeMessage(reply);

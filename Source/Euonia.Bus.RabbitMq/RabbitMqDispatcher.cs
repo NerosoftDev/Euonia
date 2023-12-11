@@ -67,11 +67,18 @@ public class RabbitMqDispatcher : IDispatcher
 	/// <inheritdoc />
 	public async Task SendAsync<TMessage>(RoutedMessage<TMessage> message, CancellationToken cancellationToken = default) where TMessage : class
 	{
-		using var channel = _connection.CreateChannel();
+		var task = new TaskCompletionSource<dynamic>();
 
 		var requestQueueName = $"{_options.QueueName}${message.Channel}$";
 
+		using var channel = _connection.CreateChannel();
+
 		CheckQueue(channel, requestQueueName);
+
+		var responseQueueName = channel.QueueDeclare().QueueName;
+		var consumer = new EventingBasicConsumer(channel);
+
+		consumer.Received += OnReceived;
 
 		var typeName = message.GetTypeName();
 
@@ -79,25 +86,50 @@ public class RabbitMqDispatcher : IDispatcher
 		props.Headers ??= new Dictionary<string, object>();
 		props.Headers[Constants.MessageHeaders.MessageType] = typeName;
 		props.Type = typeName;
+		props.CorrelationId = message.CorrelationId;
+		props.ReplyTo = responseQueueName;
 
 		await Policy.Handle<SocketException>()
 		            .Or<BrokerUnreachableException>()
-		            .WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(3), (exception, _, retryCount, _) =>
+		            .WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(1), (exception, _, retryCount, _) =>
 		            {
 			            _logger.LogError(exception, "Retry:{RetryCount}, {Message}", retryCount, exception.Message);
 		            })
 		            .ExecuteAsync(async () =>
 		            {
 			            var messageBody = await SerializeAsync(message, cancellationToken);
-
 			            channel.BasicPublish("", requestQueueName, props, messageBody);
+			            channel.BasicConsume(consumer, responseQueueName, true);
 
 			            Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
 		            });
+
+		await task.Task;
+		consumer.Received -= OnReceived;
+
+		void OnReceived(object sender, BasicDeliverEventArgs args)
+		{
+			if (args.BasicProperties.CorrelationId != message.CorrelationId)
+			{
+				return;
+			}
+
+			var body = args.Body.ToArray();
+			var response = JsonConvert.DeserializeObject<RabbitMqReply<object>>(Encoding.UTF8.GetString(body), Constants.SerializerSettings);
+			if (response.IsSuccess)
+			{
+				task.SetResult(response.Result);
+			}
+			else
+			{
+				task.SetException(response.Error);
+			}
+		}
 	}
 
 	/// <inheritdoc />
-	public async Task<TResponse> SendAsync<TMessage, TResponse>(RoutedMessage<TMessage, TResponse> message, CancellationToken cancellationToken = default) where TMessage : class
+	public async Task<TResponse> SendAsync<TMessage, TResponse>(RoutedMessage<TMessage, TResponse> message, CancellationToken cancellationToken = default)
+		where TMessage : class
 	{
 		var task = new TaskCompletionSource<TResponse>();
 
@@ -146,7 +178,7 @@ public class RabbitMqDispatcher : IDispatcher
 			{
 				return;
 			}
-			
+
 			var body = args.Body.ToArray();
 			var response = JsonConvert.DeserializeObject<RabbitMqReply<TResponse>>(Encoding.UTF8.GetString(body), Constants.SerializerSettings);
 			task.SetResult(response.Result);

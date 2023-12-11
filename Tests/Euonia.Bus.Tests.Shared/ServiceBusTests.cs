@@ -30,7 +30,7 @@ public class ServiceBusTests
 	}
 
 	[Fact]
-	public async Task TestSendCommand_NoReponse()
+	public async Task TestSendCommand_NoResponse()
 	{
 		if (_preventRunTests)
 		{
@@ -44,7 +44,7 @@ public class ServiceBusTests
 	}
 
 	[Fact]
-	public async Task TestSendCommand_HasReponse_UseSubscribeAttribute()
+	public async Task TestSendCommand_HasResponse_UseSubscribeAttribute()
 	{
 		if (_preventRunTests)
 		{
@@ -58,7 +58,7 @@ public class ServiceBusTests
 	}
 
 	[Fact]
-	public async Task TestSendCommand_HasReponse_MessageHasResultInherites()
+	public async Task TestSendCommand_HasResponse_MessageHasResultInherits()
 	{
 		if (_preventRunTests)
 		{
@@ -72,7 +72,7 @@ public class ServiceBusTests
 	}
 
 	[Fact]
-	public async Task TestSendCommand_HasReponse_MessageHasResultInherites_NoRecipient()
+	public async Task TestSendCommand_HasResponse_MessageHasResultInherits_NoRecipient()
 	{
 		if (_preventRunTests)
 		{
@@ -82,7 +82,23 @@ public class ServiceBusTests
 		{
 			await Assert.ThrowsAnyAsync<MessageDeliverException>(async () =>
 			{
-				var result = await _provider.GetService<IBus>().SendAsync<int>(new FooCreateCommand());
+				var _ = await _provider.GetService<IBus>().SendAsync<int>(new FooCreateCommand());
+			});
+		}
+	}
+
+	[Fact]
+	public async Task TestSendCommand_HasResponse_MessageHasResultInherits_ThrowExceptionInHandler()
+	{
+		if (_preventRunTests)
+		{
+			Assert.True(true);
+		}
+		else
+		{
+			await Assert.ThrowsAnyAsync<NotFoundException>(async () =>
+			{
+				await _provider.GetService<IBus>().SendAsync(new FooDeleteCommand());
 			});
 		}
 	}
