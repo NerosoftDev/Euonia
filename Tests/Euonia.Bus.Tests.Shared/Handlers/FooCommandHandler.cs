@@ -11,4 +11,10 @@ public class FooCommandHandler
 		messageContext.Response(1);
 		await Task.CompletedTask;
 	}
+
+	[Subscribe]
+	public async Task HandleAsync(FooDeleteCommand message, MessageContext messageContext, CancellationToken cancellationToken = default)
+	{
+		throw new NotFoundException();
+	}
 }

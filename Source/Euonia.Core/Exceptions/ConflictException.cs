@@ -8,31 +8,31 @@ namespace System;
 [Serializable, HttpStatusCode(HttpStatusCode.Conflict)]
 public class ConflictException : Exception
 {
-    private const string DEFAULT_MESSAGE = "Conflict";
+	private const string DEFAULT_MESSAGE = "Conflict";
 
-    /// <inheritdoc />
-    public ConflictException()
-        : base(DEFAULT_MESSAGE)
-    {
-    }
+	/// <inheritdoc />
+	public ConflictException()
+		: base(DEFAULT_MESSAGE)
+	{
+	}
 
-#if !NET8_0_OR_GREATER
+	/// <inheritdoc />
+	public ConflictException(string message)
+		: base(message)
+	{
+	}
+
+	/// <inheritdoc />
+	public ConflictException(string message, Exception innerException)
+		: base(message, innerException)
+	{
+	}
+
+#pragma warning disable SYSLIB0051
 	/// <inheritdoc />
 	public ConflictException(SerializationInfo info, StreamingContext context)
 		: base(info, context)
 	{
 	}
-#endif
-
-    /// <inheritdoc />
-    public ConflictException(string message)
-        : base(message)
-    {
-    }
-
-    /// <inheritdoc />
-    public ConflictException(string message, Exception innerException)
-        : base(message, innerException)
-    {
-    }
+#pragma warning restore SYSLIB0051
 }

@@ -9,31 +9,31 @@ namespace System;
 [Serializable, HttpStatusCode(HttpStatusCode.BadGateway)]
 public class BadGatewayException : Exception
 {
-    private const string DEFAULT_MESSAGE = "Bad Gateway";
+	private const string DEFAULT_MESSAGE = "Bad Gateway";
 
-    /// <inheritdoc />
-    public BadGatewayException()
-        : base(DEFAULT_MESSAGE)
-    {
-    }
+	/// <inheritdoc />
+	public BadGatewayException()
+		: base(DEFAULT_MESSAGE)
+	{
+	}
 
-#if !NET8_0_OR_GREATER
+	/// <inheritdoc />
+	public BadGatewayException(string message)
+		: base(message)
+	{
+	}
+
+	/// <inheritdoc />
+	public BadGatewayException(string message, Exception innerException)
+		: base(message, innerException)
+	{
+	}
+
+#pragma warning disable SYSLIB0051
 	/// <inheritdoc />
 	public BadGatewayException(SerializationInfo info, StreamingContext context)
 		: base(info, context)
 	{
 	}
-#endif
-
-    /// <inheritdoc />
-    public BadGatewayException(string message)
-        : base(message)
-    {
-    }
-
-    /// <inheritdoc />
-    public BadGatewayException(string message, Exception innerException)
-        : base(message, innerException)
-    {
-    }
+#pragma warning restore SYSLIB0051
 }

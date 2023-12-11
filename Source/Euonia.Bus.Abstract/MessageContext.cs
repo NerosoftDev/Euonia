@@ -44,7 +44,7 @@ public sealed class MessageContext : IMessageContext
 	/// <summary>
 	/// Invoked while message was handled and replied to dispatcher.
 	/// </summary>
-	public event EventHandler<MessageRepliedEventArgs> OnResponse
+	public event EventHandler<MessageRepliedEventArgs> Responded
 	{
 		add => _events.AddEventHandler(value);
 		remove => _events.RemoveEventHandler(value);
@@ -54,6 +54,15 @@ public sealed class MessageContext : IMessageContext
 	/// Invoke while message context disposed.
 	/// </summary>
 	public event EventHandler<MessageHandledEventArgs> Completed
+	{
+		add => _events.AddEventHandler(value);
+		remove => _events.RemoveEventHandler(value);
+	}
+
+	/// <summary>
+	/// Invoked while message handling was failed.
+	/// </summary>
+	public event EventHandler<Exception> Failed
 	{
 		add => _events.AddEventHandler(value);
 		remove => _events.RemoveEventHandler(value);
@@ -106,7 +115,7 @@ public sealed class MessageContext : IMessageContext
 	/// <param name="message">The message to reply.</param>
 	public void Response(object message)
 	{
-		_events.HandleEvent(this, new MessageRepliedEventArgs(message), nameof(OnResponse));
+		_events.HandleEvent(this, new MessageRepliedEventArgs(message), nameof(Responded));
 	}
 
 	/// <summary>
@@ -119,6 +128,15 @@ public sealed class MessageContext : IMessageContext
 		Response((object)message);
 	}
 
+	/// <summary>
+	/// Called after the message handling was failed.
+	/// </summary>
+	/// <param name="exception"></param>
+	public void Failure(Exception exception)
+	{
+		_events.HandleEvent(this, exception, nameof(Failed));
+	}
+	
 	/// <summary>
 	/// Called after the message has been handled.
 	/// This operate will raised up the <see cref="Completed"/> event.

@@ -32,11 +32,11 @@ public class ConfigurationException : Exception
     {
     }
 
-#if !NET8_0_OR_GREATER
+#pragma warning disable SYSLIB0051
 	/// <inheritdoc />
 	public ConfigurationException(SerializationInfo info, StreamingContext context)
 		: base(info, context)
 	{
 	}
-#endif
+#pragma warning restore SYSLIB0051
 }

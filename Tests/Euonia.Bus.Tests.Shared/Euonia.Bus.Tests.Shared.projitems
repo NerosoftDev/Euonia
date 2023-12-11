@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Commands\FooCreateCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\FooDeleteCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\UserCreateCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\UserUpdateCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Defines.cs" />

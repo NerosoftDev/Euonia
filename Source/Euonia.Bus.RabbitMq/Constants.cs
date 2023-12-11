@@ -8,7 +8,8 @@ internal class Constants
 	{
 		ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
 		ConstructorHandling = ConstructorHandling.Default,
-		MetadataPropertyHandling = MetadataPropertyHandling.ReadAhead
+		MetadataPropertyHandling = MetadataPropertyHandling.ReadAhead,
+		TypeNameHandling = TypeNameHandling.Auto
 	};
 
 	public class MessageHeaders

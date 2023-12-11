@@ -8,31 +8,31 @@ namespace System;
 [Serializable, HttpStatusCode(HttpStatusCode.TooManyRequests)]
 public class TooManyRequestsException : Exception
 {
-    private const string DEFAULT_MESSAGE = "Too Many Requests";
+	private const string DEFAULT_MESSAGE = "Too Many Requests";
 
-    /// <inheritdoc />
-    public TooManyRequestsException()
-        : base(DEFAULT_MESSAGE)
-    {
-    }
+	/// <inheritdoc />
+	public TooManyRequestsException()
+		: base(DEFAULT_MESSAGE)
+	{
+	}
 
-#if !NET8_0_OR_GREATER
+	/// <inheritdoc />
+	public TooManyRequestsException(string message)
+		: base(message)
+	{
+	}
+
+	/// <inheritdoc />
+	public TooManyRequestsException(string message, Exception innerException)
+		: base(message, innerException)
+	{
+	}
+
+#pragma warning disable SYSLIB0051
 	/// <inheritdoc />
 	public TooManyRequestsException(SerializationInfo info, StreamingContext context)
 		: base(info, context)
 	{
 	}
-#endif
-
-    /// <inheritdoc />
-    public TooManyRequestsException(string message)
-        : base(message)
-    {
-    }
-
-    /// <inheritdoc />
-    public TooManyRequestsException(string message, Exception innerException)
-        : base(message, innerException)
-    {
-    }
+#pragma warning restore SYSLIB0051
 }

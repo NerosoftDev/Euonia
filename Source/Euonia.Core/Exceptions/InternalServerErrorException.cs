@@ -8,31 +8,31 @@ namespace System;
 [Serializable, HttpStatusCode(HttpStatusCode.InternalServerError)]
 public class InternalServerErrorException : Exception
 {
-    private const string DEFAULT_MESSAGE = "Internal Server Error";
+	private const string DEFAULT_MESSAGE = "Internal Server Error";
 
-    /// <inheritdoc />
-    public InternalServerErrorException()
-        : base(DEFAULT_MESSAGE)
-    {
-    }
+	/// <inheritdoc />
+	public InternalServerErrorException()
+		: base(DEFAULT_MESSAGE)
+	{
+	}
 
-#if !NET8_0_OR_GREATER
+	/// <inheritdoc />
+	public InternalServerErrorException(string message)
+		: base(message)
+	{
+	}
+
+	/// <inheritdoc />
+	public InternalServerErrorException(string message, Exception innerException)
+		: base(message, innerException)
+	{
+	}
+
+#pragma warning disable SYSLIB0051
 	/// <inheritdoc />
 	public InternalServerErrorException(SerializationInfo info, StreamingContext context)
 		: base(info, context)
 	{
-	} 
-#endif
-
-	/// <inheritdoc />
-	public InternalServerErrorException(string message)
-        : base(message)
-    {
-    }
-
-    /// <inheritdoc />
-    public InternalServerErrorException(string message, Exception innerException)
-        : base(message, innerException)
-    {
-    }
+	}
+#pragma warning restore SYSLIB0051
 }

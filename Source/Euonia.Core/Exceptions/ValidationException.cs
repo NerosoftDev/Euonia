@@ -8,31 +8,36 @@
 [Serializable]
 public class ValidationException : Exception
 {
-    private readonly IEnumerable<ValidationResult> _errors;
+	private readonly IEnumerable<ValidationResult> _errors;
 
-    /// <summary>
-    /// Create a new <see cref="ValidationException"/>.
-    /// </summary>
-    /// <param name="message"></param>
-    /// <param name="results"></param>
-    public ValidationException(string message, params ValidationResult[] results)
-        : base(message)
-    {
-        _errors = results?.ToList() ?? Enumerable.Empty<ValidationResult>();
-    }
+	/// <summary>
+	/// Create a new <see cref="ValidationException"/>.
+	/// </summary>
+	/// <param name="message"></param>
+	/// <param name="results"></param>
+	public ValidationException(string message, params ValidationResult[] results)
+		: base(message)
+	{
+		_errors = results?.ToList() ?? Enumerable.Empty<ValidationResult>();
+	}
 
-    /// <summary>
-    /// Creates a new <see cref="ValidationException"/>
-    /// </summary>
-    /// <param name="message"></param>
-    /// <param name="errors"></param>
-    public ValidationException(string message, IEnumerable<ValidationResult> errors)
-        : base(message)
-    {
-        _errors = errors;
-    }
+	/// <summary>
+	/// Creates a new <see cref="ValidationException"/>
+	/// </summary>
+	/// <param name="message"></param>
+	/// <param name="errors"></param>
+	public ValidationException(string message, IEnumerable<ValidationResult> errors)
+		: base(message)
+	{
+		_errors = errors;
+	}
 
-#if !NET8_0_OR_GREATER
+	/// <summary>
+	/// 
+	/// </summary>
+	public virtual IEnumerable<ValidationResult> Errors => _errors;
+
+#pragma warning disable SYSLIB0051
 	/// <inheritdoc />
 	public ValidationException(SerializationInfo info, StreamingContext context)
 		: base(info, context)
@@ -40,16 +45,15 @@ public class ValidationException : Exception
 		_errors = info.GetValue(nameof(Errors), typeof(IEnumerable<ValidationResult>)) as IEnumerable<ValidationResult>;
 	}
 
+#pragma warning disable CS0672
 	/// <inheritdoc />
 	public override void GetObjectData(SerializationInfo info, StreamingContext context)
+
 	{
 		base.GetObjectData(info, context);
 		info.AddValue(nameof(Errors), _errors, typeof(IEnumerable<ValidationResult>));
 	}
-#endif
+#pragma warning restore CS0672
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public virtual IEnumerable<ValidationResult> Errors => _errors;
+#pragma warning restore SYSLIB0051
 }
