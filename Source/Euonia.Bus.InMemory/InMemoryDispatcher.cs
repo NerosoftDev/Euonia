@@ -25,7 +25,7 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 	public async Task PublishAsync<TMessage>(RoutedMessage<TMessage> message, CancellationToken cancellationToken = default)
 		where TMessage : class
 	{
-		var context = new MessageContext(message, _identity.GetIdentity);
+		var context = new MessageContext(message, authorization => _identity?.GetIdentity(authorization));
 		var pack = new MessagePack(message, context)
 		{
 			Aborted = cancellationToken
@@ -39,7 +39,7 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 	public async Task SendAsync<TMessage>(RoutedMessage<TMessage> message, CancellationToken cancellationToken = default)
 		where TMessage : class
 	{
-		var context = new MessageContext(message, _identity.GetIdentity);
+		var context = new MessageContext(message, authorization => _identity?.GetIdentity(authorization));
 		var pack = new MessagePack(message, context)
 		{
 			Aborted = cancellationToken
@@ -73,7 +73,7 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 	public async Task<TResponse> SendAsync<TMessage, TResponse>(RoutedMessage<TMessage, TResponse> message, CancellationToken cancellationToken = default)
 		where TMessage : class
 	{
-		var context = new MessageContext(message, _identity.GetIdentity);
+		var context = new MessageContext(message, authorization => _identity?.GetIdentity(authorization));
 		var pack = new MessagePack(message, context)
 		{
 			Aborted = cancellationToken

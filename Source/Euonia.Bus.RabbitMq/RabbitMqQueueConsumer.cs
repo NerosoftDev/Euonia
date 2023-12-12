@@ -76,7 +76,7 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 
 		var props = args.BasicProperties;
 
-		var context = new MessageContext(message, _identity.GetIdentity);
+		var context = new MessageContext(message, authorization => _identity?.GetIdentity(authorization));
 
 		OnMessageReceived(new MessageReceivedEventArgs(message.Data, context));
 

@@ -83,7 +83,7 @@ public class RabbitMqTopicSubscriber : RabbitMqQueueRecipient, ITopicSubscriber
 
 		var message = DeserializeMessage(args.Body.ToArray(), type);
 
-		var context = new MessageContext(message, _identity.GetIdentity);
+		var context = new MessageContext(message, authorization => _identity?.GetIdentity(authorization));
 
 		OnMessageReceived(new MessageReceivedEventArgs(message.Data, context));
 
