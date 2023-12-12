@@ -8,20 +8,22 @@ namespace Nerosoft.Euonia.Mapping;
 /// </summary>
 public class AutomapperModule : ModuleContextBase
 {
+	private const string SERVICE_INJECTION_KEY = "automapper";
+
 	/// <inheritdoc />
 	public override void ConfigureServices(ServiceConfigurationContext context)
-    {
-        context.Services.AddAutomapper();
-        context.Services.AddSingleton<ITypeAdapterFactory, AutomapperTypeAdapterFactory>();
-    }
+	{
+		context.Services.AddAutomapper();
+		context.Services.AddKeyedSingleton<ITypeAdapterFactory, AutomapperTypeAdapterFactory>(SERVICE_INJECTION_KEY);
+	}
 
 	/// <inheritdoc />
 	public override void OnApplicationInitialization(ApplicationInitializationContext context)
-    {
-        var factory = context.ServiceProvider.GetService<ITypeAdapterFactory>();
-        if (factory != null)
-        {
-            TypeAdapterFactory.SetCurrent(factory);
-        }
-    }
+	{
+		var factory = context.ServiceProvider.GetKeyedService<ITypeAdapterFactory>(SERVICE_INJECTION_KEY);
+		if (factory != null)
+		{
+			TypeAdapterFactory.SetCurrent(factory);
+		}
+	}
 }
