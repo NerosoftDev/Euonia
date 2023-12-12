@@ -54,6 +54,7 @@ public sealed class ServiceBus : IBus
 		{
 			MessageId = options.MessageId ?? Guid.NewGuid().ToString(),
 			RequestTraceId = context?.TraceIdentifier ?? options.RequestTraceId ?? Guid.NewGuid().ToString("N"),
+			Authorization = context?.Authorization,
 		};
 		metadataSetter?.Invoke(pack.Metadata);
 		return _dispatcher.PublishAsync(pack, cancellationToken);

@@ -9,6 +9,8 @@ namespace Nerosoft.Euonia.Bus.RabbitMq;
 /// </summary>
 public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 {
+	private readonly IIdentityProvider _identity;
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="RabbitMqQueueConsumer"/> class.
 	/// </summary>
@@ -18,6 +20,19 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 	public RabbitMqQueueConsumer(IPersistentConnection connection, IHandlerContext handler, IOptions<RabbitMqMessageBusOptions> options)
 		: base(connection, handler, options)
 	{
+	}
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="RabbitMqQueueConsumer"/> class.
+	/// </summary>
+	/// <param name="connection"></param>
+	/// <param name="handler"></param>
+	/// <param name="options"></param>
+	/// <param name="identity"></param>
+	public RabbitMqQueueConsumer(IPersistentConnection connection, IHandlerContext handler, IOptions<RabbitMqMessageBusOptions> options, IIdentityProvider identity)
+		: this(connection, handler, options)
+	{
+		_identity = identity;
 	}
 
 	/// <inheritdoc />
@@ -61,7 +76,7 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 
 		var props = args.BasicProperties;
 
-		var context = new MessageContext();
+		var context = new MessageContext(message, authorization => _identity?.GetIdentity(authorization));
 
 		OnMessageReceived(new MessageReceivedEventArgs(message.Data, context));
 
