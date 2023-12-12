@@ -1,4 +1,6 @@
-﻿namespace Nerosoft.Euonia.Bus.InMemory;
+﻿using Microsoft.Extensions.DependencyInjection;
+
+namespace Nerosoft.Euonia.Bus.InMemory;
 
 /// <summary>
 /// 
@@ -8,11 +10,22 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 	/// <inheritdoc />
 	public event EventHandler<MessageDispatchedEventArgs> Delivered;
 
+	private readonly IIdentityProvider _identity;
+
+	/// <summary>
+	/// Initialize a new instance of <see cref="InMemoryDispatcher"/>
+	/// </summary>
+	/// <param name="provider"></param>
+	public InMemoryDispatcher(IServiceProvider provider)
+	{
+		_identity = provider.GetService<IIdentityProvider>();
+	}
+
 	/// <inheritdoc />
 	public async Task PublishAsync<TMessage>(RoutedMessage<TMessage> message, CancellationToken cancellationToken = default)
 		where TMessage : class
 	{
-		var context = new MessageContext(message);
+		var context = new MessageContext(message, _identity.GetIdentity);
 		var pack = new MessagePack(message, context)
 		{
 			Aborted = cancellationToken
@@ -26,7 +39,7 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 	public async Task SendAsync<TMessage>(RoutedMessage<TMessage> message, CancellationToken cancellationToken = default)
 		where TMessage : class
 	{
-		var context = new MessageContext(message);
+		var context = new MessageContext(message, _identity.GetIdentity);
 		var pack = new MessagePack(message, context)
 		{
 			Aborted = cancellationToken
@@ -60,7 +73,7 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 	public async Task<TResponse> SendAsync<TMessage, TResponse>(RoutedMessage<TMessage, TResponse> message, CancellationToken cancellationToken = default)
 		where TMessage : class
 	{
-		var context = new MessageContext(message);
+		var context = new MessageContext(message, _identity.GetIdentity);
 		var pack = new MessagePack(message, context)
 		{
 			Aborted = cancellationToken

@@ -1,4 +1,6 @@
-﻿namespace Nerosoft.Euonia.Bus;
+﻿using System.Security.Principal;
+
+namespace Nerosoft.Euonia.Bus;
 
 /// <summary>
 /// Interface IMessageContext
@@ -34,6 +36,11 @@ public interface IMessageContext : IDisposable
 	/// Gets or sets the authorization.
 	/// </summary>
 	string Authorization { get; set; }
+
+	/// <summary>
+	/// Gets the current user.
+	/// </summary>
+	IPrincipal User { get; }
 
 	/// <summary>
 	/// Gets the message request headers.

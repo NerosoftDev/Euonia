@@ -159,7 +159,7 @@ public class HandlerContext : IHandlerContext
 		}
 	}
 
-	private static Expression[] GetArguments(MethodBase method, object message, MessageContext context, CancellationToken cancellationToken)
+	private static Expression[] GetArguments(MethodInfo method, object message, MessageContext context, CancellationToken cancellationToken)
 	{
 		var parameterInfos = method.GetParameters();
 		var arguments = new Expression[parameterInfos.Length];
