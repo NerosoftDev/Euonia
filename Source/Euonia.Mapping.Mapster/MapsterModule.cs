@@ -8,20 +8,22 @@ namespace Nerosoft.Euonia.Mapping;
 /// </summary>
 public class MapsterModule : ModuleContextBase
 {
+	private const string SERVICE_INJECTION_KEY = "mapster";
+
 	/// <inheritdoc />
 	public override void ConfigureServices(ServiceConfigurationContext context)
-    {
-        context.Services.AddMapster();
-        context.Services.AddSingleton<ITypeAdapterFactory, MapsterTypeAdapterFactory>();
-    }
+	{
+		context.Services.AddMapster();
+		context.Services.AddKeyedSingleton<ITypeAdapterFactory, MapsterTypeAdapterFactory>(SERVICE_INJECTION_KEY);
+	}
 
 	/// <inheritdoc />
 	public override void OnApplicationInitialization(ApplicationInitializationContext context)
-    {
-        var factory = context.ServiceProvider.GetService<ITypeAdapterFactory>();
-        if (factory != null)
-        {
-            TypeAdapterFactory.SetCurrent(factory);
-        }
-    }
+	{
+		var factory = context.ServiceProvider.GetKeyedService<ITypeAdapterFactory>(SERVICE_INJECTION_KEY);
+		if (factory != null)
+		{
+			TypeAdapterFactory.SetCurrent(factory);
+		}
+	}
 }

@@ -16,4 +16,14 @@ public class ValidationModule : ModuleContextBase
 		context.Services.AddAutomaticRegistrar(new ValidationRegistrar());
 		context.Services.AddSingleton<IValidatorFactory, DefaultValidatorFactory>();
 	}
+
+	/// <inheritdoc/>
+	public override void OnApplicationInitialization(ApplicationInitializationContext context)
+	{
+		var factory = context.ServiceProvider.GetService<IValidatorFactory>();
+		if (factory != null)
+		{
+			ValidatorFactory.SetCurrent(factory);
+		}
+	}
 }
