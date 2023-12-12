@@ -45,7 +45,7 @@ public class ExceptionHandlingMiddleware : IMiddleware
 		var response = new
 		{
 			status = statusCode,
-			message = exception.Message,
+			message = exception is AggregateException ex ? ex.InnerException.Message : exception.Message,
 			details = GetErrors(exception)
 		};
 

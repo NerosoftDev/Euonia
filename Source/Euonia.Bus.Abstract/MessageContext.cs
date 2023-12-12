@@ -1,4 +1,6 @@
-﻿namespace Nerosoft.Euonia.Bus;
+﻿using System.Security.Principal;
+
+namespace Nerosoft.Euonia.Bus;
 
 /// <summary>
 /// The message context.
@@ -31,7 +33,8 @@ public sealed class MessageContext : IMessageContext
 	/// Initializes a new instance of the <see cref="MessageContext"/> class.
 	/// </summary>
 	/// <param name="pack"></param>
-	public MessageContext(IRoutedMessage pack)
+	/// <param name="identity"></param>
+	public MessageContext(IRoutedMessage pack, IdentityAccessor identity = null)
 		: this(pack.Data)
 	{
 		MessageId = pack.MessageId;
@@ -39,6 +42,7 @@ public sealed class MessageContext : IMessageContext
 		ConversationId = pack.ConversationId;
 		RequestTraceId = pack.RequestTraceId;
 		Authorization = pack.Authorization;
+		User = identity?.Invoke(pack.Authorization);
 	}
 
 	/// <summary>
@@ -106,6 +110,9 @@ public sealed class MessageContext : IMessageContext
 		set => _headers[nameof(Authorization)] = value;
 	}
 
+	/// <inheritdoc/>
+	public IPrincipal User { get; }
+
 	/// <inheritdoc />
 	public IReadOnlyDictionary<string, string> Headers => _headers;
 
@@ -136,7 +143,7 @@ public sealed class MessageContext : IMessageContext
 	{
 		_events.HandleEvent(this, exception, nameof(Failed));
 	}
-	
+
 	/// <summary>
 	/// Called after the message has been handled.
 	/// This operate will raised up the <see cref="Completed"/> event.

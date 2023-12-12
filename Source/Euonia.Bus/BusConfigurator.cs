@@ -168,4 +168,27 @@ public class BusConfigurator : IBusConfigurator
 		configure?.Invoke(ConventionBuilder);
 		return this;
 	}
+
+	/// <summary>
+	/// Register the message identity provider.
+	/// </summary>
+	/// <param name="accessor"></param>
+	/// <returns></returns>
+	public BusConfigurator SetIdentityProvider(IdentityAccessor accessor)
+	{
+		Service.TryAddSingleton<IIdentityProvider>(_ => new DefaultIdentityProvider(accessor));
+		return this;
+	}
+
+	/// <summary>
+	/// Register the message identity provider.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <returns></returns>
+	public BusConfigurator SetIdentityProvider<T>()
+		where T : class, IIdentityProvider
+	{
+		Service.TryAddSingleton<IIdentityProvider, T>();
+		return this;
+	}
 }
