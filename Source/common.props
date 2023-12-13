@@ -40,26 +40,6 @@
         <Using Include="System.Text"/>
         <Using Include="System.Threading"/>
         <Using Include="System.Threading.Tasks"/>
-        <Using Include="$(RootNamespace).Properties"/>
     </ItemGroup>
-
-    <!-- See Microsoft.Common.CurrentVersion.targets -->
-
-    <Target Name="GenerateResx" BeforeTargets="PrepareForBuild">
-
-        <GenerateResource Sources="@(EmbeddedResource)"
-                          ExecuteAsTool="false"
-                          StronglyTypedLanguage="C#"
-                          StronglyTypedClassName="%(Filename)"
-                          StronglyTypedNamespace="@(EmbeddedResource->'$(RootNamespace).Properties')"
-                          StronglyTypedFileName="@(EmbeddedResource->'%(RootDir)%(Directory)%(Filename).Designer.cs')"
-                          Condition="'%(EmbeddedResource.GenerateResource)' != 'false' and '%(EmbeddedResource.FileName)' == 'Resources'"
-                          PublicClass="false"
-                          MinimalRebuildFromTracking="false">
-            <Output TaskParameter="FilesWritten" ItemName="FileWrites"/>
-            <Output TaskParameter="StronglyTypedFileName" ItemName="Compile"/>
-            <Output TaskParameter="Sources" ItemName="_Temporary"/>
-        </GenerateResource>
-
-    </Target>
+    
 </Project>

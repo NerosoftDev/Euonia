@@ -14,13 +14,22 @@ public class MapsterModule : ModuleContextBase
 	public override void ConfigureServices(ServiceConfigurationContext context)
 	{
 		context.Services.AddMapster();
+#if NET8_0_OR_GREATER
 		context.Services.AddKeyedSingleton<ITypeAdapterFactory, MapsterTypeAdapterFactory>(SERVICE_INJECTION_KEY);
+#else
+		context.Services.AddSingleton<ITypeAdapterFactory, MapsterTypeAdapterFactory>();
+#endif
 	}
 
 	/// <inheritdoc />
 	public override void OnApplicationInitialization(ApplicationInitializationContext context)
 	{
-		var factory = context.ServiceProvider.GetKeyedService<ITypeAdapterFactory>(SERVICE_INJECTION_KEY);
+		ITypeAdapterFactory factory;
+#if NET8_0_OR_GREATER
+		factory = context.ServiceProvider.GetKeyedService<ITypeAdapterFactory>(SERVICE_INJECTION_KEY);
+#else
+		factory = context.ServiceProvider.GetService<ITypeAdapterFactory>();
+#endif
 		if (factory != null)
 		{
 			TypeAdapterFactory.SetCurrent(factory);
