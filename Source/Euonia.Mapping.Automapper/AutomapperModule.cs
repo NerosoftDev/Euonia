@@ -8,7 +8,9 @@ namespace Nerosoft.Euonia.Mapping;
 /// </summary>
 public class AutomapperModule : ModuleContextBase
 {
-	private const string SERVICE_INJECTION_KEY = "automapper";
+#if NET8_0_OR_GREATER
+	private const string SERVICE_INJECTION_KEY = "automapper"; 
+#endif
 
 	/// <inheritdoc />
 	public override void ConfigureServices(ServiceConfigurationContext context)
