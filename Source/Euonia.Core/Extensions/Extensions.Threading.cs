@@ -13,17 +13,22 @@ public static partial class Extensions
     /// <returns><c>true</c> if this method completed the task completion source; <c>false</c> if it was already completed.</returns>
     public static bool TryCompleteFromCompletedTask<TResult, TSourceResult>(this TaskCompletionSource<TResult> @this, Task<TSourceResult> task) where TSourceResult : TResult
     {
-        if (@this == null)
-        {
-            throw new ArgumentNullException(nameof(@this));
-        }
+#if NETSTANDARD
+		if (@this == null)
+		{
+			throw new ArgumentNullException(nameof(@this));
+		}
 
-        if (task == null)
-        {
-            throw new ArgumentNullException(nameof(task));
-        }
+		if (task == null)
+		{
+			throw new ArgumentNullException(nameof(task));
+		} 
+#else
+		ArgumentNullException.ThrowIfNull(@this);
+		ArgumentNullException.ThrowIfNull(task);
+#endif
 
-        if (task.IsFaulted)
+		if (task.IsFaulted)
         {
             return @this.TrySetException(task.Exception.InnerExceptions);
         }
@@ -54,15 +59,29 @@ public static partial class Extensions
     /// <returns><c>true</c> if this method completed the task completion source; <c>false</c> if it was already completed.</returns>
     public static bool TryCompleteFromCompletedTask<TResult>(this TaskCompletionSource<TResult> @this, Task task, Func<TResult> resultFunc)
     {
-        if (@this == null)
-            throw new ArgumentNullException(nameof(@this));
-        if (task == null)
-            throw new ArgumentNullException(nameof(task));
-        if (resultFunc == null)
-            throw new ArgumentNullException(nameof(resultFunc));
+#if NETSTANDARD
+		if (@this == null)
+		{
+			throw new ArgumentNullException(nameof(@this));
+		}
+		if (task == null)
+		{
+			throw new ArgumentNullException(nameof(task));
+		}
+		if (resultFunc == null)
+		{
+			throw new ArgumentNullException(nameof(resultFunc));
+		} 
+#else
+		ArgumentNullException.ThrowIfNull(@this);
+		ArgumentNullException.ThrowIfNull(task);
+		ArgumentNullException.ThrowIfNull(resultFunc);
+#endif
 
-        if (task.IsFaulted)
-            return @this.TrySetException(task.Exception.InnerExceptions);
+		if (task.IsFaulted)
+		{
+			return @this.TrySetException(task.Exception.InnerExceptions);
+		}
         if (task.IsCanceled)
         {
             try
@@ -95,12 +114,16 @@ public static partial class Extensions
     /// <param name="cancellationToken">The cancellation token that cancels the wait.</param>
     public static Task WaitAsync(this Task @this, CancellationToken cancellationToken)
     {
-        if (@this == null)
-        {
-            throw new ArgumentNullException(nameof(@this));
-        }
+#if NETSTANDARD
+		if (@this == null)
+		{
+			throw new ArgumentNullException(nameof(@this));
+		} 
+#else
+		ArgumentNullException.ThrowIfNull(@this);
+#endif
 
-        if (!cancellationToken.CanBeCanceled)
+		if (!cancellationToken.CanBeCanceled)
         {
             return @this;
         }
@@ -115,8 +138,10 @@ public static partial class Extensions
 
     private static async Task DoWaitAsync(Task task, CancellationToken cancellationToken)
     {
-        using (var cancelTaskSource = new CancellationTokenTaskSource<object>(cancellationToken))
-            await await Task.WhenAny(task, cancelTaskSource.Task).ConfigureAwait(false);
+		using (var cancelTaskSource = new CancellationTokenTaskSource<object>(cancellationToken))
+		{
+			await await Task.WhenAny(task, cancelTaskSource.Task).ConfigureAwait(false);
+		}
     }
 
     /// <summary>
@@ -127,21 +152,35 @@ public static partial class Extensions
     /// <param name="cancellationToken">The cancellation token that cancels the wait.</param>
     public static Task<TResult> WaitAsync<TResult>(this Task<TResult> @this, CancellationToken cancellationToken)
     {
-        if (@this == null)
-            throw new ArgumentNullException(nameof(@this));
+#if NETSTANDARD
+		if (@this == null)
+		{
+			throw new ArgumentNullException(nameof(@this));
+		} 
+#else
+		ArgumentNullException.ThrowIfNull(@this);
+#endif
 
-        if (!cancellationToken.CanBeCanceled)
-            return @this;
-        if (cancellationToken.IsCancellationRequested)
-            return Task.FromCanceled<TResult>(cancellationToken);
-        return DoWaitAsync(@this, cancellationToken);
+		if (!cancellationToken.CanBeCanceled)
+		{
+			return @this;
+		}
+
+		if (cancellationToken.IsCancellationRequested)
+		{
+			return Task.FromCanceled<TResult>(cancellationToken);
+		}
+
+		return DoWaitAsync(@this, cancellationToken);
     }
 
     private static async Task<TResult> DoWaitAsync<TResult>(Task<TResult> task, CancellationToken cancellationToken)
     {
         using (var cancelTaskSource = new CancellationTokenTaskSource<TResult>(cancellationToken))
-            return await await Task.WhenAny(task, cancelTaskSource.Task).ConfigureAwait(false);
-    }
+		{
+			return await await Task.WhenAny(task, cancelTaskSource.Task).ConfigureAwait(false);
+		}
+	}
 
     /// <summary>
     /// Asynchronously waits for any of the source tasks to complete, or for the cancellation token to be canceled.
@@ -150,10 +189,16 @@ public static partial class Extensions
     /// <param name="cancellationToken">The cancellation token that cancels the wait.</param>
     public static Task<Task> WhenAny(this IEnumerable<Task> @this, CancellationToken cancellationToken)
     {
-        if (@this == null)
-            throw new ArgumentNullException(nameof(@this));
+#if NETSTANDARD
+		if (@this == null)
+		{
+			throw new ArgumentNullException(nameof(@this));
+		}
+#else
+		ArgumentNullException.ThrowIfNull(@this);
+#endif
 
-        return Task.WhenAny(@this).WaitAsync(cancellationToken);
+		return Task.WhenAny(@this).WaitAsync(cancellationToken);
     }
 
     /// <summary>
@@ -162,10 +207,16 @@ public static partial class Extensions
     /// <param name="this">The tasks to wait for. May not be <c>null</c>.</param>
     public static Task<Task> WhenAny(this IEnumerable<Task> @this)
     {
-        if (@this == null)
-            throw new ArgumentNullException(nameof(@this));
+#if NETSTANDARD
+		if (@this == null)
+		{
+			throw new ArgumentNullException(nameof(@this));
+		} 
+#else
+		ArgumentNullException.ThrowIfNull(@this);
+#endif
 
-        return Task.WhenAny(@this);
+		return Task.WhenAny(@this);
     }
 
     /// <summary>
@@ -176,10 +227,16 @@ public static partial class Extensions
     /// <param name="cancellationToken">The cancellation token that cancels the wait.</param>
     public static Task<Task<TResult>> WhenAny<TResult>(this IEnumerable<Task<TResult>> @this, CancellationToken cancellationToken)
     {
-        if (@this == null)
-            throw new ArgumentNullException(nameof(@this));
+#if NETSTANDARD
+		if (@this == null)
+		{
+			throw new ArgumentNullException(nameof(@this));
+		} 
+#else
+		ArgumentNullException.ThrowIfNull(@this);
+#endif
 
-        return Task.WhenAny(@this).WaitAsync(cancellationToken);
+		return Task.WhenAny(@this).WaitAsync(cancellationToken);
     }
 
     /// <summary>
@@ -189,10 +246,16 @@ public static partial class Extensions
     /// <param name="this">The tasks to wait for. May not be <c>null</c>.</param>
     public static Task<Task<TResult>> WhenAny<TResult>(this IEnumerable<Task<TResult>> @this)
     {
-        if (@this == null)
-            throw new ArgumentNullException(nameof(@this));
+#if NETSTANDARD
+		if (@this == null)
+		{
+			throw new ArgumentNullException(nameof(@this));
+		} 
+#else
+		ArgumentNullException.ThrowIfNull(@this);
+#endif
 
-        return Task.WhenAny(@this);
+		return Task.WhenAny(@this);
     }
 
     /// <summary>
@@ -201,10 +264,16 @@ public static partial class Extensions
     /// <param name="this">The tasks to wait for. May not be <c>null</c>.</param>
     public static Task WhenAll(this IEnumerable<Task> @this)
     {
-        if (@this == null)
-            throw new ArgumentNullException(nameof(@this));
+#if NETSTANDARD
+		if (@this == null)
+		{
+			throw new ArgumentNullException(nameof(@this));
+		} 
+#else
+		ArgumentNullException.ThrowIfNull(@this);
+#endif
 
-        return Task.WhenAll(@this);
+		return Task.WhenAll(@this);
     }
 
     /// <summary>
@@ -214,10 +283,16 @@ public static partial class Extensions
     /// <param name="this">The tasks to wait for. May not be <c>null</c>.</param>
     public static Task<TResult[]> WhenAll<TResult>(this IEnumerable<Task<TResult>> @this)
     {
-        if (@this == null)
-            throw new ArgumentNullException(nameof(@this));
+#if NETSTANDARD
+		if (@this == null)
+		{
+			throw new ArgumentNullException(nameof(@this));
+		} 
+#else
+		ArgumentNullException.ThrowIfNull(@this);
+#endif
 
-        return Task.WhenAll(@this);
+		return Task.WhenAll(@this);
     }
 
     /// <summary>
@@ -261,15 +336,20 @@ public static partial class Extensions
     /// <param name="this">The tasks to order by completion. May not be <c>null</c>.</param>
     public static List<Task<T>> OrderByCompletion<T>(this IEnumerable<Task<T>> @this)
     {
-        if (@this == null)
-            throw new ArgumentNullException(nameof(@this));
+#if NETSTANDARD
+		if (@this == null)
+		{
+			throw new ArgumentNullException(nameof(@this));
+		} 
+#else
+		ArgumentNullException.ThrowIfNull(@this);
+#endif
+		// This is a combination of Jon Skeet's approach and Stephen Toub's approach:
+		//  http://msmvps.com/blogs/jon_skeet/archive/2012/01/16/eduasync-part-19-ordering-by-completion-ahead-of-time.aspx
+		//  http://blogs.msdn.com/b/pfxteam/archive/2012/08/02/processing-tasks-as-they-complete.aspx
 
-        // This is a combination of Jon Skeet's approach and Stephen Toub's approach:
-        //  http://msmvps.com/blogs/jon_skeet/archive/2012/01/16/eduasync-part-19-ordering-by-completion-ahead-of-time.aspx
-        //  http://blogs.msdn.com/b/pfxteam/archive/2012/08/02/processing-tasks-as-they-complete.aspx
-
-        // Reify the source task sequence. TODO: better reification.
-        var taskArray = @this.ToArray();
+		// Reify the source task sequence. TODO: better reification.
+		var taskArray = @this.ToArray();
 
         // Allocate a TCS array and an array of the resulting tasks.
         var numTasks = taskArray.Length;
@@ -278,19 +358,19 @@ public static partial class Extensions
 
         // As each task completes, complete the next tcs.
         var lastIndex = -1;
-        // ReSharper disable once ConvertToLocalFunction
-        Action<Task<T>> continuation = task =>
-        {
-            var index = Interlocked.Increment(ref lastIndex);
-            tcs[index].TryCompleteFromCompletedTask(task);
-        };
+		// ReSharper disable once ConvertToLocalFunction
+		void Continuation(Task<T> task)
+		{
+			var index = Interlocked.Increment(ref lastIndex);
+			tcs[index].TryCompleteFromCompletedTask(task);
+		}
 
-        // Fill out the arrays and attach the continuations.
-        for (var i = 0; i != numTasks; ++i)
+		// Fill out the arrays and attach the continuations.
+		for (var i = 0; i != numTasks; ++i)
         {
             tcs[i] = new TaskCompletionSource<T>();
             ret.Add(tcs[i].Task);
-            taskArray[i].ContinueWith(continuation, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.DenyChildAttach, TaskScheduler.Default);
+            taskArray[i].ContinueWith(Continuation, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.DenyChildAttach, TaskScheduler.Default);
         }
 
         return ret;
@@ -302,15 +382,20 @@ public static partial class Extensions
     /// <param name="this">The tasks to order by completion. May not be <c>null</c>.</param>
     public static List<Task> OrderByCompletion(this IEnumerable<Task> @this)
     {
-        if (@this == null)
-            throw new ArgumentNullException(nameof(@this));
+#if NETSTANDARD
+		if (@this == null)
+		{
+			throw new ArgumentNullException(nameof(@this));
+		} 
+#else
+		ArgumentNullException.ThrowIfNull(@this);
+#endif
+		// This is a combination of Jon Skeet's approach and Stephen Toub's approach:
+		//  http://msmvps.com/blogs/jon_skeet/archive/2012/01/16/eduasync-part-19-ordering-by-completion-ahead-of-time.aspx
+		//  http://blogs.msdn.com/b/pfxteam/archive/2012/08/02/processing-tasks-as-they-complete.aspx
 
-        // This is a combination of Jon Skeet's approach and Stephen Toub's approach:
-        //  http://msmvps.com/blogs/jon_skeet/archive/2012/01/16/eduasync-part-19-ordering-by-completion-ahead-of-time.aspx
-        //  http://blogs.msdn.com/b/pfxteam/archive/2012/08/02/processing-tasks-as-they-complete.aspx
-
-        // Reify the source task sequence. TODO: better reification.
-        var taskArray = @this.ToArray();
+		// Reify the source task sequence. TODO: better reification.
+		var taskArray = @this.ToArray();
 
         // Allocate a TCS array and an array of the resulting tasks.
         var numTasks = taskArray.Length;
@@ -319,19 +404,19 @@ public static partial class Extensions
 
         // As each task completes, complete the next tcs.
         var lastIndex = -1;
-        // ReSharper disable once ConvertToLocalFunction
-        Action<Task> continuation = task =>
-        {
-            var index = Interlocked.Increment(ref lastIndex);
-            tcs[index].TryCompleteFromCompletedTask(task, NullResultFunc);
-        };
+		// ReSharper disable once ConvertToLocalFunction
+		void Continuation(Task task)
+		{
+			var index = Interlocked.Increment(ref lastIndex);
+			tcs[index].TryCompleteFromCompletedTask(task, NullResultFunc);
+		}
 
-        // Fill out the arrays and attach the continuations.
-        for (var i = 0; i != numTasks; ++i)
+		// Fill out the arrays and attach the continuations.
+		for (var i = 0; i != numTasks; ++i)
         {
             tcs[i] = new TaskCompletionSource<object>();
             ret.Add(tcs[i].Task);
-            taskArray[i].ContinueWith(continuation, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.DenyChildAttach, TaskScheduler.Default);
+            taskArray[i].ContinueWith(Continuation, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.DenyChildAttach, TaskScheduler.Default);
         }
 
         return ret;
@@ -343,9 +428,16 @@ public static partial class Extensions
     /// <param name="task">The task. May not be <c>null</c>.</param>
     public static void WaitAndUnwrapException(this Task task)
     {
-        if (task == null)
-            throw new ArgumentNullException(nameof(task));
-        task.GetAwaiter().GetResult();
+#if NETSTANDARD
+		if (task == null)
+		{
+			throw new ArgumentNullException(nameof(task));
+		} 
+#else
+		ArgumentNullException.ThrowIfNull(task);
+#endif
+
+		task.GetAwaiter().GetResult();
     }
 
     /// <summary>
@@ -356,10 +448,17 @@ public static partial class Extensions
     /// <exception cref="OperationCanceledException">The <paramref name="cancellationToken"/> was cancelled before the <paramref name="task"/> completed, or the <paramref name="task"/> raised an <see cref="OperationCanceledException"/>.</exception>
     public static void WaitAndUnwrapException(this Task task, CancellationToken cancellationToken)
     {
-        if (task == null)
-            throw new ArgumentNullException(nameof(task));
-        try
-        {
+#if NETSTANDARD
+		if (task == null)
+		{
+			throw new ArgumentNullException(nameof(task));
+		} 
+#else
+		ArgumentNullException.ThrowIfNull(task);
+#endif
+
+		try
+		{
             task.Wait(cancellationToken);
         }
         catch (AggregateException ex)
@@ -376,9 +475,16 @@ public static partial class Extensions
     /// <returns>The result of the task.</returns>
     public static TResult WaitAndUnwrapException<TResult>(this Task<TResult> task)
     {
-        if (task == null)
-            throw new ArgumentNullException(nameof(task));
-        return task.GetAwaiter().GetResult();
+#if NETSTANDARD
+		if (task == null)
+		{
+			throw new ArgumentNullException(nameof(task));
+		} 
+#else
+		ArgumentNullException.ThrowIfNull(task);
+#endif
+
+		return task.GetAwaiter().GetResult();
     }
 
     /// <summary>
@@ -391,10 +497,17 @@ public static partial class Extensions
     /// <exception cref="OperationCanceledException">The <paramref name="cancellationToken"/> was cancelled before the <paramref name="task"/> completed, or the <paramref name="task"/> raised an <see cref="OperationCanceledException"/>.</exception>
     public static TResult WaitAndUnwrapException<TResult>(this Task<TResult> task, CancellationToken cancellationToken)
     {
-        if (task == null)
-            throw new ArgumentNullException(nameof(task));
-        try
-        {
+#if NETSTANDARD
+		if (task == null)
+		{
+			throw new ArgumentNullException(nameof(task));
+		} 
+#else
+		ArgumentNullException.ThrowIfNull(task);
+#endif
+
+		try
+		{
             task.Wait(cancellationToken);
             return task.Result;
         }
@@ -410,9 +523,16 @@ public static partial class Extensions
     /// <param name="task">The task. May not be <c>null</c>.</param>
     public static void WaitWithoutException(this Task task)
     {
-        if (task == null)
-            throw new ArgumentNullException(nameof(task));
-        try
+#if NETSTANDARD
+		if (task == null)
+		{
+			throw new ArgumentNullException(nameof(task));
+		}
+#else
+		ArgumentNullException.ThrowIfNull(task);
+#endif
+
+		try
         {
             task.Wait();
         }
@@ -429,10 +549,17 @@ public static partial class Extensions
     /// <exception cref="OperationCanceledException">The <paramref name="cancellationToken"/> was cancelled before the <paramref name="task"/> completed.</exception>
     public static void WaitWithoutException(this Task task, CancellationToken cancellationToken)
     {
-        if (task == null)
-            throw new ArgumentNullException(nameof(task));
-        try
-        {
+#if NETSTANDARD
+		if (task == null)
+		{
+			throw new ArgumentNullException(nameof(task));
+		} 
+#else
+		ArgumentNullException.ThrowIfNull(task);
+#endif
+
+		try
+		{
             task.Wait(cancellationToken);
         }
         catch (AggregateException)
@@ -597,12 +724,21 @@ public static partial class Extensions
     /// <returns>The started task.</returns>
     public static Task Run(this TaskFactory @this, Action action)
     {
-        if (@this == null)
-            throw new ArgumentNullException(nameof(@this));
-        if (action == null)
-            throw new ArgumentNullException(nameof(action));
+#if NETSTANDARD
+		if (@this == null)
+		{
+			throw new ArgumentNullException(nameof(@this));
+		}
+		if (action == null)
+		{
+			throw new ArgumentNullException(nameof(action));
+		} 
+#else
+		ArgumentNullException.ThrowIfNull(@this);
+		ArgumentNullException.ThrowIfNull(action);
+#endif
 
-        return @this.StartNew(action, @this.CancellationToken, @this.CreationOptions | TaskCreationOptions.DenyChildAttach, @this.Scheduler ?? TaskScheduler.Default);
+		return @this.StartNew(action, @this.CancellationToken, @this.CreationOptions | TaskCreationOptions.DenyChildAttach, @this.Scheduler ?? TaskScheduler.Default);
     }
 
     /// <summary>
@@ -613,12 +749,22 @@ public static partial class Extensions
     /// <returns>The started task.</returns>
     public static Task<TResult> Run<TResult>(this TaskFactory @this, Func<TResult> action)
     {
-        if (@this == null)
-            throw new ArgumentNullException(nameof(@this));
-        if (action == null)
-            throw new ArgumentNullException(nameof(action));
+#if NETSTANDARD
+		if (@this == null)
+		{
+			throw new ArgumentNullException(nameof(@this));
+		}
 
-        return @this.StartNew(action, @this.CancellationToken, @this.CreationOptions | TaskCreationOptions.DenyChildAttach, @this.Scheduler ?? TaskScheduler.Default);
+		if (action == null)
+		{
+			throw new ArgumentNullException(nameof(action));
+		} 
+#else
+		ArgumentNullException.ThrowIfNull(@this);
+		ArgumentNullException.ThrowIfNull(action);
+#endif
+
+		return @this.StartNew(action, @this.CancellationToken, @this.CreationOptions | TaskCreationOptions.DenyChildAttach, @this.Scheduler ?? TaskScheduler.Default);
     }
 
     /// <summary>
@@ -629,12 +775,22 @@ public static partial class Extensions
     /// <returns>The started task.</returns>
     public static Task Run(this TaskFactory @this, Func<Task> action)
     {
-        if (@this == null)
-            throw new ArgumentNullException(nameof(@this));
-        if (action == null)
-            throw new ArgumentNullException(nameof(action));
+#if NETSTANDARD
+		if (@this == null)
+		{
+			throw new ArgumentNullException(nameof(@this));
+		}
 
-        return @this.StartNew(action, @this.CancellationToken, @this.CreationOptions | TaskCreationOptions.DenyChildAttach, @this.Scheduler ?? TaskScheduler.Default).Unwrap();
+		if (action == null)
+		{
+			throw new ArgumentNullException(nameof(action));
+		} 
+#else
+		ArgumentNullException.ThrowIfNull(@this);
+		ArgumentNullException.ThrowIfNull(action);
+#endif
+
+		return @this.StartNew(action, @this.CancellationToken, @this.CreationOptions | TaskCreationOptions.DenyChildAttach, @this.Scheduler ?? TaskScheduler.Default).Unwrap();
     }
 
     /// <summary>
@@ -645,12 +801,20 @@ public static partial class Extensions
     /// <returns>The started task.</returns>
     public static Task<TResult> Run<TResult>(this TaskFactory @this, Func<Task<TResult>> action)
     {
-        if (@this == null)
-            throw new ArgumentNullException(nameof(@this));
-        if (action == null)
-            throw new ArgumentNullException(nameof(action));
-
-        return @this.StartNew(action, @this.CancellationToken, @this.CreationOptions | TaskCreationOptions.DenyChildAttach, @this.Scheduler ?? TaskScheduler.Default).Unwrap();
+#if NETSTANDARD
+		if (@this == null)
+		{
+			throw new ArgumentNullException(nameof(@this));
+		}
+		if (action == null)
+		{
+			throw new ArgumentNullException(nameof(action));
+		} 
+#else
+		ArgumentNullException.ThrowIfNull(@this);
+		ArgumentNullException.ThrowIfNull(action);
+#endif
+		return @this.StartNew(action, @this.CancellationToken, @this.CreationOptions | TaskCreationOptions.DenyChildAttach, @this.Scheduler ?? TaskScheduler.Default).Unwrap();
     }
 
     #endregion

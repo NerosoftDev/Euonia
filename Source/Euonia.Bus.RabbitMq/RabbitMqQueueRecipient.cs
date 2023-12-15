@@ -23,12 +23,11 @@ public abstract class RabbitMqQueueRecipient : DisposableObject
 	/// Initializes a new instance of the <see cref="RabbitMqQueueRecipient"/> class.
 	/// </summary>
 	/// <param name="factory"></param>
-	/// <param name="handler"></param>
 	/// <param name="options"></param>
-	protected RabbitMqQueueRecipient(IPersistentConnection factory, IHandlerContext handler, IOptions<RabbitMqMessageBusOptions> options)
+	/// 
+	protected RabbitMqQueueRecipient(IPersistentConnection factory, IOptions<RabbitMqMessageBusOptions> options)
 	{
 		Options = options.Value;
-		Handler = handler;
 		Connection = factory;
 	}
 
@@ -43,9 +42,14 @@ public abstract class RabbitMqQueueRecipient : DisposableObject
 	protected virtual RabbitMqMessageBusOptions Options { get; }
 
 	/// <summary>
-	/// Gets the message handler context instance.
+	/// 
 	/// </summary>
-	protected virtual IHandlerContext Handler { get; }
+	/// <param name="channel"></param>
+	/// <param name="message"></param>
+	/// <param name="context"></param>
+	/// <param name="cancellationToken"></param>
+	/// <returns></returns>
+	protected abstract Task HandleAsync(string channel, object message, MessageContext context, CancellationToken cancellationToken = default);
 
 	// protected virtual void AcknowledgeMessage(ulong deliveryTag)
 	// {
