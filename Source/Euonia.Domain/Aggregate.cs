@@ -33,7 +33,10 @@ public abstract class Aggregate<TKey> : Entity<TKey>, IAggregateRoot<TKey>, IHas
 	public virtual void RaiseEvent<TEvent>(TEvent @event)
 		where TEvent : DomainEvent
 	{
-		_handlers[typeof(TEvent)](@event);
+		if (_handlers.TryGetValue(typeof(TEvent), out var handler))
+		{
+			handler(@event);
+		}
 		_events.Add(@event);
 	}
 
@@ -45,7 +48,10 @@ public abstract class Aggregate<TKey> : Entity<TKey>, IAggregateRoot<TKey>, IHas
 	public void Apply<TEvent>(TEvent @event)
 		where TEvent : DomainEvent
 	{
-		_handlers[typeof(TEvent)](@event);
+		if (_handlers.TryGetValue(typeof(TEvent), out var handler))
+		{
+			handler(@event);
+		}
 	}
 
 	/// <summary>
