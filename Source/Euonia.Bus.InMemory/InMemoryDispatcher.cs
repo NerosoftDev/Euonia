@@ -59,7 +59,7 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 
 		context.Completed += (_, _) =>
 		{
-			taskCompletion.SetResult();
+			taskCompletion.TrySetResult();
 		};
 
 		StrongReferenceMessenger.Default.UnsafeSend(pack, message.Channel);
@@ -88,7 +88,7 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 
 		context.Responded += (_, args) =>
 		{
-			taskCompletion.SetResult((TResponse)args.Result);
+			taskCompletion.TrySetResult((TResponse)args.Result);
 		};
 		context.Failed += (_, exception) =>
 		{

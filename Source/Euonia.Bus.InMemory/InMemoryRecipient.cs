@@ -15,17 +15,6 @@ public abstract class InMemoryRecipient : DisposableObject, IRecipient<MessagePa
 	/// </summary>
 	public event EventHandler<MessageAcknowledgedEventArgs> MessageAcknowledged;
 
-	private readonly IHandlerContext _handler;
-
-	/// <summary>
-	/// Initializes a new instance of the <see cref="InMemoryRecipient"/> class.
-	/// </summary>
-	/// <param name="handler"></param>
-	public InMemoryRecipient(IHandlerContext handler)
-	{
-		_handler = handler;
-	}
-
 	#region IDisposable
 
 	/// <inheritdoc />
@@ -39,7 +28,17 @@ public abstract class InMemoryRecipient : DisposableObject, IRecipient<MessagePa
 	public async void Receive(MessagePack pack)
 	{
 		MessageReceived?.Invoke(this, new MessageReceivedEventArgs(pack.Message, pack.Context));
-		await _handler.HandleAsync(pack.Message.Channel, pack.Message.Data, pack.Context, pack.Aborted);
+		await HandleAsync(pack.Message.Channel, pack.Message.Data, pack.Context, pack.Aborted);
 		MessageAcknowledged?.Invoke(this, new MessageAcknowledgedEventArgs(pack.Message, pack.Context));
 	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="channel"></param>
+	/// <param name="message"></param>
+	/// <param name="context"></param>
+	/// <param name="cancellationToken"></param>
+	/// <returns></returns>
+	protected abstract Task HandleAsync(string channel, object message, MessageContext context, CancellationToken cancellationToken = default);
 }
