@@ -632,10 +632,10 @@ public abstract class BusinessObject : IBusinessObject, IHasRuleCheck, IDisposab
         }
         else
         {
-            LoadPropertyByReflection("LoadProperty", propertyInfo, newValue);
+            LoadPropertyByReflection(nameof(LoadProperty), propertyInfo, newValue);
         }
 #else
-		LoadPropertyByReflection("LoadProperty", propertyInfo, newValue);
+		LoadPropertyByReflection(nameof(LoadProperty), propertyInfo, newValue);
 #endif
 	}
 
@@ -649,12 +649,12 @@ public abstract class BusinessObject : IBusinessObject, IHasRuleCheck, IDisposab
 	/// <exception cref="MissingMethodException"></exception>
 	private object LoadPropertyByReflection(string methodName, IPropertyInfo propertyInfo, object newValue)
 	{
-		var t = GetType();
+		var type = GetType();
 		const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-		var method = t.GetMethods(flags).FirstOrDefault(c => c.Name == methodName && c.IsGenericMethod);
+		var method = type.GetMethods(flags).FirstOrDefault(c => c.Name == methodName && c.IsGenericMethod);
 		if (method == null)
 		{
-			throw new MissingMethodException(t.FullName, methodName);
+			throw new MissingMethodException(type.FullName, methodName);
 		}
 
 		var genericMethod = method.MakeGenericMethod(propertyInfo.Type);
