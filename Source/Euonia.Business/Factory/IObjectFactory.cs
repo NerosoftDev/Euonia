@@ -62,7 +62,7 @@ public interface IObjectFactory
 	///     For execute operation, the method should named as Execute, ExecuteAsync, FactoryExecute, FactoryExecuteAsync, or attributed use <see cref="FactoryExecuteAttribute"/>.
 	/// </para>
 	/// </remarks>
-	Task<TTarget> UpdateAsync<TTarget>(TTarget target, CancellationToken cancellationToken = default);
+	Task<TTarget> SaveAsync<TTarget>(TTarget target, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Create a new instance of <typeparamref name="TTarget"/> and invoke the update method.

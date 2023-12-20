@@ -154,7 +154,7 @@ public abstract class EditableObject<T> : BusinessObject<T>, IOperableProperty, 
 			throw new ValidationException("Object not valid for save.", errors);
 		}
 
-		return await BusinessContext.GetRequiredService<IObjectFactory>().UpdateAsync((T)this, cancellationToken);
+		return await BusinessContext.GetRequiredService<IObjectFactory>().SaveAsync((T)this, cancellationToken);
 	}
 
 	/// <summary>

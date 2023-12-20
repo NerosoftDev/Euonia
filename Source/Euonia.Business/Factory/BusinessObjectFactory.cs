@@ -108,7 +108,7 @@ public class BusinessObjectFactory : IObjectFactory
 	}
 
 	/// <inheritdoc/>
-	public async Task<TTarget> UpdateAsync<TTarget>(TTarget target, CancellationToken cancellationToken = default)
+	public async Task<TTarget> SaveAsync<TTarget>(TTarget target, CancellationToken cancellationToken = default)
 	{
 		var method = target switch
 		{
