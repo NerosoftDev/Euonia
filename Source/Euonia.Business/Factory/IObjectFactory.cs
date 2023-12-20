@@ -41,27 +41,28 @@ public interface IObjectFactory
     /// </remarks>
     Task<TTarget> InsertAsync<TTarget>(params object[] criteria);
 
-    /// <summary>
-    /// Invoke the update method of an exists instance of <typeparamref name="TTarget"/>.
-    /// </summary>
-    /// <typeparam name="TTarget">Type of the target object.</typeparam>
-    /// <param name="target"></param>
-    /// <returns></returns>
-    /// <remarks>
-    /// <para>
-    ///     For insert operation, the method should named as Insert, InsertAsync, FactoryInsert, FactoryInsertAsync, or attributed use <see cref="FactoryInsertAttribute"/>.
-    /// </para>
-    /// <para>
-    ///     For update operation, the method should named as Update, UpdateAsync, FactoryUpdate, FactoryUpdateAsync, or attributed use <see cref="FactoryUpdateAttribute"/>.
-    /// </para>
-    /// <para>
-    ///     For delete operation, the method should named as Delete, DeleteAsync, FactoryDelete, FactoryDeleteAsync, or attributed use <see cref="FactoryDeleteAttribute"/>.
-    /// </para>
-    /// <para>
-    ///     For execute operation, the method should named as Execute, ExecuteAsync, FactoryExecute, FactoryExecuteAsync, or attributed use <see cref="FactoryExecuteAttribute"/>.
-    /// </para>
-    /// </remarks>
-    Task<TTarget> UpdateAsync<TTarget>(TTarget target);
+	/// <summary>
+	/// Invoke the update method of an exists instance of <typeparamref name="TTarget"/>.
+	/// </summary>
+	/// <typeparam name="TTarget">Type of the target object.</typeparam>
+	/// <param name="target"></param>
+	/// <param name="cancellationToken"></param>
+	/// <returns></returns>
+	/// <remarks>
+	/// <para>
+	///     For insert operation, the method should named as Insert, InsertAsync, FactoryInsert, FactoryInsertAsync, or attributed use <see cref="FactoryInsertAttribute"/>.
+	/// </para>
+	/// <para>
+	///     For update operation, the method should named as Update, UpdateAsync, FactoryUpdate, FactoryUpdateAsync, or attributed use <see cref="FactoryUpdateAttribute"/>.
+	/// </para>
+	/// <para>
+	///     For delete operation, the method should named as Delete, DeleteAsync, FactoryDelete, FactoryDeleteAsync, or attributed use <see cref="FactoryDeleteAttribute"/>.
+	/// </para>
+	/// <para>
+	///     For execute operation, the method should named as Execute, ExecuteAsync, FactoryExecute, FactoryExecuteAsync, or attributed use <see cref="FactoryExecuteAttribute"/>.
+	/// </para>
+	/// </remarks>
+	Task<TTarget> UpdateAsync<TTarget>(TTarget target, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Create a new instance of <typeparamref name="TTarget"/> and invoke the update method.
