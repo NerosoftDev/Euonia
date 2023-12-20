@@ -5,7 +5,6 @@
 /// </summary>
 /// <typeparam name="TOutput"></typeparam>
 public interface IUseCaseOutputSuccess<in TOutput>
-	where TOutput : IUseCaseOutput
 {
 	/// <summary>
 	/// 

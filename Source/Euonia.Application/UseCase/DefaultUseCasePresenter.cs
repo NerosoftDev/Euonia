@@ -5,8 +5,7 @@
 /// </summary>
 /// <typeparam name="TOutput"></typeparam>
 public class DefaultUseCasePresenter<TOutput> : DisposableObject,
-                                                IUseCasePresenter<TOutput>
-	where TOutput : IUseCaseOutput
+												IUseCasePresenter<TOutput>
 {
 	/// <inheritdoc/>
 	public event EventHandler<TOutput> OnSucceed;

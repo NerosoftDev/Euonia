@@ -5,9 +5,8 @@
 /// </summary>
 /// <typeparam name="TOutput"></typeparam>
 public interface IUseCasePresenter<TOutput> : IUseCaseOutputFailure,
-                                              IUseCaseOutputSuccess<TOutput>,
-                                              IDisposable
-	where TOutput : IUseCaseOutput
+											  IUseCaseOutputSuccess<TOutput>,
+											  IDisposable
 {
 	/// <summary>
 	/// Occurs when the use case is successfully executed.
