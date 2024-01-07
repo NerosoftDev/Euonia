@@ -114,15 +114,15 @@ public class BusinessObjectFactory : IObjectFactory
 		{
 			IEditableObject editableObject => editableObject.State switch
 			{
-				ObjectEditState.Insert => ObjectReflector.FindFactoryMethod<TTarget, FactoryInsertAttribute>(Array.Empty<object>()),
-				ObjectEditState.Update => ObjectReflector.FindFactoryMethod<TTarget, FactoryUpdateAttribute>(Array.Empty<object>()),
-				ObjectEditState.Delete => ObjectReflector.FindFactoryMethod<TTarget, FactoryDeleteAttribute>(Array.Empty<object>()),
+				ObjectEditState.Insert => ObjectReflector.FindFactoryMethod<TTarget, FactoryInsertAttribute>(new object[] { cancellationToken }),
+				ObjectEditState.Update => ObjectReflector.FindFactoryMethod<TTarget, FactoryUpdateAttribute>(new object[] { cancellationToken }),
+				ObjectEditState.Delete => ObjectReflector.FindFactoryMethod<TTarget, FactoryDeleteAttribute>(new object[] { cancellationToken }),
 				ObjectEditState.None => throw new InvalidOperationException(),
 				_ => throw new ArgumentOutOfRangeException(nameof(target), Resources.IDS_INVALID_STATE)
 			},
-			ICommandObject => ObjectReflector.FindFactoryMethod<TTarget, FactoryExecuteAttribute>(Array.Empty<object>()),
+			ICommandObject => ObjectReflector.FindFactoryMethod<TTarget, FactoryExecuteAttribute>(new object[] { cancellationToken }),
 			IReadOnlyObject => throw new InvalidOperationException("The operation can not apply for ReadOnlyObject."),
-			_ => ObjectReflector.FindFactoryMethod<TTarget, FactoryUpdateAttribute>(Array.Empty<object>())
+			_ => ObjectReflector.FindFactoryMethod<TTarget, FactoryUpdateAttribute>(new object[] { cancellationToken })
 		};
 
 		await InvokeAsync(method, target, new object[] { cancellationToken });
@@ -131,16 +131,16 @@ public class BusinessObjectFactory : IObjectFactory
 	}
 
 	/// <inheritdoc/>
-	public async Task<TTarget> ExecuteAsync<TTarget>(TTarget command)
+	public async Task<TTarget> ExecuteAsync<TTarget>(TTarget command, CancellationToken cancellationToken = default)
 		where TTarget : ICommandObject
 	{
-		var method = ObjectReflector.FindFactoryMethod<TTarget, FactoryExecuteAttribute>(Array.Empty<object>());
+		var method = ObjectReflector.FindFactoryMethod<TTarget, FactoryExecuteAttribute>(new object[] { cancellationToken });
 		var target = GetObjectInstance<TTarget>();
 
 		try
 		{
 			_activator?.InitializeInstance(target);
-			await InvokeAsync(method, target, null);
+			await InvokeAsync(method, target, new object[] { cancellationToken });
 			return target;
 		}
 		finally
