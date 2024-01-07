@@ -76,16 +76,17 @@ public interface IObjectFactory
     /// </remarks>
     Task<TTarget> UpdateAsync<TTarget>(params object[] criteria);
 
-    /// <summary>
-    /// Invoke the execute method of an exists command object of <typeparamref name="TTarget"/>.
-    /// </summary>
-    /// <typeparam name="TTarget">Type of the target object.</typeparam>
-    /// <param name="command"></param>
-    /// <returns></returns>
-    /// <remarks>
-    /// The method should named as Execute, ExecuteAsync, FactoryExecute, FactoryExecuteAsync, or attributed use <see cref="FactoryExecuteAttribute"/>.
-    /// </remarks>
-    Task<TTarget> ExecuteAsync<TTarget>(TTarget command)
+	/// <summary>
+	/// Invoke the execute method of an exists command object of <typeparamref name="TTarget"/>.
+	/// </summary>
+	/// <typeparam name="TTarget">Type of the target object.</typeparam>
+	/// <param name="command"></param>
+	/// <param name="cancellationToken"></param>
+	/// <returns></returns>
+	/// <remarks>
+	/// The method should named as Execute, ExecuteAsync, FactoryExecute, FactoryExecuteAsync, or attributed use <see cref="FactoryExecuteAttribute"/>.
+	/// </remarks>
+	Task<TTarget> ExecuteAsync<TTarget>(TTarget command, CancellationToken cancellationToken = default)
         where TTarget : ICommandObject;
 
     /// <summary>
