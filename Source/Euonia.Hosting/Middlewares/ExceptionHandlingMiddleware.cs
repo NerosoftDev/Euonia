@@ -63,7 +63,7 @@ public class ExceptionHandlingMiddleware : IMiddleware
 			HttpStatusException ex => (int)ex.StatusCode,
 			AuthenticationException => StatusCodes.Status401Unauthorized,
 			UnauthorizedAccessException => StatusCodes.Status403Forbidden,
-			ValidationException => StatusCodes.Status422UnprocessableEntity,
+			ValidationException => StatusCodes.Status400BadRequest,
 			NotImplementedException => StatusCodes.Status501NotImplemented,
 			AggregateException ex => GetStatusCode(ex.InnerException),
 			_ => (int)(exception.GetType().GetCustomAttribute<HttpStatusCodeAttribute>()?.StatusCode ?? HttpStatusCode.InternalServerError)
@@ -72,7 +72,10 @@ public class ExceptionHandlingMiddleware : IMiddleware
 
 	private static IReadOnlyDictionary<string, string[]> GetErrors(Exception exception)
 	{
-		//IReadOnlyDictionary<string, string[]> errors = null;
+		if (exception is AggregateException)
+		{
+			return GetErrors(exception.InnerException);
+		}
 
 		if (exception is not ValidationException ex)
 		{
