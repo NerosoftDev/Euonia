@@ -9,17 +9,19 @@ namespace Nerosoft.Euonia.Mapping;
 /// </summary>
 public class MapsterModule : ModuleContextBase
 {
+	private const string SERVICE_KEY = "mapster";
+
 	/// <inheritdoc />
 	public override void ConfigureServices(ServiceConfigurationContext context)
 	{
 		context.Services.AddMapster();
-		context.Services.TryAddSingleton<ITypeAdapterFactory, MapsterTypeAdapterFactory>();
+		context.Services.TryAddKeyedSingleton<ITypeAdapterFactory, MapsterTypeAdapterFactory>(SERVICE_KEY);
 	}
 
 	/// <inheritdoc />
 	public override void OnApplicationInitialization(ApplicationInitializationContext context)
 	{
-		var factory = context.ServiceProvider.GetService<ITypeAdapterFactory>();
+		var factory = context.ServiceProvider.GetKeyedService<ITypeAdapterFactory>(SERVICE_KEY);
 		if (factory != null)
 		{
 			TypeAdapterFactory.SetCurrent(factory);
