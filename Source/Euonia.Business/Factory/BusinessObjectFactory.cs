@@ -131,11 +131,10 @@ public class BusinessObjectFactory : IObjectFactory
 	}
 
 	/// <inheritdoc/>
-	public async Task<TTarget> ExecuteAsync<TTarget>(TTarget command, CancellationToken cancellationToken = default)
+	public async Task<TTarget> ExecuteAsync<TTarget>(TTarget target, CancellationToken cancellationToken = default)
 		where TTarget : ICommandObject
 	{
 		var method = ObjectReflector.FindFactoryMethod<TTarget, FactoryExecuteAttribute>(new object[] { cancellationToken });
-		var target = GetObjectInstance<TTarget>();
 
 		try
 		{

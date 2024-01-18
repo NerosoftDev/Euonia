@@ -80,13 +80,13 @@ public interface IObjectFactory
 	/// Invoke the execute method of an exists command object of <typeparamref name="TTarget"/>.
 	/// </summary>
 	/// <typeparam name="TTarget">Type of the target object.</typeparam>
-	/// <param name="command"></param>
+	/// <param name="target"></param>
 	/// <param name="cancellationToken"></param>
 	/// <returns></returns>
 	/// <remarks>
 	/// The method should named as Execute, ExecuteAsync, FactoryExecute, FactoryExecuteAsync, or attributed use <see cref="FactoryExecuteAttribute"/>.
 	/// </remarks>
-	Task<TTarget> ExecuteAsync<TTarget>(TTarget command, CancellationToken cancellationToken = default)
+	Task<TTarget> ExecuteAsync<TTarget>(TTarget target, CancellationToken cancellationToken = default)
         where TTarget : ICommandObject;
 
     /// <summary>
