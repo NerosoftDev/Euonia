@@ -373,14 +373,20 @@ public abstract class EditableObject<T> : BusinessObject<T>, IOperableProperty, 
 		if (field == null)
 		{
 			if (newValue != null)
+			{
 				doChange = true;
+			}
 		}
 		else
 		{
 			if (typeof(TValue) == typeof(string) && newValue == null)
+			{
 				newValue = TypeHelper.CoerceValue<TValue>(typeof(string), string.Empty);
-			if (!field.Equals(newValue))
+			}
+			if (ValuesDiffer(propertyInfo, newValue, field))
+			{
 				doChange = true;
+			}
 		}
 
 		if (doChange)
