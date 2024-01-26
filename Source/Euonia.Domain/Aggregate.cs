@@ -14,14 +14,14 @@ public abstract class Aggregate<TKey> : Entity<TKey>, IAggregateRoot<TKey>, IHas
 	/// <summary>
 	/// The events.
 	/// </summary>
-	public IEnumerable<DomainEvent> GetEvents() => _events?.AsReadOnly();
+	public virtual IEnumerable<DomainEvent> GetEvents() => _events?.AsReadOnly();
 
 	/// <summary>
 	/// Register a handler for the specific event type.
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	/// <param name="when"></param>
-	protected void Register<T>(Action<T> when)
+	protected virtual void Register<T>(Action<T> when)
 	{
 		_handlers.Add(typeof(T), @event => when((T)@event));
 	}
@@ -45,7 +45,7 @@ public abstract class Aggregate<TKey> : Entity<TKey>, IAggregateRoot<TKey>, IHas
 	/// </summary>
 	/// <typeparam name="TEvent"></typeparam>
 	/// <param name="event"></param>
-	public void Apply<TEvent>(TEvent @event)
+	public virtual void Apply<TEvent>(TEvent @event)
 		where TEvent : DomainEvent
 	{
 		if (_handlers.TryGetValue(typeof(TEvent), out var handler))

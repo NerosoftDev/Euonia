@@ -45,7 +45,7 @@ public class ExceptionHandlingMiddleware : IMiddleware
 		var response = new
 		{
 			status = statusCode,
-			message = exception is AggregateException ex ? ex.InnerException.Message : exception.Message,
+			message = GetMessage(exception),
 			details = GetErrors(exception)
 		};
 
@@ -54,6 +54,18 @@ public class ExceptionHandlingMiddleware : IMiddleware
 		httpContext.Response.StatusCode = statusCode;
 
 		return httpContext.Response.WriteAsync(JsonSerializer.Serialize(response));
+
+
+	}
+
+	private static string GetMessage(Exception exception)
+	{
+		return exception switch
+		{
+			AggregateException ex => ex.InnerException == null ? ex.Message : GetMessage(ex.InnerException),
+			TargetInvocationException ex => ex.InnerException == null ? ex.Message : GetMessage(ex.InnerException),
+			_ => exception.Message
+		};
 	}
 
 	private static int GetStatusCode(Exception exception)
@@ -66,6 +78,7 @@ public class ExceptionHandlingMiddleware : IMiddleware
 			ValidationException => StatusCodes.Status400BadRequest,
 			NotImplementedException => StatusCodes.Status501NotImplemented,
 			AggregateException ex => GetStatusCode(ex.InnerException),
+			TargetInvocationException ex => ex.InnerException == null ? StatusCodes.Status500InternalServerError : GetStatusCode(ex.InnerException),
 			_ => (int)(exception.GetType().GetCustomAttribute<HttpStatusCodeAttribute>()?.StatusCode ?? HttpStatusCode.InternalServerError)
 		};
 	}
