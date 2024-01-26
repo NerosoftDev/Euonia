@@ -21,13 +21,13 @@ public abstract class Command : ICommand
 	/// <summary>
 	/// Gets the extended properties of command.
 	/// </summary>
-	public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
+	public virtual IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
 
 	/// <summary>
 	/// Gets or sets the command property with specified name.
 	/// </summary>
 	/// <param name="name"></param>
-	public string this[string name]
+	public virtual string this[string name]
 	{
 		get => Properties.TryGetValue(name, out var value) ? value : default;
 		set => Properties[name] = value;
@@ -47,7 +47,7 @@ public abstract class Command : ICommand
 	/// <summary>
 	/// Gets or sets the command identifier.
 	/// </summary>
-	public string CommandId
+	public virtual string CommandId
 	{
 		get => this[PROPERTY_ID];
 		set => this[PROPERTY_ID] = value;
@@ -85,7 +85,7 @@ public abstract class Command<T1> : Command
 	/// <param name="index"></param>
 	/// <returns></returns>
 	/// <exception cref="IndexOutOfRangeException"></exception>
-	public object this[int index]
+	public virtual object this[int index]
 	{
 		get
 		{
@@ -152,7 +152,7 @@ public abstract class Command<T1, T2> : Command
 	/// <param name="index"></param>
 	/// <returns></returns>
 	/// <exception cref="IndexOutOfRangeException"></exception>
-	public object this[int index]
+	public virtual object this[int index]
 	{
 		get
 		{
@@ -225,7 +225,7 @@ public abstract class Command<T1, T2, T3> : Command
 	/// <param name="index"></param>
 	/// <returns></returns>
 	/// <exception cref="IndexOutOfRangeException"></exception>
-	public object this[int index]
+	public virtual object this[int index]
 	{
 		get
 		{
@@ -304,7 +304,7 @@ public abstract class Command<T1, T2, T3, T4> : Command
 	/// <param name="index"></param>
 	/// <returns></returns>
 	/// <exception cref="IndexOutOfRangeException"></exception>
-	public object this[int index]
+	public virtual object this[int index]
 	{
 		get
 		{
@@ -389,7 +389,7 @@ public abstract class Command<T1, T2, T3, T4, T5> : Command
 	/// <param name="index"></param>
 	/// <returns></returns>
 	/// <exception cref="IndexOutOfRangeException"></exception>
-	public object this[int index]
+	public virtual object this[int index]
 	{
 		get
 		{
@@ -479,7 +479,7 @@ public abstract class Command<T1, T2, T3, T4, T5, T6> : Command
 	/// </summary>
 	/// <param name="index"></param>
 	/// <exception cref="IndexOutOfRangeException"></exception>
-	public object this[int index]
+	public virtual object this[int index]
 	{
 		get
 		{
@@ -576,7 +576,7 @@ public abstract class Command<T1, T2, T3, T4, T5, T6, T7> : Command
 	/// <param name="index"></param>
 	/// <returns></returns>
 	/// <exception cref="IndexOutOfRangeException"></exception>
-	public object this[int index]
+	public virtual object this[int index]
 	{
 		get
 		{

@@ -12,7 +12,7 @@ public abstract class Entity<TKey> : Entity, IEntity<TKey>
     /// <summary>
     /// Get or set the entity identifier.
     /// </summary>
-    public TKey Id { get; set; }
+    public virtual TKey Id { get; set; }
 
     /// <inheritdoc/>
     public override object[] GetKeys()
