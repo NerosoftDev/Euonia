@@ -4,7 +4,6 @@
     <Import Project="..\resource.props" />
 
     <PropertyGroup>
-        <TargetFrameworks>netstandard2.1;$(TargetFrameworks)</TargetFrameworks>
         <Nullable>disable</Nullable>
     </PropertyGroup>
 

@@ -2,17 +2,18 @@
     <PropertyGroup>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
         <EnablePackageVersionOverride>true</EnablePackageVersionOverride>
-        <MicrosoftPackageVersion6>6.0.24</MicrosoftPackageVersion6>
-        <MicrosoftPackageVersion7>7.0.15</MicrosoftPackageVersion7>
-        <MicrosoftPackageVersion8>8.0.1</MicrosoftPackageVersion8>
+        <MicrosoftPackageVersion6>6.0.27</MicrosoftPackageVersion6>
+        <MicrosoftPackageVersion7>7.0.16</MicrosoftPackageVersion7>
+        <MicrosoftPackageVersion8>8.0.2</MicrosoftPackageVersion8>
         <GrpcAspNetCoreVersion>2.60.0</GrpcAspNetCoreVersion>
+        <QuartzVersion>3.8.1</QuartzVersion>
     </PropertyGroup>
     <ItemGroup>
         <PackageVersion Include="Apache.NMS.ActiveMQ" Version="2.1.0" />
         <PackageVersion Include="Autofac" Version="8.0.0" />
         <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="9.0.0" />
         <PackageVersion Include="Autofac.Extras.DynamicProxy" Version="7.1.0" />
-        <PackageVersion Include="AutoMapper" Version="12.0.1" />
+        <PackageVersion Include="AutoMapper" Version="13.0.1" />
         <PackageVersion Include="Azure.Storage.Blobs" Version="12.19.1" />
         <PackageVersion Include="Castle.Core" Version="5.1.1" />
         <PackageVersion Include="Consul" Version="1.6.10.9" />
@@ -25,17 +26,17 @@
         <PackageVersion Include="MediatR.Contracts" Version="2.0.1" />
         <PackageVersion Include="mongocsharpdriver" Version="2.23.1" />
         <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
-        <PackageVersion Include="Polly" Version="8.2.1" />
+        <PackageVersion Include="Polly" Version="8.3.0" />
         <PackageVersion Include="protobuf-net" Version="3.1.33" />
-        <PackageVersion Include="Quartz" Version="3.8.0" />
-        <PackageVersion Include="Quartz.Extensions.DependencyInjection" Version="3.8.0" />
-        <PackageVersion Include="Quartz.Extensions.Hosting" Version="3.8.0" />
+        <PackageVersion Include="Quartz" Version="$(QuartzVersion)" />
+        <PackageVersion Include="Quartz.Extensions.DependencyInjection" Version="$(QuartzVersion)" />
+        <PackageVersion Include="Quartz.Extensions.Hosting" Version="$(QuartzVersion)" />
         <PackageVersion Include="RabbitMQ.Client" Version="6.8.1" />
         <PackageVersion Include="Refit" Version="6.3.2" />
         <PackageVersion Include="Refit.HttpClientFactory" Version="6.3.2" />
         <PackageVersion Include="Refit.Newtonsoft.Json" Version="6.3.2" />
         <PackageVersion Include="Serilog" Version="3.1.1" />
-        <PackageVersion Include="Serilog.AspNetCore" Version="8.0.0" />
+        <PackageVersion Include="Serilog.AspNetCore" Version="8.0.1" />
         <PackageVersion Include="Serilog.Enrichers.Environment" Version="2.3.0" />
         <PackageVersion Include="Serilog.Sinks.Elasticsearch" Version="9.0.3" />
         <PackageVersion Include="Serilog.Sinks.Email" Version="2.4.0" />
@@ -50,7 +51,7 @@
         <PackageVersion Include="System.Reactive" Version="6.0.0" />
         <PackageVersion Include="System.Runtime.Caching" Version="8.0.0" />
         <PackageVersion Include="System.Runtime.Loader" Version="4.3.0" />
-        <PackageVersion Include="System.Text.Json" Version="8.0.1" />
+        <PackageVersion Include="System.Text.Json" Version="8.0.2" />
         <PackageVersion Include="Winton.Extensions.Configuration.Consul" Version="3.2.0" />
         <PackageVersion Include="ZooKeeperNetEx" Version="3.4.12.4" />
     </ItemGroup>
@@ -67,11 +68,11 @@
         <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
         <PackageVersion Include="Microsoft.Extensions.Http" Version="8.0.0" />
         <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
-        <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.1" />
+        <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.2" />
         <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
     </ItemGroup>
     <!-- Microsoft.EntityFrameworkCore -->
-    <ItemGroup Condition="'$(TargetFramework)'!='net8.0'">
+    <ItemGroup Condition="'$(TargetFramework)'=='net7.0'">
         <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="$(MicrosoftPackageVersion7)" />
         <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="$(MicrosoftPackageVersion7)" />
         <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(MicrosoftPackageVersion7)" />
@@ -98,10 +99,6 @@
     </ItemGroup>
     <ItemGroup Condition="$(TargetFramework.Contains('netstandard'))">
     </ItemGroup>
-    <ItemGroup Condition="'$(TargetFramework)'=='net6.0'">
-        <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(MicrosoftPackageVersion6)" />
-        <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="$(MicrosoftPackageVersion6)" />
-    </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)'=='net7.0'">
         <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(MicrosoftPackageVersion7)" />
         <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(MicrosoftPackageVersion7)" />
@@ -115,7 +112,7 @@
     <!-- Grpc -->
     <ItemGroup>
         <PackageVersion Include="Google.Api.CommonProtos" Version="2.12.0" />
-        <PackageVersion Include="Google.Protobuf" Version="3.25.2" />
+        <PackageVersion Include="Google.Protobuf" Version="3.25.3" />
         <PackageVersion Include="Grpc" Version="2.46.6" />
         <PackageVersion Include="Grpc.AspNetCore" Version="$(GrpcAspNetCoreVersion)" />
         <PackageVersion Include="Grpc.AspNetCore.HealthChecks" Version="$(GrpcAspNetCoreVersion)" />
@@ -129,9 +126,9 @@
     <!-- Tests -->
     <ItemGroup>
         <PackageVersion Include="BenchmarkDotNet" Version="0.13.4" />
-        <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-        <PackageVersion Include="xunit" Version="2.6.6" />
-        <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.6">
+        <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+        <PackageVersion Include="xunit" Version="2.7.0" />
+        <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.7">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageVersion>

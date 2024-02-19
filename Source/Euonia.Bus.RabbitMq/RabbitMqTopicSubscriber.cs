@@ -114,9 +114,6 @@ public class RabbitMqTopicSubscriber : RabbitMqQueueRecipient, ITopicSubscriber
 		{
 			_logger.LogError(exception, "Message '{Id}' Handle Error: {Message}", context.MessageId, exception.Message);
 		}
-		finally
-		{
-		}
 	}
 
 	/// <inheritdoc />

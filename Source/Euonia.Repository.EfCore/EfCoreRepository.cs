@@ -1,7 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Nerosoft.Euonia.Domain;
-using Nerosoft.Euonia.Linq;
 
 namespace Nerosoft.Euonia.Repository.EfCore;
 
