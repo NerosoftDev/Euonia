@@ -3,7 +3,6 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using Nerosoft.Euonia.Domain;
-using Nerosoft.Euonia.Linq;
 
 namespace Nerosoft.Euonia.Repository.Mongo;
 

@@ -36,8 +36,5 @@ public class InMemoryTopicSubscriber : InMemoryRecipient, ITopicSubscriber
 		{
 			_logger.LogError(exception, "Message '{Id}' Handle Error: {Message}", context.MessageId, exception.Message);
 		}
-		finally
-		{
-		}
 	}
 }
