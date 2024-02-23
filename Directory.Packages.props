@@ -5,7 +5,7 @@
         <MicrosoftPackageVersion6>6.0.27</MicrosoftPackageVersion6>
         <MicrosoftPackageVersion7>7.0.16</MicrosoftPackageVersion7>
         <MicrosoftPackageVersion8>8.0.2</MicrosoftPackageVersion8>
-        <GrpcAspNetCoreVersion>2.60.0</GrpcAspNetCoreVersion>
+        <GrpcAspNetCoreVersion>2.61.0</GrpcAspNetCoreVersion>
         <QuartzVersion>3.8.1</QuartzVersion>
     </PropertyGroup>
     <ItemGroup>
@@ -24,7 +24,7 @@
         <PackageVersion Include="Mapster.DependencyInjection" Version="1.0.1" />
         <PackageVersion Include="MediatR" Version="12.1.1" />
         <PackageVersion Include="MediatR.Contracts" Version="2.0.1" />
-        <PackageVersion Include="mongocsharpdriver" Version="2.23.1" />
+        <PackageVersion Include="mongocsharpdriver" Version="2.24.0" />
         <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageVersion Include="Polly" Version="8.3.0" />
         <PackageVersion Include="protobuf-net" Version="3.1.33" />
@@ -41,7 +41,7 @@
         <PackageVersion Include="Serilog.Sinks.Elasticsearch" Version="9.0.3" />
         <PackageVersion Include="Serilog.Sinks.Email" Version="2.4.0" />
         <PackageVersion Include="Serilog.Sinks.File" Version="5.0.0" />
-        <PackageVersion Include="StackExchange.Redis" Version="2.7.17" />
+        <PackageVersion Include="StackExchange.Redis" Version="2.7.20" />
         <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0" />
         <PackageVersion Include="System.Collections.Immutable" Version="8.0.0" />
         <PackageVersion Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
@@ -132,7 +132,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageVersion>
-        <PackageVersion Include="coverlet.collector" Version="6.0.0">
+        <PackageVersion Include="coverlet.collector" Version="6.0.1">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageVersion>
