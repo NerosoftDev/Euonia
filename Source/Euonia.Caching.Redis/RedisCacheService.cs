@@ -144,12 +144,6 @@ public class RedisCacheService : ICacheService
         return AddOrUpdate(item);
     }
 
-    /// <inheritdoc />
-    public string GenerateKey(string separator, params object[] values)
-    {
-        return $"{_prefix}.Cache.{string.Join(separator, values)}";
-    }
-
     private string RewriteKey(string key)
     {
         if (string.IsNullOrEmpty(_prefix))
