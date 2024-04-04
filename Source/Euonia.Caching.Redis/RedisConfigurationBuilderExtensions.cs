@@ -88,7 +88,6 @@ public static class RedisConfigurationBuilderExtensions
         return part;
     }
 
-
     /// <summary>
     /// Configures a cache backplane for the cache manager.
     /// The <paramref name="redisConfigurationKey"/> is used to find a matching redis configuration.

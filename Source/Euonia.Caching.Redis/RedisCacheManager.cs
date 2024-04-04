@@ -14,7 +14,6 @@ internal class RedisCacheManager
     {
         var configuration = ConfigurationBuilder.BuildConfiguration(settings =>
         {
-            //var updateMode = (CacheUpdateMode)Enum.Parse(typeof(CacheUpdateMode), options.UpdateMode);
             settings.WithUpdateMode(options.UpdateMode)
                     .WithMaxRetries(options.MaxRetries)
                     .WithRetryTimeout(options.RetryTimeout)
