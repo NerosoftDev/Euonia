@@ -2,10 +2,10 @@
     <PropertyGroup>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
         <EnablePackageVersionOverride>true</EnablePackageVersionOverride>
-        <MicrosoftPackageVersion6>6.0.28</MicrosoftPackageVersion6>
-        <MicrosoftPackageVersion7>7.0.17</MicrosoftPackageVersion7>
-        <MicrosoftPackageVersion8>8.0.3</MicrosoftPackageVersion8>
-        <GrpcAspNetCoreVersion>2.61.0</GrpcAspNetCoreVersion>
+        <MicrosoftPackageVersion6>6.0.29</MicrosoftPackageVersion6>
+        <MicrosoftPackageVersion7>7.0.18</MicrosoftPackageVersion7>
+        <MicrosoftPackageVersion8>8.0.4</MicrosoftPackageVersion8>
+        <GrpcAspNetCoreVersion>2.62.0</GrpcAspNetCoreVersion>
         <QuartzVersion>3.8.1</QuartzVersion>
     </PropertyGroup>
     <ItemGroup>
@@ -18,7 +18,7 @@
         <PackageVersion Include="Castle.Core" Version="5.1.1" />
         <PackageVersion Include="Consul" Version="1.6.10.9" />
         <PackageVersion Include="FluentValidation" Version="11.9.0" />
-        <PackageVersion Include="IdentityModel" Version="6.2.0" />
+        <PackageVersion Include="IdentityModel" Version="7.0.0" />
         <PackageVersion Include="IdentityModel.AspNetCore.OAuth2Introspection" Version="6.2.0" />
         <PackageVersion Include="Mapster" Version="7.4.0" />
         <PackageVersion Include="Mapster.DependencyInjection" Version="1.0.1" />
@@ -112,7 +112,7 @@
     <!-- Grpc -->
     <ItemGroup>
         <PackageVersion Include="Google.Api.CommonProtos" Version="2.12.0" />
-        <PackageVersion Include="Google.Protobuf" Version="3.26.0" />
+        <PackageVersion Include="Google.Protobuf" Version="3.26.1" />
         <PackageVersion Include="Grpc" Version="2.46.6" />
         <PackageVersion Include="Grpc.AspNetCore" Version="$(GrpcAspNetCoreVersion)" />
         <PackageVersion Include="Grpc.AspNetCore.HealthChecks" Version="$(GrpcAspNetCoreVersion)" />
@@ -136,7 +136,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageVersion>
-        <PackageVersion Include="Xunit.DependencyInjection" Version="9.0.1" />
+        <PackageVersion Include="Xunit.DependencyInjection" Version="9.1.0" />
         <PackageVersion Include="Xunit.DependencyInjection.Logging" Version="9.0.0" />
         <PackageVersion Include="Moq" Version="4.20.70" />
     </ItemGroup>
