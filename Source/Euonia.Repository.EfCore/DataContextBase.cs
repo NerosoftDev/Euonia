@@ -109,7 +109,7 @@ public abstract class DataContextBase<TContext> : DbContext, IRepositoryContext
 
 		foreach (var entry in entries)
 		{
-			var time = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified);
+			var time = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified);
 
 			switch (entry.State)
 			{
