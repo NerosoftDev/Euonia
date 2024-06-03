@@ -91,7 +91,6 @@ public class HandlerContext : IHandlerContext
 			return;
 		}
 
-		var tasks = new List<Task>();
 		using var scope = _provider.GetRequiredService<IServiceScopeFactory>().CreateScope();
 
 		if (!_handlerContainer.TryGetValue(channel, out var handling))
@@ -101,22 +100,35 @@ public class HandlerContext : IHandlerContext
 
 		// Get handler instance from service provider using Expression Tree
 
-		foreach (var factory in handling)
+		if (handling.Count == 0)
 		{
-			var handler = factory(scope.ServiceProvider);
-			tasks.Add(handler(message, context, cancellationToken));
+			throw new InvalidOperationException("No handler registered for message");
 		}
 
-		if (tasks.Count == 0)
+		_logger?.LogInformation("Message {Id} is being handled", context.MessageId);
+
+		if (handling.Count == 1)
 		{
-			return;
+			var handler = handling.First()(scope.ServiceProvider);
+			await handler(message, context, cancellationToken);
+		}
+		else
+		{
+			await Parallel.ForEachAsync(handling, cancellationToken, async (factory, token) =>
+			{
+				try
+				{
+					var handler = factory(scope.ServiceProvider);
+					await handler(message, context, token);
+				}
+				catch (Exception ex)
+				{
+					_logger?.LogError(ex, "Error occurred while handling message {Id}", context.MessageId);
+				}
+			});
 		}
 
-		await Task.WhenAll(tasks).ContinueWith(task =>
-		{
-			task.WaitAndUnwrapException(cancellationToken);
-			_logger?.LogInformation("Message {Id} was completed handled", context.MessageId);
-		}, cancellationToken);
+		_logger?.LogInformation("Message {Id} was completed handled", context.MessageId);
 	}
 
 	#endregion
