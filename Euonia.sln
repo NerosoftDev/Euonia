@@ -21,6 +21,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{E57A56F3-7BAB-4DB5-9CE8-EC91985A6586}"
 	ProjectSection(SolutionItems) = preProject
 		Source\common.props = Source\common.props
+		Source\resource.props = Source\resource.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bus", "Bus", "{273D1F47-F6AF-4ED5-AAB5-977BD9906B2E}"

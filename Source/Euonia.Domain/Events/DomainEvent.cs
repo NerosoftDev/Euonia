@@ -17,7 +17,7 @@ public abstract class DomainEvent : Event, IDomainEvent
 	public void Attach<TKey>(IAggregateRoot<TKey> aggregate)
 		where TKey : IEquatable<TKey>
 	{
-		OriginatorId = aggregate.Id.ToString();
+		OriginatorId = aggregate.Id?.ToString();
 		OriginatorType = aggregate.GetType().AssemblyQualifiedName;
 		AggregatePayload = aggregate;
 	}

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Nerosoft.Euonia.Modularity;
 
 namespace Nerosoft.Euonia.Mapping;
@@ -8,20 +9,22 @@ namespace Nerosoft.Euonia.Mapping;
 /// </summary>
 public class MapsterModule : ModuleContextBase
 {
+	private const string SERVICE_KEY = "mapster";
+
 	/// <inheritdoc />
 	public override void ConfigureServices(ServiceConfigurationContext context)
-    {
-        context.Services.AddMapster();
-        context.Services.AddSingleton<ITypeAdapterFactory, MapsterTypeAdapterFactory>();
-    }
+	{
+		context.Services.AddMapster();
+		context.Services.TryAddKeyedSingleton<ITypeAdapterFactory, MapsterTypeAdapterFactory>(SERVICE_KEY);
+	}
 
 	/// <inheritdoc />
 	public override void OnApplicationInitialization(ApplicationInitializationContext context)
-    {
-        var factory = context.ServiceProvider.GetService<ITypeAdapterFactory>();
-        if (factory != null)
-        {
-            TypeAdapterFactory.SetCurrent(factory);
-        }
-    }
+	{
+		var factory = context.ServiceProvider.GetKeyedService<ITypeAdapterFactory>(SERVICE_KEY);
+		if (factory != null)
+		{
+			TypeAdapterFactory.SetCurrent(factory);
+		}
+	}
 }

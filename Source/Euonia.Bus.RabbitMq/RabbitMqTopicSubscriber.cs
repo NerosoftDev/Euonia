@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -10,16 +11,20 @@ namespace Nerosoft.Euonia.Bus.RabbitMq;
 public class RabbitMqTopicSubscriber : RabbitMqQueueRecipient, ITopicSubscriber
 {
 	private readonly IIdentityProvider _identity;
-
+	private readonly IHandlerContext _handler;
+	private readonly ILogger<RabbitMqTopicSubscriber> _logger;
 	/// <summary>
 	/// Initializes a new instance of the <see cref="RabbitMqTopicSubscriber"/> class.
 	/// </summary>
 	/// <param name="connection"></param>
 	/// <param name="handler"></param>
 	/// <param name="options"></param>
-	public RabbitMqTopicSubscriber(IPersistentConnection connection, IHandlerContext handler, IOptions<RabbitMqMessageBusOptions> options)
-		: base(connection, handler, options)
+	/// <param name="logger"></param>
+	public RabbitMqTopicSubscriber(IPersistentConnection connection, IHandlerContext handler, IOptions<RabbitMqMessageBusOptions> options, ILoggerFactory logger)
+		: base(connection, options)
 	{
+		_handler = handler;
+		_logger = logger.CreateLogger<RabbitMqTopicSubscriber>();
 	}
 
 	/// <summary>
@@ -28,9 +33,10 @@ public class RabbitMqTopicSubscriber : RabbitMqQueueRecipient, ITopicSubscriber
 	/// <param name="connection"></param>
 	/// <param name="handler"></param>
 	/// <param name="options"></param>
+	/// <param name="logger"></param>
 	/// <param name="identity"></param>
-	public RabbitMqTopicSubscriber(IPersistentConnection connection, IHandlerContext handler, IOptions<RabbitMqMessageBusOptions> options, IIdentityProvider identity)
-		: this(connection, handler, options)
+	public RabbitMqTopicSubscriber(IPersistentConnection connection, IHandlerContext handler, IOptions<RabbitMqMessageBusOptions> options, ILoggerFactory logger, IIdentityProvider identity)
+		: this(connection, handler, options, logger)
 	{
 		_identity = identity;
 	}
@@ -83,11 +89,11 @@ public class RabbitMqTopicSubscriber : RabbitMqQueueRecipient, ITopicSubscriber
 
 		var message = DeserializeMessage(args.Body.ToArray(), type);
 
-		var context = new MessageContext(message, _identity.GetIdentity);
+		var context = new MessageContext(message, authorization => _identity?.GetIdentity(authorization));
 
 		OnMessageReceived(new MessageReceivedEventArgs(message.Data, context));
 
-		await Handler.HandleAsync(message.Channel, message.Data, context);
+		await HandleAsync(message.Channel, message.Data, context);
 
 		if (!Options.AutoAck)
 		{
@@ -95,6 +101,19 @@ public class RabbitMqTopicSubscriber : RabbitMqQueueRecipient, ITopicSubscriber
 		}
 
 		OnMessageAcknowledged(new MessageAcknowledgedEventArgs(message.Data, context));
+	}
+
+	/// <inheritdoc />
+	protected override async Task HandleAsync(string channel, object message, MessageContext context, CancellationToken cancellationToken = default)
+	{
+		try
+		{
+			await _handler.HandleAsync(channel, message, context, cancellationToken);
+		}
+		catch (Exception exception)
+		{
+			_logger.LogError(exception, "Message '{Id}' Handle Error: {Message}", context.MessageId, exception.Message);
+		}
 	}
 
 	/// <inheritdoc />

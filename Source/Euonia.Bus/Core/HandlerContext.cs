@@ -86,48 +86,37 @@ public class HandlerContext : IHandlerContext
 	/// <inheritdoc />
 	public virtual async Task HandleAsync(string channel, object message, MessageContext context, CancellationToken cancellationToken = default)
 	{
-		try
+		if (message == null)
 		{
-			if (message == null)
-			{
-				return;
-			}
-
-			var tasks = new List<Task>();
-			using var scope = _provider.GetRequiredService<IServiceScopeFactory>().CreateScope();
-
-			if (!_handlerContainer.TryGetValue(channel, out var handling))
-			{
-				throw new InvalidOperationException("No handler registered for message");
-			}
-
-			// Get handler instance from service provider using Expression Tree
-
-			foreach (var factory in handling)
-			{
-				var handler = factory(scope.ServiceProvider);
-				tasks.Add(handler(message, context, cancellationToken));
-			}
-
-			if (tasks.Count == 0)
-			{
-				return;
-			}
-
-			await Task.WhenAll(tasks).ContinueWith(task =>
-			{
-				task.WaitAndUnwrapException(cancellationToken);
-				_logger?.LogInformation("Message {Id} was completed handled", context.MessageId);
-			}, cancellationToken);
+			return;
 		}
-		catch (Exception exception)
+
+		var tasks = new List<Task>();
+		using var scope = _provider.GetRequiredService<IServiceScopeFactory>().CreateScope();
+
+		if (!_handlerContainer.TryGetValue(channel, out var handling))
 		{
-			context.Failure(exception);
+			throw new InvalidOperationException("No handler registered for message");
 		}
-		finally
+
+		// Get handler instance from service provider using Expression Tree
+
+		foreach (var factory in handling)
 		{
-			context.Dispose();
+			var handler = factory(scope.ServiceProvider);
+			tasks.Add(handler(message, context, cancellationToken));
 		}
+
+		if (tasks.Count == 0)
+		{
+			return;
+		}
+
+		await Task.WhenAll(tasks).ContinueWith(task =>
+		{
+			task.WaitAndUnwrapException(cancellationToken);
+			_logger?.LogInformation("Message {Id} was completed handled", context.MessageId);
+		}, cancellationToken);
 	}
 
 	#endregion

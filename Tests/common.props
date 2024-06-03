@@ -2,7 +2,7 @@
     <Import Project="..\project.props" />
 
     <PropertyGroup>
-        <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>net7.0;net8.0</TargetFrameworks>
 		<RootNamespace>Nerosoft.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
 		<IsPackable>false</IsPackable>
     </PropertyGroup>
@@ -13,14 +13,15 @@
 		<PackageReference Include="Moq" />
 		<PackageReference Include="xunit" />
 		<PackageReference Include="Xunit.DependencyInjection" />
+        <PackageReference Include="Xunit.DependencyInjection.Logging" />
 		<PackageReference Include="xunit.runner.visualstudio">
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-			<PrivateAssets>all</PrivateAssets>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="coverlet.collector">
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-			<PrivateAssets>all</PrivateAssets>
-		</PackageReference>
+        <PackageReference Include="coverlet.collector">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
 	</ItemGroup>
 	
     <ItemGroup>

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -10,6 +11,8 @@ namespace Nerosoft.Euonia.Bus.RabbitMq;
 public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 {
 	private readonly IIdentityProvider _identity;
+	private readonly IHandlerContext _handler;
+	private readonly ILogger<RabbitMqQueueConsumer> _logger;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="RabbitMqQueueConsumer"/> class.
@@ -17,9 +20,12 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 	/// <param name="connection"></param>
 	/// <param name="handler"></param>
 	/// <param name="options"></param>
-	public RabbitMqQueueConsumer(IPersistentConnection connection, IHandlerContext handler, IOptions<RabbitMqMessageBusOptions> options)
-		: base(connection, handler, options)
+	/// <param name="logger"></param>
+	public RabbitMqQueueConsumer(IPersistentConnection connection, IHandlerContext handler, IOptions<RabbitMqMessageBusOptions> options, ILoggerFactory logger)
+		: base(connection, options)
 	{
+		_handler = handler;
+		_logger = logger.CreateLogger<RabbitMqQueueConsumer>();
 	}
 
 	/// <summary>
@@ -28,9 +34,10 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 	/// <param name="connection"></param>
 	/// <param name="handler"></param>
 	/// <param name="options"></param>
+	/// <param name="logger"></param>
 	/// <param name="identity"></param>
-	public RabbitMqQueueConsumer(IPersistentConnection connection, IHandlerContext handler, IOptions<RabbitMqMessageBusOptions> options, IIdentityProvider identity)
-		: this(connection, handler, options)
+	public RabbitMqQueueConsumer(IPersistentConnection connection, IHandlerContext handler, IOptions<RabbitMqMessageBusOptions> options, ILoggerFactory logger, IIdentityProvider identity)
+		: this(connection, handler, options, logger)
 	{
 		_identity = identity;
 	}
@@ -76,7 +83,7 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 
 		var props = args.BasicProperties;
 
-		var context = new MessageContext(message, _identity.GetIdentity);
+		var context = new MessageContext(message, authorization => _identity?.GetIdentity(authorization));
 
 		OnMessageReceived(new MessageReceivedEventArgs(message.Data, context));
 
@@ -96,7 +103,7 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 
 		RabbitMqReply<object> reply;
 
-		await Handler.HandleAsync(message.Channel, message.Data, context);
+		await HandleAsync(message.Channel, message.Data, context);
 
 		try
 		{
@@ -121,6 +128,24 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 		Channel.BasicAck(args.DeliveryTag, false);
 
 		OnMessageAcknowledged(new MessageAcknowledgedEventArgs(message.Data, context));
+	}
+
+	/// <inheritdoc/>
+	protected override async Task HandleAsync(string channel, object message, MessageContext context, CancellationToken cancellationToken = default)
+	{
+		try
+		{
+			await _handler.HandleAsync(channel, message, context, cancellationToken);
+		}
+		catch (Exception exception)
+		{
+			_logger.LogError(exception, "Message '{Id}' Handle Error: {Message}", context.MessageId, exception.Message);
+			context.Failure(exception);
+		}
+		finally
+		{
+			context.Complete(null);
+		}
 	}
 
 	/// <inheritdoc />

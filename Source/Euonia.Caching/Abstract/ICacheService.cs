@@ -158,12 +158,4 @@ public interface ICacheService
     /// <typeparam name="TValue"></typeparam>
     /// <returns></returns>
     Task<TValue> AddOrUpdateAsync<TValue>(Func<Task<CacheItem<TValue>>> factory, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Generate cache key.
-    /// </summary>
-    /// <param name="separator"></param>
-    /// <param name="values"></param>
-    /// <returns></returns>
-    string GenerateKey(string separator, params object[] values);
 }

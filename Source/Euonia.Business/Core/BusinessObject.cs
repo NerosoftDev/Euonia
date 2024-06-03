@@ -312,7 +312,7 @@ public abstract class BusinessObject : IBusinessObject, IHasRuleCheck, IDisposab
 	/// <summary>
 	/// Checks if the object has changed properties.
 	/// </summary>
-	public virtual bool HasChangedProperties => ChangedProperties.Any();
+	public virtual bool HasChangedProperties => ChangedProperties.Count > 0;
 
 	#endregion
 
@@ -632,10 +632,10 @@ public abstract class BusinessObject : IBusinessObject, IHasRuleCheck, IDisposab
         }
         else
         {
-            LoadPropertyByReflection("LoadProperty", propertyInfo, newValue);
+            LoadPropertyByReflection(nameof(LoadProperty), propertyInfo, newValue);
         }
 #else
-		LoadPropertyByReflection("LoadProperty", propertyInfo, newValue);
+		LoadPropertyByReflection(nameof(LoadProperty), propertyInfo, newValue);
 #endif
 	}
 
@@ -649,12 +649,12 @@ public abstract class BusinessObject : IBusinessObject, IHasRuleCheck, IDisposab
 	/// <exception cref="MissingMethodException"></exception>
 	private object LoadPropertyByReflection(string methodName, IPropertyInfo propertyInfo, object newValue)
 	{
-		var t = GetType();
+		var type = GetType();
 		const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-		var method = t.GetMethods(flags).FirstOrDefault(c => c.Name == methodName && c.IsGenericMethod);
+		var method = type.GetMethods(flags).FirstOrDefault(c => c.Name == methodName && c.IsGenericMethod);
 		if (method == null)
 		{
-			throw new MissingMethodException(t.FullName, methodName);
+			throw new MissingMethodException(type.FullName, methodName);
 		}
 
 		var genericMethod = method.MakeGenericMethod(propertyInfo.Type);
@@ -670,7 +670,7 @@ public abstract class BusinessObject : IBusinessObject, IHasRuleCheck, IDisposab
 	/// <param name="oldValue"></param>
 	/// <typeparam name="TValue"></typeparam>
 	/// <returns></returns>
-	private static bool ValuesDiffer<TValue>(IPropertyInfo propertyInfo, TValue newValue, TValue oldValue)
+	protected virtual bool ValuesDiffer<TValue>(IPropertyInfo propertyInfo, TValue newValue, TValue oldValue)
 	{
 		bool valuesDiffer;
 		if (oldValue == null)
@@ -679,14 +679,14 @@ public abstract class BusinessObject : IBusinessObject, IHasRuleCheck, IDisposab
 		}
 		else
 		{
-			// use reference equals for objects that inherit from CSLA base class
+			// use reference equals for objects that inherit from base class
 			if (typeof(IBusinessObject).IsAssignableFrom(propertyInfo.Type))
 			{
 				valuesDiffer = !(ReferenceEquals(oldValue, newValue));
 			}
 			else
 			{
-				valuesDiffer = !(oldValue.Equals(newValue));
+				valuesDiffer = !EqualityComparer<TValue>.Default.Equals(newValue, oldValue);
 			}
 		}
 
