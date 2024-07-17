@@ -2,6 +2,9 @@
 
 namespace Nerosoft.Euonia.Bus;
 
+/// <summary>
+/// The default message identity provider.
+/// </summary>
 internal class DefaultIdentityProvider : IIdentityProvider
 {
 	private readonly IdentityAccessor _accessor;
