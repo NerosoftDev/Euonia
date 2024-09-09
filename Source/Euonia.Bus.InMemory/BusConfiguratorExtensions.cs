@@ -19,8 +19,7 @@ public static class BusConfiguratorExtensions
 		configurator.Service.Configure(configuration);
 		configurator.Service.TryAddTransient<InMemoryQueueConsumer>();
 		configurator.Service.TryAddTransient<InMemoryTopicSubscriber>();
-		configurator.Service.TryAddSingleton<InMemoryDispatcher>();
+		configurator.Service.TryAddKeyedSingleton<ITransport, InMemoryTransport>(InMemoryTransport.IDENTIFIER);
 		configurator.Service.AddTransient<IRecipientRegistrar, InMemoryRecipientRegistrar>();
-		configurator.SetFactory<InMemoryBusFactory>();
 	}
 }

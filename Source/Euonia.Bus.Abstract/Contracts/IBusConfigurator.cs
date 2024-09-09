@@ -13,32 +13,6 @@ public interface IBusConfigurator
 	IServiceCollection Service { get; }
 
 	/// <summary>
-	/// Set the service bus factory.
-	/// </summary>
-	/// <typeparam name="TFactory"></typeparam>
-	/// <returns></returns>
-	IBusConfigurator SetFactory<TFactory>()
-		where TFactory : class, IBusFactory;
-
-	/// <summary>
-	/// Set the service bus factory.
-	/// </summary>
-	/// <param name="factory"></param>
-	/// <typeparam name="TFactory"></typeparam>
-	/// <returns></returns>
-	IBusConfigurator SetFactory<TFactory>(TFactory factory)
-		where TFactory : class, IBusFactory;
-
-	/// <summary>
-	/// Set the service bus factory.
-	/// </summary>
-	/// <param name="factory"></param>
-	/// <typeparam name="TFactory"></typeparam>
-	/// <returns></returns>
-	IBusConfigurator SetFactory<TFactory>(Func<IServiceProvider, TFactory> factory)
-		where TFactory : class, IBusFactory;
-
-	/// <summary>
 	/// Set the message store provider.
 	/// </summary>
 	/// <typeparam name="TStore"></typeparam>

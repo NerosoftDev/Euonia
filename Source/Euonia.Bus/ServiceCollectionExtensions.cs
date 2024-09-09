@@ -13,7 +13,7 @@ public static class ServiceCollectionExtensions
 	/// </summary>
 	/// <param name="services"></param>
 	/// <param name="config"></param>
-	public static void AddServiceBus(this IServiceCollection services, Action<BusConfigurator> config)
+	public static IBusConfigurator AddServiceBus(this IServiceCollection services, Action<BusConfigurator> config)
 	{
 		var configurator = Singleton<BusConfigurator>.Get(() => new BusConfigurator(services));
 
@@ -32,5 +32,6 @@ public static class ServiceCollectionExtensions
 		services.TryAddSingleton<IMessageConvention>(configurator.ConventionBuilder.Convention);
 		services.TryAddScoped<IBus, ServiceBus>();
 		services.AddHostedService<RecipientActivator>();
+		return configurator;
 	}
 }
