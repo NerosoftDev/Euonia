@@ -21,10 +21,7 @@ public static class Reflect
 	/// Or, the property is static.</exception>
 	public static PropertyInfo GetProperty<T>(Expression<Func<T>> expression)
 	{
-		if (expression == null)
-		{
-			throw new ArgumentNullException(nameof(expression));
-		}
+		ArgumentAssert.ThrowIfNull(expression, nameof(expression));
 
 		if (expression.Body is not MemberExpression memberExpression)
 		{
@@ -62,10 +59,7 @@ public static class Reflect
 	/// <exception cref="ArgumentException"></exception>
 	public static PropertyInfo GetProperty<T, TResult>(Expression<Func<T, TResult>> expression)
 	{
-		if (expression == null)
-		{
-			throw new ArgumentNullException(nameof(expression));
-		}
+		ArgumentAssert.ThrowIfNull(expression, nameof(expression));
 
 		PropertyInfo result;
 
@@ -659,7 +653,9 @@ public static class Reflect<TTarget>
 	{
 		var info = Reflect.GetMemberInfo(expression) as PropertyInfo;
 		if (info == null)
+		{
 			throw new ArgumentException("Member is not a property");
+		}
 
 		return info;
 	}
@@ -673,7 +669,9 @@ public static class Reflect<TTarget>
 	{
 		var info = Reflect.GetMemberInfo(expression) as FieldInfo;
 		if (info == null)
+		{
 			throw new ArgumentException("Member is not a field");
+		}
 
 		return info;
 	}
@@ -688,10 +686,7 @@ public static class Reflect<TTarget>
 	/// <exception cref="ArgumentNullException">property</exception>
 	public static void SetValue<TValue>(TTarget item, TValue value, Expression<Func<TTarget, TValue>> property)
 	{
-		if (property == null)
-		{
-			throw new ArgumentNullException(nameof(property));
-		}
+		ArgumentAssert.ThrowIfNull(property, nameof(property));
 
 		var propertyInfo = GetProperty(property);
 

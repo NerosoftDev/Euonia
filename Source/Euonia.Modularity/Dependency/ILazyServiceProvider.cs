@@ -1,7 +1,7 @@
 ﻿namespace System;
 
 /// <summary>
-/// <see cref="ILazyServiceProvider"/>
+/// Represents a service provider that can be used to retrieve services with lazy initialization.
 /// </summary>
 public interface ILazyServiceProvider
 {
@@ -42,7 +42,7 @@ public interface ILazyServiceProvider
 	T GetService<T>(T defaultValue);
 
 	/// <summary>
-	/// 
+	/// Get service of type <paramref name="serviceType"/> from the <see cref="IServiceProvider"/>.
 	/// </summary>
 	/// <param name="serviceType"></param>
 	/// <param name="defaultValue"></param>
@@ -92,7 +92,7 @@ public interface ILazyServiceProvider
 	/// <summary>
 	/// Get service of type <paramref name="serviceType"/> from the <see cref="IServiceProvider"/>.
 	/// </summary>
-	/// <param name="serviceType"></param>
+	/// <param name="serviceType">An object that specifies the type of service object to get.</param>
 	/// <param name="serviceKey">An object that specifies the key of service object to get.</param>
 	/// <returns></returns>
 	object GetRequiredKeyedService(Type serviceType, object serviceKey);
@@ -118,7 +118,7 @@ public interface ILazyServiceProvider
 	/// <summary>
 	/// Get service of type <paramref name="serviceType"/> from the <see cref="IServiceProvider"/>.
 	/// </summary>
-	/// <param name="serviceType"></param>
+	/// <param name="serviceType">An object that specifies the type of service object to get.</param>
 	/// <param name="serviceKey">An object that specifies the key of service object to get.</param>
 	/// <param name="factory"></param>
 	/// <returns></returns>
@@ -127,7 +127,7 @@ public interface ILazyServiceProvider
 	/// <summary>
 	/// Get service of type <paramref name="serviceType"/> from the <see cref="IServiceProvider"/>.
 	/// </summary>
-	/// <param name="serviceType"></param>
+	/// <param name="serviceType">An object that specifies the type of service object to get.</param>
 	/// <param name="serviceKey">An object that specifies the key of service object to get.</param>
 	/// <param name="defaultValue"></param>
 	/// <returns></returns>

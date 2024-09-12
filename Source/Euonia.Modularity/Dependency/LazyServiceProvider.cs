@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using Microsoft.Extensions.DependencyInjection;
 using Nerosoft.Euonia.Modularity;
 
 namespace System;
@@ -33,33 +34,14 @@ public partial class LazyServiceProvider : ILazyServiceProvider
 		return (T)GetRequiredService(typeof(T));
 	}
 
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="serviceType"></param>
-	/// <returns></returns>
-	/// <exception cref="ArgumentNullException"></exception>
-	/// <exception cref="NullReferenceException"></exception>
+	/// <inheritdoc />
 	public virtual object GetRequiredService(Type serviceType)
 	{
 		return CachedServices.GetOrAdd(new ServiceIdentifier(serviceType), _ => new Lazy<object>(() =>
 		{
-			if (ServiceProvider == null)
-			{
-				throw new ArgumentNullException(nameof(ServiceProvider));
-			}
-
-			if (serviceType == null)
-			{
-				throw new ArgumentNullException(nameof(serviceType));
-			}
-
-			var service = ServiceProvider.GetService(serviceType);
-			if (service == null)
-			{
-				throw new NullReferenceException(nameof(serviceType));
-			}
-
+			ArgumentAssert.ThrowIfNull(ServiceProvider, nameof(ServiceProvider));
+			ArgumentAssert.ThrowIfNull(serviceType, nameof(serviceType));
+			var service = ServiceProvider.GetRequiredService(serviceType);
 			return service;
 		})).Value;
 	}
