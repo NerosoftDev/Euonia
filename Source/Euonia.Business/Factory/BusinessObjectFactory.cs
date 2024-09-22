@@ -34,13 +34,14 @@ public class BusinessObjectFactory : IObjectFactory
 	/// <inheritdoc/>
 	public async Task<TTarget> CreateAsync<TTarget>(params object[] criteria)
 	{
-		criteria ??= new object[] { null };
+		criteria ??= [null];
 		var method = ObjectReflector.FindFactoryMethod<TTarget, FactoryCreateAttribute>(criteria);
 		var target = GetObjectInstance<TTarget>();
 		if (target is IEditableObject editable)
 		{
 			editable.MarkAsInsert();
 		}
+
 		try
 		{
 			_activator?.InitializeInstance(target);
@@ -56,7 +57,7 @@ public class BusinessObjectFactory : IObjectFactory
 	/// <inheritdoc/>
 	public async Task<TTarget> FetchAsync<TTarget>(params object[] criteria)
 	{
-		criteria ??= new object[] { null };
+		criteria ??= [null];
 		var method = ObjectReflector.FindFactoryMethod<TTarget, FactoryFetchAttribute>(criteria);
 		var target = GetObjectInstance<TTarget>();
 		try
@@ -74,7 +75,7 @@ public class BusinessObjectFactory : IObjectFactory
 	/// <inheritdoc/>
 	public async Task<TTarget> InsertAsync<TTarget>(params object[] criteria)
 	{
-		criteria ??= new object[] { null };
+		criteria ??= [null];
 		var method = ObjectReflector.FindFactoryMethod<TTarget, FactoryInsertAttribute>(criteria);
 		var target = GetObjectInstance<TTarget>();
 		try
@@ -92,7 +93,7 @@ public class BusinessObjectFactory : IObjectFactory
 	/// <inheritdoc/>
 	public async Task<TTarget> UpdateAsync<TTarget>(params object[] criteria)
 	{
-		criteria ??= new object[] { null };
+		criteria ??= [null];
 		var method = ObjectReflector.FindFactoryMethod<TTarget, FactoryUpdateAttribute>(criteria);
 		var target = GetObjectInstance<TTarget>();
 		try
@@ -114,18 +115,18 @@ public class BusinessObjectFactory : IObjectFactory
 		{
 			IEditableObject editableObject => editableObject.State switch
 			{
-				ObjectEditState.Insert => ObjectReflector.FindFactoryMethod<TTarget, FactoryInsertAttribute>(new object[] { cancellationToken }),
-				ObjectEditState.Update => ObjectReflector.FindFactoryMethod<TTarget, FactoryUpdateAttribute>(new object[] { cancellationToken }),
-				ObjectEditState.Delete => ObjectReflector.FindFactoryMethod<TTarget, FactoryDeleteAttribute>(new object[] { cancellationToken }),
+				ObjectEditState.Insert => ObjectReflector.FindFactoryMethod<TTarget, FactoryInsertAttribute>([cancellationToken]),
+				ObjectEditState.Update => ObjectReflector.FindFactoryMethod<TTarget, FactoryUpdateAttribute>([cancellationToken]),
+				ObjectEditState.Delete => ObjectReflector.FindFactoryMethod<TTarget, FactoryDeleteAttribute>([cancellationToken]),
 				ObjectEditState.None => throw new InvalidOperationException(),
 				_ => throw new ArgumentOutOfRangeException(nameof(target), Resources.IDS_INVALID_STATE)
 			},
-			ICommandObject => ObjectReflector.FindFactoryMethod<TTarget, FactoryExecuteAttribute>(new object[] { cancellationToken }),
+			ICommandObject => ObjectReflector.FindFactoryMethod<TTarget, FactoryExecuteAttribute>([cancellationToken]),
 			IReadOnlyObject => throw new InvalidOperationException("The operation can not apply for ReadOnlyObject."),
-			_ => ObjectReflector.FindFactoryMethod<TTarget, FactoryUpdateAttribute>(new object[] { cancellationToken })
+			_ => ObjectReflector.FindFactoryMethod<TTarget, FactoryUpdateAttribute>([cancellationToken])
 		};
 
-		await InvokeAsync(method, target, new object[] { cancellationToken });
+		await InvokeAsync(method, target, [cancellationToken]);
 
 		return target;
 	}
@@ -134,12 +135,12 @@ public class BusinessObjectFactory : IObjectFactory
 	public async Task<TTarget> ExecuteAsync<TTarget>(TTarget target, CancellationToken cancellationToken = default)
 		where TTarget : ICommandObject
 	{
-		var method = ObjectReflector.FindFactoryMethod<TTarget, FactoryExecuteAttribute>(new object[] { cancellationToken });
+		var method = ObjectReflector.FindFactoryMethod<TTarget, FactoryExecuteAttribute>([cancellationToken]);
 
 		try
 		{
 			_activator?.InitializeInstance(target);
-			await InvokeAsync(method, target, new object[] { cancellationToken });
+			await InvokeAsync(method, target, [cancellationToken]);
 			return target;
 		}
 		finally
@@ -152,7 +153,7 @@ public class BusinessObjectFactory : IObjectFactory
 	public async Task<TTarget> ExecuteAsync<TTarget>(params object[] criteria)
 		where TTarget : ICommandObject
 	{
-		criteria ??= new object[] { null };
+		criteria ??= [null];
 		var method = ObjectReflector.FindFactoryMethod<TTarget, FactoryExecuteAttribute>(criteria);
 		var target = GetObjectInstance<TTarget>();
 
@@ -171,7 +172,7 @@ public class BusinessObjectFactory : IObjectFactory
 	/// <inheritdoc/>
 	public async Task DeleteAsync<TTarget>(params object[] criteria)
 	{
-		criteria ??= new object[] { null };
+		criteria ??= [null];
 		var method = ObjectReflector.FindFactoryMethod<TTarget, FactoryDeleteAttribute>(criteria);
 		var target = GetObjectInstance<TTarget>();
 
@@ -208,28 +209,28 @@ public class BusinessObjectFactory : IObjectFactory
 	private TTarget GetObjectInstance<TTarget>()
 	{
 		var @object = ActivatorUtilities.GetServiceOrCreateInstance<TTarget>(_provider);
-		if (@object is IUseBusinessContext ctx)
+		switch (@object)
 		{
-			ctx.BusinessContext = _provider.GetRequiredService<BusinessContext>();
-		}
-
-		if (@object is IHasLazyServiceProvider lazy)
-		{
-			lazy.LazyServiceProvider = _provider.GetRequiredService<ILazyServiceProvider>();
+			case IUseBusinessContext ctx:
+				ctx.BusinessContext = _provider.GetRequiredService<BusinessContext>();
+				break;
+			case IHasLazyServiceProvider lazy:
+				lazy.LazyServiceProvider = _provider.GetRequiredService<ILazyServiceProvider>();
+				break;
 		}
 
 		var properties = ObjectReflector.GetAutoInjectProperties(typeof(TTarget));
 
-		foreach (var (property, type, multiple) in properties)
+		foreach (var (property, type, multiple, serviceKey) in properties)
 		{
 			if (multiple)
 			{
-				var implement = _provider.GetServices(type);
+				var implement = serviceKey == null ? _provider.GetServices(type) : _provider.GetKeyedServices(type, serviceKey);
 				property.SetValue(@object, implement);
 			}
 			else
 			{
-				var implement = _provider.GetService(type);
+				var implement = serviceKey == null ? _provider.GetService(type) : _provider.GetKeyedService(type, serviceKey);
 				property.SetValue(@object, implement);
 			}
 		}
