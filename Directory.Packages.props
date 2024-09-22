@@ -10,8 +10,8 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageVersion Include="Apache.NMS.ActiveMQ" Version="2.1.0" />
-        <PackageVersion Include="Autofac" Version="8.0.0" />
-        <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="9.0.0" />
+        <PackageVersion Include="Autofac" Version="8.1.0" />
+        <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="10.0.0" />
         <PackageVersion Include="Autofac.Extras.DynamicProxy" Version="7.1.0" />
         <PackageVersion Include="AutoMapper" Version="13.0.1" />
         <PackageVersion Include="Azure.Storage.Blobs" Version="12.21.2" />
@@ -41,7 +41,7 @@
         <PackageVersion Include="Serilog.Sinks.Elasticsearch" Version="10.0.0" />
         <PackageVersion Include="Serilog.Sinks.Email" Version="4.0.0" />
         <PackageVersion Include="Serilog.Sinks.File" Version="6.0.0" />
-        <PackageVersion Include="StackExchange.Redis" Version="2.8.0" />
+        <PackageVersion Include="StackExchange.Redis" Version="2.8.14" />
         <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.7.3" />
         <PackageVersion Include="System.Collections.Immutable" Version="8.0.0" />
         <PackageVersion Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
@@ -112,7 +112,7 @@
     <!-- Grpc -->
     <ItemGroup>
         <PackageVersion Include="Google.Api.CommonProtos" Version="2.12.0" />
-        <PackageVersion Include="Google.Protobuf" Version="3.27.3" />
+        <PackageVersion Include="Google.Protobuf" Version="3.28.0" />
         <PackageVersion Include="Grpc" Version="2.46.6" />
         <PackageVersion Include="Grpc.AspNetCore" Version="$(GrpcAspNetCoreVersion)" />
         <PackageVersion Include="Grpc.AspNetCore.HealthChecks" Version="$(GrpcAspNetCoreVersion)" />
@@ -138,6 +138,6 @@
         </PackageVersion>
         <PackageVersion Include="Xunit.DependencyInjection" Version="9.3.0" />
         <PackageVersion Include="Xunit.DependencyInjection.Logging" Version="9.0.0" />
-        <PackageVersion Include="Moq" Version="4.20.70" />
+        <PackageVersion Include="Moq" Version="4.20.72" />
     </ItemGroup>
 </Project>
