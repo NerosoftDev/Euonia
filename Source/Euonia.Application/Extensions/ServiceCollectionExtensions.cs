@@ -55,7 +55,7 @@ public static class ServiceCollectionExtensions
     /// <param name="services">The <see cref="IServiceCollection"/> instance of current application.</param>
     /// <param name="definedTypes">The application service types.</param>
     /// <returns></returns>
-    /// <remarks>The application service type should inherits from <see cref="IApplicationService"/>.</remarks>
+    /// <remarks>The application service type should inherit from <see cref="IApplicationService"/>.</remarks>
     public static IServiceCollection AddApplicationService(this IServiceCollection services, IEnumerable<Type> definedTypes)
     {
         if (!definedTypes.Any())

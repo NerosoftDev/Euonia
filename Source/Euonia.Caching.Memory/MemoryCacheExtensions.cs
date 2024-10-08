@@ -8,35 +8,47 @@ namespace Nerosoft.Euonia.Caching.Memory;
 /// </summary>
 internal static class MemoryCacheExtensions
 {
-    /// <summary>
-    /// Extension method to check if a key exists in the given <paramref name="cache"/> instance.
-    /// </summary>
-    /// <param name="cache">The cache instance.</param>
-    /// <param name="key">The key.</param>
-    /// <returns><c>True</c> if the key exists.</returns>
-    public static bool Contains(this MemoryCache cache, object key)
-    {
-        return cache.TryGetValue(key, out _);
-    }
+	/// <summary>
+	/// Extension method to check if a key exists in the given <paramref name="cache"/> instance.
+	/// </summary>
+	/// <param name="cache">The cache instance.</param>
+	/// <param name="key">The key.</param>
+	/// <returns><c>True</c> if the key exists.</returns>
+	public static bool Contains(this IMemoryCache cache, object key)
+	{
+		return cache.TryGetValue(key, out _);
+	}
 
-    internal static void RegisterChild(this MemoryCache cache, object parentKey, object childKey)
-    {
-        if (cache.TryGetValue(parentKey, out var keys))
-        {
-            var keySet = (ConcurrentDictionary<object, bool>)keys;
-            keySet.TryAdd(childKey, true);
-        }
-    }
+	internal static void RegisterChild(this IMemoryCache cache, object parentKey, object childKey)
+	{
+		if (!cache.TryGetValue(parentKey, out var keys))
+		{
+			return;
+		}
 
-    internal static void RemoveChilds(this MemoryCache cache, object region)
-    {
-        if (cache.TryGetValue(region, out var keys))
-        {
-            var keySet = (ConcurrentDictionary<object, bool>)keys;
-            foreach (var key in keySet.Keys)
-            {
-                cache.Remove(key);
-            }
-        }
-    }
+		if (keys is not ConcurrentDictionary<object, bool> keySet)
+		{
+			throw new InvalidOperationException("The parent key is not a valid key set.");
+		}
+
+		keySet.TryAdd(childKey, true);
+	}
+
+	internal static void RemoveChildren(this IMemoryCache cache, object region)
+	{
+		if (!cache.TryGetValue(region, out var keys))
+		{
+			return;
+		}
+
+		if (keys is not ConcurrentDictionary<object, bool> keySet)
+		{
+			return;
+		}
+
+		foreach (var key in keySet.Keys)
+		{
+			cache.Remove(key);
+		}
+	}
 }

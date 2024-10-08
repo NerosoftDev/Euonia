@@ -286,7 +286,7 @@ public class ObjectReflector
 				throw new NotSupportedException($"Can not inject property '{name}', the property type {type.FullName} is not supported.");
 			}
 
-			var @interface = type.GetInterface("IEnumerable");
+			var @interface = type.GetInterface(nameof(IEnumerable));
 			if (@interface == null)
 			{
 				return Tuple.Create(type, multiple ?? false);
