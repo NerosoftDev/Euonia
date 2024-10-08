@@ -168,6 +168,15 @@ public readonly struct ObjectId
     {
         return new ObjectId(NewRandomId(DateTime.UtcNow.Ticks));
     }
+    
+    /// <summary>
+    /// Create new <see cref="ObjectId"/> instance use ULID (Universally Unique Lexicographically Sortable Identifier).
+    /// </summary>
+    /// <returns></returns>
+    public static ObjectId Ulid()
+	{
+		return new ObjectId(NewUlid());
+	}
 
     /// <summary>
     /// Generate new snowflake id.
@@ -179,7 +188,7 @@ public readonly struct ObjectId
     }
 
     /// <summary>
-    /// Generate new <see cref="System.Guid"/> use specifed <see cref="GuidType"/>
+    /// Generate new <see cref="System.Guid"/> use specified <see cref="GuidType"/>
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
@@ -188,6 +197,15 @@ public readonly struct ObjectId
         return GuidGenerator.Generate(type);
     }
 
+    /// <summary>
+    /// Generate new ULID (Universally Unique Lexicographically Sortable Identifier)
+    /// </summary>
+    /// <returns></returns>
+    public static string NewUlid()
+	{
+		return UlidGenerator.Generate();
+	}
+    
     /// <summary>
     /// Generate an new random string id.
     /// </summary>
