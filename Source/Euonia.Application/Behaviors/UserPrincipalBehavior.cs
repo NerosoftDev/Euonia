@@ -39,6 +39,9 @@ public class UserPrincipalBehavior : IPipelineBehavior<IRoutedMessage, CommandRe
 			context.Metadata.Set("$nerosoft:user.tenant", _user.Tenant);
 		}
 
+		{
+		}
+
 		return await next(context);
 	}
 }
