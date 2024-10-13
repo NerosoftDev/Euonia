@@ -9,19 +9,19 @@ namespace Nerosoft.Euonia.Core.Tests;
 [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>")]
 public class Startup
 {
-    public void ConfigureHost(IHostBuilder hostBuilder)
-    {
-        hostBuilder.ConfigureAppConfiguration(builder =>
-        {
-            builder.AddJsonFile("appsettings.json");
-        })
-                   .ConfigureServices((_, _) =>
-                   {
-                       // Register service here.
-                   });
-    }
+	public void ConfigureHost(IHostBuilder hostBuilder)
+	{
+		hostBuilder.ConfigureAppConfiguration(builder =>
+		           {
+			           builder.AddJsonFile("appsettings.json");
+		           })
+		           .ConfigureServices((_, _) =>
+		           {
+			           // Register service here.
+		           });
+	}
 
-    // ConfigureServices(IServiceCollection services)
+	// ConfigureServices(IServiceCollection services)
     // ConfigureServices(IServiceCollection services, HostBuilderContext hostBuilderContext)
     // ConfigureServices(HostBuilderContext hostBuilderContext, IServiceCollection services)
     public void ConfigureServices(IServiceCollection services, HostBuilderContext hostBuilderContext)
