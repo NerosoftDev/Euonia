@@ -6,7 +6,7 @@
 public interface IHasCreateTime
 {
     /// <summary>
-    /// Gets or sets the create time.
+    /// Gets or sets the creation time.
     /// </summary>
     DateTime CreateTime { get; set; }
 }

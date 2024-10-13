@@ -1,7 +1,7 @@
 ﻿namespace Nerosoft.Euonia.Domain;
 
 /// <summary>
-/// Represent the object can be delete logically.
+/// Represent the object can be deleted logically.
 /// </summary>
 public interface ITombstone
 {

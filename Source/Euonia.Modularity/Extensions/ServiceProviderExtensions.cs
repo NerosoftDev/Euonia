@@ -1,4 +1,6 @@
-﻿namespace System;
+﻿using Microsoft.Extensions.DependencyInjection;
+
+namespace System;
 
 /// <summary>
 /// The extension methods for <see cref="IServiceProvider"/> interface.
@@ -33,4 +35,22 @@ public static class ServiceProviderExtensions
         var @delegate = (NamedService<TService>)provider.GetService(typeof(NamedService<TService>));
         return @delegate?.Invoke(name) ?? throw new InvalidOperationException($"The service {typeof(TService).FullName} with name {name} was not found.");
     }
+
+	/// <summary>
+	/// Gets the service object of the specified type.
+	/// </summary>
+	/// <param name="provider"></param>
+	/// <param name="serviceType">An object that specifies the type of service object to get.</param>
+	/// <param name="serviceKey">An object that specifies the key of service object to get.</param>
+	/// <returns></returns>
+	/// <exception cref="InvalidOperationException"></exception>
+	public static object GetKeyedService(this IServiceProvider provider, Type serviceType, object serviceKey)
+	{
+		if (provider is IKeyedServiceProvider keyedServiceProvider)
+		{
+			return keyedServiceProvider.GetKeyedService(serviceType, serviceKey);
+		}
+
+		throw new InvalidOperationException("This service provider doesn't support keyed services.");
+	}
 }

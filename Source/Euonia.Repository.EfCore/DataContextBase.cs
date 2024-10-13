@@ -145,7 +145,6 @@ public abstract class DataContextBase<TContext> : DbContext, IRepositoryContext
 					break;
 				case EntityState.Modified:
 					SetModifiedEntry(entry, time);
-
 					break;
 				default:
 					continue;

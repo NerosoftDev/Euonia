@@ -42,7 +42,7 @@ public class MemoryCacheHandle<TCacheValue> : BaseCacheHandle<TCacheValue>
 	/// <inheritdoc/>
 	public override void ClearRegion(string region)
 	{
-		_cache.RemoveChilds(region);
+		_cache.RemoveChildren(region);
 		_cache.Remove(region);
 	}
 

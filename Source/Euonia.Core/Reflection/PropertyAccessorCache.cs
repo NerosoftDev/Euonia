@@ -25,12 +25,12 @@ public static class PropertyAccessorCache<T> where T : class
     }
 
     /// <summary>
-    /// 
+    /// Get the lambda expression for the property.
     /// </summary>
     /// <param name="propertyName"></param>
     /// <returns></returns>
     public static LambdaExpression Get(string propertyName)
     {
-        return _cache.TryGetValue(propertyName, out var result) ? result : null;
+        return _cache.GetValueOrDefault(propertyName);
     }
 }

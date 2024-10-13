@@ -11,32 +11,34 @@ public class ObjectReflector
 	private const BindingFlags BINDING_FLAGS = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
 
 	private static readonly string[] _collectionTypesName =
-	{
+	[
 		typeof(IList<>).FullName,
 		typeof(ICollection<>).FullName,
-		typeof(IEnumerable<>).FullName,
-	};
+		typeof(IEnumerable<>).FullName
+	];
 
-	private static readonly ConcurrentDictionary<Type, List<Tuple<PropertyInfo, Type, bool>>> _propertyCache = new();
+	private static readonly ConcurrentDictionary<Type, List<Tuple<PropertyInfo, Type, bool, object>>> _propertyCache = new();
 	private static readonly ConcurrentDictionary<string, MethodInfo> _factoryMethods = new();
 
-	internal static List<Tuple<PropertyInfo, Type, bool>> GetAutoInjectProperties(Type objectType)
+	internal static List<Tuple<PropertyInfo, Type, bool, object>> GetAutoInjectProperties(Type objectType)
 	{
 		return _propertyCache.GetOrAdd(objectType, type =>
 		{
-			var autoInjectProperties = new List<Tuple<PropertyInfo, Type, bool>>();
+			var autoInjectProperties = new List<Tuple<PropertyInfo, Type, bool, object>>();
 			var propertiesOfType = type.GetRuntimeProperties().ToList();
 
 			foreach (var property in propertiesOfType)
 			{
-				if (property.GetCustomAttribute<InjectAttribute>() == null)
+				var attribute = property.GetCustomAttribute<InjectAttribute>();
+
+				if (attribute == null)
 				{
 					continue;
 				}
 
 				var (propertyType, multiple) = FindServiceType(property.Name, property.PropertyType);
 
-				autoInjectProperties.Add(Tuple.Create(property, propertyType, multiple));
+				autoInjectProperties.Add(Tuple.Create(property, propertyType, multiple, attribute.ServiceKey));
 			}
 
 			return autoInjectProperties;
@@ -51,20 +53,6 @@ public class ObjectReflector
 
 	internal static MethodInfo FindFactoryMethod<TTarget>(Type attributeType, object[] criteria)
 	{
-		// Type[] types;
-		// if (criteria != null)
-		// {
-		//     types = new Type[criteria.Length];
-		//     for (var index = 0; index < criteria.Length; index++)
-		//     {
-		//         types[index] = criteria[index].GetType();
-		//     }
-		// }
-		// else
-		// {
-		//     types = null;
-		// }
-		//
 		var name = GetMethodName<TTarget>(attributeType, criteria);
 		return _factoryMethods.GetOrAdd(name, () => FindMatchedMethod<TTarget>(attributeType, criteria));
 	}
@@ -82,14 +70,7 @@ public class ObjectReflector
 		int parameterCount;
 		if (criteria != null)
 		{
-			if (criteria.GetType() == typeof(object[]))
-			{
-				parameterCount = criteria.GetLength(0);
-			}
-			else
-			{
-				parameterCount = 1;
-			}
+			parameterCount = criteria.GetType() == typeof(object[]) ? criteria.GetLength(0) : 1;
 		}
 		else
 		{
@@ -157,7 +138,7 @@ public class ObjectReflector
 			{
 				var lastParam = method.GetParameters().LastOrDefault();
 				if (lastParam != null && lastParam.ParameterType == typeof(object[]) &&
-					lastParam.GetCustomAttributes<ParamArrayAttribute>().Any())
+				    lastParam.GetCustomAttributes<ParamArrayAttribute>().Any())
 				{
 					matches.Add(Tuple.Create(method, 1 + score));
 				}
@@ -213,7 +194,7 @@ public class ObjectReflector
 	public static MethodInfo FindMatchedMethod<TTarget>(Type attributeType, IReadOnlyList<Type> parameterTypes)
 	{
 		var methods = typeof(TTarget).GetRuntimeMethods()
-									 .Where(t => t.GetCustomAttribute(attributeType) != null);
+		                             .Where(t => t.GetCustomAttribute(attributeType) != null);
 		if (methods == null || !methods.Any())
 		{
 			throw new MissingMethodException($"Missing method with attribute '{attributeType.Name}' on {typeof(TTarget).FullName}");
@@ -257,7 +238,7 @@ public class ObjectReflector
 
 		var result = new List<Tuple<MethodInfo, int>>();
 		var methods = targetType.GetMethods(BINDING_FLAGS)
-								.Where(t => t.GetCustomAttribute(attributeType) != null || validNames.Contains(t.Name));
+		                        .Where(t => t.GetCustomAttribute(attributeType) != null || validNames.Contains(t.Name));
 
 		// ReSharper disable once LoopCanBeConvertedToQuery
 		foreach (var method in methods)
@@ -288,60 +269,71 @@ public class ObjectReflector
 	/// <exception cref="InvalidOperationException"></exception>
 	private static Tuple<Type, bool> FindServiceType(string name, Type type, bool? multiple = null)
 	{
-		if (type.IsPrimitive)
+		while (true)
 		{
-			throw new NotSupportedException("Can not inject primitive type property.");
-		}
-
-		if (!type.IsClass && !type.IsInterface)
-		{
-			throw new NotSupportedException($"Can not inject property '{name}', the property type {type.FullName} is not supported.");
-		}
-
-		if (type == typeof(object))
-		{
-			throw new NotSupportedException($"Can not inject property '{name}', the property type {type.FullName} is not supported.");
-		}
-
-		var @interface = type.GetInterface("IEnumerable");
-		if (@interface == null)
-		{
-			return Tuple.Create(type, multiple ?? false);
-		}
-
-		if (multiple == true)
-		{
-			throw new NotSupportedException();
-		}
-
-		if (type.IsArray)
-		{
-			var interfaces = type.FindInterfaces(HandlerInterfaceFilter, null);
-			if (interfaces == null || interfaces.Length == 0)
+			if (type.IsPrimitive)
 			{
-				throw new InvalidOperationException();
+				throw new NotSupportedException("Can not inject primitive type property.");
 			}
 
-			return FindServiceType(name, interfaces[0].GenericTypeArguments[0], true);
-		}
-
-		if (type.IsGenericType)
-		{
-			var propertyTypeFullname = $"{type.Namespace}.{type.Name}";
-			if (propertyTypeFullname == typeof(IEnumerable<>).FullName)
+			if (!type.IsClass && !type.IsInterface)
 			{
-				if (type.GenericTypeArguments.Length != 1)
+				throw new NotSupportedException($"Can not inject property '{name}', the property type {type.FullName} is not supported.");
+			}
+
+			if (type == typeof(object))
+			{
+				throw new NotSupportedException($"Can not inject property '{name}', the property type {type.FullName} is not supported.");
+			}
+
+			var @interface = type.GetInterface(nameof(IEnumerable));
+			if (@interface == null)
+			{
+				return Tuple.Create(type, multiple ?? false);
+			}
+
+			if (multiple == true)
+			{
+				throw new NotSupportedException();
+			}
+
+			if (type.IsArray)
+			{
+				var interfaces = type.FindInterfaces(HandlerInterfaceFilter, null);
+				if (interfaces == null || interfaces.Length == 0)
 				{
-					throw new InvalidOperationException("");
+					throw new InvalidOperationException();
 				}
 
-				var genericArgumentType = type.GenericTypeArguments[0];
-
-				return FindServiceType(name, genericArgumentType, true);
+				type = interfaces[0].GenericTypeArguments[0];
+				multiple = true;
+				continue;
 			}
-		}
 
-		throw new NotSupportedException($"Can not inject property '{name}', the property type {type.FullName} is not supported.");
+			if (type.IsGenericType)
+			{
+				var propertyTypeFullname = $"{type.Namespace}.{type.Name}";
+				if (propertyTypeFullname == typeof(IEnumerable<>).FullName)
+				{
+					if (type.GenericTypeArguments.Length != 1)
+					{
+						throw new InvalidOperationException("");
+					}
+
+					var genericArgumentType = type.GenericTypeArguments[0];
+
+					type = genericArgumentType;
+					multiple = true;
+					continue;
+				}
+			}
+
+			{
+				// Prevent code inspection warning.
+			}
+
+			throw new NotSupportedException($"Can not inject property '{name}', the property type {type.FullName} is not supported.");
+		}
 	}
 
 	private static bool HandlerInterfaceFilter(Type type, object criteria)
@@ -488,7 +480,7 @@ public class ObjectReflector
 	private static string[] GetConventionalMethodNames(Type attributeType)
 	{
 		var validNames = new[]
-			{
+		{
 			$"Factory{attributeType.Name.Replace(nameof(Attribute), string.Empty)}",
 			$"Factory{attributeType.Name.Replace(nameof(Attribute), string.Empty)}Async",
 			$"{attributeType.Name.Replace(nameof(Attribute), string.Empty)}",
