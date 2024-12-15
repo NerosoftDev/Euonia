@@ -8,16 +8,12 @@
 public class StatefulMutex : IDisposable
 {
     private readonly SemaphoreSlim _mutex = new(1, 1);
-    private State _state = new();
 
     /// <summary>
     /// Gets the current state
     /// </summary>
     /// <returns>The current state</returns>
-    public State State
-    {
-        get { return _state; }
-    }
+    public State State { get; private set; } = new();
 
     /// <summary>
     /// Advances the current state
@@ -25,8 +21,8 @@ public class StatefulMutex : IDisposable
     /// <returns>The new state</returns>
     public State InvalidateState()
     {
-        _state = _state.GetNextState();
-        return _state;
+        State = State.GetNextState();
+        return State;
     }
 
     /// <summary>
@@ -36,7 +32,7 @@ public class StatefulMutex : IDisposable
     /// <returns>True if the current state is current, false otherwise</returns>
     public bool IsCurrent(State state)
     {
-        return _state.Equals(state);
+        return State.Equals(state);
     }
 
     /// <summary>
