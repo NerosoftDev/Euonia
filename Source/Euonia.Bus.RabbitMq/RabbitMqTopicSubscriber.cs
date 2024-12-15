@@ -13,6 +13,7 @@ public class RabbitMqTopicSubscriber : RabbitMqQueueRecipient, ITopicSubscriber
 	private readonly IIdentityProvider _identity;
 	private readonly IHandlerContext _handler;
 	private readonly ILogger<RabbitMqTopicSubscriber> _logger;
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="RabbitMqTopicSubscriber"/> class.
 	/// </summary>
@@ -47,43 +48,44 @@ public class RabbitMqTopicSubscriber : RabbitMqQueueRecipient, ITopicSubscriber
 	/// <summary>
 	/// Gets the RabbitMQ message channel.
 	/// </summary>
-	private IModel Channel { get; set; }
+	private IChannel Channel { get; set; }
 
 	/// <summary>
 	/// Gets the RabbitMQ consumer instance.
 	/// </summary>
-	private EventingBasicConsumer Consumer { get; set; }
+	private AsyncEventingBasicConsumer Consumer { get; set; }
 
-	internal override void Start(string channel)
+	internal override async Task StartAsync(string channel, CancellationToken cancellationToken = default)
 	{
 		if (!Connection.IsConnected)
 		{
-			Connection.TryConnect();
+			await Connection.TryConnectAsync();
 		}
 
-		Channel = Connection.CreateChannel();
+		Channel = await Connection.CreateChannelAsync();
 
 		string queueName;
 		if (string.IsNullOrWhiteSpace(Options.TopicName))
 		{
-			Channel.ExchangeDeclare(channel, Options.ExchangeType);
-			queueName = Channel.QueueDeclare().QueueName;
+			await Channel.ExchangeDeclareAsync(channel, Options.ExchangeType, cancellationToken: cancellationToken);
+			queueName = await Channel.QueueDeclareAsync(cancellationToken: cancellationToken)
+			                         .ContinueWith(t => t.Result.QueueName, cancellationToken);
 		}
 		else
 		{
-			Channel.QueueDeclare(Options.TopicName, true, false, false, null);
+			await Channel.QueueDeclareAsync(Options.TopicName, true, false, false, null, cancellationToken: cancellationToken);
 			queueName = Options.TopicName;
 		}
 
-		Consumer = new EventingBasicConsumer(Channel);
-		Consumer.Received += HandleMessageReceived;
+		Consumer = new AsyncEventingBasicConsumer(Channel);
+		Consumer.ReceivedAsync += HandleMessageReceived;
 
-		Channel.QueueBind(queueName, channel, Options.RoutingKey ?? "*");
-		Channel.BasicConsume(string.Empty, Options.AutoAck, Consumer);
+		await Channel.QueueBindAsync(queueName, channel, Options.RoutingKey ?? "*", cancellationToken: cancellationToken);
+		await Channel.BasicConsumeAsync(string.Empty, Options.AutoAck, Consumer, cancellationToken: cancellationToken);
 	}
 
 	/// <inheritdoc />
-	protected override async void HandleMessageReceived(object sender, BasicDeliverEventArgs args)
+	protected override async Task HandleMessageReceived(object sender, BasicDeliverEventArgs args)
 	{
 		var type = MessageTypeCache.GetMessageType(args.BasicProperties.Type);
 
@@ -91,13 +93,13 @@ public class RabbitMqTopicSubscriber : RabbitMqQueueRecipient, ITopicSubscriber
 
 		var context = new MessageContext(message, authorization => _identity?.GetIdentity(authorization));
 
-		OnMessageReceived(new MessageReceivedEventArgs(message.Data, context));
+		await OnMessageReceived(new MessageReceivedEventArgs(message.Data, context));
 
 		await HandleAsync(message.Channel, message.Data, context);
 
 		if (!Options.AutoAck)
 		{
-			Channel.BasicAck(args.DeliveryTag, false);
+			await Channel.BasicAckAsync(args.DeliveryTag, false);
 		}
 
 		OnMessageAcknowledged(new MessageAcknowledgedEventArgs(message.Data, context));
@@ -124,7 +126,7 @@ public class RabbitMqTopicSubscriber : RabbitMqQueueRecipient, ITopicSubscriber
 			return;
 		}
 
-		Consumer.Received -= HandleMessageReceived;
+		Consumer.ReceivedAsync -= HandleMessageReceived;
 		Channel?.Dispose();
 	}
 }

@@ -11,7 +11,7 @@ internal static class RabbitMqClientExtensions
 	/// <param name="channel"></param>
 	/// <param name="queueName"></param>
 	/// <returns></returns>
-	public static bool ExistsQueue(this IModel channel, string queueName)
+	public static async Task<bool> ExistsQueueAsync(this IChannel channel, string queueName)
 	{
 		//var queueDeclareOk = channel.QueueDeclarePassive(queueName);
 		//if (queueDeclareOk.MessageCount > 0)
@@ -21,13 +21,13 @@ internal static class RabbitMqClientExtensions
 
 		try
 		{
-			var queueDeclare = channel.QueueDeclarePassive(queueName);
+			var queueDeclare = await channel.QueueDeclarePassiveAsync(queueName);
 
 			return queueDeclare?.ConsumerCount > 0;
 		}
 		catch (OperationInterruptedException exception)
 		{
-			if (exception.ShutdownReason.ReplyCode == 404)
+			if (exception.ShutdownReason?.ReplyCode == 404)
 			{
 				return false;
 				//throw new InvalidOperationException("No consumer found for the channel.", exception);
@@ -37,15 +37,15 @@ internal static class RabbitMqClientExtensions
 		}
 	}
 
-	public static QueueDeclareOk DeclareQueuePassively(this IModel channel, string queueName)
+	public static async Task<QueueDeclareOk> DeclareQueuePassivelyAsync(this IChannel channel, string queueName)
 	{
 		try
 		{
-			return channel.QueueDeclarePassive(queueName);
+			return await channel.QueueDeclarePassiveAsync(queueName);
 		}
 		catch (OperationInterruptedException exception)
 		{
-			if (exception.ShutdownReason.ReplyCode == 404)
+			if (exception.ShutdownReason?.ReplyCode == 404)
 			{
 				return null;
 				//throw new InvalidOperationException("No consumer found for the channel.", exception);
@@ -53,5 +53,11 @@ internal static class RabbitMqClientExtensions
 
 			throw;
 		}
+	}
+
+	public static async Task<string> ResponseQueueDeclareAsync(this IChannel channel, CancellationToken cancellationToken = default)
+	{
+		var queue = await channel.QueueDeclareAsync(cancellationToken: cancellationToken);
+		return queue.QueueName;
 	}
 }

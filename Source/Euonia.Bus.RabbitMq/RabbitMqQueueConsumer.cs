@@ -48,34 +48,34 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 	/// <summary>
 	/// Gets the RabbitMQ message channel.
 	/// </summary>
-	private IModel Channel { get; set; }
+	private IChannel Channel { get; set; }
 
 	/// <summary>
 	/// Gets the RabbitMQ consumer instance.
 	/// </summary>
-	private EventingBasicConsumer Consumer { get; set; }
+	private AsyncEventingBasicConsumer Consumer { get; set; }
 
-	internal override void Start(string channel)
+	internal override async Task StartAsync(string channel, CancellationToken cancellationToken = default)
 	{
 		var queueName = $"{Options.QueueName}${channel}$";
 		if (!Connection.IsConnected)
 		{
-			Connection.TryConnect();
+			await Connection.TryConnectAsync();
 		}
 
-		Channel = Connection.CreateChannel();
+		Channel = await Connection.CreateChannelAsync();
 
-		Channel.QueueDeclare(queueName, true, false, false, null);
-		Channel.BasicQos(0, 1, false);
+		await Channel.QueueDeclareAsync(queueName, true, false, false, null, cancellationToken: cancellationToken);
+		await Channel.BasicQosAsync(0, 1, false, cancellationToken);
 
-		Consumer = new EventingBasicConsumer(Channel);
-		Consumer.Received += HandleMessageReceived;
+		Consumer = new AsyncEventingBasicConsumer(Channel);
+		Consumer.ReceivedAsync += HandleMessageReceived;
 
-		Channel.BasicConsume(queueName, Options.AutoAck, Consumer);
+		await Channel.BasicConsumeAsync(queueName, Options.AutoAck, Consumer, cancellationToken: cancellationToken);
 	}
 
 	/// <inheritdoc />
-	protected override async void HandleMessageReceived(object sender, BasicDeliverEventArgs args)
+	protected override async Task HandleMessageReceived(object sender, BasicDeliverEventArgs args)
 	{
 		var type = MessageTypeCache.GetMessageType(args.BasicProperties.Type);
 
@@ -85,7 +85,7 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 
 		var context = new MessageContext(message, authorization => _identity?.GetIdentity(authorization));
 
-		OnMessageReceived(new MessageReceivedEventArgs(message.Data, context));
+		await OnMessageReceived(new MessageReceivedEventArgs(message.Data, context));
 
 		var taskCompletion = new TaskCompletionSource<object>();
 		context.Responded += (_, a) =>
@@ -117,15 +117,15 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 
 		if (!string.IsNullOrEmpty(props.CorrelationId) || !string.IsNullOrWhiteSpace(props.ReplyTo))
 		{
-			var replyProps = Channel.CreateBasicProperties();
+			var replyProps = new BasicProperties();
 			replyProps.Headers ??= new Dictionary<string, object>();
 			replyProps.CorrelationId = props.CorrelationId;
 
 			var response = SerializeMessage(reply);
-			Channel.BasicPublish(string.Empty, props.ReplyTo, replyProps, response);
+			await Channel.BasicPublishAsync(string.Empty, props.ReplyTo!, true, replyProps, response);
 		}
 
-		Channel.BasicAck(args.DeliveryTag, false);
+		await Channel.BasicAckAsync(args.DeliveryTag, false);
 
 		OnMessageAcknowledged(new MessageAcknowledgedEventArgs(message.Data, context));
 	}
@@ -156,7 +156,7 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 			return;
 		}
 
-		Consumer.Received -= HandleMessageReceived;
+		Consumer.ReceivedAsync -= HandleMessageReceived;
 		Channel?.Dispose();
 		Connection?.Dispose();
 	}

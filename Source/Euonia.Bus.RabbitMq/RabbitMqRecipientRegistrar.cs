@@ -24,7 +24,7 @@ public sealed class RabbitMqRecipientRegistrar : IRecipientRegistrar
 	/// <inheritdoc/>
 	public async Task RegisterAsync(IEnumerable<MessageRegistration> registrations, CancellationToken cancellationToken = default)
 	{
-		foreach (var registration in registrations)
+		await Parallel.ForEachAsync(registrations, cancellationToken, async (registration, token) =>
 		{
 			RabbitMqQueueRecipient recipient;
 			if (_convention.IsQueueType(registration.MessageType))
@@ -40,9 +40,7 @@ public sealed class RabbitMqRecipientRegistrar : IRecipientRegistrar
 				throw new InvalidOperationException("The message type is neither a queue nor a topic.");
 			}
 
-			recipient.Start(registration.Channel);
-		}
-
-		await Task.CompletedTask;
+			await recipient.StartAsync(registration.Channel, token);
+		});
 	}
 }

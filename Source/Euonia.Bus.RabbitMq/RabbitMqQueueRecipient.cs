@@ -56,14 +56,14 @@ public abstract class RabbitMqQueueRecipient : DisposableObject
 	// 	Channel.BasicAck(deliveryTag, false);
 	// }
 
-	internal abstract void Start(string channel);
+	internal abstract Task StartAsync(string channel, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// 
 	/// </summary>
 	/// <param name="sender"></param>
 	/// <param name="args"></param>
-	protected abstract void HandleMessageReceived(object sender, BasicDeliverEventArgs args);
+	protected abstract Task HandleMessageReceived(object sender, BasicDeliverEventArgs args);
 
 	/// <summary>
 	/// 
@@ -78,9 +78,12 @@ public abstract class RabbitMqQueueRecipient : DisposableObject
 	/// 
 	/// </summary>
 	/// <param name="args"></param>
-	protected virtual void OnMessageReceived(MessageReceivedEventArgs args)
+	protected virtual Task OnMessageReceived(MessageReceivedEventArgs args)
 	{
-		MessageReceived?.Invoke(this, args);
+		return Task.Run(() =>
+		{
+			MessageReceived?.Invoke(this, args);
+		});
 	}
 
 	/// <summary>
@@ -92,7 +95,7 @@ public abstract class RabbitMqQueueRecipient : DisposableObject
 	{
 		if (message == null)
 		{
-			return Array.Empty<byte>();
+			return [];
 		}
 
 		var json = JsonConvert.SerializeObject(message, Constants.SerializerSettings);

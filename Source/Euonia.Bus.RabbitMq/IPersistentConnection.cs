@@ -16,11 +16,11 @@ public interface IPersistentConnection : IDisposable
 	/// Tries to connect to RabbitMQ.
 	/// </summary>
 	/// <returns></returns>
-	bool TryConnect();
+	Task<bool> TryConnectAsync();
 
 	/// <summary>
 	/// Creates a channel.
 	/// </summary>
 	/// <returns></returns>
-	IModel CreateChannel();
+	Task<IChannel> CreateChannelAsync();
 }

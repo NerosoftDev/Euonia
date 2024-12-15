@@ -38,11 +38,11 @@ public class RabbitMqDispatcher : IDispatcher
 	public async Task PublishAsync<TMessage>(RoutedMessage<TMessage> message, CancellationToken cancellationToken = default)
 		where TMessage : class
 	{
-		using var channel = _connection.CreateChannel();
+		using var channel = await _connection.CreateChannelAsync();
 
 		var typeName = message.GetTypeName();
 
-		var props = channel.CreateBasicProperties();
+		var props = new BasicProperties();
 		props.Headers ??= new Dictionary<string, object>();
 		props.Headers[Constants.MessageHeaders.MessageType] = typeName;
 		props.Type = typeName;
@@ -57,8 +57,8 @@ public class RabbitMqDispatcher : IDispatcher
 		            {
 			            var messageBody = await SerializeAsync(message, cancellationToken);
 
-			            channel.ExchangeDeclare(_options.ExchangeName, _options.ExchangeType);
-			            channel.BasicPublish(_options.ExchangeName, $"{_options.TopicName}${message.Channel}$", props, messageBody);
+			            await channel.ExchangeDeclareAsync(_options.ExchangeName, _options.ExchangeType, cancellationToken: cancellationToken);
+			            await channel.BasicPublishAsync(_options.ExchangeName, $"{_options.TopicName}${message.Channel}$", true, props, messageBody, cancellationToken);
 
 			            Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
 		            });
@@ -71,18 +71,18 @@ public class RabbitMqDispatcher : IDispatcher
 
 		var requestQueueName = $"{_options.QueueName}${message.Channel}$";
 
-		using var channel = _connection.CreateChannel();
+		using var channel = await _connection.CreateChannelAsync();
 
-		CheckQueue(channel, requestQueueName);
+		await CheckQueue(channel, requestQueueName);
 
-		var responseQueueName = channel.QueueDeclare().QueueName;
-		var consumer = new EventingBasicConsumer(channel);
+		var responseQueueName = await channel.ResponseQueueDeclareAsync(cancellationToken);
+		var consumer = new AsyncEventingBasicConsumer(channel);
 
-		consumer.Received += OnReceived;
+		consumer.ReceivedAsync += OnReceivedAsync;
 
 		var typeName = message.GetTypeName();
 
-		var props = channel.CreateBasicProperties();
+		var props = new BasicProperties();
 		props.Headers ??= new Dictionary<string, object>();
 		props.Headers[Constants.MessageHeaders.MessageType] = typeName;
 		props.Type = typeName;
@@ -98,16 +98,16 @@ public class RabbitMqDispatcher : IDispatcher
 		            .ExecuteAsync(async () =>
 		            {
 			            var messageBody = await SerializeAsync(message, cancellationToken);
-			            channel.BasicPublish("", requestQueueName, props, messageBody);
-			            channel.BasicConsume(consumer, responseQueueName, true);
+			            await channel.BasicPublishAsync("", requestQueueName, true, props, messageBody, cancellationToken);
+			            await channel.BasicConsumeAsync(responseQueueName, true, consumer, cancellationToken: cancellationToken);
 
 			            Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
 		            });
 
 		await task.Task;
-		consumer.Received -= OnReceived;
+		consumer.ReceivedAsync -= OnReceivedAsync;
 
-		void OnReceived(object sender, BasicDeliverEventArgs args)
+		async Task OnReceivedAsync(object sender, BasicDeliverEventArgs args)
 		{
 			if (args.BasicProperties.CorrelationId != message.CorrelationId)
 			{
@@ -124,6 +124,8 @@ public class RabbitMqDispatcher : IDispatcher
 			{
 				task.SetException(response.Error);
 			}
+
+			await Task.CompletedTask;
 		}
 	}
 
@@ -135,18 +137,18 @@ public class RabbitMqDispatcher : IDispatcher
 
 		var requestQueueName = $"{_options.QueueName}${message.Channel}$";
 
-		using var channel = _connection.CreateChannel();
+		using var channel = await _connection.CreateChannelAsync();
 
-		CheckQueue(channel, requestQueueName);
+		await CheckQueue(channel, requestQueueName);
 
-		var responseQueueName = channel.QueueDeclare().QueueName;
-		var consumer = new EventingBasicConsumer(channel);
+		var responseQueueName = await channel.ResponseQueueDeclareAsync(cancellationToken);
+		var consumer = new AsyncEventingBasicConsumer(channel);
 
-		consumer.Received += OnReceived;
+		consumer.ReceivedAsync += OnReceivedAsync;
 
 		var typeName = message.GetTypeName();
 
-		var props = channel.CreateBasicProperties();
+		var props = new BasicProperties();
 		props.Headers ??= new Dictionary<string, object>();
 		props.Headers[Constants.MessageHeaders.MessageType] = typeName;
 		props.Type = typeName;
@@ -162,17 +164,17 @@ public class RabbitMqDispatcher : IDispatcher
 		            .ExecuteAsync(async () =>
 		            {
 			            var messageBody = await SerializeAsync(message, cancellationToken);
-			            channel.BasicPublish("", requestQueueName, props, messageBody);
-			            channel.BasicConsume(consumer, responseQueueName, true);
+			            await channel.BasicPublishAsync("", requestQueueName, true, props, messageBody, cancellationToken);
+			            await channel.BasicConsumeAsync(responseQueueName, true, consumer, cancellationToken: cancellationToken);
 
 			            Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
 		            });
 
 		var result = await task.Task;
-		consumer.Received -= OnReceived;
+		consumer.ReceivedAsync -= OnReceivedAsync;
 		return result;
 
-		void OnReceived(object sender, BasicDeliverEventArgs args)
+		async Task OnReceivedAsync(object sender, BasicDeliverEventArgs args)
 		{
 			if (args.BasicProperties.CorrelationId != message.CorrelationId)
 			{
@@ -182,12 +184,13 @@ public class RabbitMqDispatcher : IDispatcher
 			var body = args.Body.ToArray();
 			var response = JsonConvert.DeserializeObject<RabbitMqReply<TResponse>>(Encoding.UTF8.GetString(body), Constants.SerializerSettings);
 			task.SetResult(response.Result);
+			await Task.CompletedTask;
 		}
 	}
 
-	private static void CheckQueue(IModel channel, string requestQueueName)
+	private static async Task CheckQueue(IChannel channel, string requestQueueName)
 	{
-		var queueDeclare = channel.DeclareQueuePassively(requestQueueName);
+		var queueDeclare = await channel.DeclareQueuePassivelyAsync(requestQueueName);
 
 		if (queueDeclare == null)
 		{
