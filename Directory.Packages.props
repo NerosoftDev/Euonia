@@ -5,7 +5,7 @@
         <MicrosoftPackageVersion6>6.0.32</MicrosoftPackageVersion6>
         <MicrosoftPackageVersion7>7.0.20</MicrosoftPackageVersion7>
         <MicrosoftPackageVersion8>8.0.10</MicrosoftPackageVersion8>
-        <GrpcAspNetCoreVersion>2.66.0</GrpcAspNetCoreVersion>
+        <GrpcAspNetCoreVersion>2.67.0</GrpcAspNetCoreVersion>
         <QuartzVersion>3.13.1</QuartzVersion>
     </PropertyGroup>
     <ItemGroup>
@@ -112,7 +112,7 @@
     <!-- Grpc -->
     <ItemGroup>
         <PackageVersion Include="Google.Api.CommonProtos" Version="2.12.0" />
-        <PackageVersion Include="Google.Protobuf" Version="3.28.3" />
+        <PackageVersion Include="Google.Protobuf" Version="3.29.2" />
         <PackageVersion Include="Grpc" Version="2.46.6" />
         <PackageVersion Include="Grpc.AspNetCore" Version="$(GrpcAspNetCoreVersion)" />
         <PackageVersion Include="Grpc.AspNetCore.HealthChecks" Version="$(GrpcAspNetCoreVersion)" />
