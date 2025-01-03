@@ -7,13 +7,13 @@ namespace Nerosoft.Euonia.Bus.InMemory;
 /// </summary>
 public sealed class InMemoryTransport : DisposableObject, ITransport
 {
-	internal const string IDENTIFIER = "in-memory";
+	internal const string TransportIdentifier = "in-memory";
 	
 	/// <inheritdoc />
 	public event EventHandler<MessageDeliveredEventArgs> Delivered;
 
 	/// <inheritdoc />
-	public string Identifier { get; set; } = IDENTIFIER;
+	public string Identifier { get; set; } = TransportIdentifier;
 
 	private readonly IIdentityProvider _identity;
 
@@ -52,7 +52,7 @@ public sealed class InMemoryTransport : DisposableObject, ITransport
 
 		var taskCompletion = new TaskCompletionSource();
 
-		if (cancellationToken != default)
+		if (cancellationToken != CancellationToken.None)
 		{
 			cancellationToken.Register(() => taskCompletion.SetCanceled(cancellationToken));
 		}
@@ -86,7 +86,7 @@ public sealed class InMemoryTransport : DisposableObject, ITransport
 
 		// See https://stackoverflow.com/questions/18760252/timeout-an-async-method-implemented-with-taskcompletionsource
 		var taskCompletion = new TaskCompletionSource<TResponse>();
-		if (cancellationToken != default)
+		if (cancellationToken != CancellationToken.None)
 		{
 			cancellationToken.Register(() => taskCompletion.TrySetCanceled(), false);
 		}
