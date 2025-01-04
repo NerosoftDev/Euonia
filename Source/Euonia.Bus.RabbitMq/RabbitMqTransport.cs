@@ -1,6 +1,5 @@
 ﻿using System.Net.Sockets;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Polly;
 using RabbitMQ.Client;
@@ -30,11 +29,11 @@ public sealed class RabbitMqTransport : ITransport
 	/// <param name="connection"></param>
 	/// <param name="options"></param>
 	/// <param name="logger"></param>
-	public RabbitMqTransport(IPersistentConnection connection, IOptions<RabbitMqMessageBusOptions> options, ILoggerFactory logger)
+	public RabbitMqTransport(IPersistentConnection connection, RabbitMqMessageBusOptions options, ILoggerFactory logger)
 	{
 		_logger = logger.CreateLogger<RabbitMqDispatcher>();
 		_connection = connection;
-		_options = options.Value;
+		_options = options;
 	}
 
 	/// <inheritdoc />

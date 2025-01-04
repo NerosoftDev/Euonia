@@ -65,17 +65,17 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 
 		Channel = await Connection.CreateChannelAsync();
 
-		await Channel.QueueDeclareAsync(queueName, true, false, false, null, cancellationToken: cancellationToken);
+		await Channel.QueueDeclareAsync(queueName, true, false, false, arguments: null, cancellationToken: cancellationToken);
 		await Channel.BasicQosAsync(0, 1, false, cancellationToken);
 
 		Consumer = new AsyncEventingBasicConsumer(Channel);
-		Consumer.ReceivedAsync += HandleMessageReceived;
+		Consumer.ReceivedAsync += HandleMessageReceivedAsync;
 
 		await Channel.BasicConsumeAsync(queueName, Options.AutoAck, Consumer, cancellationToken: cancellationToken);
 	}
 
 	/// <inheritdoc />
-	protected override async Task HandleMessageReceived(object sender, BasicDeliverEventArgs args)
+	protected override async Task HandleMessageReceivedAsync(object sender, BasicDeliverEventArgs args)
 	{
 		var type = MessageTypeCache.GetMessageType(args.BasicProperties.Type);
 
@@ -156,7 +156,7 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 			return;
 		}
 
-		Consumer.ReceivedAsync -= HandleMessageReceived;
+		Consumer.ReceivedAsync -= HandleMessageReceivedAsync;
 		Channel?.Dispose();
 		Connection?.Dispose();
 	}

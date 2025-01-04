@@ -78,14 +78,14 @@ public class RabbitMqTopicSubscriber : RabbitMqQueueRecipient, ITopicSubscriber
 		}
 
 		Consumer = new AsyncEventingBasicConsumer(Channel);
-		Consumer.ReceivedAsync += HandleMessageReceived;
+		Consumer.ReceivedAsync += HandleMessageReceivedAsync;
 
 		await Channel.QueueBindAsync(queueName, channel, Options.RoutingKey ?? "*", cancellationToken: cancellationToken);
 		await Channel.BasicConsumeAsync(string.Empty, Options.AutoAck, Consumer, cancellationToken: cancellationToken);
 	}
 
 	/// <inheritdoc />
-	protected override async Task HandleMessageReceived(object sender, BasicDeliverEventArgs args)
+	protected override async Task HandleMessageReceivedAsync(object sender, BasicDeliverEventArgs args)
 	{
 		var type = MessageTypeCache.GetMessageType(args.BasicProperties.Type);
 
@@ -126,7 +126,7 @@ public class RabbitMqTopicSubscriber : RabbitMqQueueRecipient, ITopicSubscriber
 			return;
 		}
 
-		Consumer.ReceivedAsync -= HandleMessageReceived;
+		Consumer.ReceivedAsync -= HandleMessageReceivedAsync;
 		Channel?.Dispose();
 	}
 }

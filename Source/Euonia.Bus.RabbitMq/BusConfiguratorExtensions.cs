@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 
@@ -17,17 +18,11 @@ public static class BusConfiguratorExtensions
 	/// <param name="configuration"></param>
 	public static void UseRabbitMq(this IBusConfigurator configurator, Action<RabbitMqMessageBusOptions> configuration)
 	{
-		configurator.Service.Configure(configuration);
+		var options = new RabbitMqMessageBusOptions();
+		configuration(options);
 
 		configurator.Service.TryAddSingleton<IConnectionFactory>(provider =>
 		{
-			var options = provider.GetService<IOptions<RabbitMqMessageBusOptions>>()?.Value;
-
-			if (options == null)
-			{
-				throw new InvalidOperationException("RabbitMqMessageBusOptions was not configured.");
-			}
-
 			var factory = new ConnectionFactory { Uri = new Uri(options.Connection) };
 			return factory;
 		});
@@ -36,7 +31,12 @@ public static class BusConfiguratorExtensions
 		configurator.Service.TryAddTransient<RabbitMqQueueConsumer>();
 		configurator.Service.TryAddTransient<RabbitMqTopicSubscriber>();
 
-		configurator.Service.TryAddSingleton<RabbitMqDispatcher>();
+		configurator.Service.AddKeyedSingleton<ITransport, RabbitMqTransport>("", (provider, _) =>
+		{
+			var logger = provider.GetService<ILoggerFactory>();
+			return new RabbitMqTransport(null, options, logger);
+		});
+		
 		configurator.Service.AddTransient<IRecipientRegistrar, RabbitMqRecipientRegistrar>();
 	}
 }

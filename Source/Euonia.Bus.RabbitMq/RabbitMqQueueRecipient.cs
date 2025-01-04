@@ -63,7 +63,7 @@ public abstract class RabbitMqQueueRecipient : DisposableObject
 	/// </summary>
 	/// <param name="sender"></param>
 	/// <param name="args"></param>
-	protected abstract Task HandleMessageReceived(object sender, BasicDeliverEventArgs args);
+	protected abstract Task HandleMessageReceivedAsync(object sender, BasicDeliverEventArgs args);
 
 	/// <summary>
 	/// 
