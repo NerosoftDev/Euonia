@@ -4,7 +4,7 @@ using Nerosoft.Euonia.Bus;
 namespace Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
-/// 
+/// Defines extension methods to register the service bus.
 /// </summary>
 public static class ServiceCollectionExtensions
 {
