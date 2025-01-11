@@ -55,6 +55,7 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 	/// </summary>
 	private AsyncEventingBasicConsumer Consumer { get; set; }
 
+	/// <inheritdoc />
 	internal override async Task StartAsync(string channel, CancellationToken cancellationToken = default)
 	{
 		var queueName = $"{Options.QueueName}${channel}$";

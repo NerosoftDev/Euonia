@@ -1,7 +1,7 @@
 ﻿namespace Nerosoft.Euonia.Bus;
 
 /// <summary>
-/// 
+/// Defines a recipient of messages.
 /// </summary>
 public interface IRecipient : IDisposable
 {

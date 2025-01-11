@@ -32,7 +32,7 @@ public abstract class RabbitMqQueueRecipient : DisposableObject
 	}
 
 	/// <summary>
-	/// 
+	/// Gets the RabbitMQ connection.
 	/// </summary>
 	protected IPersistentConnection Connection { get; }
 
@@ -56,6 +56,12 @@ public abstract class RabbitMqQueueRecipient : DisposableObject
 	// 	Channel.BasicAck(deliveryTag, false);
 	// }
 
+	/// <summary>
+	/// Starts to receive messages from the specified channel.
+	/// </summary>
+	/// <param name="channel"></param>
+	/// <param name="cancellationToken"></param>
+	/// <returns></returns>
 	internal abstract Task StartAsync(string channel, CancellationToken cancellationToken = default);
 
 	/// <summary>
