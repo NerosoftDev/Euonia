@@ -15,28 +15,28 @@ public static class BusConfiguratorExtensions
 	/// Adds the RabbitMQ message transporter.
 	/// </summary>
 	/// <param name="configurator"></param>
-	/// <param name="configuration"></param>
-	public static void UseRabbitMq(this IBusConfigurator configurator, Action<RabbitMqMessageBusOptions> configuration)
+	public static RabbitMqTransportBuilder UseRabbitMq(this IBusConfigurator configurator)
 	{
-		var options = new RabbitMqMessageBusOptions();
-		configuration(options);
+		// var options = new RabbitMqMessageBusOptions();
+		// configuration(options);
 
-		configurator.Service.TryAddSingleton<IConnectionFactory>(provider =>
-		{
-			var factory = new ConnectionFactory { Uri = new Uri(options.Connection) };
-			return factory;
-		});
-		configurator.Service.TryAddSingleton<IPersistentConnection, DefaultPersistentConnection>();
+		// configurator.Service.TryAddSingleton<IConnectionFactory>(provider =>
+		// {
+		// 	var factory = new ConnectionFactory { Uri = new Uri(options.Connection) };
+		// 	return factory;
+		// });
+		// configurator.Service.TryAddSingleton<IPersistentConnection, DefaultPersistentConnection>();
 
 		configurator.Service.TryAddTransient<RabbitMqQueueConsumer>();
 		configurator.Service.TryAddTransient<RabbitMqTopicSubscriber>();
 
-		configurator.Service.AddKeyedSingleton<ITransport, RabbitMqTransport>("", (provider, _) =>
-		{
-			var logger = provider.GetService<ILoggerFactory>();
-			return new RabbitMqTransport(null, options, logger);
-		});
+		// configurator.Service.AddKeyedSingleton<ITransport, RabbitMqTransport>("", (provider, _) =>
+		// {
+		// 	var logger = provider.GetService<ILoggerFactory>();
+		// 	return new RabbitMqTransport(null, options, logger);
+		// });
 		
 		configurator.Service.AddTransient<IRecipientRegistrar, RabbitMqRecipientRegistrar>();
+		return new RabbitMqTransportBuilder(configurator.Service);
 	}
 }

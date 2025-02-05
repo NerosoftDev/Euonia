@@ -6,38 +6,16 @@
 public interface IDispatcher
 {
 	/// <summary>
-	/// Occurs when [message dispatched].
+	/// Gets the transport for the specified message type.
 	/// </summary>
-	event EventHandler<MessageDispatchedEventArgs> Delivered;
-
-	/// <summary>
-	/// Publishes the specified message.
-	/// </summary>
-	/// <param name="message"></param>
-	/// <param name="cancellationToken"></param>
-	/// <typeparam name="TMessage"></typeparam>
+	/// <param name="messageType">The type of message to be transport.</param>
 	/// <returns></returns>
-	Task PublishAsync<TMessage>(RoutedMessage<TMessage> message, CancellationToken cancellationToken = default)
-		where TMessage : class;
-
+	ITransport CreateTransport(Type messageType);
+	
 	/// <summary>
-	/// Sends the specified message.
+	/// 
 	/// </summary>
-	/// <param name="message"></param>
-	/// <param name="cancellationToken"></param>
-	/// <typeparam name="TMessage"></typeparam>
+	/// <param name="identifier"></param>
 	/// <returns></returns>
-	Task SendAsync<TMessage>(RoutedMessage<TMessage> message, CancellationToken cancellationToken = default)
-		where TMessage : class;
-
-	/// <summary>
-	/// Sends the specified message.
-	/// </summary>
-	/// <param name="message"></param>
-	/// <param name="cancellationToken"></param>
-	/// <typeparam name="TMessage"></typeparam>
-	/// <typeparam name="TResponse"></typeparam>
-	/// <returns></returns>
-	Task<TResponse> SendAsync<TMessage, TResponse>(RoutedMessage<TMessage, TResponse> message, CancellationToken cancellationToken = default)
-		where TMessage : class;
+	ITransport CreateTransport(string identifier);
 }

@@ -29,6 +29,7 @@ public static class ServiceCollectionExtensions
 
 			return context;
 		});
+		services.TryAddSingleton<IDispatcher, DefaultDispatcher>();
 		services.TryAddSingleton<IMessageConvention>(configurator.ConventionBuilder.Convention);
 		services.TryAddScoped<IBus, ServiceBus>();
 		services.AddHostedService<RecipientActivator>();

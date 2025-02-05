@@ -41,14 +41,17 @@ public class Startup
 					builder.EvaluateQueue(t => t.Name.EndsWith("Command"));
 					builder.EvaluateTopic(t => t.Name.EndsWith("Event"));
 				});
-				config.UseRabbitMq(options =>
-				{
-					options.Connection = "amqp://127.0.0.1";
-					options.QueueName = "nerosoft.euonia.test.command";
-					options.TopicName = "nerosoft.euonia.test.event";
-					options.ExchangeName = $"nerosoft.euonia.test.exchange.{options.ExchangeType}";
-					options.RoutingKey = "*";
-				});
+				config.UseRabbitMq()
+				      .AddTransport("nerosoft.euonia.test.transport", connection =>
+				      {
+					      connection.Uri = new Uri("amqp://127.0.0.1");
+				      }, options =>
+				      {
+					      options.QueueName = "nerosoft.euonia.test.command";
+					      options.TopicName = "nerosoft.euonia.test.event";
+					      options.ExchangeName = $"nerosoft.euonia.test.exchange.{options.ExchangeType}";
+					      options.RoutingKey = "*";
+				      });
 			});
 		}
 	}

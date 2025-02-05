@@ -24,8 +24,8 @@ public class MessageConvention : IMessageConvention
 
 		return _topicConventionCache.Apply(type, handle =>
 		{
-			var t = Type.GetTypeFromHandle(handle);
-			return _conventions.Any(x => x.IsQueueType(t));
+			var handleType = Type.GetTypeFromHandle(handle);
+			return _conventions.Any(x => x.IsQueueType(handleType));
 		});
 	}
 

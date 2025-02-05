@@ -14,22 +14,22 @@ public sealed class ServiceBus : IBus
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ServiceBus"/> class.
 	/// </summary>
-	/// <param name="factory"></param>
+	/// <param name="dispatcher"></param>
 	/// <param name="convention"></param>
-	public ServiceBus(IBusFactory factory, IMessageConvention convention)
+	public ServiceBus(IDispatcher dispatcher, IMessageConvention convention)
 	{
-		_dispatcher = factory.CreateDispatcher();
+		_dispatcher = dispatcher;
 		_convention = convention;
 	}
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ServiceBus"/> class.
 	/// </summary>
-	/// <param name="factory"></param>
+	/// <param name="dispatcher"></param>
 	/// <param name="convention"></param>
 	/// <param name="requestAccessor"></param>
-	public ServiceBus(IBusFactory factory, IMessageConvention convention, IRequestContextAccessor requestAccessor)
-		: this(factory, convention)
+	public ServiceBus(IDispatcher dispatcher, IMessageConvention convention, IRequestContextAccessor requestAccessor)
+		: this(dispatcher, convention)
 	{
 		_requestAccessor = requestAccessor;
 	}
@@ -57,7 +57,7 @@ public sealed class ServiceBus : IBus
 			Authorization = context?.Authorization,
 		};
 		metadataSetter?.Invoke(pack.Metadata);
-		return _dispatcher.PublishAsync(pack, cancellationToken);
+		return _dispatcher.CreateTransport(messageType).PublishAsync(pack, cancellationToken);
 	}
 
 	/// <inheritdoc />
@@ -86,7 +86,7 @@ public sealed class ServiceBus : IBus
 
 		metadataSetter?.Invoke(pack.Metadata);
 
-		return _dispatcher.SendAsync(pack, cancellationToken).ContinueWith(task => task.WaitAndUnwrapException(cancellationToken), cancellationToken);
+		return _dispatcher.CreateTransport(messageType).SendAsync(pack, cancellationToken).ContinueWith(task => task.WaitAndUnwrapException(cancellationToken), cancellationToken);
 	}
 
 	/// <inheritdoc />
@@ -115,14 +115,15 @@ public sealed class ServiceBus : IBus
 
 		metadataSetter?.Invoke(pack.Metadata);
 
-		return _dispatcher.SendAsync(pack, cancellationToken)
-						  .ContinueWith(task =>
-						  {
-							  task.WaitAndUnwrapException();
-							  var result = task.Result;
-							  callback?.Invoke(result);
-							  return result;
-						  }, cancellationToken);
+		return _dispatcher.CreateTransport(messageType)
+		                  .SendAsync(pack, cancellationToken)
+		                  .ContinueWith(task =>
+		                  {
+			                  task.WaitAndUnwrapException();
+			                  var result = task.Result;
+			                  callback?.Invoke(result);
+			                  return result;
+		                  }, cancellationToken);
 	}
 
 	/// <inheritdoc />
@@ -150,13 +151,14 @@ public sealed class ServiceBus : IBus
 
 		metadataSetter?.Invoke(pack.Metadata);
 
-		return _dispatcher.SendAsync(pack, cancellationToken)
-						  .ContinueWith(task =>
-						  {
-							  task.WaitAndUnwrapException();
-							  var result = task.Result;
-							  callback?.Invoke(result);
-							  return result;
-						  }, cancellationToken);
+		return _dispatcher.CreateTransport(messageType)
+		                  .SendAsync(pack, cancellationToken)
+		                  .ContinueWith(task =>
+		                  {
+			                  task.WaitAndUnwrapException();
+			                  var result = task.Result;
+			                  callback?.Invoke(result);
+			                  return result;
+		                  }, cancellationToken);
 	}
 }
