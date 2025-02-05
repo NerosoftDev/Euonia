@@ -41,6 +41,29 @@ public static class ServiceCollectionExtensions
 		var bearerOptions = new JwtAuthenticationOptions();
 		optionsAction?.Invoke(bearerOptions);
 
+		return services.AddJwtAuthentication(bearerOptions);
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="services"></param>
+	/// <param name="configurationSectionName"></param>
+	/// <returns></returns>
+	public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, string configurationSectionName)
+	{
+		var bearerOptions = services.GetConfiguration().GetSection(configurationSectionName).Get<JwtAuthenticationOptions>();
+		return services.AddJwtAuthentication(bearerOptions);
+	}
+
+	/// <summary>
+	/// Adds Jwt authentication to the DI container.
+	/// </summary>
+	/// <param name="services"></param>
+	/// <param name="bearerOptions"></param>
+	/// <returns></returns>
+	public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, JwtAuthenticationOptions bearerOptions)
+	{
 		JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 		var key = Encoding.UTF8.GetBytes(bearerOptions.SigningKey);
@@ -107,31 +130,12 @@ public static class ServiceCollectionExtensions
 				        RoleClaimType = JwtClaimTypes.Role,
 				        ValidIssuers = bearerOptions.Issuer,
 				        //ValidAudience = "api",
-				        ValidateIssuer = false,
-				        ValidateAudience = false,
+				        ValidateIssuer = bearerOptions.ValidateIssuer,
+				        ValidateAudience = bearerOptions.ValidateAudience,
 				        IssuerSigningKey = new SymmetricSecurityKey(key)
 			        };
 		        });
 		return services;
-	}
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="services"></param>
-	/// <param name="configurationSectionName"></param>
-	/// <returns></returns>
-	public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, string configurationSectionName)
-	{
-		var bearerOptions = services.GetConfiguration().GetSection(configurationSectionName).Get<JwtAuthenticationOptions>();
-		return services.AddJwtAuthentication(options =>
-		{
-			options.Audience = bearerOptions.Audience;
-			options.Authority = bearerOptions.Authority;
-			options.Issuer = bearerOptions.Issuer;
-			options.RequireHttpsMetadata = bearerOptions.RequireHttpsMetadata;
-			options.SigningKey = bearerOptions.SigningKey;
-		});
 	}
 
 	/// <summary>
