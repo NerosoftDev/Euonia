@@ -12,7 +12,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Google.Protobuf" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
         <PackageReference Include="Mapster" />
         <PackageReference Include="Mapster.DependencyInjection" />

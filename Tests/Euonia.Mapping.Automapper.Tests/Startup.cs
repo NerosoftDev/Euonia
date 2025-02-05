@@ -10,42 +10,45 @@ namespace Nerosoft.Euonia.Mapping.Tests;
 [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>")]
 public class Startup
 {
-    public void ConfigureHost(IHostBuilder hostBuilder)
-    {
-        hostBuilder.ConfigureAppConfiguration(builder =>
-        {
-            builder.AddJsonFile("appsettings.json");
-        })
-                   .ConfigureServices((_, _) =>
-                   {
-                       // Register service here.
-                   });
-    }
+	public void ConfigureHost(IHostBuilder hostBuilder)
+	{
+		hostBuilder.ConfigureAppConfiguration(builder =>
+		           {
+			           builder.AddJsonFile("appsettings.json");
+		           })
+		           .ConfigureServices((_, _) =>
+		           {
+			           // Register service here.
+		           });
+	}
 
-    // ConfigureServices(IServiceCollection services)
-    // ConfigureServices(IServiceCollection services, HostBuilderContext hostBuilderContext)
-    // ConfigureServices(HostBuilderContext hostBuilderContext, IServiceCollection services)
-    public void ConfigureServices(IServiceCollection services, HostBuilderContext hostBuilderContext)
-    {
-        services.Configure<AutomapperOptions>(options =>
-        {
-            options.AddProfile<Profile1>();
-            options.AddProfile<Profile2>();
-        });
-        services.AddAutomapper();
-        services.AddSingleton<ITypeAdapterFactory, AutomapperTypeAdapterFactory>();
-    }
+	// ConfigureServices(IServiceCollection services)
+	// ConfigureServices(IServiceCollection services, HostBuilderContext hostBuilderContext)
+	// ConfigureServices(HostBuilderContext hostBuilderContext, IServiceCollection services)
+	public void ConfigureServices(IServiceCollection services, HostBuilderContext hostBuilderContext)
+	{
+		services.AddSingleton<StringHelper>();
+		services.AddTransient(typeof(FullNameValueResolver<,>));
+		services.Configure<AutomapperOptions>(options =>
+		{
+			options.AddProfile<Profile1>();
+			options.AddProfile<Profile2>();
+			options.AddProfile<Profile3>();
+		});
+		services.AddAutomapper();
+		services.AddSingleton<ITypeAdapterFactory, AutomapperTypeAdapterFactory>();
+	}
 
-    //public void Configure(IServiceProvider applicationServices, IIdGenerator idGenerator)
-    //{
-    //}
+	//public void Configure(IServiceProvider applicationServices, IIdGenerator idGenerator)
+	//{
+	//}
 
-    public void Configure(IServiceProvider applicationServices)
-    {
-        var factory = applicationServices.GetService<ITypeAdapterFactory>();
-        if (factory != null)
-        {
-            TypeAdapterFactory.SetCurrent(factory);
-        }
-    }
+	public void Configure(IServiceProvider applicationServices)
+	{
+		var factory = applicationServices.GetService<ITypeAdapterFactory>();
+		if (factory != null)
+		{
+			TypeAdapterFactory.SetCurrent(factory);
+		}
+	}
 }
