@@ -1,29 +1,28 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-    <Import Project="..\common.props" />
-    <Import Project="..\resource.props" />
-
+    
+    <Import Project="..\common.props"/>
+    <Import Project="..\resource.props"/>
+    
     <PropertyGroup>
         <Nullable>disable</Nullable>
     </PropertyGroup>
-
+    
     <PropertyGroup Condition="$(TargetFramework.Contains('netstandard'))">
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
-
+    
     <ItemGroup>
-        <PackageReference Include="AutoMapper" />
-        <PackageReference Include="Google.Protobuf" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
-        <PackageReference Include="Newtonsoft.Json" />
+        <PackageReference Include="AutoMapper"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"/>
+        <PackageReference Include="Newtonsoft.Json"/>
     </ItemGroup>
-
+    
     <ItemGroup>
-        <ProjectReference Include="..\Euonia.Core\Euonia.Core.csproj" />
-        <ProjectReference Include="..\Euonia.Mapping\Euonia.Mapping.csproj" />
-        <ProjectReference Include="..\Euonia.Modularity\Euonia.Modularity.csproj" />
+        <ProjectReference Include="..\Euonia.Core\Euonia.Core.csproj"/>
+        <ProjectReference Include="..\Euonia.Mapping\Euonia.Mapping.csproj"/>
+        <ProjectReference Include="..\Euonia.Modularity\Euonia.Modularity.csproj"/>
     </ItemGroup>
-
+    
     <ItemGroup>
         <Compile Update="Properties\Resources.Designer.cs">
             <DesignTime>True</DesignTime>
@@ -31,7 +30,7 @@
             <DependentUpon>Resources.resx</DependentUpon>
         </Compile>
     </ItemGroup>
-
+    
     <ItemGroup>
         <EmbeddedResource Update="Properties\Resources.resx">
             <Generator>ResXFileCodeGenerator</Generator>
