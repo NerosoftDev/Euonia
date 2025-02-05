@@ -10,7 +10,7 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageVersion Include="Apache.NMS.ActiveMQ" Version="2.1.0" />
-        <PackageVersion Include="Autofac" Version="8.1.1" />
+        <PackageVersion Include="Autofac" Version="8.2.0" />
         <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="10.0.0" />
         <PackageVersion Include="Autofac.Extras.DynamicProxy" Version="7.1.0" />
         <PackageVersion Include="AutoMapper" Version="13.0.1" />
@@ -24,9 +24,9 @@
         <PackageVersion Include="Mapster.DependencyInjection" Version="1.0.1" />
         <PackageVersion Include="MediatR" Version="12.1.1" />
         <PackageVersion Include="MediatR.Contracts" Version="2.0.1" />
-        <PackageVersion Include="mongocsharpdriver" Version="2.29.0" />
+        <PackageVersion Include="mongocsharpdriver" Version="2.30.0" />
         <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
-        <PackageVersion Include="Polly" Version="8.4.2" />
+        <PackageVersion Include="Polly" Version="8.5.2" />
         <PackageVersion Include="protobuf-net" Version="3.1.33" />
         <PackageVersion Include="Quartz" Version="$(QuartzVersion)" />
         <PackageVersion Include="Quartz.Extensions.DependencyInjection" Version="$(QuartzVersion)" />
