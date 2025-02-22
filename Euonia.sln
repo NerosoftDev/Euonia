@@ -12,11 +12,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Sample.Webapi", "Sam
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{CCE92FDE-593B-4F06-B54A-979DFBB82EDA}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		Directory.Packages.props = Directory.Packages.props
 		NuGet.config = NuGet.config
 		project.props = project.props
 		README.md = README.md
-		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{E57A56F3-7BAB-4DB5-9CE8-EC91985A6586}"
@@ -133,6 +133,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Euonia.Bus.RabbitMq.Tests", "Tests\Euonia.Bus.RabbitMq.Tests\Euonia.Bus.RabbitMq.Tests.csproj", "{C1262DAB-43DB-480A-8064-634C50872258}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Euonia.Bus.Tests.Shared", "Tests\Euonia.Bus.Tests.Shared\Euonia.Bus.Tests.Shared.shproj", "{B2B6A902-17A7-4926-9B7F-22DE8A092231}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euonia.Hosting.Serilog", "Source\Euonia.Hosting.Serilog\Euonia.Hosting.Serilog.csproj", "{49969510-E0E4-4DF4-95F8-8B334CA9C5C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -387,6 +389,12 @@ Global
 		{C1262DAB-43DB-480A-8064-634C50872258}.Product|Any CPU.Build.0 = Debug|Any CPU
 		{C1262DAB-43DB-480A-8064-634C50872258}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1262DAB-43DB-480A-8064-634C50872258}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49969510-E0E4-4DF4-95F8-8B334CA9C5C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49969510-E0E4-4DF4-95F8-8B334CA9C5C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49969510-E0E4-4DF4-95F8-8B334CA9C5C6}.Product|Any CPU.ActiveCfg = Release|Any CPU
+		{49969510-E0E4-4DF4-95F8-8B334CA9C5C6}.Product|Any CPU.Build.0 = Release|Any CPU
+		{49969510-E0E4-4DF4-95F8-8B334CA9C5C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49969510-E0E4-4DF4-95F8-8B334CA9C5C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -445,6 +453,7 @@ Global
 		{AA073AAD-9290-4D55-BFF1-DC1B3357FF8B} = {66B49F2D-FBC6-45A0-82B0-A099CABD37C6}
 		{C1262DAB-43DB-480A-8064-634C50872258} = {66B49F2D-FBC6-45A0-82B0-A099CABD37C6}
 		{B2B6A902-17A7-4926-9B7F-22DE8A092231} = {66B49F2D-FBC6-45A0-82B0-A099CABD37C6}
+		{49969510-E0E4-4DF4-95F8-8B334CA9C5C6} = {5DC17AB4-46C2-4004-93CB-1446201C3AEA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {84CDDCF4-F3D0-45FC-87C5-557845F58F55}
