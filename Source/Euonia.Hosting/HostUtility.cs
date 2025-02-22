@@ -65,11 +65,6 @@ public class HostUtility
             }));
         }
 
-        if (options.UseSerilog)
-        {
-            host.ConfigureSerilog();
-        }
-
         host = host.ConfigureWebHostDefaults(builder =>
         {
             builder.UseStartup<TStartup>()

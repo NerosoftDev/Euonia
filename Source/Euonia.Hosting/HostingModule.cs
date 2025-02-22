@@ -15,7 +15,6 @@ public class HostingModule : ModuleContextBase
 	public override void ConfigureServices(ServiceConfigurationContext context)
 	{
 		context.Services.TryAddScoped<RequestContextAccessor>(_ => GetRequestContext);
-		context.Services.AddSerilog();
 		context.Services.AddScopeTransformation();
 		context.Services.AddUserPrincipal();
 		context.Services.AddObjectAccessor<IApplicationBuilder>();

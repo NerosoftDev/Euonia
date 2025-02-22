@@ -1,6 +1,6 @@
-<Project>
+﻿<Project>
     <PropertyGroup>
-        <Version>8.1.29</Version>
+        <Version>8.1.30</Version>
         <Authors>damon</Authors>
         <Company>Nerosoft Ltd.</Company>
         <Product>Euonia</Product>

@@ -31,11 +31,6 @@ public class HostBuilderOptions
     public bool UseAutofac { get; set; } = true;
 
     /// <summary>
-    /// Gets or sets a value to indicate whether the application will use Serilog as logging service provider.
-    /// </summary>
-    public bool UseSerilog { get; set; } = true;
-
-    /// <summary>
     /// Gets or sets the application name.
     /// </summary>
     public object ApplicationName { get; set; } = Assembly.GetEntryAssembly()?.GetName();

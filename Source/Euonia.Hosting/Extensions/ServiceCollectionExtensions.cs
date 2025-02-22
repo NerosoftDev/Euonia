@@ -7,12 +7,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Nerosoft.Euonia.Claims;
-using Serilog;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -82,59 +80,59 @@ public static class ServiceCollectionExtensions
 		}
 
 		services.AddAuthentication(options =>
-		        {
-			        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-			        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-		        })
-		        .AddJwtBearer(options =>
-		        {
-			        options.Authority = bearerOptions.Authority;
-			        options.RequireHttpsMetadata = bearerOptions.RequireHttpsMetadata;
-			        options.Audience = bearerOptions.Audience;
+				{
+					options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+					options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+				})
+				.AddJwtBearer(options =>
+				{
+					options.Authority = bearerOptions.Authority;
+					options.RequireHttpsMetadata = bearerOptions.RequireHttpsMetadata;
+					options.Audience = bearerOptions.Audience;
 
-			        options.Events = new JwtBearerEvents()
-			        {
-				        OnMessageReceived = context =>
-				        {
-					        var authorizationValue = context.Request.Headers[HeaderNames.Authorization].ToString();
+					options.Events = new JwtBearerEvents()
+					{
+						OnMessageReceived = context =>
+						{
+							var authorizationValue = context.Request.Headers[HeaderNames.Authorization].ToString();
 
-					        var token = Regex.Match(authorizationValue, @"^Bearer\s+(.*)").Groups[1].Value;
+							var token = Regex.Match(authorizationValue, @"^Bearer\s+(.*)").Groups[1].Value;
 
-					        context.Token = token;
-					        return Task.CompletedTask;
-				        },
-				        OnChallenge = context =>
-				        {
-					        Console.WriteLine(context);
-					        return Task.CompletedTask;
-				        },
-				        OnAuthenticationFailed = context =>
-				        {
-					        Console.WriteLine(context);
-					        return Task.CompletedTask;
-				        },
-				        OnForbidden = context =>
-				        {
-					        Console.WriteLine(context);
-					        return Task.CompletedTask;
-				        },
-				        OnTokenValidated = context =>
-				        {
-					        Console.WriteLine(context);
-					        return Task.CompletedTask;
-				        }
-			        };
-			        options.TokenValidationParameters = new TokenValidationParameters
-			        {
-				        NameClaimType = JwtClaimTypes.Name,
-				        RoleClaimType = JwtClaimTypes.Role,
-				        ValidIssuers = bearerOptions.Issuer,
-				        //ValidAudience = "api",
-				        ValidateIssuer = bearerOptions.ValidateIssuer,
-				        ValidateAudience = bearerOptions.ValidateAudience,
-				        IssuerSigningKey = new SymmetricSecurityKey(key)
-			        };
-		        });
+							context.Token = token;
+							return Task.CompletedTask;
+						},
+						OnChallenge = context =>
+						{
+							Console.WriteLine(context);
+							return Task.CompletedTask;
+						},
+						OnAuthenticationFailed = context =>
+						{
+							Console.WriteLine(context);
+							return Task.CompletedTask;
+						},
+						OnForbidden = context =>
+						{
+							Console.WriteLine(context);
+							return Task.CompletedTask;
+						},
+						OnTokenValidated = context =>
+						{
+							Console.WriteLine(context);
+							return Task.CompletedTask;
+						}
+					};
+					options.TokenValidationParameters = new TokenValidationParameters
+					{
+						NameClaimType = JwtClaimTypes.Name,
+						RoleClaimType = JwtClaimTypes.Role,
+						ValidIssuers = bearerOptions.Issuer,
+						//ValidAudience = "api",
+						ValidateIssuer = bearerOptions.ValidateIssuer,
+						ValidateAudience = bearerOptions.ValidateAudience,
+						IssuerSigningKey = new SymmetricSecurityKey(key)
+					};
+				});
 		return services;
 	}
 
@@ -166,20 +164,16 @@ public static class ServiceCollectionExtensions
 	}
 
 	/// <summary>
-	/// Add <see cref="Serilog.ILogger"/> as logging provider.
+	/// Adds an IClaimsTransformation for transforming scope claims to the DI container.
 	/// </summary>
 	/// <param name="services"></param>
+	/// <param name="factory"></param>
 	/// <returns></returns>
-	public static IServiceCollection AddSerilog(this IServiceCollection services)
+	public static IServiceCollection AddUserPrincipal(this IServiceCollection services, Func<IServiceProvider, UserPrincipal> factory)
 	{
-		var configuration = services.GetConfiguration();
-
-		services.AddLogging(builder =>
+		services.TryAddScoped(provider =>
 		{
-			builder.AddConfiguration(configuration.GetSection("Logging"));
-			builder.AddDebug()
-			       .AddConsole()
-			       .AddSerilog();
+			return factory(provider);
 		});
 		return services;
 	}
