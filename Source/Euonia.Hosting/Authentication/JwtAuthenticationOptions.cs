@@ -1,3 +1,5 @@
+using IdentityModel;
+
 namespace Microsoft.AspNetCore.Authentication;
 
 /// <summary>
@@ -49,4 +51,14 @@ public class JwtAuthenticationOptions
 	/// Gets or sets a value indicating if the audience should be validated.
 	/// </summary>
 	public bool ValidateAudience { get; set; } = true;
+
+	/// <summary>
+	/// Gets or sets a value that defines the NameClaimType.
+	/// </summary>
+	public string NameClaimType { get; set; } = JwtClaimTypes.Name;
+
+	/// <summary>
+	/// Gets or sets a value that defines the RoleClaimType.
+	/// </summary>
+	public string RoleClaimType { get; set; } = JwtClaimTypes.Role;
 }
