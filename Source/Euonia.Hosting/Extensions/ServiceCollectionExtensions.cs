@@ -83,6 +83,8 @@ public static class ServiceCollectionExtensions
 				{
 					options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 					options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+					options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+					options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 				})
 				.AddJwtBearer(options =>
 				{
@@ -103,29 +105,31 @@ public static class ServiceCollectionExtensions
 						},
 						OnChallenge = context =>
 						{
-							Console.WriteLine(context);
+							System.Diagnostics.Debug.WriteLine(context.Error);
+							Console.WriteLine(context.ErrorDescription);
 							return Task.CompletedTask;
 						},
 						OnAuthenticationFailed = context =>
 						{
-							Console.WriteLine(context);
+							System.Diagnostics.Debug.WriteLine(context.Result.Failure);
+							System.Diagnostics.Debug.WriteLine(context.Exception);
 							return Task.CompletedTask;
 						},
 						OnForbidden = context =>
 						{
-							Console.WriteLine(context);
+							System.Diagnostics.Debug.WriteLine(context.Result.Failure);
 							return Task.CompletedTask;
 						},
 						OnTokenValidated = context =>
 						{
-							Console.WriteLine(context);
+							System.Diagnostics.Debug.WriteLine(context.Result.Failure);
 							return Task.CompletedTask;
 						}
 					};
 					options.TokenValidationParameters = new TokenValidationParameters
 					{
-						NameClaimType = JwtClaimTypes.Name,
-						RoleClaimType = JwtClaimTypes.Role,
+						NameClaimType = bearerOptions.NameClaimType,
+						RoleClaimType = bearerOptions.RoleClaimType,
 						ValidIssuers = bearerOptions.Issuer,
 						//ValidAudience = "api",
 						ValidateIssuer = bearerOptions.ValidateIssuer,
