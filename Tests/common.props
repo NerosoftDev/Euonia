@@ -2,7 +2,7 @@
     <Import Project="..\project.props" />
 
     <PropertyGroup>
-        <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+        <TargetFramework>net9.0</TargetFramework>
 		<RootNamespace>Nerosoft.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
 		<IsPackable>false</IsPackable>
     </PropertyGroup>
