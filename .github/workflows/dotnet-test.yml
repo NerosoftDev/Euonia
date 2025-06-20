@@ -28,10 +28,10 @@ jobs:
         dotnet-version: ${{ matrix.dotnet-version }}
         
     - name: Restore packages
-      run: dotnet restore Euonia.sln
+      run: dotnet restore Euonia.Test.slnx
     
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build Euonia.Test.slnx --configuration Release --no-restore
       
     - name: Test
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test Euonia.Test.slnx --no-restore --verbosity normal
