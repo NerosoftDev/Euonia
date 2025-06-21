@@ -9,7 +9,7 @@
         <QuartzVersion>3.14.0</QuartzVersion>
     </PropertyGroup>
     <ItemGroup>
-        <PackageVersion Include="Apache.NMS.ActiveMQ" Version="2.1.0" />
+        <PackageVersion Include="Apache.NMS.ActiveMQ" Version="2.1.1" />
         <PackageVersion Include="Autofac" Version="8.3.0" />
         <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="10.0.0" />
         <PackageVersion Include="Autofac.Extras.DynamicProxy" Version="7.1.0" />
