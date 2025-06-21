@@ -30,7 +30,7 @@ public sealed class ObservableGroupedCollection<TKey, TValue> : ObservableCollec
     /// Tries to get the underlying <see cref="List{T}"/> instance, if present.
     /// </summary>
     /// <param name="list">The resulting <see cref="List{T}"/>, if one was in use.</param>
-    /// <returns>Whether or not a <see cref="List{T}"/> instance has been found.</returns>
+    /// <returns>Whether a <see cref="List{T}"/> instance has been found.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal bool TryGetList(out List<ObservableGroup<TKey, TValue>> list)
     {

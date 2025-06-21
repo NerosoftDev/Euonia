@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Globalization;
+using System.Reflection;
+using System.Resources;
 using Nerosoft.Euonia.Reflection;
 
 public static partial class Extensions
@@ -37,6 +39,30 @@ public static partial class Extensions
 	{
 		var attribute = @enum.GetAttribute<DescriptionAttribute>();
 		return attribute?.Description ?? @enum.ToString();
+	}
+
+	/// <summary>
+	/// Gets the enum field description text from a resource manager.
+	/// </summary>
+	/// <param name="enum"></param>
+	/// <param name="resourceManager"></param>
+	/// <param name="resourceCulture"></param>
+	/// <returns></returns>
+	/// <exception cref="NullReferenceException"></exception>
+	public static string GetDescription(this Enum @enum, ResourceManager resourceManager, CultureInfo resourceCulture = null)
+	{
+		resourceCulture = resourceCulture ?? CultureInfo.CurrentCulture;
+
+		var field = @enum.GetType().GetField(@enum.ToString());
+		if (field == null)
+		{
+			throw new NullReferenceException($"Field ‘{@enum}’ not defined.");
+		}
+
+		var attribute = field.GetCustomAttribute<DescriptionAttribute>();
+		var key = attribute?.Description ?? @enum.ToString();
+		var value = resourceManager.GetString(key, resourceCulture);
+		return value;
 	}
 
 	/// <summary>
