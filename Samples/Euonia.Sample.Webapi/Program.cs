@@ -1,4 +1,4 @@
-using Nerosoft.Euonia.Hosting;
+﻿using Nerosoft.Euonia.Hosting;
 
 namespace Nerosoft.Euonia.Sample;
 
@@ -9,7 +9,6 @@ public class Program
         static void HostBuilderOptionsAction(HostBuilderOptions options)
         {
             options.EnableHttp2 = true;
-            options.UseSerilog = true;
             //options.ConfigureWebHostBuilder = WebHostBuilderAction;
         }
 

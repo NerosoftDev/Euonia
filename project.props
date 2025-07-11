@@ -1,10 +1,10 @@
-<Project>
+﻿<Project>
     <PropertyGroup>
-        <Version>8.1.26</Version>
+        <Version>9.0.2</Version>
         <Authors>damon</Authors>
         <Company>Nerosoft Ltd.</Company>
         <Product>Euonia</Product>
-        <Copyright>© 2018-2024 Nerosoft. All Rights Reserved.</Copyright>
+        <Copyright>© 2018-2025 Nerosoft. All Rights Reserved.</Copyright>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
         <LangVersion>latest</LangVersion>

@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Google.Protobuf.Collections;
-using Google.Protobuf.WellKnownTypes;
 using Nerosoft.Euonia.Mapping;
 using Type = System.Type;
 using Microsoft.Extensions.Options;
@@ -54,16 +52,15 @@ public static class ServiceCollectionExtensions
 		{
 			var expression = new MapperConfigurationExpression();
 
-			expression.MapGrpcTypes();
-
 			return services.AddSingleton(provider =>
 			{
+				expression.ConstructServicesUsing(type => ActivatorUtilities.GetServiceOrCreateInstance(provider, type));
 				var options = provider.GetService<IOptions<AutomapperOptions>>()?.Value;
 				if (options != null)
 				{
 					foreach (var configurator in options.Configurators)
 					{
-						configurator(expression);
+						configurator(provider, expression);
 					}
 				}
 
@@ -71,7 +68,7 @@ public static class ServiceCollectionExtensions
 
 				foreach (var profileType in (options?.ValidatingProfiles ?? new TypeList<Profile>()))
 				{
-					var profile = (Profile)Activator.CreateInstance(profileType);
+					var profile = (Profile)ActivatorUtilities.CreateInstance(provider, profileType);
 					if (profile == null)
 					{
 						throw new Exception($"{profileType} is a not valid AutoMapper profile.");
@@ -106,8 +103,6 @@ public static class ServiceCollectionExtensions
 		{
 			var expression = new MapperConfigurationExpression();
 
-			expression.MapGrpcTypes();
-
 			if (types != null)
 			{
 				foreach (var type in types)
@@ -140,19 +135,13 @@ public static class ServiceCollectionExtensions
 	/// </summary>
 	/// <param name="services"></param>
 	/// <param name="config"></param>
-	/// <param name="configureGrpcTypeMapping"></param>
 	/// <param name="assertConfiguration"></param>
 	/// <returns>A reference to this instance after the operation has completed.</returns>
-	public static IServiceCollection AddAutomapper(this IServiceCollection services, Action<MapperConfigurationExpression> config, bool configureGrpcTypeMapping = false, bool assertConfiguration = false)
+	public static IServiceCollection AddAutomapper(this IServiceCollection services, Action<MapperConfigurationExpression> config, bool assertConfiguration = false)
 	{
 		try
 		{
 			var expression = new MapperConfigurationExpression();
-
-			if (configureGrpcTypeMapping)
-			{
-				expression.MapGrpcTypes();
-			}
 
 			config?.Invoke(expression);
 			var mapperConfiguration = new MapperConfiguration(expression);
@@ -171,50 +160,5 @@ public static class ServiceCollectionExtensions
 			Console.WriteLine(exception);
 			throw;
 		}
-	}
-
-	private static void MapGrpcTypes(this IProfileExpression expression)
-	{
-		/*
-		expression.ForAllPropertyMaps(map => map.SourceType == typeof(Timestamp), (_, options) =>
-		{
-		    options.ConvertUsing(typeof(TimestampToDatetimeValueConverter));
-		});
-		expression.ForAllPropertyMaps(map => map.DestinationType == typeof(Timestamp), (_, options) =>
-		{
-		    options.ConvertUsing<DatetimeToTimestampValueConverter, object>();
-		});
-		expression.ForAllPropertyMaps(map => map.SourceType == typeof(Duration), (_, options) =>
-		{
-		    options.ConvertUsing(typeof(DurationToTimespanValueConverter));
-		});
-		expression.ForAllPropertyMaps(map => map.DestinationType == typeof(Duration), (_, options) =>
-		{
-		    options.ConvertUsing<TimespanToDurationValueConverter, object>();
-		});
-		*/
-
-		expression.CreateMap<Timestamp, DateTime?>()
-		          .ConvertUsing<TimestampToNullableDatetimeTypeConverter>();
-		expression.CreateMap<Timestamp, DateTime>()
-		          .ConvertUsing<TimestampToNotnullDatetimeTypeConverter>();
-		expression.CreateMap<DateTime?, Timestamp>()
-		          .ConvertUsing<DatetimeToTimestampTypeConverter<DateTime?>>();
-		expression.CreateMap<DateTime, Timestamp>()
-		          .ConvertUsing<DatetimeToTimestampTypeConverter<DateTime>>();
-
-		expression.CreateMap<TimeSpan?, Duration>()
-		          .ConvertUsing<TimespanToDurationTypeConverter<TimeSpan?>>();
-		expression.CreateMap<TimeSpan, Duration>()
-		          .ConvertUsing<TimespanToDurationTypeConverter<TimeSpan>>();
-		expression.CreateMap<Duration, TimeSpan?>()
-		          .ConvertUsing<DurationToNullableTimespanTypeConverter>();
-		expression.CreateMap<Duration, TimeSpan>()
-		          .ConvertUsing<DurationToNotnullTimespanTypeConverter>();
-
-		expression.CreateMap(typeof(IEnumerable<>), typeof(RepeatedField<>))
-		          .ConvertUsing(typeof(ListToRepeatedFieldTypeConverter<,>));
-		expression.CreateMap(typeof(RepeatedField<>), typeof(IEnumerable<>))
-		          .ConvertUsing(typeof(RepeatedFieldToListTypeConverter<,>));
 	}
 }

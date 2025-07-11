@@ -9,11 +9,15 @@
     <Import_RootNamespace>Nerosoft.Euonia.Mapping.Tests</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\StringHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\DestinationObject1.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\DestinationObject2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\DestinationObject3.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\SourceObject2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\SourceObject1.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\SourceObject3.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Test1.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Test2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test3.cs" />
   </ItemGroup>
 </Project>

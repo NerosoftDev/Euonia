@@ -15,7 +15,6 @@ public class HostingModule : ModuleContextBase
 	public override void ConfigureServices(ServiceConfigurationContext context)
 	{
 		context.Services.TryAddScoped<RequestContextAccessor>(_ => GetRequestContext);
-		context.Services.AddSerilog();
 		context.Services.AddScopeTransformation();
 		context.Services.AddUserPrincipal();
 		context.Services.AddObjectAccessor<IApplicationBuilder>();
@@ -32,15 +31,15 @@ public class HostingModule : ModuleContextBase
 			return new RequestContext
 			{
 				RequestHeaders = context.Request
-				                        .Headers
-				                        .ToDictionary(t => t.Key, t => t.Value.ToString()),
+										.Headers
+										.ToDictionary(t => t.Key, t => t.Value.ToString()),
 				ConnectionId = context.Connection.Id,
 				User = context.User,
 				RemotePort = context.Connection.RemotePort,
 				RemoteIpAddress = context.Connection.RemoteIpAddress,
 				RequestAborted = context.RequestAborted,
-				IsWebSocketRequest = context.WebSockets.IsWebSocketRequest, 
-				TraceIdentifier = context.TraceIdentifier, 
+				IsWebSocketRequest = context.WebSockets.IsWebSocketRequest,
+				TraceIdentifier = context.TraceIdentifier,
 				RequestServices = context.RequestServices
 			};
 		}
@@ -51,6 +50,12 @@ public class HostingModule : ModuleContextBase
 	{
 		base.OnApplicationInitialization(context);
 		var app = context.GetApplicationBuilder();
+		
+		if (app == null)
+		{
+			return;
+		}
+
 		app.UseMiddleware<RequestTraceMiddleware>();
 		app.UseMiddleware<ExceptionHandlingMiddleware>();
 
