@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using Nerosoft.Euonia.Mapping;
 using Type = System.Type;
 using Microsoft.Extensions.Options;
@@ -48,45 +49,40 @@ public static class ServiceCollectionExtensions
 	/// <returns>A reference to this instance after the operation has completed.</returns>
 	public static IServiceCollection AddAutomapper(this IServiceCollection services)
 	{
-		try
+		
+
+		return services.AddSingleton(provider =>
 		{
+			var logger = provider.GetService<ILoggerFactory>();
+			
 			var expression = new MapperConfigurationExpression();
-
-			return services.AddSingleton(provider =>
+			expression.ConstructServicesUsing(type => ActivatorUtilities.GetServiceOrCreateInstance(provider, type));
+			var options = provider.GetService<IOptions<AutomapperOptions>>()?.Value;
+			if (options != null)
 			{
-				expression.ConstructServicesUsing(type => ActivatorUtilities.GetServiceOrCreateInstance(provider, type));
-				var options = provider.GetService<IOptions<AutomapperOptions>>()?.Value;
-				if (options != null)
+				foreach (var configurator in options.Configurators)
 				{
-					foreach (var configurator in options.Configurators)
-					{
-						configurator(provider, expression);
-					}
+					configurator(provider, expression);
+				}
+			}
+
+			var mapperConfiguration = new MapperConfiguration(expression, logger);
+
+			foreach (var profileType in (options?.ValidatingProfiles ?? new TypeList<Profile>()))
+			{
+				var profile = (Profile)ActivatorUtilities.CreateInstance(provider, profileType);
+				if (profile == null)
+				{
+					throw new Exception($"{profileType} is a not valid AutoMapper profile.");
 				}
 
-				var mapperConfiguration = new MapperConfiguration(expression);
+				mapperConfiguration.AssertConfigurationIsValid();
+				//mapperConfiguration.AssertConfigurationIsValid(profile.ProfileName);
+			}
 
-				foreach (var profileType in (options?.ValidatingProfiles ?? new TypeList<Profile>()))
-				{
-					var profile = (Profile)ActivatorUtilities.CreateInstance(provider, profileType);
-					if (profile == null)
-					{
-						throw new Exception($"{profileType} is a not valid AutoMapper profile.");
-					}
-
-					mapperConfiguration.AssertConfigurationIsValid();
-					//mapperConfiguration.AssertConfigurationIsValid(profile.ProfileName);
-				}
-
-				var mapper = mapperConfiguration.CreateMapper();
-				return mapper;
-			});
-		}
-		catch (Exception exception)
-		{
-			Console.WriteLine(exception);
-			throw;
-		}
+			var mapper = mapperConfiguration.CreateMapper();
+			return mapper;
+		});
 	}
 
 	/// <summary>
@@ -99,8 +95,10 @@ public static class ServiceCollectionExtensions
 	/// <returns>A reference to this instance after the operation has completed.</returns>
 	public static IServiceCollection AddAutomapper(this IServiceCollection services, IEnumerable<Type> types, Action<MapperConfigurationExpression> config = null, bool assertConfiguration = false)
 	{
-		try
+		return services.AddSingleton(provider =>
 		{
+			var logger = provider.GetService<ILoggerFactory>();
+
 			var expression = new MapperConfigurationExpression();
 
 			if (types != null)
@@ -112,7 +110,7 @@ public static class ServiceCollectionExtensions
 			}
 
 			config?.Invoke(expression);
-			var mapperConfiguration = new MapperConfiguration(expression);
+			var mapperConfiguration = new MapperConfiguration(expression, logger);
 
 			if (assertConfiguration)
 			{
@@ -120,14 +118,8 @@ public static class ServiceCollectionExtensions
 			}
 
 			var mapper = mapperConfiguration.CreateMapper();
-
-			return services.AddSingleton(mapper);
-		}
-		catch (Exception exception)
-		{
-			Console.WriteLine(exception);
-			throw;
-		}
+			return mapper;
+		});
 	}
 
 	/// <summary>
@@ -139,12 +131,14 @@ public static class ServiceCollectionExtensions
 	/// <returns>A reference to this instance after the operation has completed.</returns>
 	public static IServiceCollection AddAutomapper(this IServiceCollection services, Action<MapperConfigurationExpression> config, bool assertConfiguration = false)
 	{
-		try
+		return services.AddSingleton(provider =>
 		{
+			var logger = provider.GetService<ILoggerFactory>();
+
 			var expression = new MapperConfigurationExpression();
 
 			config?.Invoke(expression);
-			var mapperConfiguration = new MapperConfiguration(expression);
+			var mapperConfiguration = new MapperConfiguration(expression, logger);
 
 			if (assertConfiguration)
 			{
@@ -152,13 +146,7 @@ public static class ServiceCollectionExtensions
 			}
 
 			var mapper = mapperConfiguration.CreateMapper();
-
-			return services.AddSingleton(mapper);
-		}
-		catch (Exception exception)
-		{
-			Console.WriteLine(exception);
-			throw;
-		}
+			return mapper;
+		});
 	}
 }
