@@ -109,14 +109,21 @@ public class BusConfigurator : IBusConfigurator
 	/// <returns></returns>
 	public IBusConfigurator RegisterHandlers(IEnumerable<Type> types)
 	{
-		var registrations = MessageHandlerFinder.Find(types);
-		var handlerTypes = registrations.Select(x => x.HandlerType).Distinct();
-		foreach (var handlerType in handlerTypes)
+		var registrations = MessageHandlerFinder.Find(types)?.ToList();
+		if (registrations != null)
 		{
-			Service.TryAddScoped(handlerType);
+			var handlerTypes = registrations.Select(x => x.HandlerType).Distinct();
+			foreach (var handlerType in handlerTypes)
+			{
+				Service.TryAddScoped(handlerType);
+			}
+
+			_registrations.AddRange(registrations);
 		}
 
-		_registrations.AddRange(registrations);
+		{
+			// prevent code analysis warning
+		}
 		return this;
 	}
 
