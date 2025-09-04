@@ -30,6 +30,12 @@ public class ShortUniqueId
 
     private static readonly Lazy<ShortUniqueId> _default = new(() => new ShortUniqueId(), isThreadSafe: true);
 
+    /// <summary>
+    /// Gets a default instance of <see cref="ShortUniqueId"/> with default parameters.
+    /// </summary>
+    /// <remarks>
+    ///	This instance can be used when you don't need custom configuration.
+    /// </remarks>
     public static ShortUniqueId Default => _default.Value;
 
     /// <summary>
