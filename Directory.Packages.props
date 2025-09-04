@@ -2,15 +2,15 @@
     <PropertyGroup>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
         <EnablePackageVersionOverride>true</EnablePackageVersionOverride>
-        <MicrosoftPackageVersion8>8.0.18</MicrosoftPackageVersion8>
-        <MicrosoftPackageVersion9>9.0.7</MicrosoftPackageVersion9>
-        <ExtensionsPackageVersion>9.0.7</ExtensionsPackageVersion>
+        <MicrosoftPackageVersion8>8.0.19</MicrosoftPackageVersion8>
+        <MicrosoftPackageVersion9>9.0.8</MicrosoftPackageVersion9>
+        <ExtensionsPackageVersion>9.0.8</ExtensionsPackageVersion>
         <GrpcAspNetCoreVersion>2.71.0</GrpcAspNetCoreVersion>
-        <QuartzVersion>3.14.0</QuartzVersion>
+        <QuartzVersion>3.15.0</QuartzVersion>
     </PropertyGroup>
     <ItemGroup>
         <PackageVersion Include="Apache.NMS.ActiveMQ" Version="2.1.1" />
-        <PackageVersion Include="Autofac" Version="8.3.0" />
+        <PackageVersion Include="Autofac" Version="8.4.0" />
         <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="10.0.0" />
         <PackageVersion Include="Autofac.Extras.DynamicProxy" Version="7.1.0" />
         <PackageVersion Include="AutoMapper" Version="15.0.1" />
@@ -26,7 +26,7 @@
         <PackageVersion Include="MediatR.Contracts" Version="2.0.1" />
         <PackageVersion Include="mongocsharpdriver" Version="2.30.0" />
         <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
-        <PackageVersion Include="Polly" Version="8.6.2" />
+        <PackageVersion Include="Polly" Version="8.6.3" />
         <PackageVersion Include="protobuf-net" Version="3.1.33" />
         <PackageVersion Include="Quartz" Version="$(QuartzVersion)" />
         <PackageVersion Include="Quartz.Extensions.DependencyInjection" Version="$(QuartzVersion)" />
@@ -40,17 +40,17 @@
         <PackageVersion Include="Serilog.Enrichers.Environment" Version="3.0.1" />
         <PackageVersion Include="Serilog.Sinks.Elasticsearch" Version="10.0.0" />
         <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />
-        <PackageVersion Include="StackExchange.Redis" Version="2.8.41" />
-        <PackageVersion Include="Swashbuckle.AspNetCore" Version="9.0.3" />
+        <PackageVersion Include="StackExchange.Redis" Version="2.9.11" />
+        <PackageVersion Include="Swashbuckle.AspNetCore" Version="9.0.4" />
         <PackageVersion Include="System.Collections.Immutable" Version="9.0.7" />
         <PackageVersion Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
         <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
         <PackageVersion Include="System.Interactive" Version="6.0.3" />
-        <PackageVersion Include="System.Diagnostics.PerformanceCounter" Version="9.0.7" />
-        <PackageVersion Include="System.Reactive" Version="6.0.1" />
-        <PackageVersion Include="System.Runtime.Caching" Version="9.0.7" />
+        <PackageVersion Include="System.Diagnostics.PerformanceCounter" Version="9.0.8" />
+        <PackageVersion Include="System.Reactive" Version="6.0.2" />
+        <PackageVersion Include="System.Runtime.Caching" Version="9.0.8" />
         <PackageVersion Include="System.Runtime.Loader" Version="4.3.0" />
-        <PackageVersion Include="System.Text.Json" Version="9.0.7" />
+        <PackageVersion Include="System.Text.Json" Version="9.0.8" />
         <PackageVersion Include="Winton.Extensions.Configuration.Consul" Version="3.2.0" />
         <PackageVersion Include="ZooKeeperNetEx" Version="3.4.12.4" />
     </ItemGroup>
@@ -111,7 +111,7 @@
     <!-- Grpc -->
     <ItemGroup>
         <PackageVersion Include="Google.Api.CommonProtos" Version="2.12.0" />
-        <PackageVersion Include="Google.Protobuf" Version="3.31.1" />
+        <PackageVersion Include="Google.Protobuf" Version="3.32.0" />
         <PackageVersion Include="Grpc" Version="2.46.6" />
         <PackageVersion Include="Grpc.AspNetCore" Version="$(GrpcAspNetCoreVersion)" />
         <PackageVersion Include="Grpc.AspNetCore.HealthChecks" Version="$(GrpcAspNetCoreVersion)" />
