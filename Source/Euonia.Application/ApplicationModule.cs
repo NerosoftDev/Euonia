@@ -14,6 +14,7 @@ public class ApplicationModule : ModuleContextBase
 		context.Services.AddTransient<IInterceptor, AuthorizationInterceptor>();
 		context.Services.AddTransient<IInterceptor, ValidationInterceptor>();
 		context.Services.AddTransient<IInterceptor, TracingInterceptor>();
+		context.Services.AddTransient<IInterceptor, LockInterceptor>();
 		context.Services.AddScoped(typeof(IUseCasePresenter<>), typeof(DefaultUseCasePresenter<>));
 	}
 }
