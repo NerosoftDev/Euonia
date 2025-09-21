@@ -17,12 +17,13 @@ public class LockInterceptor : IInterceptor
 		if (type != null)
 		{
 			var token = type.Token;
+			var maximumCount = type.MaximumCount;
 			if (string.IsNullOrEmpty(token))
 			{
 				token = $"{invocation.Method.DeclaringType?.FullName}.{invocation.Method.Name}";
 			}
 
-			var semaphoreSlim = LockInterceptorSemaphoreSlim.GetLock(token);
+			var semaphoreSlim = LockInterceptorSemaphoreSlim.GetOrCreateLock(token, maximumCount);
 
 			semaphoreSlim.Wait(type.Timeout);
 			try
@@ -42,21 +43,29 @@ public class LockInterceptor : IInterceptor
 }
 
 /// <summary>
-/// 
+/// The lock interceptor using SemaphoreSlim.
 /// </summary>
-internal class LockInterceptorSemaphoreSlim
+internal static class LockInterceptorSemaphoreSlim
 {
 	private static readonly Dictionary<string, SemaphoreSlim> _locks = new();
 
-	public static SemaphoreSlim GetLock(string key)
+	/// <summary>
+	/// Gets the lock associated with the specified key.
+	/// </summary>
+	/// <param name="key"></param>
+	/// <param name="maximumCount"></param>
+	/// <returns></returns>
+	public static SemaphoreSlim GetOrCreateLock(string key, int maximumCount = 1)
 	{
 		lock (_locks)
 		{
-			if (!_locks.TryGetValue(key, out var semaphoreSlim))
+			if (_locks.TryGetValue(key, out var semaphoreSlim))
 			{
-				semaphoreSlim = new SemaphoreSlim(1, 1);
-				_locks[key] = semaphoreSlim;
+				return semaphoreSlim;
 			}
+
+			semaphoreSlim = new SemaphoreSlim(maximumCount, maximumCount);
+			_locks[key] = semaphoreSlim;
 
 			return semaphoreSlim;
 		}
