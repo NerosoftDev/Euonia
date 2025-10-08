@@ -207,7 +207,7 @@ public readonly struct ObjectId
 	}
     
     /// <summary>
-    /// Generate an new random string id.
+    /// Generate a new random string id.
     /// </summary>
     /// <param name="seed"></param>
     /// <returns></returns>
