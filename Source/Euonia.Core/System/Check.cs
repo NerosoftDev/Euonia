@@ -4,13 +4,13 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 
 /// <summary>
-/// Exposes static methods for check value.
+/// Assertion utility class that provides methods for validating conditions and throwing exceptions when assertions fail.
 /// </summary>
 [DebuggerStepThrough]
 public static class Check
 {
 	/// <summary>
-	/// 
+	/// Asserts that the given expression evaluates to true. If it evaluates to false, an InvalidOperationException is thrown with the provided message.
 	/// </summary>
 	/// <param name="condition"></param>
 	/// <param name="message"></param>
@@ -28,7 +28,7 @@ public static class Check
 	}
 
 	/// <summary>
-	/// 
+	/// Asserts that the given expression evaluates to true. If it evaluates to false, an InvalidOperationException is thrown with the provided message.
 	/// </summary>
 	/// <param name="condition"></param>
 	/// <param name="message"></param>
