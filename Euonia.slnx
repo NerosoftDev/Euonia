@@ -1,0 +1,65 @@
+<Solution>
+    <Folder Name="/Samples/">
+        <Project Path="Samples\Euonia.Sample.Webapi\Euonia.Sample.Webapi.csproj" Type="Classic C#"/>
+        <File Path="Samples\common.props"/>
+    </Folder>
+    <Folder Name="/Solution/">
+        <File Path=".editorconfig"/>
+        <File Path="Directory.Packages.props"/>
+        <File Path="NuGet.config"/>
+        <File Path="README.md"/>
+        <File Path="project.props"/>
+    </Folder>
+    <Folder Name="/Source/">
+        <File Path="Source\common.props"/>
+        <File Path="Source\resource.props"/>
+    </Folder>
+    <Folder Name="/Source/Bus/">
+        <Project Path="Source\Euonia.Bus\Euonia.Bus.csproj" Type="Classic C#"/>
+        <Project Path="Source\Euonia.Bus.Abstract\Euonia.Bus.Abstract.csproj" Type="Classic C#"/>
+        <Project Path="Source\Euonia.Bus.ActiveMq\Euonia.Bus.ActiveMq.csproj" Type="Classic C#"/>
+        <Project Path="Source\Euonia.Bus.InMemory\Euonia.Bus.InMemory.csproj" Type="Classic C#"/>
+        <Project Path="Source\Euonia.Bus.RabbitMq\Euonia.Bus.RabbitMq.csproj" Type="Classic C#"/>
+    </Folder>
+    <Folder Name="/Source/Caching/">
+        <Project Path="Source\Euonia.Caching.Memory\Euonia.Caching.Memory.csproj" Type="Classic C#"/>
+        <Project Path="Source\Euonia.Caching.Redis\Euonia.Caching.Redis.csproj" Type="Classic C#"/>
+        <Project Path="Source\Euonia.Caching.Runtime\Euonia.Caching.Runtime.csproj" Type="Classic C#"/>
+        <Project Path="Source\Euonia.Caching\Euonia.Caching.csproj" Type="Classic C#"/>
+    </Folder>
+    <Folder Name="/Source/Core/">
+        <Project Path="Source\Euonia.Business\Euonia.Business.csproj" Type="Classic C#"/>
+        <Project Path="Source\Euonia.Core\Euonia.Core.csproj" Type="Classic C#"/>
+        <Project Path="Source\Euonia.Grpc\Euonia.Grpc.csproj" Type="Classic C#"/>
+        <Project Path="Source\Euonia.Hosting.Serilog\Euonia.Hosting.Serilog.csproj" Type="Classic C#"/>
+        <Project Path="Source\Euonia.Hosting\Euonia.Hosting.csproj" Type="Classic C#"/>
+        <Project Path="Source\Euonia.Linq\Euonia.Linq.csproj" Type="Classic C#"/>
+        <Project Path="Source\Euonia.Modularity\Euonia.Modularity.csproj" Type="Classic C#"/>
+        <Project Path="Source\Euonia.Pipeline\Euonia.Pipeline.csproj" Type="Classic C#"/>
+        <Project Path="Source\Euonia.Quartz\Euonia.Quartz.csproj" Type="Classic C#"/>
+        <Project Path="Source\Euonia.Validation\Euonia.Validation.csproj" Type="Classic C#"/>
+    </Folder>
+    <Folder Name="/Source/DDD/">
+        <Project Path="Source\Euonia.Application\Euonia.Application.csproj" Type="Classic C#"/>
+        <Project Path="Source\Euonia.Domain\Euonia.Domain.csproj" Type="Classic C#"/>
+        <Project Path="Source\Euonia.Repository\Euonia.Repository.csproj" Type="Classic C#"/>
+        <Project Path="Source\Euonia.Repository.EfCore\Euonia.Repository.EfCore.csproj" Type="Classic C#"/>
+        <Project Path="Source\Euonia.Repository.Mongo\Euonia.Repository.Mongo.csproj" Type="Classic C#"/>
+    </Folder>
+    <Folder Name="Source/Mapping/">
+        <Project Path="Source\Euonia.Mapping\Euonia.Mapping.csproj" Type="Classic C#"/>
+        <Project Path="Source\Euonia.Mapping.Automapper\Euonia.Mapping.Automapper.csproj" Type="Classic C#"/>
+        <Project Path="Source\Euonia.Mapping.Mapster\Euonia.Mapping.Mapster.csproj" Type="Classic C#"/>
+    </Folder>
+    <Folder Name="Source/Threading/">
+        <Project Path="Source\Euonia.Threading\Euonia.Threading.csproj" Type="Classic C#"/>
+        <Project Path="Source\Euonia.Threading.Azure\Euonia.Threading.Azure.csproj" Type="Classic C#"/>
+        <Project Path="Source\Euonia.Threading.FileSystem\Euonia.Threading.FileSystem.csproj" Type="Classic C#"/>
+        <Project Path="Source\Euonia.Threading.Redis\Euonia.Threading.Redis.csproj" Type="Classic C#"/>
+        <Project Path="Source\Euonia.Threading.Zookeeper\Euonia.Threading.Zookeeper.csproj" Type="Classic C#"/>
+    </Folder>
+    <Folder Name="Tests">
+        <Project Path="Tests\Euonia.Tests\Euonia.Tests.csproj" Type="Classic C#"/>
+        <File Path="Tests\common.props"/>
+    </Folder>
+</Solution>
