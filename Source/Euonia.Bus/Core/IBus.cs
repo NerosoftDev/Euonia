@@ -104,7 +104,7 @@ public interface IBus
 	/// <param name="message"></param>
 	/// <param name="cancellationToken"></param>
 	/// <returns></returns>
-	Task<TResult> SendAsync<TResult>(IRequest<TResult> message, CancellationToken cancellationToken = default) => SendAsync(message, new SendOptions(), null, null, cancellationToken);
+	Task<TResult> RequestAsync<TResult>(IRequest<TResult> message, CancellationToken cancellationToken = default) => RequestAsync(message, new SendOptions(), null, null, cancellationToken);
 
 	/// <summary>
 	/// Sends the specified message.
@@ -116,5 +116,5 @@ public interface IBus
 	/// <param name="callback"></param>
 	/// <param name="cancellationToken"></param>
 	/// <returns></returns>
-	Task<TResult> SendAsync<TResult>(IRequest<TResult> message, SendOptions options, Action<MessageMetadata> metadataSetter = null, Action<TResult> callback = null, CancellationToken cancellationToken = default);
+	Task<TResult> RequestAsync<TResult>(IRequest<TResult> message, SendOptions options, Action<MessageMetadata> metadataSetter = null, Action<TResult> callback = null, CancellationToken cancellationToken = default);
 }

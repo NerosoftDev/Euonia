@@ -52,8 +52,8 @@ public sealed class ServiceBus : IBus
 		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel(messageType);
 		var pack = new RoutedMessage<TMessage>(message, channelName)
 		{
-			MessageId = options.MessageId ?? Guid.NewGuid().ToString(),
-			RequestTraceId = context?.TraceIdentifier ?? options.RequestTraceId ?? Guid.NewGuid().ToString("N"),
+			MessageId = options.MessageId ?? ObjectId.NewGuid(GuidType.SequentialAsString).ToString(),
+			RequestTraceId = context?.TraceIdentifier ?? options.RequestTraceId ?? ObjectId.NewGuid(GuidType.SequentialAsString).ToString("N"),
 			Authorization = context?.Authorization,
 		};
 		metadataSetter?.Invoke(pack.Metadata);
@@ -78,15 +78,16 @@ public sealed class ServiceBus : IBus
 		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel(messageType);
 		var pack = new RoutedMessage<TMessage>(message, channelName)
 		{
-			MessageId = options.MessageId ?? Guid.NewGuid().ToString(),
-			CorrelationId = options.CorrelationId ?? Guid.NewGuid().ToString(),
-			RequestTraceId = context?.TraceIdentifier ?? options.RequestTraceId ?? Guid.NewGuid().ToString("N"),
+			MessageId = options.MessageId ?? ObjectId.NewGuid(GuidType.SequentialAsString).ToString(),
+			CorrelationId = options.CorrelationId ?? ObjectId.NewGuid(GuidType.SequentialAsString).ToString(),
+			RequestTraceId = context?.TraceIdentifier ?? options.RequestTraceId ?? ObjectId.NewGuid(GuidType.SequentialAsString).ToString("N"),
 			Authorization = context?.Authorization,
 		};
 
 		metadataSetter?.Invoke(pack.Metadata);
 
-		return _dispatcher.SendAsync(pack, cancellationToken).ContinueWith(task => task.WaitAndUnwrapException(cancellationToken), cancellationToken);
+		return _dispatcher.SendAsync(pack, cancellationToken)
+		                  .ContinueWith(task => task.WaitAndUnwrapException(cancellationToken), cancellationToken);
 	}
 
 	/// <inheritdoc />
@@ -97,9 +98,9 @@ public sealed class ServiceBus : IBus
 
 		var messageType = message.GetType();
 
-		if (!_convention.IsRequestType(messageType))
+		if (!_convention.IsQueueType(messageType) && !_convention.IsRequestType(messageType))
 		{
-			throw new MessageTypeException("The message type is not a queue type.");
+			throw new MessageTypeException("The message type is not a queue type or request type.");
 		}
 
 		var context = _requestAccessor?.Context;
@@ -107,9 +108,9 @@ public sealed class ServiceBus : IBus
 		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel(messageType);
 		var pack = new RoutedMessage<TMessage, TResult>(message, channelName)
 		{
-			MessageId = options.MessageId ?? Guid.NewGuid().ToString(),
-			CorrelationId = options.CorrelationId ?? Guid.NewGuid().ToString(),
-			RequestTraceId = context?.TraceIdentifier ?? options.RequestTraceId ?? Guid.NewGuid().ToString("N"),
+			MessageId = options.MessageId ?? ObjectId.NewGuid(GuidType.SequentialAsString).ToString(),
+			CorrelationId = options.CorrelationId ?? ObjectId.NewGuid(GuidType.SequentialAsString).ToString(),
+			RequestTraceId = context?.TraceIdentifier ?? options.RequestTraceId ?? ObjectId.NewGuid(GuidType.SequentialAsString).ToString("N"),
 			Authorization = context?.Authorization,
 		};
 
@@ -126,7 +127,7 @@ public sealed class ServiceBus : IBus
 	}
 
 	/// <inheritdoc />
-	public Task<TResult> SendAsync<TResult>(IRequest<TResult> message, SendOptions options, Action<MessageMetadata> metadataSetter = null, Action<TResult> callback = null, CancellationToken cancellationToken = default)
+	public Task<TResult> RequestAsync<TResult>(IRequest<TResult> message, SendOptions options, Action<MessageMetadata> metadataSetter = null, Action<TResult> callback = null, CancellationToken cancellationToken = default)
 	{
 		options ??= new SendOptions();
 
@@ -142,9 +143,9 @@ public sealed class ServiceBus : IBus
 		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel(messageType);
 		var pack = new RoutedMessage<IRequest<TResult>, TResult>(message, channelName)
 		{
-			MessageId = options.MessageId ?? Guid.NewGuid().ToString(),
-			CorrelationId = options.CorrelationId ?? Guid.NewGuid().ToString(),
-			RequestTraceId = context?.TraceIdentifier ?? options.RequestTraceId ?? Guid.NewGuid().ToString("N"),
+			MessageId = options.MessageId ?? ObjectId.NewGuid(GuidType.SequentialAsString).ToString(),
+			CorrelationId = options.CorrelationId ?? ObjectId.NewGuid(GuidType.SequentialAsString).ToString(),
+			RequestTraceId = context?.TraceIdentifier ?? options.RequestTraceId ?? ObjectId.NewGuid(GuidType.SequentialAsString).ToString("N"),
 			Authorization = context?.Authorization,
 		};
 

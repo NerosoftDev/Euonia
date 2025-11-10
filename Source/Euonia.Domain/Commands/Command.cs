@@ -15,7 +15,7 @@ public abstract class Command : ICommand
 	/// </summary>
 	protected Command()
 	{
-		Properties[PROPERTY_ID] = Guid.NewGuid().ToString();
+		Properties[PROPERTY_ID] = ObjectId.NewGuid(GuidType.SequentialAsString).ToString();
 	}
 
 	/// <summary>

@@ -24,19 +24,19 @@ public abstract class RoutedMessage
 	/// Gets or sets the message identifier.
 	/// </summary>
 	[DataMember]
-	public virtual string MessageId { get; set; } = Guid.NewGuid().ToString();
+	public virtual string MessageId { get; set; } = ObjectId.NewGuid(GuidType.SequentialAsString).ToString();
 
 	/// <summary>
 	/// Gets or sets the correlation identifier.
 	/// </summary>
 	[DataMember]
-	public virtual string CorrelationId { get; set; } = Guid.NewGuid().ToString();
+	public virtual string CorrelationId { get; set; } = ObjectId.NewGuid(GuidType.SequentialAsString).ToString();
 
 	/// <summary>
 	/// Gets or sets the conversation identifier.
 	/// </summary>
 	[DataMember]
-	public virtual string ConversationId { get; set; } = Guid.NewGuid().ToString();
+	public virtual string ConversationId { get; set; } = ObjectId.NewGuid(GuidType.SequentialAsString).ToString();
 
 	/// <summary>
 	/// Gets or sets the request trace identifier.

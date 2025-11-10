@@ -66,7 +66,7 @@ public class ServiceBusTests
 		}
 		else
 		{
-			var result = await _provider.GetService<IBus>().SendAsync<int>(new FooCreateCommand(), new SendOptions { Channel = "foo.create" });
+			var result = await _provider.GetService<IBus>().RequestAsync<int>(new FooCreateCommand(), new SendOptions { Channel = "foo.create" });
 			Assert.Equal(1, result);
 		}
 	}
@@ -82,7 +82,7 @@ public class ServiceBusTests
 		{
 			await Assert.ThrowsAnyAsync<MessageDeliverException>(async () =>
 			{
-				var _ = await _provider.GetService<IBus>().SendAsync<int>(new FooCreateCommand());
+				var _ = await _provider.GetService<IBus>().RequestAsync<int>(new FooCreateCommand());
 			});
 		}
 	}
