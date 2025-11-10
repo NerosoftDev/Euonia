@@ -98,9 +98,9 @@ public sealed class ServiceBus : IBus
 
 		var messageType = message.GetType();
 
-		if (!_convention.IsQueueType(messageType))
+		if (!_convention.IsQueueType(messageType) && !_convention.IsRequestType(messageType))
 		{
-			throw new MessageTypeException("The message type is not a queue type.");
+			throw new MessageTypeException("The message type is not a queue type or request type.");
 		}
 
 		var context = _requestAccessor?.Context;
