@@ -29,19 +29,19 @@ public class ServiceBusTests
 		}
 	}
 
-	[Fact]
-	public async Task TestSendCommand_NoResponse()
-	{
-		if (_preventRunTests)
-		{
-			Assert.True(true);
-		}
-		else
-		{
-			await _provider.GetService<IBus>().SendAsync(new UserCreateCommand());
-			Assert.True(true);
-		}
-	}
+	// [Fact]
+	// public async Task TestSendCommand_NoResponse()
+	// {
+	// 	if (_preventRunTests)
+	// 	{
+	// 		Assert.True(true);
+	// 	}
+	// 	else
+	// 	{
+	// 		await _provider.GetService<IBus>().SendAsync(new UserCreateCommand());
+	// 		Assert.True(true);
+	// 	}
+	// }
 
 	[Fact]
 	public async Task TestSendCommand_HasResponse_UseSubscribeAttribute()

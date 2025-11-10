@@ -29,4 +29,15 @@ public class DefaultMessageConvention : IMessageConvention
 
 		return type.IsAssignableTo(typeof(ITopic)) && type != typeof(ITopic);
 	}
+
+	/// <inheritdoc />
+	public bool IsRequestType(Type type)
+	{
+		if (type == null)
+		{
+			throw new ArgumentNullException(nameof(type), Resources.IDS_TYPE_CANNOT_NULL);
+		}
+
+		return type.IsAssignableToGeneric(typeof(IRequest<>));
+	}
 }

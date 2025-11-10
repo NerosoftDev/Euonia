@@ -44,6 +44,11 @@ public sealed class InMemoryRecipientRegistrar : IRecipientRegistrar
 				var recipient = GetRecipient<InMemoryTopicSubscriber>();
 				WeakReferenceMessenger.Default.Register(recipient, registration.Channel);
 			}
+			else if (_convention.IsRequestType(registration.MessageType))
+			{
+				var recipient = GetRecipient<InMemoryQueueConsumer>();
+				StrongReferenceMessenger.Default.Register(recipient, registration.Channel);
+			}
 			else
 			{
 				throw new MessageTypeException("The message type is neither a queue nor a topic.");
