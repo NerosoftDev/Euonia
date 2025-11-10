@@ -21,4 +21,14 @@ public class AttributeMessageConvention : IMessageConvention
 	{
 		return type.GetCustomAttribute<TopicAttribute>(false) != null;
 	}
+
+	/// <summary>
+	/// Determines whether the specified type is a request.
+	/// </summary>
+	/// <param name="type"></param>
+	/// <returns></returns>
+	public bool IsRequestType(Type type)
+	{
+		return type.GetCustomAttribute<RequestAttribute>(false) != null;
+	}
 }

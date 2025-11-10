@@ -97,7 +97,7 @@ public sealed class ServiceBus : IBus
 
 		var messageType = message.GetType();
 
-		if (!_convention.IsQueueType(messageType))
+		if (!_convention.IsRequestType(messageType))
 		{
 			throw new MessageTypeException("The message type is not a queue type.");
 		}
@@ -116,13 +116,13 @@ public sealed class ServiceBus : IBus
 		metadataSetter?.Invoke(pack.Metadata);
 
 		return _dispatcher.SendAsync(pack, cancellationToken)
-						  .ContinueWith(task =>
-						  {
-							  task.WaitAndUnwrapException();
-							  var result = task.Result;
-							  callback?.Invoke(result);
-							  return result;
-						  }, cancellationToken);
+		                  .ContinueWith(task =>
+		                  {
+			                  task.WaitAndUnwrapException();
+			                  var result = task.Result;
+			                  callback?.Invoke(result);
+			                  return result;
+		                  }, cancellationToken);
 	}
 
 	/// <inheritdoc />
@@ -132,7 +132,7 @@ public sealed class ServiceBus : IBus
 
 		var messageType = message.GetType();
 
-		if (!_convention.IsQueueType(messageType))
+		if (!_convention.IsRequestType(messageType))
 		{
 			throw new MessageTypeException("The message type is not a queue type.");
 		}
@@ -151,12 +151,12 @@ public sealed class ServiceBus : IBus
 		metadataSetter?.Invoke(pack.Metadata);
 
 		return _dispatcher.SendAsync(pack, cancellationToken)
-						  .ContinueWith(task =>
-						  {
-							  task.WaitAndUnwrapException();
-							  var result = task.Result;
-							  callback?.Invoke(result);
-							  return result;
-						  }, cancellationToken);
+		                  .ContinueWith(task =>
+		                  {
+			                  task.WaitAndUnwrapException();
+			                  var result = task.Result;
+			                  callback?.Invoke(result);
+			                  return result;
+		                  }, cancellationToken);
 	}
 }

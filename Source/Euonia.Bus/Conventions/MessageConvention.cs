@@ -11,6 +11,7 @@ public class MessageConvention : IMessageConvention
 	private readonly List<IMessageConvention> _conventions = new();
 	private readonly ConventionCache _topicConventionCache = new();
 	private readonly ConventionCache _queueConventionCache = new();
+	private readonly ConventionCache _requestConventionCache = new();
 
 	/// <summary>
 	/// Determines whether the specified type is a command.
@@ -46,6 +47,18 @@ public class MessageConvention : IMessageConvention
 		});
 	}
 
+	/// <inheritdoc />
+	public bool IsRequestType(Type type)
+	{
+		ArgumentAssert.ThrowIfNull(type);
+
+		return _requestConventionCache.Apply(type, handle =>
+		{
+			var t = Type.GetTypeFromHandle(handle);
+			return _conventions.Any(x => x.IsRequestType(t));
+		});
+	}
+
 	internal void DefineQueueTypeConvention(Func<Type, bool> convention)
 	{
 		_defaultConvention.DefineQueueType(convention);
@@ -54,6 +67,11 @@ public class MessageConvention : IMessageConvention
 	internal void DefineTopicTypeConvention(Func<Type, bool> convention)
 	{
 		_defaultConvention.DefineTopicType(convention);
+	}
+
+	internal void DefineRequestTypeConvention(Func<Type, bool> convention)
+	{
+		_defaultConvention.DefineRequestType(convention);
 	}
 
 	internal void DefineTypeConvention(Func<Type, MessageConventionType> convention)

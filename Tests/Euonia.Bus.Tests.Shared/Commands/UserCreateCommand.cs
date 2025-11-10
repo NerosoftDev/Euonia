@@ -1,6 +1,6 @@
 ﻿namespace Nerosoft.Euonia.Bus.Tests.Commands;
 
-[Queue]
+[Request(typeof(int))]
 public class UserCreateCommand
 {
 }

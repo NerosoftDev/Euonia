@@ -18,9 +18,16 @@ public interface IMessageConvention
 	bool IsQueueType(Type type);
 
 	/// <summary>
-	/// Determine if a type is an topic type.
+	/// Determine if a type is a topic type.
 	/// </summary>
 	/// <param name="type">The type to check.</param>.
-	/// <returns>true if <paramref name="type"/> represents an topic message.</returns>
+	/// <returns>true if <paramref name="type"/> represents a topic message.</returns>
 	bool IsTopicType(Type type);
+	
+	/// <summary>
+	/// Determine if a type is a request type.
+	/// </summary>
+	/// <param name="type">The type to check.</param>
+	/// <returns>true if <paramref name="type"/> represents a request message.</returns>
+	bool IsRequestType(Type type);
 }

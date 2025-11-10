@@ -14,13 +14,13 @@ public class Startup
 	public void ConfigureHost(IHostBuilder hostBuilder)
 	{
 		hostBuilder.ConfigureAppConfiguration(builder =>
-		{
-			builder.AddJsonFile("appsettings.json");
-		})
-				   .ConfigureServices((_, _) =>
-				   {
-					   // Register service here.
-				   });
+		           {
+			           builder.AddJsonFile("appsettings.json");
+		           })
+		           .ConfigureServices((_, _) =>
+		           {
+			           // Register service here.
+		           });
 	}
 
 	// ConfigureServices(IServiceCollection services)
@@ -40,6 +40,7 @@ public class Startup
 					builder.Add<AttributeMessageConvention>();
 					builder.EvaluateQueue(t => t.Name.EndsWith("Command"));
 					builder.EvaluateTopic(t => t.Name.EndsWith("Event"));
+					builder.EvaluateRequest(t => t.Name.EndsWith("Request"));
 				});
 				config.UseRabbitMq(options =>
 				{

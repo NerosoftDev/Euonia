@@ -57,6 +57,38 @@ public static partial class Extensions
 	}
 
 	/// <summary>
+	/// Determines whether an instance of this type can be assigned to
+	/// an instance of the generic type <paramref name="genericType"/>.
+	/// Internally checks all interfaces and base types.
+	/// </summary>
+	/// <param name="type"></param>
+	/// <param name="genericType"></param>
+	/// <returns></returns>
+	public static bool IsAssignableToGeneric([NotNull] this Type type, [NotNull] Type genericType)
+	{
+		Check.EnsureNotNull(type, nameof(type));
+		Check.EnsureNotNull(genericType, nameof(genericType));
+
+		var isTheRawGenericType = type.GetInterfaces().Any(IsTheRawGenericType);
+		if (isTheRawGenericType)
+		{
+			return true;
+		}
+
+		while (type != null && type != typeof(object))
+		{
+			isTheRawGenericType = IsTheRawGenericType(type);
+			if (isTheRawGenericType)
+				return true;
+			type = type.BaseType;
+		}
+
+		return false;
+
+		bool IsTheRawGenericType(Type test) => genericType == (test.IsGenericType ? test.GetGenericTypeDefinition() : test);
+	}
+
+	/// <summary>
 	/// Gets all base classes of this type.
 	/// </summary>
 	/// <param name="type">The type to get its base classes.</param>

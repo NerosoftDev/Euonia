@@ -35,6 +35,10 @@ public sealed class RabbitMqRecipientRegistrar : IRecipientRegistrar
 			{
 				recipient = ActivatorUtilities.GetServiceOrCreateInstance<RabbitMqTopicSubscriber>(_provider);
 			}
+			else if (_convention.IsRequestType(registration.MessageType))
+			{
+				recipient = ActivatorUtilities.GetServiceOrCreateInstance<RabbitMqQueueConsumer>(_provider);
+			}
 			else
 			{
 				throw new InvalidOperationException("The message type is neither a queue nor a topic.");
