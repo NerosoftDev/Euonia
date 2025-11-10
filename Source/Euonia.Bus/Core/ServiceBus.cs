@@ -126,7 +126,7 @@ public sealed class ServiceBus : IBus
 	}
 
 	/// <inheritdoc />
-	public Task<TResult> SendAsync<TResult>(IQueue<TResult> message, SendOptions options, Action<MessageMetadata> metadataSetter = null, Action<TResult> callback = null, CancellationToken cancellationToken = default)
+	public Task<TResult> SendAsync<TResult>(IRequest<TResult> message, SendOptions options, Action<MessageMetadata> metadataSetter = null, Action<TResult> callback = null, CancellationToken cancellationToken = default)
 	{
 		options ??= new SendOptions();
 
@@ -140,7 +140,7 @@ public sealed class ServiceBus : IBus
 		var context = _requestAccessor?.Context;
 
 		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel(messageType);
-		var pack = new RoutedMessage<IQueue<TResult>, TResult>(message, channelName)
+		var pack = new RoutedMessage<IRequest<TResult>, TResult>(message, channelName)
 		{
 			MessageId = options.MessageId ?? Guid.NewGuid().ToString(),
 			CorrelationId = options.CorrelationId ?? Guid.NewGuid().ToString(),

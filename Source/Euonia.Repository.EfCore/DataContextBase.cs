@@ -79,6 +79,14 @@ public abstract class DataContextBase<TContext> : DbContext, IRepositoryContext
 		await Database.RollbackTransactionAsync(cancellationToken);
 	}
 
+	/// <inheritdoc />
+	public virtual IEnumerable<object> GetTrackedEntries()
+	{
+		var entries = ChangeTracker.Entries();
+
+		return entries;
+	}
+
 	#endregion
 
 	/// <inheritdoc cref="DbContext.SaveChangesAsync(CancellationToken)" />
@@ -114,19 +122,17 @@ public abstract class DataContextBase<TContext> : DbContext, IRepositoryContext
 			switch (entry.State)
 			{
 				case EntityState.Added:
-					if (entry.Entity is IHasCreateTime)
+					switch (entry.Entity)
 					{
-						entry.CurrentValues[nameof(IHasCreateTime.CreateTime)] = time;
-					}
-
-					if (entry.Entity is IHasUpdateTime)
-					{
-						entry.CurrentValues[nameof(IHasUpdateTime.UpdateTime)] = time;
-					}
-
-					if (entry.Entity is ITombstone)
-					{
-						entry.CurrentValues[nameof(ITombstone.IsDeleted)] = false;
+						case IHasCreateTime:
+							entry.CurrentValues[nameof(IHasCreateTime.CreateTime)] = time;
+							break;
+						case IHasUpdateTime:
+							entry.CurrentValues[nameof(IHasUpdateTime.UpdateTime)] = time;
+							break;
+						case ITombstone:
+							entry.CurrentValues[nameof(ITombstone.IsDeleted)] = false;
+							break;
 					}
 
 					break;
@@ -140,7 +146,6 @@ public abstract class DataContextBase<TContext> : DbContext, IRepositoryContext
 
 					break;
 				case EntityState.Detached:
-					break;
 				case EntityState.Unchanged:
 					break;
 				case EntityState.Modified:
