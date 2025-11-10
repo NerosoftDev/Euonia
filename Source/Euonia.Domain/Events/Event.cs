@@ -16,7 +16,7 @@ public abstract class Event : IEvent
 	{
 		var type = GetType();
 		EventIntent = type.Name;
-		Properties[PROPERTY_ID] = Guid.NewGuid().ToString();
+		Properties[PROPERTY_ID] = ObjectId.NewGuid(GuidType.SequentialAsString).ToString();
 	}
 
 	/// <summary>

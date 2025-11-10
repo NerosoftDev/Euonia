@@ -30,7 +30,7 @@ public abstract class DomainEvent : Event, IDomainEvent
 	{
 		return new EventAggregate
 		{
-			Id = Guid.NewGuid().ToString(),
+			Id = ObjectId.NewGuid(GuidType.SequentialAsString).ToString(),
 			TypeName = GetType().AssemblyQualifiedName,
 			EventIntent = EventIntent,
 			Timestamp = DateTime.UtcNow,
