@@ -4,7 +4,7 @@ using Nerosoft.Euonia.Pipeline;
 namespace Nerosoft.Euonia.Bus;
 
 /// <summary>
-/// 
+/// Logs the routed messages.
 /// </summary>
 public sealed class MessageLoggingBehavior : IPipelineBehavior<IRoutedMessage>
 {
