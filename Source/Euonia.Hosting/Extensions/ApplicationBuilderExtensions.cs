@@ -11,12 +11,12 @@ using Nerosoft.Euonia.Modularity;
 namespace Microsoft.AspNetCore.Builder;
 
 /// <summary>
-/// 
+/// Extension methods for <see cref="IApplicationBuilder"/>.
 /// </summary>
 public static class ApplicationBuilderExtensions
 {
     /// <summary>
-    /// 
+    /// Set current thread culture from Accept-Language header
     /// </summary>
     /// <param name="app"></param>
     /// <returns></returns>
@@ -35,7 +35,7 @@ public static class ApplicationBuilderExtensions
     }
 
     /// <summary>
-    /// 
+    /// Use JWT token from Authorization header to set HttpContext.User
     /// </summary>
     /// <param name="app"></param>
     /// <returns></returns>
@@ -65,7 +65,7 @@ public static class ApplicationBuilderExtensions
     }
 
     /// <summary>
-    /// 
+    /// Use JWT authentication middleware
     /// </summary>
     /// <param name="app"></param>
     /// <param name="schema"></param>
@@ -88,7 +88,7 @@ public static class ApplicationBuilderExtensions
     }
 
     /// <summary>
-    /// 
+    /// Initialize the application.
     /// </summary>
     /// <param name="app"></param>
     public static void InitializeApplication(this IApplicationBuilder app)

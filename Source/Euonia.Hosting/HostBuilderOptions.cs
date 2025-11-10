@@ -46,7 +46,7 @@ public class HostBuilderOptions
     public Action<ContainerBuilder> ConfigureContainerBuilder { get; set; }
 
     /// <summary>
-    /// 
+    /// Gets or sets handle action for <see cref="IHostBuilder"/>
     /// </summary>
     public Action<IHostBuilder> ConfigureHostBuilder { get; set; }
 }

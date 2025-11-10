@@ -10,7 +10,7 @@ namespace Nerosoft.Euonia.Hosting;
 /// <summary>
 /// A middleware for handle exception.
 /// </summary>
-public class ExceptionHandlingMiddleware : IMiddleware
+internal class ExceptionHandlingMiddleware : IMiddleware
 {
 	private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 

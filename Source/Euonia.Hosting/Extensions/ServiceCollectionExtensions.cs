@@ -15,7 +15,7 @@ using Nerosoft.Euonia.Claims;
 namespace Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
-/// 
+/// Extension methods for <see cref="IServiceCollection"/>.
 /// </summary>
 public static class ServiceCollectionExtensions
 {
@@ -43,7 +43,7 @@ public static class ServiceCollectionExtensions
 	}
 
 	/// <summary>
-	/// 
+	/// Adds Jwt authentication to the DI container.
 	/// </summary>
 	/// <param name="services"></param>
 	/// <param name="configurationSectionName"></param>
@@ -141,7 +141,7 @@ public static class ServiceCollectionExtensions
 	}
 
 	/// <summary>
-	/// 
+	/// Adds Jwt authentication to the DI container.
 	/// </summary>
 	/// <param name="services"></param>
 	/// <returns></returns>
@@ -152,7 +152,7 @@ public static class ServiceCollectionExtensions
 	}
 
 	/// <summary>
-	/// 
+	/// Adds UserPrincipal to the DI container.
 	/// </summary>
 	/// <param name="services"></param>
 	/// <returns></returns>

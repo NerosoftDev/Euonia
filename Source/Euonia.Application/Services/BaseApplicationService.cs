@@ -10,7 +10,7 @@ namespace Nerosoft.Euonia.Application;
 public abstract class BaseApplicationService : IApplicationService
 {
 	/// <summary>
-	/// 
+	/// Gets or sets the lazy service provider.
 	/// </summary>
 	public virtual ILazyServiceProvider LazyServiceProvider { get; set; }
 
