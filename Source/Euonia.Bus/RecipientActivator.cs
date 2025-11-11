@@ -4,7 +4,7 @@ using Microsoft.Extensions.Hosting;
 namespace Nerosoft.Euonia.Bus;
 
 /// <summary>
-/// The background service to active the recipients.
+/// The background service to activate the recipients.
 /// </summary>
 public class RecipientActivator : BackgroundService
 {

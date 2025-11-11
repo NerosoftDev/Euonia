@@ -1,5 +1,8 @@
 ﻿namespace Nerosoft.Euonia.Bus;
 
+/// <summary>
+/// The bus related constants.
+/// </summary>
 internal class Constants
 {
 	/// <summary>
