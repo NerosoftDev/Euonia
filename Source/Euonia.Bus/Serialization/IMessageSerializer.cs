@@ -1,7 +1,7 @@
 ﻿namespace Nerosoft.Euonia.Bus;
 
 /// <summary>
-/// 
+/// The message serializer interface.
 /// </summary>
 public interface IMessageSerializer
 {
