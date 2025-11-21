@@ -4,7 +4,6 @@
     <Import Project="..\resource.props" />
     
     <PropertyGroup>
-        <Nullable>disable</Nullable>
         <IsPackable>false</IsPackable>
     </PropertyGroup>
     

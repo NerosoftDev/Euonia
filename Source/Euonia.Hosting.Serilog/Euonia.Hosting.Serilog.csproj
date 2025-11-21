@@ -3,10 +3,6 @@
     <Import Project="..\common.props" />
     <Import Project="..\resource.props" />
 
-    <PropertyGroup>
-        <Nullable>disable</Nullable>
-    </PropertyGroup>
-
     <ItemGroup>
         <PackageReference Include="Serilog" />
         <PackageReference Include="Serilog.AspNetCore" />

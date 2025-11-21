@@ -110,12 +110,7 @@ public abstract class DataContextBase<TContext> : MongoDbContext, IRepositoryCon
 
 		try
 		{
-			async void Action(DomainEvent @event)
-			{
-				await PublishEventAsync(@event);
-			}
-
-			Parallel.ForEach(events, Action);
+			_ = Parallel.ForEachAsync(events, PublishEventAsync);
 		}
 		catch (Exception exception)
 		{
@@ -128,8 +123,9 @@ public abstract class DataContextBase<TContext> : MongoDbContext, IRepositoryCon
 	/// Publishes the domain events asynchronously.
 	/// </summary>
 	/// <param name="event"></param>
+	/// <param name="cancellationToken"></param>
 	/// <typeparam name="TEvent"></typeparam>
 	/// <returns></returns>
-	protected abstract Task PublishEventAsync<TEvent>(TEvent @event)
-		where TEvent : DomainEvent;
+	protected abstract ValueTask PublishEventAsync<TEvent>(TEvent @event, CancellationToken cancellationToken = default)
+		where TEvent : IDomainEvent;
 }

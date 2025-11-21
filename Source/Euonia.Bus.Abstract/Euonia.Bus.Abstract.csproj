@@ -4,7 +4,6 @@
 
     <PropertyGroup>
         <RootNamespace>Nerosoft.Euonia.Bus</RootNamespace>
-        <Nullable>disable</Nullable>
     </PropertyGroup>
     
     <ItemGroup>

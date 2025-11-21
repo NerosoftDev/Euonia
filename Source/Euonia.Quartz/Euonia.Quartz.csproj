@@ -4,7 +4,6 @@
     <Import Project="..\resource.props" />
 
     <PropertyGroup>
-        <Nullable>disable</Nullable>
         <Description>Provides a simple and easy to use .NET library for scheduling jobs using Quartz.</Description>
     </PropertyGroup>
 

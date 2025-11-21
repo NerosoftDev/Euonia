@@ -5,7 +5,6 @@
 
     <PropertyGroup>
         <TargetFrameworks>netstandard2.1;$(TargetFrameworks)</TargetFrameworks>
-        <Nullable>disable</Nullable>
     </PropertyGroup>
 
     <PropertyGroup Condition="$(TargetFramework.Contains('netstandard'))">
