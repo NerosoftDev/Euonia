@@ -1,7 +1,7 @@
 ﻿namespace Nerosoft.Euonia.Bus;
 
 /// <summary>
-/// Represents the attributed method would handle an message.
+/// Represents the attributed method would handle a message.
 /// </summary>
 [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
 public class SubscribeAttribute : Attribute

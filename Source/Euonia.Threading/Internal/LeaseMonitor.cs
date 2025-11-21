@@ -2,6 +2,9 @@
 
 namespace Nerosoft.Euonia.Threading;
 
+/// <summary>
+/// Monitors the state of a lease and signals when it is lost.
+/// </summary>
 internal sealed class LeaseMonitor : IDisposable, IAsyncDisposable
 {
     private readonly CancellationTokenSource _disposalSource = new(), _handleLostSource = new();
