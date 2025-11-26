@@ -8,5 +8,5 @@ public interface IHasUpdateTime
     /// <summary>
     /// Gets or sets the last modify time of the object.
     /// </summary>
-    DateTime UpdateTime { get; set; }
+    DateTime UpdatedAt { get; set; }
 }
