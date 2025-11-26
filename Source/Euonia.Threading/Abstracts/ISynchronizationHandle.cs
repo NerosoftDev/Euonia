@@ -15,7 +15,7 @@ public interface ISynchronizationHandle
     /// For example, this could happen if the lock is backed by a 
     /// database and the connection to the database is disrupted.
     /// 
-    /// Not all lock types support this; those that don't will return <see cref="CancellationToken.None"/>
+    /// Not all lock types support this; those that won't return <see cref="CancellationToken.None"/>
     /// which can be detected by checking <see cref="CancellationToken.CanBeCanceled"/>.
     /// 
     /// For lock types that do support this, accessing this property may incur additional

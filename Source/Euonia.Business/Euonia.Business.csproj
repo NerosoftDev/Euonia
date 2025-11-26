@@ -5,7 +5,6 @@
 
 	<PropertyGroup>
         <TargetFrameworks>netstandard2.1;$(TargetFrameworks)</TargetFrameworks>
-		<Nullable>disable</Nullable>
 		<Description>Object oriented &amp; scalable business architecture library.</Description>
 	</PropertyGroup>
 

@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Nerosoft.Euonia.Bus.InMemory;
 
-namespace Nerosoft.Euonia.Bus;
+namespace Nerosoft.Euonia.Bus.InMemory;
 
 /// <summary>
 /// Service bus extensions for <see cref="IBusConfigurator"/>.

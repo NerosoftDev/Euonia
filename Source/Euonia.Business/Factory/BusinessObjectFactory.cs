@@ -230,7 +230,8 @@ public class BusinessObjectFactory : IObjectFactory
 			}
 			else
 			{
-				var implement = serviceKey == null ? _provider.GetService(type) : _provider.GetKeyedService(type, serviceKey);
+				// TODO: Optimize GetKeyedService
+				var implement = serviceKey == null ? _provider.GetService(type) : ServiceProviderExtensions.GetKeyedService(_provider, type, serviceKey); // _provider.GetKeyedService(type, serviceKey);
 				property.SetValue(@object, implement);
 			}
 		}

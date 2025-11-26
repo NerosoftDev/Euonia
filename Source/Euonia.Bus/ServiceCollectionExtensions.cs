@@ -8,29 +8,71 @@ namespace Microsoft.Extensions.DependencyInjection;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
-	/// <summary>
-	/// Register message bus.
-	/// </summary>
-	/// <param name="services"></param>
-	/// <param name="config"></param>
-	public static void AddServiceBus(this IServiceCollection services, Action<BusConfigurator> config)
+	/// <param name="services">The <see cref="IServiceCollection"/> inatance.</param>
+	extension(IServiceCollection services)
 	{
-		var configurator = Singleton<BusConfigurator>.Get(() => new BusConfigurator(services));
-
-		config?.Invoke(configurator);
-
-		services.AddSingleton<IHandlerContext>(provider =>
+		/// <summary>
+		/// Register message bus.
+		/// </summary>
+		/// <param name="config"></param>
+		public void AddServiceBus(Action<BusConfigurator> config)
 		{
-			var context = new HandlerContext(provider);
-			foreach (var registration in configurator.Registrations)
-			{
-				context.Register(registration);
-			}
+			var configurator = Singleton<BusConfigurator>.Get(() => new BusConfigurator(services));
 
-			return context;
-		});
-		services.TryAddSingleton<IMessageConvention>(configurator.ConventionBuilder.Convention);
-		services.TryAddScoped<IBus, ServiceBus>();
-		services.AddHostedService<RecipientActivator>();
+			config?.Invoke(configurator);
+
+			services.AddSingleton<IHandlerContext>(provider =>
+			{
+				var context = new HandlerContext(provider);
+				foreach (var registration in configurator.Registrations)
+				{
+					context.Register(registration);
+				}
+
+				return context;
+			});
+			services.TryAddSingleton<IMessageConvention>(configurator.ConventionBuilder.Convention);
+			services.TryAddScoped<IBus, ServiceBus>();
+			services.AddHostedService<RecipientActivator>();
+		}
+
+		/// <summary>
+		/// Register message bus.
+		/// </summary>
+		/// <param name="config"></param>
+		public void AddServiceBus(Action<IServiceProvider, BusConfigurator> config)
+		{
+			services.AddSingleton(provider =>
+			{
+				var configurator = Singleton<BusConfigurator>.Get(() => new BusConfigurator(services));
+
+				config?.Invoke(provider, configurator);
+				return configurator;
+			});
+		
+			services.AddSingleton<IBusConfigurator>(provider => provider.GetRequiredService<BusConfigurator>());
+
+			services.TryAddSingleton<IHandlerContext>(provider =>
+			{
+				var context = new HandlerContext(provider);
+				var configurator = provider.GetRequiredService<IBusConfigurator>()!;
+
+				foreach (var registration in configurator.Registrations)
+				{
+					context.Register(registration);
+				}
+
+				return context;
+			});
+
+			services.TryAddSingleton<IMessageConvention>(provider =>
+			{
+				var configurator = provider.GetRequiredService<BusConfigurator>()!;
+				return configurator.ConventionBuilder.Convention;
+			});
+		
+			services.TryAddScoped<IBus, ServiceBus>();
+			services.AddHostedService<RecipientActivator>();
+		}
 	}
 }

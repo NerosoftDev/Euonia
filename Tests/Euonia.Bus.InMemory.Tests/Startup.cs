@@ -3,6 +3,7 @@ using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Nerosoft.Euonia.Bus.InMemory;
 
 namespace Nerosoft.Euonia.Bus.Tests;
 
@@ -36,7 +37,7 @@ public class Startup
 				builder.Add<AttributeMessageConvention>();
 				builder.EvaluateQueue(t => t.Name.EndsWith("Command"));
 				builder.EvaluateTopic(t => t.Name.EndsWith("Event"));
-				builder.EvaluateTopic(t => t.Name.EndsWith("Request"));
+				builder.EvaluateRequest(t => t.Name.EndsWith("Request"));
 			});
 			config.UseInMemory(options =>
 			{

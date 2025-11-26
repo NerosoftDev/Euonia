@@ -225,7 +225,7 @@ internal class RedisValueConverter : IRedisValueConverter,
 
 	public T FromRedisValue<T>(RedisValue value, string valueType) => (T)Deserialize(value, valueType);
 
-	private static object Deserialize(RedisValue value, string valueType)
+	private static object Deserialize(string value, string valueType)
 	{
 		var type = TypeCache.GetType(valueType);
 		if (type == null)

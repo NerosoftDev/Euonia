@@ -8,5 +8,5 @@ public interface IHasCreateTime
     /// <summary>
     /// Gets or sets the creation time.
     /// </summary>
-    DateTime CreateTime { get; set; }
+    DateTime CreatedAt { get; set; }
 }

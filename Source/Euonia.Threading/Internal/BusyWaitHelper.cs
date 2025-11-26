@@ -6,7 +6,7 @@
 public static class BusyWaitHelper
 {
     /// <summary>
-    /// 
+    /// Waits asynchronously for a value to become available by repeatedly calling <paramref name="tryGetValue"/> until it returns a non-null result,
     /// </summary>
     /// <param name="state"></param>
     /// <param name="tryGetValue"></param>

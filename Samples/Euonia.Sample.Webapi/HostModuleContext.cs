@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting.Server.Features;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Nerosoft.Euonia.Modularity;
 using Nerosoft.Euonia.Hosting;
 using Serilog;

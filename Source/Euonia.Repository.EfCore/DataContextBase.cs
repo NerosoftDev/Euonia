@@ -125,10 +125,10 @@ public abstract class DataContextBase<TContext> : DbContext, IRepositoryContext
 					switch (entry.Entity)
 					{
 						case IHasCreateTime:
-							entry.CurrentValues[nameof(IHasCreateTime.CreateTime)] = time;
+							entry.CurrentValues[nameof(IHasCreateTime.CreatedAt)] = time;
 							break;
 						case IHasUpdateTime:
-							entry.CurrentValues[nameof(IHasUpdateTime.UpdateTime)] = time;
+							entry.CurrentValues[nameof(IHasUpdateTime.UpdatedAt)] = time;
 							break;
 						case ITombstone:
 							entry.CurrentValues[nameof(ITombstone.IsDeleted)] = false;
@@ -141,7 +141,7 @@ public abstract class DataContextBase<TContext> : DbContext, IRepositoryContext
 					{
 						entry.State = EntityState.Modified;
 						entry.CurrentValues[nameof(ITombstone.IsDeleted)] = true;
-						entry.CurrentValues[nameof(ITombstone.DeleteTime)] = time;
+						entry.CurrentValues[nameof(ITombstone.DeletedAt)] = time;
 					}
 
 					break;
@@ -168,13 +168,13 @@ public abstract class DataContextBase<TContext> : DbContext, IRepositoryContext
 		if (entry.Entity is ITombstone { IsDeleted: true })
 		{
 			entry.CurrentValues[nameof(ITombstone.IsDeleted)] = true;
-			entry.CurrentValues[nameof(ITombstone.DeleteTime)] = time;
+			entry.CurrentValues[nameof(ITombstone.DeletedAt)] = time;
 			return;
 		}
 
 		if (entry.Entity is IHasUpdateTime)
 		{
-			entry.CurrentValues[nameof(IHasUpdateTime.UpdateTime)] = time;
+			entry.CurrentValues[nameof(IHasUpdateTime.UpdatedAt)] = time;
 		}
 	}
 

@@ -4,13 +4,7 @@
     <Import Project="..\resource.props" />
 
     <PropertyGroup>
-        <TargetFrameworks>netstandard2.1;$(TargetFrameworks)</TargetFrameworks>
-        <Nullable>disable</Nullable>
         <Description>Provides customizable validation capabilities for various data inputs.</Description>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="$(TargetFramework.Contains('netstandard'))">
-        <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>

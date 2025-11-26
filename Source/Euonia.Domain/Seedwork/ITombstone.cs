@@ -14,5 +14,5 @@ public interface ITombstone
     /// <summary>
     /// Gets or sets the entry delete time.
     /// </summary>
-    DateTime? DeleteTime { get; set; }
+    DateTime? DeletedAt { get; set; }
 }
