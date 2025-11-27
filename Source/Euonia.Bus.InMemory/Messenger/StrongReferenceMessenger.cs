@@ -652,7 +652,7 @@ public sealed class StrongReferenceMessenger : IMessenger
 				// Check whether there are any registered recipients
 				if (!TryGetMapping<TMessage, TToken>(out var mapping))
 				{
-					throw new InvalidOperationException("No recipients registered for the input message type and token.");
+					throw new InvalidOperationException($"No recipients registered for the input message type '{typeof(TMessage).FullName}' and token.");
 				}
 
 				// We need to make a local copy of the currently registered handlers, since users might
@@ -704,7 +704,7 @@ public sealed class StrongReferenceMessenger : IMessenger
 
 				if (i == 0)
 				{
-					throw new MessageDeliverException("No recipients registered for the input message type and token.");
+					throw new MessageDeliverException($"No recipients registered for the input message type '{typeof(TMessage).FullName}' and token to deliver.");
 				}
 			}
 		}
