@@ -12,19 +12,19 @@ internal class OverridableMessageConvention : IMessageConvention
 
 	public string Name => $"Override with {_innerConvention.Name}";
 
-	bool IMessageConvention.IsQueueType(Type type)
+	bool IMessageConvention.IsQueueType(Type messageType)
 	{
-		return IsQueueType(type);
+		return IsQueueType(messageType);
 	}
 
-	bool IMessageConvention.IsTopicType(Type type)
+	bool IMessageConvention.IsTopicType(Type messageType)
 	{
-		return IsTopicType(type);
+		return IsTopicType(messageType);
 	}
 
-	bool IMessageConvention.IsRequestType(Type type)
+	bool IMessageConvention.IsRequestType(Type messageType)
 	{
-		return IsRequestType(type);
+		return IsRequestType(messageType);
 	}
 
 	public Func<Type, bool> IsQueueType

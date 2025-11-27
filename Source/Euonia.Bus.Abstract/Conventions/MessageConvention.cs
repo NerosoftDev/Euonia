@@ -16,14 +16,14 @@ public class MessageConvention : IMessageConvention
 	/// <summary>
 	/// Determines whether the specified type is a command.
 	/// </summary>
-	/// <param name="type"></param>
+	/// <param name="messageType"></param>
 	/// <returns></returns>
 	/// <exception cref="ArgumentNullException"></exception>
-	public bool IsQueueType(Type type)
+	public bool IsQueueType(Type messageType)
 	{
-		ArgumentAssert.ThrowIfNull(type);
+		ArgumentNullException.ThrowIfNull(messageType);
 
-		return _topicConventionCache.Apply(type, handle =>
+		return _topicConventionCache.Apply(messageType, handle =>
 		{
 			var t = Type.GetTypeFromHandle(handle);
 			return _conventions.Any(x => x.IsQueueType(t));
@@ -33,14 +33,14 @@ public class MessageConvention : IMessageConvention
 	/// <summary>
 	/// Determines whether the specified type is an event.
 	/// </summary>
-	/// <param name="type"></param>
+	/// <param name="messageType"></param>
 	/// <returns></returns>
 	/// <exception cref="ArgumentNullException"></exception>
-	public bool IsTopicType(Type type)
+	public bool IsTopicType(Type messageType)
 	{
-		ArgumentAssert.ThrowIfNull(type);
+		ArgumentNullException.ThrowIfNull(messageType);
 
-		return _queueConventionCache.Apply(type, handle =>
+		return _queueConventionCache.Apply(messageType, handle =>
 		{
 			var t = Type.GetTypeFromHandle(handle);
 			return _conventions.Any(x => x.IsTopicType(t));
@@ -48,11 +48,11 @@ public class MessageConvention : IMessageConvention
 	}
 
 	/// <inheritdoc />
-	public bool IsRequestType(Type type)
+	public bool IsRequestType(Type messageType)
 	{
-		ArgumentAssert.ThrowIfNull(type);
+		ArgumentNullException.ThrowIfNull(messageType);
 
-		return _requestConventionCache.Apply(type, handle =>
+		return _requestConventionCache.Apply(messageType, handle =>
 		{
 			var t = Type.GetTypeFromHandle(handle);
 			return _conventions.Any(x => x.IsRequestType(t));
@@ -82,7 +82,7 @@ public class MessageConvention : IMessageConvention
 	{
 		if (conventions == null || conventions.Length == 0)
 		{
-			throw new ArgumentException(Resources.IDS_CONVENTION_PROVIDER_REQUIRED, nameof(conventions));
+			throw new ArgumentException(@"At least one convention must be provided.", nameof(conventions));
 		}
 
 		_conventions.AddRange(conventions);
