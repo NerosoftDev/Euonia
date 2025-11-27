@@ -11,24 +11,24 @@ public class AttributeMessageConvention : IMessageConvention
 	public string Name { get; } = "Attribute decoration message convention";
 
 	/// <inheritdoc />
-	public bool IsQueueType(Type type)
+	public bool IsQueueType(Type messageType)
 	{
-		return type.GetCustomAttribute<QueueAttribute>(false) != null;
+		return messageType.GetCustomAttribute<QueueAttribute>(false) != null;
 	}
 
 	/// <inheritdoc />
-	public bool IsTopicType(Type type)
+	public bool IsTopicType(Type messageType)
 	{
-		return type.GetCustomAttribute<TopicAttribute>(false) != null;
+		return messageType.GetCustomAttribute<TopicAttribute>(false) != null;
 	}
 
 	/// <summary>
 	/// Determines whether the specified type is a request.
 	/// </summary>
-	/// <param name="type"></param>
+	/// <param name="messageType"></param>
 	/// <returns></returns>
-	public bool IsRequestType(Type type)
+	public bool IsRequestType(Type messageType)
 	{
-		return type.GetCustomAttribute<RequestAttribute>(false) != null;
+		return messageType.GetCustomAttribute<RequestAttribute>(false) != null;
 	}
 }

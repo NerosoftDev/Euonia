@@ -96,4 +96,28 @@ public interface IBusConfigurator
 	/// <returns></returns>
 	IBusConfigurator SetIdentityProvider<T>()
 		where T : class, IIdentityProvider;
+
+	/// <summary>
+	/// Sets the message serializer.
+	/// </summary>
+	/// <typeparam name="TSerializer"></typeparam>
+	/// <returns></returns>
+	IBusConfigurator SetSerializer<TSerializer>()
+		where TSerializer : class, IMessageSerializer;
+
+	/// <summary>
+	/// Sets the message serializer.
+	/// </summary>
+	/// <param name="serializer"></param>
+	/// <typeparam name="TSerializer"></typeparam>
+	/// <returns></returns>
+	IBusConfigurator SetSerializer<TSerializer>(TSerializer serializer)
+		where TSerializer : class, IMessageSerializer;
+
+	/// <summary>
+	/// Sets the message convention.
+	/// </summary>
+	/// <param name="configure"></param>
+	/// <returns></returns>
+	IBusConfigurator SetConventions(Action<MessageConventionBuilder> configure);
 }
