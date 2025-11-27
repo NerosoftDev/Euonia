@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Nerosoft.Euonia.Bus;
 
@@ -16,7 +17,7 @@ public interface IBusConfigurator
 	/// Get the message handle registrations.
 	/// </summary>
 	IReadOnlyList<MessageRegistration> Registrations { get; }
-	
+
 	/// <summary>
 	/// Set the service bus factory.
 	/// </summary>
@@ -59,4 +60,40 @@ public interface IBusConfigurator
 	/// <returns></returns>
 	IBusConfigurator SetMessageStore<TStore>(Func<IServiceProvider, TStore> store)
 		where TStore : class, IMessageStore;
+
+	/// <summary>
+    /// Register the message handlers.
+    /// </summary>
+    /// <param name="assemblies"></param>
+    /// <returns></returns>
+	IBusConfigurator RegisterHandlers(params Assembly[] assemblies);
+
+	/// <summary>
+    /// Register the message handlers.
+    /// </summary>
+    /// <param name="typesFactory"></param>
+    /// <returns></returns>
+	IBusConfigurator RegisterHandlers(Func<IEnumerable<Type>> typesFactory);
+
+	/// <summary>
+    /// Register the message handlers.
+    /// </summary>
+    /// <param name="types"></param>
+    /// <returns></returns>
+	IBusConfigurator RegisterHandlers(IEnumerable<Type> types);
+
+	/// <summary>
+	/// Register the message identity provider.
+	/// </summary>
+	/// <param name="accessor"></param>
+	/// <returns></returns>
+	IBusConfigurator SetIdentityProvider(IdentityAccessor accessor);
+
+	/// <summary>
+	/// Register the message identity provider.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <returns></returns>
+	IBusConfigurator SetIdentityProvider<T>()
+		where T : class, IIdentityProvider;
 }

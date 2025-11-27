@@ -75,7 +75,7 @@ public class BusConfigurator : IBusConfigurator
 	/// </summary>
 	/// <typeparam name="TSerializer"></typeparam>
 	/// <returns></returns>
-	public BusConfigurator SetSerializer<TSerializer>()
+	public IBusConfigurator SetSerializer<TSerializer>()
 		where TSerializer : class, IMessageSerializer
 	{
 		Service.TryAddSingleton<IMessageSerializer, TSerializer>();
@@ -88,7 +88,7 @@ public class BusConfigurator : IBusConfigurator
 	/// <param name="serializer"></param>
 	/// <typeparam name="TSerializer"></typeparam>
 	/// <returns></returns>
-	public BusConfigurator SetSerializer<TSerializer>(TSerializer serializer)
+	public IBusConfigurator SetSerializer<TSerializer>(TSerializer serializer)
 		where TSerializer : class, IMessageSerializer
 	{
 		Service.TryAddSingleton<IMessageSerializer>(serializer);
@@ -125,7 +125,7 @@ public class BusConfigurator : IBusConfigurator
 	/// </summary>
 	/// <param name="assemblies"></param>
 	/// <returns></returns>
-	public BusConfigurator RegisterHandlers(params Assembly[] assemblies)
+	public IBusConfigurator RegisterHandlers(params Assembly[] assemblies)
 	{
 		return RegisterHandlers(() => assemblies.SelectMany(assembly => assembly.DefinedTypes));
 	}
@@ -135,7 +135,7 @@ public class BusConfigurator : IBusConfigurator
 	/// </summary>
 	/// <param name="typesFactory"></param>
 	/// <returns></returns>
-	public BusConfigurator RegisterHandlers(Func<IEnumerable<Type>> typesFactory)
+	public IBusConfigurator RegisterHandlers(Func<IEnumerable<Type>> typesFactory)
 	{
 		return RegisterHandlers(typesFactory());
 	}
@@ -145,7 +145,7 @@ public class BusConfigurator : IBusConfigurator
 	/// </summary>
 	/// <param name="types"></param>
 	/// <returns></returns>
-	public BusConfigurator RegisterHandlers(IEnumerable<Type> types)
+	public IBusConfigurator RegisterHandlers(IEnumerable<Type> types)
 	{
 		var registrations = MessageHandlerFinder.Find(types);
 		var handlerTypes = registrations.Select(x => x.HandlerType).Distinct();
@@ -163,7 +163,7 @@ public class BusConfigurator : IBusConfigurator
 	/// </summary>
 	/// <param name="configure"></param>
 	/// <returns></returns>
-	public BusConfigurator SetConventions(Action<MessageConventionBuilder> configure)
+	public IBusConfigurator SetConventions(Action<MessageConventionBuilder> configure)
 	{
 		configure?.Invoke(ConventionBuilder);
 		return this;
@@ -174,7 +174,7 @@ public class BusConfigurator : IBusConfigurator
 	/// </summary>
 	/// <param name="accessor"></param>
 	/// <returns></returns>
-	public BusConfigurator SetIdentityProvider(IdentityAccessor accessor)
+	public IBusConfigurator SetIdentityProvider(IdentityAccessor accessor)
 	{
 		Service.TryAddSingleton<IIdentityProvider>(_ => new DefaultIdentityProvider(accessor));
 		return this;
@@ -185,7 +185,7 @@ public class BusConfigurator : IBusConfigurator
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	/// <returns></returns>
-	public BusConfigurator SetIdentityProvider<T>()
+	public IBusConfigurator SetIdentityProvider<T>()
 		where T : class, IIdentityProvider
 	{
 		Service.TryAddSingleton<IIdentityProvider, T>();
