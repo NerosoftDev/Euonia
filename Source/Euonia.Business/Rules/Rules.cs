@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Nerosoft.Euonia.Business;
 
@@ -20,8 +21,6 @@ public class Rules : IRules
 	/// <inheritdoc />
 	public object Target => _target;
 
-	private RuleManager _ruleManager;
-
 	/// <summary>
 	/// Gets the rule manager.
 	/// </summary>
@@ -29,12 +28,12 @@ public class Rules : IRules
 	{
 		get
 		{
-			if (_ruleManager == null && Target != null)
+			if (field == null && Target != null)
 			{
-				_ruleManager = RuleManager.GetRules(Target.GetType());
+				field = RuleManager.GetRules(Target.GetType());
 			}
 
-			return _ruleManager;
+			return field;
 		}
 	}
 
@@ -69,6 +68,28 @@ public class Rules : IRules
 	public void AddRule(IRuleBase rule)
 	{
 		RuleManager.Rules.Add(rule);
+	}
+
+	/// <summary>
+	/// Add rule to business rule manager.
+	/// </summary>
+	/// <typeparam name="TRule"></typeparam>
+	public void AddRule<TRule>()
+		where TRule : class, IRuleBase, new()
+	{
+		AddRule(new TRule());
+	}
+
+	/// <summary>
+	/// Add rule to business rule manager.
+	/// </summary>
+	/// <param name="provider"></param>
+	/// <typeparam name="TRule"></typeparam>
+	public void AddRule<TRule>(IServiceProvider provider)
+		where TRule : class, IRuleBase
+	{
+		var rule = ActivatorUtilities.GetServiceOrCreateInstance<TRule>(provider);
+		AddRule(rule);
 	}
 
 	#region Rule check
