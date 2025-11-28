@@ -15,22 +15,22 @@ namespace Nerosoft.Euonia.Business;
 /// </summary>
 public abstract class BusinessObject : IBusinessObject, IHasRuleCheck, IDisposable
 {
+	private readonly List<IPropertyInfo> _changedProperties = [];
+
 	/// <summary>
 	/// The events manager for business object.
 	/// </summary>
 	protected readonly WeakEventManager Events = new();
-
-	private BusinessContext _businessContext;
 
 	/// <summary>
 	/// Gets or sets the business context.
 	/// </summary>
 	public BusinessContext BusinessContext
 	{
-		get => _businessContext;
+		get;
 		set
 		{
-			_businessContext = value;
+			field = value;
 			OnBusinessContextSet();
 			Initialize();
 			InitializeRules();
@@ -126,8 +126,6 @@ public abstract class BusinessObject : IBusinessObject, IHasRuleCheck, IDisposab
 	/// <inheritdoc/>
 	public virtual bool IsValid => Rules.IsValid;
 
-	private Rules _rules;
-
 	/// <summary>
 	/// Gets the rules object for this business object.
 	/// </summary>
@@ -135,16 +133,16 @@ public abstract class BusinessObject : IBusinessObject, IHasRuleCheck, IDisposab
 	{
 		get
 		{
-			if (_rules == null)
+			if (field == null)
 			{
-				_rules = new Rules(this);
+				field = new Rules(this);
 			}
-			else if (_rules.Target == null)
+			else if (field.Target == null)
 			{
-				_rules.SetTarget(this);
+				field.SetTarget(this);
 			}
 
-			return _rules;
+			return field;
 		}
 	}
 
@@ -284,7 +282,7 @@ public abstract class BusinessObject : IBusinessObject, IHasRuleCheck, IDisposab
 	/// <param name="property"></param>
 	protected virtual void PropertyHasChanged(IPropertyInfo property)
 	{
-		ChangedProperties.Add(property);
+		_changedProperties.Add(property);
 		if (CheckRuleOnPropertyChanged)
 		{
 			CheckPropertyRules(property);
@@ -307,7 +305,7 @@ public abstract class BusinessObject : IBusinessObject, IHasRuleCheck, IDisposab
 	/// <summary>
 	/// Gets the list of changed properties.
 	/// </summary>
-	protected virtual List<IPropertyInfo> ChangedProperties { get; } = new();
+	public virtual IReadOnlyList<IPropertyInfo> ChangedProperties => _changedProperties;
 
 	/// <summary>
 	/// Checks if the object has changed properties.
@@ -635,7 +633,7 @@ public abstract class BusinessObject : IBusinessObject, IHasRuleCheck, IDisposab
             LoadPropertyByReflection(nameof(LoadProperty), propertyInfo, newValue);
         }
 #else
-		LoadPropertyByReflection(nameof(LoadProperty), propertyInfo, newValue);
+		_ = LoadPropertyByReflection(nameof(LoadProperty), propertyInfo, newValue);
 #endif
 	}
 
