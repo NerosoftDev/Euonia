@@ -15,6 +15,8 @@ namespace Nerosoft.Euonia.Business;
 /// </summary>
 public abstract class BusinessObject : IBusinessObject, IHasRuleCheck, IDisposable
 {
+	private readonly List<IPropertyInfo> _changedProperties = [];
+	
 	/// <summary>
 	/// The events manager for business object.
 	/// </summary>
@@ -284,7 +286,7 @@ public abstract class BusinessObject : IBusinessObject, IHasRuleCheck, IDisposab
 	/// <param name="property"></param>
 	protected virtual void PropertyHasChanged(IPropertyInfo property)
 	{
-		ChangedProperties.Add(property);
+		_changedProperties.Add(property);
 		if (CheckRuleOnPropertyChanged)
 		{
 			CheckPropertyRules(property);
@@ -307,7 +309,7 @@ public abstract class BusinessObject : IBusinessObject, IHasRuleCheck, IDisposab
 	/// <summary>
 	/// Gets the list of changed properties.
 	/// </summary>
-	protected virtual List<IPropertyInfo> ChangedProperties { get; } = new();
+	public virtual IReadOnlyList<IPropertyInfo> ChangedProperties => _changedProperties;
 
 	/// <summary>
 	/// Checks if the object has changed properties.
