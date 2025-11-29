@@ -35,7 +35,7 @@ public static class ServiceCollectionExtensions
 			});
 
 			services.TryAddSingleton<IMessageConvention>(_ => configurator.ConventionBuilder.Convention);
-			services.TryAddScoped<IBus, ServiceBus>();
+			services.TryAddSingleton<IBus, ServiceBus>();
 			services.AddHostedService<RecipientActivator>();
 
 			return configurator;

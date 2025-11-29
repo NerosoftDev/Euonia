@@ -1,4 +1,5 @@
-﻿using Nerosoft.Euonia.Modularity;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Nerosoft.Euonia.Modularity;
 
 namespace Nerosoft.Euonia.Bus;
 
@@ -9,7 +10,7 @@ public sealed class ServiceBus : IBus
 {
 	private readonly IDispatcher _dispatcher;
 	private readonly IMessageConvention _convention;
-	private readonly IRequestContextAccessor _requestAccessor;
+	private readonly IServiceAccessor _serviceAccessor;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ServiceBus"/> class.
@@ -27,11 +28,11 @@ public sealed class ServiceBus : IBus
 	/// </summary>
 	/// <param name="factory"></param>
 	/// <param name="convention"></param>
-	/// <param name="requestAccessor"></param>
-	public ServiceBus(IBusFactory factory, IMessageConvention convention, IRequestContextAccessor requestAccessor)
+	/// <param name="serviceAccessor"></param>
+	public ServiceBus(IBusFactory factory, IMessageConvention convention, IServiceAccessor serviceAccessor)
 		: this(factory, convention)
 	{
-		_requestAccessor = requestAccessor;
+		_serviceAccessor = serviceAccessor;
 	}
 
 	/// <inheritdoc />
@@ -47,7 +48,7 @@ public sealed class ServiceBus : IBus
 			throw new MessageTypeException("The message type is not an topic type.");
 		}
 
-		var context = _requestAccessor?.Context;
+		var context = _serviceAccessor.ServiceProvider?.GetService<IRequestContextAccessor>()?.Context;
 
 		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel(messageType);
 		var pack = new RoutedMessage<TMessage>(message, channelName)
@@ -73,7 +74,7 @@ public sealed class ServiceBus : IBus
 			throw new MessageTypeException("The message type is not a queue type.");
 		}
 
-		var context = _requestAccessor?.Context;
+		var context = _serviceAccessor.ServiceProvider?.GetService<IRequestContextAccessor>()?.Context;
 
 		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel(messageType);
 		var pack = new RoutedMessage<TMessage>(message, channelName)
@@ -103,7 +104,7 @@ public sealed class ServiceBus : IBus
 			throw new MessageTypeException("The message type is not a queue type or request type.");
 		}
 
-		var context = _requestAccessor?.Context;
+		var context = _serviceAccessor.ServiceProvider?.GetService<IRequestContextAccessor>()?.Context;
 
 		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel(messageType);
 		var pack = new RoutedMessage<TMessage, TResult>(message, channelName)
@@ -138,7 +139,7 @@ public sealed class ServiceBus : IBus
 			throw new MessageTypeException("The message type is not a queue type.");
 		}
 
-		var context = _requestAccessor?.Context;
+		var context = _serviceAccessor.ServiceProvider?.GetService<IRequestContextAccessor>()?.Context;
 
 		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel(messageType);
 		var pack = new RoutedMessage<IRequest<TResult>, TResult>(message, channelName)
