@@ -1,4 +1,6 @@
-﻿using Nerosoft.Euonia.Modularity;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Nerosoft.Euonia.Modularity;
 
 namespace Nerosoft.Euonia.Bus;
 
@@ -7,17 +9,21 @@ namespace Nerosoft.Euonia.Bus;
 /// </summary>
 public sealed class ServiceBus : IBus
 {
+	private readonly ILogger<ServiceBus> _logger;
+
 	private readonly IDispatcher _dispatcher;
 	private readonly IMessageConvention _convention;
-	private readonly IRequestContextAccessor _requestAccessor;
+	private readonly IServiceAccessor _serviceAccessor;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ServiceBus"/> class.
 	/// </summary>
 	/// <param name="factory"></param>
 	/// <param name="convention"></param>
-	public ServiceBus(IBusFactory factory, IMessageConvention convention)
+	/// <param name="logger"></param>
+	public ServiceBus(IBusFactory factory, IMessageConvention convention, ILoggerFactory logger)
 	{
+		_logger = logger.CreateLogger<ServiceBus>();
 		_dispatcher = factory.CreateDispatcher();
 		_convention = convention;
 	}
@@ -27,11 +33,12 @@ public sealed class ServiceBus : IBus
 	/// </summary>
 	/// <param name="factory"></param>
 	/// <param name="convention"></param>
-	/// <param name="requestAccessor"></param>
-	public ServiceBus(IBusFactory factory, IMessageConvention convention, IRequestContextAccessor requestAccessor)
-		: this(factory, convention)
+	/// <param name="logger"></param>
+	/// <param name="serviceAccessor"></param>
+	public ServiceBus(IBusFactory factory, IMessageConvention convention, ILoggerFactory logger, IServiceAccessor serviceAccessor)
+		: this(factory, convention, logger)
 	{
-		_requestAccessor = requestAccessor;
+		_serviceAccessor = serviceAccessor;
 	}
 
 	/// <inheritdoc />
@@ -47,7 +54,7 @@ public sealed class ServiceBus : IBus
 			throw new MessageTypeException("The message type is not an topic type.");
 		}
 
-		var context = _requestAccessor?.Context;
+		var context = GetRequestContext();
 
 		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel(messageType);
 		var pack = new RoutedMessage<TMessage>(message, channelName)
@@ -73,7 +80,7 @@ public sealed class ServiceBus : IBus
 			throw new MessageTypeException("The message type is not a queue type.");
 		}
 
-		var context = _requestAccessor?.Context;
+		var context = GetRequestContext();
 
 		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel(messageType);
 		var pack = new RoutedMessage<TMessage>(message, channelName)
@@ -103,7 +110,7 @@ public sealed class ServiceBus : IBus
 			throw new MessageTypeException("The message type is not a queue type or request type.");
 		}
 
-		var context = _requestAccessor?.Context;
+		var context = GetRequestContext();
 
 		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel(messageType);
 		var pack = new RoutedMessage<TMessage, TResult>(message, channelName)
@@ -138,7 +145,7 @@ public sealed class ServiceBus : IBus
 			throw new MessageTypeException("The message type is not a queue type.");
 		}
 
-		var context = _requestAccessor?.Context;
+		var context = GetRequestContext();
 
 		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel(messageType);
 		var pack = new RoutedMessage<IRequest<TResult>, TResult>(message, channelName)
@@ -159,5 +166,33 @@ public sealed class ServiceBus : IBus
 			                  callback?.Invoke(result);
 			                  return result;
 		                  }, cancellationToken);
+	}
+
+	private RequestContext GetRequestContext()
+	{
+		if (_serviceAccessor == null)
+		{
+			_logger.LogWarning("The IServiceAccessor is not available in the ServiceBus.");
+			return null;
+		}
+
+		if (_serviceAccessor.ServiceProvider == null)
+		{
+			_logger.LogWarning("The IServiceProvider is not available in the ServiceBus.");
+			return null;
+		}
+
+		var accessor = _serviceAccessor.ServiceProvider.GetService<IRequestContextAccessor>();
+		
+		if (accessor == null)
+		{
+			_logger.LogWarning("The IRequestContextAccessor is not registered in the IoC container.");
+			return null;
+		}
+
+		{
+		}
+
+		return accessor.Context;
 	}
 }

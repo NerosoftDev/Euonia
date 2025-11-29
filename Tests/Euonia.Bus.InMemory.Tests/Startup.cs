@@ -17,7 +17,7 @@ public class Startup
 		           {
 			           builder.AddJsonFile("appsettings.json");
 		           })
-		           .ConfigureServices((_, _) =>
+		           .ConfigureServices((_, services) =>
 		           {
 			           // Register service here.
 		           });
