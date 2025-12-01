@@ -14,35 +14,15 @@ public class HostingModule : ModuleContextBase
 	/// <inheritdoc />
 	public override void ConfigureServices(ServiceConfigurationContext context)
 	{
-		context.Services.TryAddScoped<RequestContextAccessor>(_ => GetRequestContext);
+		context.Services.TryAddScoped<DefaultRequestContextAccessor>();
+        context.Services.TryAddScoped<DelegateRequestContextAccessor>(provider =>
+        {
+            return () => GetRequestContext(provider.GetService<IHttpContextAccessor>()?.HttpContext);
+        });
 		context.Services.AddScopeTransformation();
 		context.Services.AddUserPrincipal();
 		context.Services.AddObjectAccessor<IApplicationBuilder>();
 		context.Services.AddTransient<ExceptionHandlingMiddleware>();
-
-		static RequestContext GetRequestContext(IServiceProvider provider)
-		{
-			var context = provider.GetService<IHttpContextAccessor>()?.HttpContext;
-			if (context == null)
-			{
-				return null;
-			}
-
-			return new RequestContext
-			{
-				RequestHeaders = context.Request
-										.Headers
-										.ToDictionary(t => t.Key, t => t.Value.ToString()),
-				ConnectionId = context.Connection.Id,
-				User = context.User,
-				RemotePort = context.Connection.RemotePort,
-				RemoteIpAddress = context.Connection.RemoteIpAddress,
-				RequestAborted = context.RequestAborted,
-				IsWebSocketRequest = context.WebSockets.IsWebSocketRequest,
-				TraceIdentifier = context.TraceIdentifier,
-				RequestServices = context.RequestServices
-			};
-		}
 	}
 
 	/// <inheritdoc />
@@ -50,7 +30,7 @@ public class HostingModule : ModuleContextBase
 	{
 		base.OnApplicationInitialization(context);
 		var app = context.GetApplicationBuilder();
-		
+
 		if (app == null)
 		{
 			return;
@@ -70,5 +50,36 @@ public class HostingModule : ModuleContextBase
 
 			return next();
 		});
+
+		app.Use((httpContext, next) =>
+		{
+			var accessor = httpContext.RequestServices.GetService<DefaultRequestContextAccessor>();
+			if (accessor != null)
+			{
+				accessor.Context = GetRequestContext(httpContext);
+			}
+			return next();
+		});
+	}
+
+	private static RequestContext GetRequestContext(HttpContext context)
+	{
+		if (context == null)
+		{
+			return null;
+		}
+
+		return new RequestContext
+		{
+			RequestHeaders = context.Request?.Headers?.ToDictionary(t => t.Key, t => t.Value.ToString()),
+			ConnectionId = context.Connection?.Id,
+			User = context.User,
+			RemotePort = context.Connection?.RemotePort ?? 0,
+			RemoteIpAddress = context.Connection?.RemoteIpAddress,
+			RequestAborted = context.RequestAborted,
+			IsWebSocketRequest = context.WebSockets?.IsWebSocketRequest ?? false,
+			TraceIdentifier = context.TraceIdentifier,
+			RequestServices = context.RequestServices
+		};
 	}
 }
