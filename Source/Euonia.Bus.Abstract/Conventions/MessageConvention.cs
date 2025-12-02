@@ -19,14 +19,14 @@ public class MessageConvention : IMessageConvention
 	/// <param name="messageType"></param>
 	/// <returns></returns>
 	/// <exception cref="ArgumentNullException"></exception>
-	public bool IsQueueType(Type messageType)
+	public bool IsCommandType(Type messageType)
 	{
 		ArgumentNullException.ThrowIfNull(messageType);
 
 		return _topicConventionCache.Apply(messageType, handle =>
 		{
 			var t = Type.GetTypeFromHandle(handle);
-			return _conventions.Any(x => x.IsQueueType(t));
+			return _conventions.Any(x => x.IsCommandType(t));
 		});
 	}
 
@@ -36,14 +36,14 @@ public class MessageConvention : IMessageConvention
 	/// <param name="messageType"></param>
 	/// <returns></returns>
 	/// <exception cref="ArgumentNullException"></exception>
-	public bool IsTopicType(Type messageType)
+	public bool IsEventType(Type messageType)
 	{
 		ArgumentNullException.ThrowIfNull(messageType);
 
 		return _queueConventionCache.Apply(messageType, handle =>
 		{
 			var t = Type.GetTypeFromHandle(handle);
-			return _conventions.Any(x => x.IsTopicType(t));
+			return _conventions.Any(x => x.IsEventType(t));
 		});
 	}
 
