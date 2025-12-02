@@ -25,12 +25,11 @@ public class HandlerContext : IHandlerContext
 	/// Initialize a new instance of <see cref="HandlerContext"/>
 	/// </summary>
 	/// <param name="provider"></param>
-	/// <param name="convention"></param>
-	public HandlerContext(IServiceProvider provider, MessageConvention convention = null)
+	public HandlerContext(IServiceProvider provider)
 	{
 		_provider = provider;
 		_logger = provider.GetService<ILoggerFactory>()?.CreateLogger<HandlerContext>();
-		_convention = convention ?? new MessageConvention();
+		_convention = provider.GetService<MessageConvention>() ?? new MessageConvention();
 	}
 
 	#region Handling register
