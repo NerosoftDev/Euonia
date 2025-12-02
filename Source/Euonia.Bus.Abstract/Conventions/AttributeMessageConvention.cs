@@ -11,15 +11,15 @@ public class AttributeMessageConvention : IMessageConvention
 	public string Name { get; } = "Attribute decoration message convention";
 
 	/// <inheritdoc />
-	public bool IsQueueType(Type messageType)
+	public bool IsCommandType(Type messageType)
 	{
-		return messageType.GetCustomAttribute<QueueAttribute>(false) != null;
+		return messageType.GetCustomAttribute<CommandAttribute>(false) != null;
 	}
 
 	/// <inheritdoc />
-	public bool IsTopicType(Type messageType)
+	public bool IsEventType(Type messageType)
 	{
-		return messageType.GetCustomAttribute<TopicAttribute>(false) != null;
+		return messageType.GetCustomAttribute<EventAttribute>(false) != null;
 	}
 
 	/// <summary>

@@ -12,26 +12,33 @@ namespace Nerosoft.Euonia.Bus;
 public class HandlerContext : IHandlerContext
 {
 	/// <summary>
-	/// 
+	/// Occurs when a message handler is subscribed.
 	/// </summary>
 	public event EventHandler<MessageSubscribedEventArgs> MessageSubscribed;
 
 	private readonly ConcurrentDictionary<string, List<MessageHandlerFactory>> _handlerContainer = new();
 	private readonly IServiceProvider _provider;
 	private readonly ILogger<HandlerContext> _logger;
+	private readonly IMessageConvention _convention;
 
 	/// <summary>
-	/// Initialize a new instance of <see cref="HandlerContext"/>
+	/// Initialize a new instance of <see cref="HandlerContext"/>.
 	/// </summary>
-	/// <param name="provider"></param>
+	/// <param name="provider">The service provider used to resolve handlers, logger and other services.</param>
 	public HandlerContext(IServiceProvider provider)
 	{
 		_provider = provider;
 		_logger = provider.GetService<ILoggerFactory>()?.CreateLogger<HandlerContext>();
+		_convention = provider.GetService<IMessageConvention>() ?? new MessageConvention();
 	}
 
 	#region Handling register
 
+	/// <summary>
+	/// Register a message handler type for the message type <typeparamref name="TMessage"/>.
+	/// </summary>
+	/// <typeparam name="TMessage">The message type to handle. Must be a reference type.</typeparam>
+	/// <typeparam name="THandler">The handler type that implements <see cref="IHandler{TMessage}"/>.</typeparam>
 	internal virtual void Register<TMessage, THandler>()
 		where TMessage : class
 		where THandler : IHandler<TMessage>
@@ -48,6 +55,11 @@ public class HandlerContext : IHandlerContext
 		MessageSubscribed?.Invoke(this, new MessageSubscribedEventArgs(channel, typeof(TMessage), typeof(THandler)));
 	}
 
+	/// <summary>
+	/// Register a handler described by a <see cref="MessageRegistration"/>.
+	/// The registration contains the handler type, the method to invoke and the channel name.
+	/// </summary>
+	/// <param name="registration">The <see cref="MessageRegistration"/> describing the handler to register.</param>
 	internal void Register(MessageRegistration registration)
 	{
 		MessageHandler Handling(IServiceProvider provider)
@@ -93,41 +105,32 @@ public class HandlerContext : IHandlerContext
 
 		using var scope = _provider.GetRequiredService<IServiceScopeFactory>().CreateScope();
 
-		if (!_handlerContainer.TryGetValue(channel, out var handling))
+		if (!_handlerContainer.TryGetValue(channel, out var factories) || factories == null || factories.Count == 0)
 		{
-			throw new InvalidOperationException("No handler registered for message");
+			_logger?.LogWarning("No handler registered for message {Id} on channel {Channel}", context.MessageId, channel);
+			throw new InvalidOperationException($"No handler registered for message {context.MessageId} on channel {channel}");
 		}
 
 		// Get handler instance from service provider using Expression Tree
-
-		if (handling.Count == 0)
-		{
-			throw new InvalidOperationException("No handler registered for message");
-		}
-
 		_logger?.LogInformation("Message {Id} is being handled", context.MessageId);
 
-		if (handling.Count == 1)
+		await Parallel.ForEachAsync(factories, cancellationToken, async (factory, token) =>
 		{
-			var handler = handling.First()(scope.ServiceProvider);
-			await handler(message, context, cancellationToken);
-		}
-		else
-		{
-			await Parallel.ForEachAsync(handling, cancellationToken, async (factory, token) =>
+			try
 			{
-				try
+				var handler = factory(scope.ServiceProvider);
+				await handler(message, context, token);
+			}
+			catch (Exception exception)
+			{
+				_logger?.LogError(exception, "Error occurred while handling message {Id}", context.MessageId);
+				if (_convention.IsRequestType(message.GetType()) || _convention.IsCommandType(message.GetType()))
 				{
-					var handler = factory(scope.ServiceProvider);
-					await handler(message, context, token);
+					// Swallow the exception for request/response and queue messages
+					throw;
 				}
-				catch (Exception ex)
-				{
-					_logger?.LogError(ex, "Error occurred while handling message {Id}", context.MessageId);
-				}
-			});
-		}
-
+			}
+		});
 		_logger?.LogInformation("Message {Id} was completed handled", context.MessageId);
 	}
 
@@ -135,6 +138,16 @@ public class HandlerContext : IHandlerContext
 
 	#region Supports
 
+	/// <summary>
+	/// Safely register a value into a concurrent dictionary whose values are lists.
+	/// This method uses a lock on the internal handler container to ensure that list
+	/// mutations (add/replace) are thread-safe for the combined key/value operations.
+	/// </summary>
+	/// <typeparam name="TKey">The dictionary key type.</typeparam>
+	/// <typeparam name="TValue">The list element type.</typeparam>
+	/// <param name="key">The key to register the value under.</param>
+	/// <param name="value">The value to add to the list for the given key.</param>
+	/// <param name="registry">The concurrent dictionary that stores lists of values.</param>
 	private void ConcurrentDictionarySafeRegister<TKey, TValue>(TKey key, TValue value, ConcurrentDictionary<TKey, List<TValue>> registry)
 	{
 		lock (_handlerContainer)
@@ -160,6 +173,21 @@ public class HandlerContext : IHandlerContext
 		}
 	}
 
+	/// <summary>
+	/// Build an array of <see cref="Expression"/> arguments for invoking a handler method.
+	/// The method supports up to three parameters where parameter positions are resolved by type:
+	/// - a parameter matching <see cref="MessageContext"/> will receive the provided <paramref name="context"/> instance.
+	/// - a parameter matching <see cref="CancellationToken"/> will receive the provided <paramref name="cancellationToken"/>.
+	/// - any other parameter will receive the <paramref name="message"/> instance.
+	/// </summary>
+	/// <param name="method">The <see cref="MethodInfo"/> representing the handler method to invoke.</param>
+	/// <param name="message">The message object to be passed to the handler.</param>
+	/// <param name="context">The <see cref="MessageContext"/> to be passed to the handler when requested.</param>
+	/// <param name="cancellationToken">The <see cref="CancellationToken"/> to pass to the handler when requested.</param>
+	/// <returns>
+	/// An array of <see cref="Expression"/> corresponding to the method parameters, or <c>null</c>
+	/// when the method has more than three parameters (unsupported).
+	/// </returns>
 	private static Expression[] GetArguments(MethodInfo method, object message, MessageContext context, CancellationToken cancellationToken)
 	{
 		var parameterInfos = method.GetParameters();
@@ -169,41 +197,41 @@ public class HandlerContext : IHandlerContext
 			case 0:
 				break;
 			case 1:
-			{
-				var parameterType = parameterInfos[0].ParameterType;
+				{
+					var parameterType = parameterInfos[0].ParameterType;
 
-				if (parameterType == typeof(MessageContext))
-				{
-					arguments[0] = Expression.Constant(context);
+					if (parameterType == typeof(MessageContext))
+					{
+						arguments[0] = Expression.Constant(context);
+					}
+					else if (parameterType == typeof(CancellationToken))
+					{
+						arguments[0] = Expression.Constant(cancellationToken);
+					}
+					else
+					{
+						arguments[0] = Expression.Constant(message);
+					}
 				}
-				else if (parameterType == typeof(CancellationToken))
-				{
-					arguments[0] = Expression.Constant(cancellationToken);
-				}
-				else
-				{
-					arguments[0] = Expression.Constant(message);
-				}
-			}
 				break;
 			case 2:
 			case 3:
-			{
-				arguments[0] ??= Expression.Constant(message);
-
-				for (var index = 1; index < parameterInfos.Length; index++)
 				{
-					if (parameterInfos[index].ParameterType == typeof(MessageContext))
-					{
-						arguments[index] = Expression.Constant(context);
-					}
+					arguments[0] ??= Expression.Constant(message);
 
-					if (parameterInfos[index].ParameterType == typeof(CancellationToken))
+					for (var index = 1; index < parameterInfos.Length; index++)
 					{
-						arguments[index] = Expression.Constant(cancellationToken);
+						if (parameterInfos[index].ParameterType == typeof(MessageContext))
+						{
+							arguments[index] = Expression.Constant(context);
+						}
+
+						if (parameterInfos[index].ParameterType == typeof(CancellationToken))
+						{
+							arguments[index] = Expression.Constant(cancellationToken);
+						}
 					}
 				}
-			}
 				break;
 			default:
 				return null;

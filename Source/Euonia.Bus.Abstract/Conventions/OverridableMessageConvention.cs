@@ -3,7 +3,7 @@
 internal class OverridableMessageConvention : IMessageConvention
 {
 	private readonly IMessageConvention _innerConvention;
-	private Func<Type, bool> _isQueueType, _isTopicType, _isRequestType;
+	private Func<Type, bool> _isCommandType, _isEventType, _isRequestType;
 
 	public OverridableMessageConvention(IMessageConvention innerConvention)
 	{
@@ -12,12 +12,12 @@ internal class OverridableMessageConvention : IMessageConvention
 
 	public string Name => $"Override with {_innerConvention.Name}";
 
-	bool IMessageConvention.IsQueueType(Type messageType)
+	bool IMessageConvention.IsCommandType(Type messageType)
 	{
 		return IsQueueType(messageType);
 	}
 
-	bool IMessageConvention.IsTopicType(Type messageType)
+	bool IMessageConvention.IsEventType(Type messageType)
 	{
 		return IsTopicType(messageType);
 	}
@@ -29,14 +29,14 @@ internal class OverridableMessageConvention : IMessageConvention
 
 	public Func<Type, bool> IsQueueType
 	{
-		get => _isQueueType ?? _innerConvention.IsQueueType;
-		set => _isQueueType = value;
+		get => _isCommandType ?? _innerConvention.IsCommandType;
+		set => _isCommandType = value;
 	}
 
 	public Func<Type, bool> IsTopicType
 	{
-		get => _isTopicType ?? _innerConvention.IsTopicType;
-		set => _isTopicType = value;
+		get => _isEventType ?? _innerConvention.IsEventType;
+		set => _isEventType = value;
 	}
 
 	public Func<Type, bool> IsRequestType
@@ -47,12 +47,12 @@ internal class OverridableMessageConvention : IMessageConvention
 
 	public void DefineQueueType(Func<Type, bool> convention)
 	{
-		_isQueueType = convention;
+		_isCommandType = convention;
 	}
 
 	public void DefineTopicType(Func<Type, bool> convention)
 	{
-		_isTopicType = convention;
+		_isEventType = convention;
 	}
 	
 	public void DefineRequestType(Func<Type, bool> convention)
