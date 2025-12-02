@@ -5,7 +5,7 @@
 /// </summary>
 public class ServiceAccessor : IServiceAccessor
 {
-    private static readonly AsyncLocal<IServiceProvider> _provider = new();
+    private readonly AsyncLocal<IServiceProvider> _provider = new();
 
     /// <inheritdoc/>
     public IServiceProvider ServiceProvider

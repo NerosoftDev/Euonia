@@ -19,15 +19,18 @@ public class HandlerContext : IHandlerContext
 	private readonly ConcurrentDictionary<string, List<MessageHandlerFactory>> _handlerContainer = new();
 	private readonly IServiceProvider _provider;
 	private readonly ILogger<HandlerContext> _logger;
+	private readonly MessageConvention _convention;
 
 	/// <summary>
 	/// Initialize a new instance of <see cref="HandlerContext"/>
 	/// </summary>
 	/// <param name="provider"></param>
-	public HandlerContext(IServiceProvider provider)
+	/// <param name="convention"></param>
+	public HandlerContext(IServiceProvider provider, MessageConvention convention = null)
 	{
 		_provider = provider;
 		_logger = provider.GetService<ILoggerFactory>()?.CreateLogger<HandlerContext>();
+		_convention = convention ?? new MessageConvention();
 	}
 
 	#region Handling register
@@ -93,41 +96,32 @@ public class HandlerContext : IHandlerContext
 
 		using var scope = _provider.GetRequiredService<IServiceScopeFactory>().CreateScope();
 
-		if (!_handlerContainer.TryGetValue(channel, out var handling))
+		if (!_handlerContainer.TryGetValue(channel, out var factories) || factories == null || factories.Count == 0)
 		{
-			throw new InvalidOperationException("No handler registered for message");
+			_logger?.LogWarning("No handler registered for message {Id} on channel {Channel}", context.MessageId, channel);
+			throw new InvalidOperationException($"No handler registered for message {context.MessageId} on channel {channel}");
 		}
 
 		// Get handler instance from service provider using Expression Tree
-
-		if (handling.Count == 0)
-		{
-			throw new InvalidOperationException("No handler registered for message");
-		}
-
 		_logger?.LogInformation("Message {Id} is being handled", context.MessageId);
 
-		if (handling.Count == 1)
+		await Parallel.ForEachAsync(factories, cancellationToken, async (factory, token) =>
 		{
-			var handler = handling.First()(scope.ServiceProvider);
-			await handler(message, context, cancellationToken);
-		}
-		else
-		{
-			await Parallel.ForEachAsync(handling, cancellationToken, async (factory, token) =>
+			try
 			{
-				try
+				var handler = factory(scope.ServiceProvider);
+				await handler(message, context, token);
+			}
+			catch (Exception exception)
+			{
+				_logger?.LogError(exception, "Error occurred while handling message {Id}", context.MessageId);
+				if (_convention.IsRequestType(message.GetType()) || _convention.IsTopicType(message.GetType()))
 				{
-					var handler = factory(scope.ServiceProvider);
-					await handler(message, context, token);
+					// Swallow the exception for request/response and topic messages
+					throw;
 				}
-				catch (Exception ex)
-				{
-					_logger?.LogError(ex, "Error occurred while handling message {Id}", context.MessageId);
-				}
-			});
-		}
-
+			}
+		});
 		_logger?.LogInformation("Message {Id} was completed handled", context.MessageId);
 	}
 
@@ -169,41 +163,41 @@ public class HandlerContext : IHandlerContext
 			case 0:
 				break;
 			case 1:
-			{
-				var parameterType = parameterInfos[0].ParameterType;
+				{
+					var parameterType = parameterInfos[0].ParameterType;
 
-				if (parameterType == typeof(MessageContext))
-				{
-					arguments[0] = Expression.Constant(context);
+					if (parameterType == typeof(MessageContext))
+					{
+						arguments[0] = Expression.Constant(context);
+					}
+					else if (parameterType == typeof(CancellationToken))
+					{
+						arguments[0] = Expression.Constant(cancellationToken);
+					}
+					else
+					{
+						arguments[0] = Expression.Constant(message);
+					}
 				}
-				else if (parameterType == typeof(CancellationToken))
-				{
-					arguments[0] = Expression.Constant(cancellationToken);
-				}
-				else
-				{
-					arguments[0] = Expression.Constant(message);
-				}
-			}
 				break;
 			case 2:
 			case 3:
-			{
-				arguments[0] ??= Expression.Constant(message);
-
-				for (var index = 1; index < parameterInfos.Length; index++)
 				{
-					if (parameterInfos[index].ParameterType == typeof(MessageContext))
-					{
-						arguments[index] = Expression.Constant(context);
-					}
+					arguments[0] ??= Expression.Constant(message);
 
-					if (parameterInfos[index].ParameterType == typeof(CancellationToken))
+					for (var index = 1; index < parameterInfos.Length; index++)
 					{
-						arguments[index] = Expression.Constant(cancellationToken);
+						if (parameterInfos[index].ParameterType == typeof(MessageContext))
+						{
+							arguments[index] = Expression.Constant(context);
+						}
+
+						if (parameterInfos[index].ParameterType == typeof(CancellationToken))
+						{
+							arguments[index] = Expression.Constant(cancellationToken);
+						}
 					}
 				}
-			}
 				break;
 			default:
 				return null;
