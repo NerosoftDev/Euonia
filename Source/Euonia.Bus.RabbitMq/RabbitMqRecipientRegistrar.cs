@@ -27,11 +27,11 @@ public sealed class RabbitMqRecipientRegistrar : IRecipientRegistrar
 		foreach (var registration in registrations)
 		{
 			RabbitMqQueueRecipient recipient;
-			if (_convention.IsQueueType(registration.MessageType))
+			if (_convention.IsCommandType(registration.MessageType))
 			{
 				recipient = ActivatorUtilities.GetServiceOrCreateInstance<RabbitMqQueueConsumer>(_provider);
 			}
-			else if (_convention.IsTopicType(registration.MessageType))
+			else if (_convention.IsEventType(registration.MessageType))
 			{
 				recipient = ActivatorUtilities.GetServiceOrCreateInstance<RabbitMqTopicSubscriber>(_provider);
 			}

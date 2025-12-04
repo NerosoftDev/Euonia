@@ -34,12 +34,12 @@ public sealed class InMemoryRecipientRegistrar : IRecipientRegistrar
 
 		foreach (var registration in registrations)
 		{
-			if (_convention.IsQueueType(registration.MessageType))
+			if (_convention.IsCommandType(registration.MessageType))
 			{
 				var recipient = GetRecipient<InMemoryQueueConsumer>();
 				StrongReferenceMessenger.Default.Register(recipient, registration.Channel);
 			}
-			else if (_convention.IsTopicType(registration.MessageType))
+			else if (_convention.IsEventType(registration.MessageType))
 			{
 				var recipient = GetRecipient<InMemoryTopicSubscriber>();
 				WeakReferenceMessenger.Default.Register(recipient, registration.Channel);

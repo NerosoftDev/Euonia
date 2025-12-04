@@ -4,6 +4,6 @@
 /// Represents the class is a command.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-public class QueueAttribute : Attribute
+public class CommandAttribute : Attribute
 {
 }

@@ -11,19 +11,19 @@ public interface IMessageConvention
 	string Name { get; }
 
 	/// <summary>
-	/// Determine if a type is a queue type.
+	/// Determine if a type is a command type.
 	/// </summary>
 	/// <param name="messageType">The type to check.</param>.
 	/// <returns>true if <paramref name="messageType"/> represents a queue message.</returns>
-	bool IsQueueType(Type messageType);
+	bool IsCommandType(Type messageType);
 
 	/// <summary>
-	/// Determine if a type is a topic type.
+	/// Determine if a type is a event type.
 	/// </summary>
 	/// <param name="messageType">The type to check.</param>.
 	/// <returns>true if <paramref name="messageType"/> represents a topic message.</returns>
-	bool IsTopicType(Type messageType);
-	
+	bool IsEventType(Type messageType);
+
 	/// <summary>
 	/// Determine if a type is a request type.
 	/// </summary>
