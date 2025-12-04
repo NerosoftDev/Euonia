@@ -209,14 +209,19 @@ public class BusinessObjectFactory : IObjectFactory
 	private TTarget GetObjectInstance<TTarget>()
 	{
 		var @object = ActivatorUtilities.GetServiceOrCreateInstance<TTarget>(_provider);
-		switch (@object)
+
+		// ReSharper disable once ConvertIfStatementToSwitchStatement
+		
+		// The object may be both IHasLazyServiceProvider and IUseBusinessContext
+		
+		if (@object is IHasLazyServiceProvider lazy)
 		{
-			case IUseBusinessContext ctx:
-				ctx.BusinessContext = _provider.GetRequiredService<BusinessContext>();
-				break;
-			case IHasLazyServiceProvider lazy:
-				lazy.LazyServiceProvider = _provider.GetRequiredService<ILazyServiceProvider>();
-				break;
+			lazy.LazyServiceProvider = _provider.GetRequiredService<ILazyServiceProvider>();
+		}
+
+		if (@object is IUseBusinessContext ctx)
+		{
+			ctx.BusinessContext = _provider.GetRequiredService<BusinessContext>();
 		}
 
 		var properties = ObjectReflector.GetAutoInjectProperties(typeof(TTarget));
