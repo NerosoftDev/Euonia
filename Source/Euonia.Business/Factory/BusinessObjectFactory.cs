@@ -210,6 +210,10 @@ public class BusinessObjectFactory : IObjectFactory
 	{
 		var @object = ActivatorUtilities.GetServiceOrCreateInstance<TTarget>(_provider);
 
+		// ReSharper disable once ConvertIfStatementToSwitchStatement
+		
+		// The object may be both IHasLazyServiceProvider and IUseBusinessContext
+		
 		if (@object is IHasLazyServiceProvider lazy)
 		{
 			lazy.LazyServiceProvider = _provider.GetRequiredService<ILazyServiceProvider>();
