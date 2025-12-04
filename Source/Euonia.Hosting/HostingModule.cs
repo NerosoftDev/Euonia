@@ -37,7 +37,7 @@ public class HostingModule : ModuleContextBase
 		}
 
 		app.UseMiddleware<RequestTraceMiddleware>();
-		app.UseMiddleware<ExceptionHandlingMiddleware>();
+		//app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 		// Set up the ServiceProvider for IServiceAccessor.
 		app.Use((httpContext, next) =>

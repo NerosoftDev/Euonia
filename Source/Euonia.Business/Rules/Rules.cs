@@ -108,10 +108,38 @@ public class Rules : IRules
 
 		var currentRunningState = HasRunningRules;
 		HasRunningRules = true;
-		var rules = RuleManager.Rules.Where(t => t.Property == null).OrderBy(t => t.Priority);
+		var rules = RuleManager.Rules
+		                       .Where(t => t.Property == null)
+		                       .OrderBy(t => t.Priority);
 		BrokenRules.ClearRules(null);
 		var (properties, tasks) = RunRules(rules, cascade);
 		Task.WaitAll(tasks.ToArray());
+		HasRunningRules = currentRunningState;
+		return properties.Distinct().ToList();
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="cascade"></param>
+	/// <param name="cancellationToken"></param>
+	/// <returns></returns>
+	public async Task<List<string>> CheckObjectRulesAsync(bool cascade, CancellationToken cancellationToken = default)
+	{
+		if (SuppressRuleChecking)
+		{
+			return new List<string>();
+		}
+
+		var currentRunningState = HasRunningRules;
+		HasRunningRules = true;
+		var rules = RuleManager.Rules
+		                       .Where(t => t.Property == null)
+		                       .OrderBy(t => t.Priority);
+		BrokenRules.ClearRules(null);
+		var (properties, tasks) = RunRules(rules, cascade);
+		await Task.WhenAll(tasks);
+
 		HasRunningRules = currentRunningState;
 		return properties.Distinct().ToList();
 	}
@@ -171,6 +199,16 @@ public class Rules : IRules
 		var tasks = new List<Task>();
 		foreach (var rule in rules)
 		{
+			if (Target is IEditableObject editableObject)
+			{
+				var attribute = rule.GetType().GetCustomAttribute<ExecuteOnStateAttribute>();
+
+				if (attribute != null && !attribute.States.Contains(editableObject.State))
+				{
+					continue;
+				}
+			}
+
 			var context = new RuleContext(ruleContext =>
 			{
 				lock (_lockObject)
@@ -241,11 +279,12 @@ public class Rules : IRules
 	/// </summary>
 	/// <param name="rule"></param>
 	/// <param name="context"></param>
-	private static async Task RunAsync(IRuleBase rule, IRuleContext context)
+	/// <param name="cancellationToken"></param>
+	private static async Task RunAsync(IRuleBase rule, IRuleContext context, CancellationToken cancellationToken = default)
 	{
 		try
 		{
-			await rule.ExecuteAsync(context);
+			await rule.ExecuteAsync(context, cancellationToken);
 		}
 		catch (Exception ex)
 		{

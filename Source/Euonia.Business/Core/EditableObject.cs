@@ -10,7 +10,7 @@ public abstract class EditableObject<T> : BusinessObject<T>, IOperableProperty, 
 	where T : EditableObject<T>
 {
 	/// <summary>
-	/// Gets the currrent object state.
+	/// Gets the current object state.
 	/// </summary>
 	public ObjectEditState State { get; private set; } = ObjectEditState.None;
 
@@ -28,6 +28,11 @@ public abstract class EditableObject<T> : BusinessObject<T>, IOperableProperty, 
 	/// Gets a value indicating whether the object would be deleted.
 	/// </summary>
 	public bool IsDelete => State == ObjectEditState.Delete;
+
+	/// <summary>
+	/// Gets or sets a value indicating whether to check object rules on delete.
+	/// </summary>
+	public bool CheckObjectRulesOnDelete { get; private set; }
 
 	/// <summary>
 	/// Mark the object state as <see cref="ObjectEditState.Insert"/>.
@@ -48,9 +53,11 @@ public abstract class EditableObject<T> : BusinessObject<T>, IOperableProperty, 
 	/// <summary>
 	/// Mark the object state as <see cref="ObjectEditState.Delete"/>.
 	/// </summary>
-	public void MarkAsDelete()
+	/// <param name="checkObjectRules"></param>
+	public void MarkAsDelete(bool checkObjectRules = false)
 	{
 		State = ObjectEditState.Delete;
+		CheckObjectRulesOnDelete = checkObjectRules;
 	}
 
 	/// <summary>
@@ -134,21 +141,25 @@ public abstract class EditableObject<T> : BusinessObject<T>, IOperableProperty, 
 			}
 		}
 
-		if (!IsDelete)
+		if (!IsDelete || CheckObjectRulesOnDelete)
 		{
-			Rules.CheckObjectRules(true);
+			await Rules.CheckObjectRulesAsync(true, cancellationToken);
 			if (Rules.HasRunningRules)
 			{
 				var task = new TaskCompletionSource<bool>();
-				ValidationComplete += (_, _) =>
+				ValidationComplete += OnValidationCompleted;
+				await task.Task;
+
+				ValidationComplete -= OnValidationCompleted;
+
+				void OnValidationCompleted(object sender, EventArgs args)
 				{
 					task.SetResult(true);
-				};
-				await task.Task;
+				}
 			}
 		}
 
-		if (!IsValid && !IsDelete)
+		if (!IsValid && (!IsDelete || CheckObjectRulesOnDelete))
 		{
 			var errors = Rules.BrokenRules.Select(t => new ValidationResult(t.Property, t.Description));
 			throw new ValidationException("Object not valid for save.", errors);
@@ -300,7 +311,7 @@ public abstract class EditableObject<T> : BusinessObject<T>, IOperableProperty, 
 		object result;
 		if (IsBypassingRuleChecks || CanReadProperty(propertyInfo, false))
 		{
-			// call ReadProperty (may be overloaded in actual class)
+			// call ReadProperty (maybe overloaded in actual class)
 			result = ReadProperty(propertyInfo);
 		}
 		else
@@ -385,6 +396,7 @@ public abstract class EditableObject<T> : BusinessObject<T>, IOperableProperty, 
 			{
 				newValue = TypeHelper.CoerceValue<TValue>(typeof(string), string.Empty);
 			}
+
 			if (ValuesDiffer(propertyInfo, newValue, field))
 			{
 				doChange = true;

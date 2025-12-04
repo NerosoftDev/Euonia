@@ -63,8 +63,8 @@ public class BrokenRuleCollection : ObservableCollection<BrokenRule>
                 }
                 else
                 {
-                    RemoveItem(index);
-                    count--;
+	                RemoveItem(index);
+	                count--;
                 }
             }
         }
@@ -82,7 +82,7 @@ public class BrokenRuleCollection : ObservableCollection<BrokenRule>
         {
             foreach (var result in results)
             {
-                ClearRules(propertyName);
+                //ClearRules(propertyName);
                 if (result.Success)
                 {
                     continue;
