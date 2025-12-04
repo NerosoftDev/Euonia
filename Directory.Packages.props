@@ -2,11 +2,19 @@
     <PropertyGroup>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
         <EnablePackageVersionOverride>true</EnablePackageVersionOverride>
-        <MicrosoftPackageVersion8>10.0.0</MicrosoftPackageVersion8>
-        <MicrosoftPackageVersion9>9.0.11</MicrosoftPackageVersion9>
         <ExtensionsPackageVersion>10.0.0</ExtensionsPackageVersion>
         <GrpcAspNetCoreVersion>2.71.0</GrpcAspNetCoreVersion>
         <QuartzVersion>3.15.1</QuartzVersion>
+    </PropertyGroup>
+    <PropertyGroup>
+        <EntityFrameworkCoreVersion9>9.0.11</EntityFrameworkCoreVersion9>
+        <EntityFrameworkCoreVersion10>10.0.0</EntityFrameworkCoreVersion10>
+        <EntityFrameworkCoreVersion11>11.0.0</EntityFrameworkCoreVersion11>
+    </PropertyGroup>
+    <PropertyGroup>
+        <AspNetCoreVersion9>9.0.11</AspNetCoreVersion9>
+        <AspNetCoreVersion10>10.0.0</AspNetCoreVersion10>
+        <AspNetCoreVersion11>11.0.0</AspNetCoreVersion11>
     </PropertyGroup>
     <ItemGroup>
         <PackageVersion Include="Apache.NMS.ActiveMQ" Version="2.2.0" />
@@ -72,41 +80,41 @@
     </ItemGroup>
     <!-- Microsoft.EntityFrameworkCore -->
     <ItemGroup Condition="'$(TargetFramework)'=='net9.0'">
-        <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="$(MicrosoftPackageVersion9)" />
-        <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="$(MicrosoftPackageVersion9)" />
-        <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(MicrosoftPackageVersion9)" />
-        <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="$(MicrosoftPackageVersion9)">
+        <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="[$(EntityFrameworkCoreVersion9),$(EntityFrameworkCoreVersion10))" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="[$(EntityFrameworkCoreVersion9),$(EntityFrameworkCoreVersion10))" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="[$(EntityFrameworkCoreVersion9),$(EntityFrameworkCoreVersion10))" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="[$(EntityFrameworkCoreVersion9),$(EntityFrameworkCoreVersion10))">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageVersion>
-        <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="$(MicrosoftPackageVersion9)" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="[$(EntityFrameworkCoreVersion9),$(EntityFrameworkCoreVersion10))" />
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)'=='net10.0'">
-        <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="$(MicrosoftPackageVersion8)" />
-        <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="$(MicrosoftPackageVersion8)" />
-        <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(MicrosoftPackageVersion8)" />
-        <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="$(MicrosoftPackageVersion8)">
+        <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="[$(EntityFrameworkCoreVersion10),$(EntityFrameworkCoreVersion11))" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="[$(EntityFrameworkCoreVersion10),$(EntityFrameworkCoreVersion11))" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="[$(EntityFrameworkCoreVersion10),$(EntityFrameworkCoreVersion11))" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="[$(EntityFrameworkCoreVersion10),$(EntityFrameworkCoreVersion11))">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageVersion>
-        <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="$(MicrosoftPackageVersion8)" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="[$(EntityFrameworkCoreVersion10),$(EntityFrameworkCoreVersion11))" />
     </ItemGroup>
     <!-- Microsoft.AspNetCore -->
     <ItemGroup Condition="$(TargetFramework.Contains('netstandard'))">
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)'=='net9.0'">
-        <PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="$(MicrosoftPackageVersion9)" />
-        <PackageVersion Include="Microsoft.AspNetCore.Connections.Abstractions" Version="$(MicrosoftPackageVersion9)" />
-        <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(MicrosoftPackageVersion9)" />
-        <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(MicrosoftPackageVersion9)" />
-        <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="$(MicrosoftPackageVersion9)" />
+        <PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="[$(AspNetCoreVersion9),$(AspNetCoreVersion10))" />
+        <PackageVersion Include="Microsoft.AspNetCore.Connections.Abstractions" Version="[$(AspNetCoreVersion9),$(AspNetCoreVersion10))" />
+        <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="[$(AspNetCoreVersion9),$(AspNetCoreVersion10))" />
+        <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="[$(AspNetCoreVersion9),$(AspNetCoreVersion10))" />
+        <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="[$(AspNetCoreVersion9),$(AspNetCoreVersion10))" />
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)'=='net10.0'">
-        <PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="$(MicrosoftPackageVersion8)" />
-        <PackageVersion Include="Microsoft.AspNetCore.Connections.Abstractions" Version="$(MicrosoftPackageVersion8)" />
-        <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(MicrosoftPackageVersion8)" />
-        <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(MicrosoftPackageVersion8)" />
-        <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="$(MicrosoftPackageVersion8)" />
+        <PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="[$(AspNetCoreVersion10),$(AspNetCoreVersion11))" />
+        <PackageVersion Include="Microsoft.AspNetCore.Connections.Abstractions" Version="[$(AspNetCoreVersion10),$(AspNetCoreVersion11))" />
+        <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="[$(AspNetCoreVersion10),$(AspNetCoreVersion11))" />
+        <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="[$(AspNetCoreVersion10),$(AspNetCoreVersion11))" />
+        <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="[$(AspNetCoreVersion10),$(AspNetCoreVersion11))" />
     </ItemGroup>
     <!-- Grpc -->
     <ItemGroup>
