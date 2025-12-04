@@ -40,13 +40,13 @@ internal class ExceptionHandlingMiddleware : IMiddleware
 
 	private static Task HandleExceptionAsync(HttpContext httpContext, Exception exception)
 	{
-		var statusCode = GetStatusCode(exception);
+		var statusCode = (int)(exception?.GetStatusCode() ?? HttpStatusCode.InternalServerError);
 
 		var response = new
 		{
 			status = statusCode,
-			message = GetMessage(exception),
-			details = GetErrors(exception)
+			message = exception?.GetErrorMessage(),
+			details = exception?.GetErrorDetails()
 		};
 
 		httpContext.Response.ContentType = "application/json";
@@ -54,49 +54,5 @@ internal class ExceptionHandlingMiddleware : IMiddleware
 		httpContext.Response.StatusCode = statusCode;
 
 		return httpContext.Response.WriteAsync(JsonSerializer.Serialize(response));
-
-
-	}
-
-	private static string GetMessage(Exception exception)
-	{
-		return exception switch
-		{
-			AggregateException ex => ex.InnerException == null ? ex.Message : GetMessage(ex.InnerException),
-			TargetInvocationException ex => ex.InnerException == null ? ex.Message : GetMessage(ex.InnerException),
-			_ => exception.Message
-		};
-	}
-
-	private static int GetStatusCode(Exception exception)
-	{
-		return exception switch
-		{
-			HttpStatusException ex => (int)ex.StatusCode,
-			AuthenticationException => StatusCodes.Status401Unauthorized,
-			UnauthorizedAccessException => StatusCodes.Status403Forbidden,
-			ValidationException => StatusCodes.Status400BadRequest,
-			NotImplementedException => StatusCodes.Status501NotImplemented,
-			AggregateException ex => GetStatusCode(ex.InnerException),
-			TargetInvocationException ex => ex.InnerException == null ? StatusCodes.Status500InternalServerError : GetStatusCode(ex.InnerException),
-			_ => (int)(exception.GetType().GetCustomAttribute<HttpStatusCodeAttribute>()?.StatusCode ?? HttpStatusCode.InternalServerError)
-		};
-	}
-
-	private static IReadOnlyDictionary<string, string[]> GetErrors(Exception exception)
-	{
-		if (exception is AggregateException)
-		{
-			return GetErrors(exception.InnerException);
-		}
-
-		if (exception is not ValidationException ex)
-		{
-			return null;
-		}
-
-		return ex.Errors
-				 .GroupBy(t => t.PropertyName)
-				 .ToDictionary(t => t.Key, t => t.Select(x => x.ErrorMessage).ToArray());
 	}
 }

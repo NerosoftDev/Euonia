@@ -136,6 +136,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Euonia.Bus.Tests.Shared", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euonia.Hosting.Serilog", "Source\Euonia.Hosting.Serilog\Euonia.Hosting.Serilog.csproj", "{49969510-E0E4-4DF4-95F8-8B334CA9C5C6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euonia.Business.Tests", "Tests\Euonia.Business.Tests\Euonia.Business.Tests.csproj", "{F6508A78-064F-4FB6-ABD6-7C43C7AB5A96}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -395,6 +397,12 @@ Global
 		{49969510-E0E4-4DF4-95F8-8B334CA9C5C6}.Product|Any CPU.Build.0 = Release|Any CPU
 		{49969510-E0E4-4DF4-95F8-8B334CA9C5C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49969510-E0E4-4DF4-95F8-8B334CA9C5C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6508A78-064F-4FB6-ABD6-7C43C7AB5A96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6508A78-064F-4FB6-ABD6-7C43C7AB5A96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6508A78-064F-4FB6-ABD6-7C43C7AB5A96}.Product|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6508A78-064F-4FB6-ABD6-7C43C7AB5A96}.Product|Any CPU.Build.0 = Debug|Any CPU
+		{F6508A78-064F-4FB6-ABD6-7C43C7AB5A96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6508A78-064F-4FB6-ABD6-7C43C7AB5A96}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -454,6 +462,7 @@ Global
 		{C1262DAB-43DB-480A-8064-634C50872258} = {66B49F2D-FBC6-45A0-82B0-A099CABD37C6}
 		{B2B6A902-17A7-4926-9B7F-22DE8A092231} = {66B49F2D-FBC6-45A0-82B0-A099CABD37C6}
 		{49969510-E0E4-4DF4-95F8-8B334CA9C5C6} = {5DC17AB4-46C2-4004-93CB-1446201C3AEA}
+		{F6508A78-064F-4FB6-ABD6-7C43C7AB5A96} = {E048931D-EC51-448A-A737-3C62CF100813}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {84CDDCF4-F3D0-45FC-87C5-557845F58F55}
