@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -73,7 +74,7 @@ public class HostingModule : ModuleContextBase
 		{
 			RequestHeaders = context.Request?.Headers?.ToDictionary(t => t.Key, t => t.Value.ToString()),
 			ConnectionId = context.Connection?.Id,
-			User = context.User,
+			User = new ClaimsPrincipal(context.User),
 			RemotePort = context.Connection?.RemotePort ?? 0,
 			RemoteIpAddress = context.Connection?.RemoteIpAddress,
 			RequestAborted = context.RequestAborted,
