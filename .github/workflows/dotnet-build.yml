@@ -27,7 +27,7 @@ jobs:
         dotnet-version: ${{ matrix.dotnet-version }}
         
     - name: Restore packages
-      run: dotnet restore Euonia.sln
+      run: dotnet restore Euonia.slnx
     
     - name: Build
       run: dotnet build --configuration ${{ matrix.configuration }} --no-restore
