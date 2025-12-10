@@ -3,7 +3,7 @@ namespace Nerosoft.Euonia.Domain;
 /// <summary>
 /// Represent the object has auditing information.
 /// </summary>
-public interface IAuditing<TUser> : ITombstone
+public interface IAuditable<TUser> : ITombstone
 {
 	/// <summary>
 	/// Gets or sets the entry creation time.
@@ -24,6 +24,11 @@ public interface IAuditing<TUser> : ITombstone
 	/// Gets or sets the user identifier who last updated the entry.
 	/// </summary>
 	TUser UpdatedBy { get; set; }
+
+	/// <summary>
+	/// Gets or sets the entry delete time.
+	/// </summary>
+	DateTime? DeletedAt { get; set; }
 
 	/// <summary>
 	/// Gets or sets the entry delete time.
