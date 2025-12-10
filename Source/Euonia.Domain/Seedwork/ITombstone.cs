@@ -10,9 +10,4 @@ public interface ITombstone
     /// </summary>
     /// <value><c>true</c> if the entry is deleted, otherwise <c>false</c>.</value>
     bool IsDeleted { get; set; }
-
-    /// <summary>
-    /// Gets or sets the entry delete time.
-    /// </summary>
-    DateTime? DeletedAt { get; set; }
 }
