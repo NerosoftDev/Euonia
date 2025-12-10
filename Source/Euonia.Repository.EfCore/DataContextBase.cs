@@ -99,7 +99,10 @@ public abstract class DataContextBase<TContext> : DbContext, IRepositoryContext
 	public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
 	{
 		var entries = ChangeTracker.Entries();
-		SetEntryValues(entries);
+		if (AutoSetEntryValues)
+		{
+			SetEntryValues(entries);
+		}
 		var result = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
 		return result;
 	}
@@ -110,72 +113,6 @@ public abstract class DataContextBase<TContext> : DbContext, IRepositoryContext
 	/// <param name="entries"></param>
 	protected virtual void SetEntryValues(IEnumerable<EntityEntry> entries)
 	{
-		if (!AutoSetEntryValues)
-		{
-			return;
-		}
-
-		foreach (var entry in entries)
-		{
-			var time = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified);
-
-			switch (entry.State)
-			{
-				case EntityState.Added:
-					switch (entry.Entity)
-					{
-						case IHasCreateTime:
-							entry.CurrentValues[nameof(IHasCreateTime.CreatedAt)] = time;
-							break;
-						case IHasUpdateTime:
-							entry.CurrentValues[nameof(IHasUpdateTime.UpdatedAt)] = time;
-							break;
-						case ITombstone:
-							entry.CurrentValues[nameof(ITombstone.IsDeleted)] = false;
-							break;
-					}
-
-					break;
-				case EntityState.Deleted:
-					if (entry.Entity is ITombstone)
-					{
-						entry.State = EntityState.Modified;
-						entry.CurrentValues[nameof(ITombstone.IsDeleted)] = true;
-						entry.CurrentValues[nameof(ITombstone.DeletedAt)] = time;
-					}
-
-					break;
-				case EntityState.Detached:
-				case EntityState.Unchanged:
-					break;
-				case EntityState.Modified:
-					SetModifiedEntry(entry, time);
-					break;
-				default:
-					continue;
-			}
-		}
-	}
-
-	private static void SetModifiedEntry(EntityEntry entry, DateTime time)
-	{
-		if (entry.State != EntityState.Modified)
-		{
-			return;
-		}
-
-		// ReSharper disable once ConvertIfStatementToSwitchStatement
-		if (entry.Entity is ITombstone { IsDeleted: true })
-		{
-			entry.CurrentValues[nameof(ITombstone.IsDeleted)] = true;
-			entry.CurrentValues[nameof(ITombstone.DeletedAt)] = time;
-			return;
-		}
-
-		if (entry.Entity is IHasUpdateTime)
-		{
-			entry.CurrentValues[nameof(IHasUpdateTime.UpdatedAt)] = time;
-		}
 	}
 
 	/// <inheritdoc />
