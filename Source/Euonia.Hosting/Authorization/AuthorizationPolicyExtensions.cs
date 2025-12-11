@@ -1,4 +1,4 @@
-using IdentityModel;
+using Duende.IdentityModel;
 
 namespace Microsoft.AspNetCore.Authorization;
 

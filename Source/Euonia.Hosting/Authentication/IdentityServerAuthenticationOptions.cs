@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
-using IdentityModel.AspNetCore.OAuth2Introspection;
-using IdentityModel.Client;
+using Duende.AspNetCore.Authentication.OAuth2Introspection;
+using Duende.AspNetCore.Authentication.OAuth2Introspection.Infrastructure;
+using Duende.IdentityModel.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Protocols;
@@ -232,7 +233,7 @@ public class IdentityServerAuthenticationOptions : AuthenticationSchemeOptions
         introspectionOptions.SaveToken = SaveToken;
         introspectionOptions.DiscoveryPolicy = IntrospectionDiscoveryPolicy;
 
-        introspectionOptions.EnableCaching = EnableCaching;
+        //introspectionOptions.EnableCaching = EnableCaching;
         introspectionOptions.CacheDuration = CacheDuration;
         introspectionOptions.CacheKeyPrefix = CacheKeyPrefix;
 
