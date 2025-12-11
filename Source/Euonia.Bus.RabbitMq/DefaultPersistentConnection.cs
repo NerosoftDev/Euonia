@@ -45,6 +45,11 @@ public class DefaultPersistentConnection : DisposableObject, IPersistentConnecti
 		_logger.LogInformation("RabbitMQ Client is trying to connect");
 		using (await _mutex.LockAsync())
 		{
+			if (IsConnected)
+			{
+				return true;
+			}
+
 			_connection = await Policy.Handle<SocketException>()
 			                          .Or<BrokerUnreachableException>()
 			                          .WaitAndRetryAsync(_retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
