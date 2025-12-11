@@ -58,10 +58,6 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 	internal override async Task StartAsync(string channel)
 	{
 		var queueName = $"{Options.QueueName}${channel}$";
-		if (!Connection.IsConnected)
-		{
-			await Connection.TryConnectAsync();
-		}
 
 		Channel = await Connection.CreateChannelAsync();
 

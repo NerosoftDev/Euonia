@@ -57,11 +57,6 @@ public class RabbitMqTopicSubscriber : RabbitMqQueueRecipient, ITopicSubscriber
 
 	internal override async Task StartAsync(string channel)
 	{
-		if (!Connection.IsConnected)
-		{
-			await Connection.TryConnectAsync();
-		}
-
 		Channel = await Connection.CreateChannelAsync();
 
 		string queueName;

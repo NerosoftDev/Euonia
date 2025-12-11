@@ -42,7 +42,6 @@ public class DefaultPersistentConnection : DisposableObject, IPersistentConnecti
 	/// <inheritdoc/>
 	public async Task<bool> TryConnectAsync()
 	{
-		_logger.LogInformation("RabbitMQ Client is trying to connect");
 		using (await _mutex.LockAsync())
 		{
 			if (IsConnected)
@@ -50,6 +49,7 @@ public class DefaultPersistentConnection : DisposableObject, IPersistentConnecti
 				return true;
 			}
 
+			_logger.LogInformation("RabbitMQ Client is trying to connect");
 			_connection = await Policy.Handle<SocketException>()
 			                          .Or<BrokerUnreachableException>()
 			                          .WaitAndRetryAsync(_retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
@@ -80,15 +80,10 @@ public class DefaultPersistentConnection : DisposableObject, IPersistentConnecti
 	/// <inheritdoc/>
 	public async Task<IChannel> CreateChannelAsync()
 	{
-#if DEBUG
-		while (_connection == null)
-		{
-			await Task.Delay(100);
-		}
-#endif
 		if (!IsConnected)
 		{
-			throw new InvalidOperationException("No RabbitMQ connections are available to perform this action");
+			await TryConnectAsync();
+			//throw new InvalidOperationException("No RabbitMQ connections are available to perform this action");
 		}
 
 		return await _connection.CreateChannelAsync();
