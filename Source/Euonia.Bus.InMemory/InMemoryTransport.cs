@@ -47,7 +47,7 @@ public class InMemoryTransport : DisposableObject, ITransport
 
 		var taskCompletion = new TaskCompletionSource();
 
-		if (cancellationToken != default)
+		if (cancellationToken != CancellationToken.None)
 		{
 			cancellationToken.Register(() => taskCompletion.SetCanceled(cancellationToken));
 		}
@@ -81,7 +81,7 @@ public class InMemoryTransport : DisposableObject, ITransport
 
 		// See https://stackoverflow.com/questions/18760252/timeout-an-async-method-implemented-with-taskcompletionsource
 		var taskCompletion = new TaskCompletionSource<TResponse>();
-		if (cancellationToken != default)
+		if (cancellationToken != CancellationToken.None)
 		{
 			cancellationToken.Register(() => taskCompletion.TrySetCanceled(), false);
 		}
