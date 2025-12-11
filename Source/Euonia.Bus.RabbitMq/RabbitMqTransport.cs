@@ -217,18 +217,14 @@ public class RabbitMqTransport : ITransport
 
 		await using var stream = new MemoryStream();
 		// The default UTF8Encoding emits the BOM will cause the RabbitMQ client to fail to deserialize the message.
-		using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
+		await using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
 		{
-			using var jsonWriter = new JsonTextWriter(writer);
+			await using var jsonWriter = new JsonTextWriter(writer);
 
 			JsonSerializer.CreateDefault().Serialize(jsonWriter, message);
 
 			await jsonWriter.FlushAsync(cancellationToken);
-#if NET8_0_OR_GREATER
 			await writer.FlushAsync(cancellationToken);
-#else
-			await writer.FlushAsync();
-#endif
 		}
 
 		return stream.ToArray();
