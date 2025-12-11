@@ -2,18 +2,18 @@
     <PropertyGroup>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
         <EnablePackageVersionOverride>true</EnablePackageVersionOverride>
-        <ExtensionsPackageVersion>10.0.0</ExtensionsPackageVersion>
+        <ExtensionsPackageVersion>10.0.1</ExtensionsPackageVersion>
         <GrpcAspNetCoreVersion>2.71.0</GrpcAspNetCoreVersion>
         <QuartzVersion>3.15.1</QuartzVersion>
     </PropertyGroup>
     <PropertyGroup>
         <EntityFrameworkCoreVersion9>9.0.11</EntityFrameworkCoreVersion9>
-        <EntityFrameworkCoreVersion10>10.0.0</EntityFrameworkCoreVersion10>
+        <EntityFrameworkCoreVersion10>10.0.1</EntityFrameworkCoreVersion10>
         <EntityFrameworkCoreVersion11>11.0.0</EntityFrameworkCoreVersion11>
     </PropertyGroup>
     <PropertyGroup>
         <AspNetCoreVersion9>9.0.11</AspNetCoreVersion9>
-        <AspNetCoreVersion10>10.0.0</AspNetCoreVersion10>
+        <AspNetCoreVersion10>10.0.1</AspNetCoreVersion10>
         <AspNetCoreVersion11>11.0.0</AspNetCoreVersion11>
     </PropertyGroup>
     <ItemGroup>
@@ -21,18 +21,18 @@
         <PackageVersion Include="Autofac" Version="9.0.0" />
         <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="10.0.0" />
         <PackageVersion Include="Autofac.Extras.DynamicProxy" Version="7.1.0" />
-        <PackageVersion Include="AutoMapper" Version="15.1.0" />
+        <PackageVersion Include="AutoMapper" Version="16.0.0" />
         <PackageVersion Include="Azure.Storage.Blobs" Version="12.26.0" />
         <PackageVersion Include="Castle.Core" Version="5.2.1" />
         <PackageVersion Include="Consul" Version="1.6.10.9" />
-        <PackageVersion Include="FluentValidation" Version="12.1.0" />
+        <PackageVersion Include="FluentValidation" Version="12.1.1" />
         <PackageVersion Include="Duende.IdentityModel" Version="8.0.0" />
         <PackageVersion Include="Duende.AspNetCore.Authentication.OAuth2Introspection" Version="7.0.0" />
         <PackageVersion Include="Mapster" Version="7.4.0" />
         <PackageVersion Include="Mapster.DependencyInjection" Version="1.0.1" />
         <PackageVersion Include="MediatR" Version="12.1.1" />
         <PackageVersion Include="MediatR.Contracts" Version="2.0.1" />
-        <PackageVersion Include="mongocsharpdriver" Version="2.30.0" />
+        <PackageVersion Include="MongoDB.Driver" Version="3.5.2" />
         <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
         <PackageVersion Include="Polly" Version="8.6.5" />
         <PackageVersion Include="protobuf-net" Version="3.1.33" />
@@ -43,22 +43,17 @@
         <PackageVersion Include="Refit" Version="6.3.2" />
         <PackageVersion Include="Refit.HttpClientFactory" Version="6.3.2" />
         <PackageVersion Include="Refit.Newtonsoft.Json" Version="6.3.2" />
-        <PackageVersion Include="Serilog" Version="4.3.0" />
-        <PackageVersion Include="Serilog.AspNetCore" Version="10.0.0" />
-        <PackageVersion Include="Serilog.Enrichers.Environment" Version="3.0.1" />
-        <PackageVersion Include="Serilog.Sinks.Elasticsearch" Version="10.0.0" />
-        <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />
         <PackageVersion Include="StackExchange.Redis" Version="2.10.1" />
         <PackageVersion Include="Swashbuckle.AspNetCore" Version="10.0.1" />
-        <PackageVersion Include="System.Collections.Immutable" Version="10.0.0" />
+        <PackageVersion Include="System.Collections.Immutable" Version="10.0.1" />
         <PackageVersion Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
         <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
         <PackageVersion Include="System.Interactive" Version="7.0.0" />
-        <PackageVersion Include="System.Diagnostics.PerformanceCounter" Version="10.0.0" />
+        <PackageVersion Include="System.Diagnostics.PerformanceCounter" Version="10.0.1" />
         <PackageVersion Include="System.Reactive" Version="6.1.0" />
-        <PackageVersion Include="System.Runtime.Caching" Version="10.0.0" />
+        <PackageVersion Include="System.Runtime.Caching" Version="10.0.1" />
         <PackageVersion Include="System.Runtime.Loader" Version="4.3.0" />
-        <PackageVersion Include="System.Text.Json" Version="10.0.0" />
+        <PackageVersion Include="System.Text.Json" Version="10.0.1" />
         <PackageVersion Include="Winton.Extensions.Configuration.Consul" Version="3.2.0" />
         <PackageVersion Include="ZooKeeperNetEx" Version="3.4.12.4" />
     </ItemGroup>
@@ -119,7 +114,7 @@
     <!-- Grpc -->
     <ItemGroup>
         <PackageVersion Include="Google.Api.CommonProtos" Version="2.12.0" />
-        <PackageVersion Include="Google.Protobuf" Version="3.33.1" />
+        <PackageVersion Include="Google.Protobuf" Version="3.33.2" />
         <PackageVersion Include="Grpc" Version="2.46.6" />
         <PackageVersion Include="Grpc.AspNetCore" Version="$(GrpcAspNetCoreVersion)" />
         <PackageVersion Include="Grpc.AspNetCore.HealthChecks" Version="$(GrpcAspNetCoreVersion)" />
