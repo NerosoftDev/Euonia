@@ -20,7 +20,7 @@ public class MessageConventionBuilder
 	}
 
 	/// <summary>
-	/// 
+	/// Evaluate topic type convention.
 	/// </summary>
 	/// <param name="convention"></param>
 	/// <returns></returns>
