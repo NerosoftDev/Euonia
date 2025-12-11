@@ -36,7 +36,7 @@ public static class BusConfiguratorExtensions
 		configurator.Service.TryAddTransient<RabbitMqQueueConsumer>();
 		configurator.Service.TryAddTransient<RabbitMqTopicSubscriber>();
 
-		configurator.Service.TryAddSingleton<RabbitMqDispatcher>();
+		configurator.Service.TryAddSingleton<RabbitMqTransport>();
 		configurator.Service.AddTransient<IRecipientRegistrar, RabbitMqRecipientRegistrar>();
 		configurator.SetFactory<RabbitMqBusFactory>();
 	}

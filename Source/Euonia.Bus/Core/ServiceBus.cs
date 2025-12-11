@@ -11,7 +11,7 @@ public sealed class ServiceBus : IBus
 {
 	private readonly ILogger<ServiceBus> _logger;
 
-	private readonly IDispatcher _dispatcher;
+	private readonly ITransport _transport;
 	private readonly IMessageConvention _convention;
 	private readonly IServiceAccessor _serviceAccessor;
 
@@ -24,7 +24,7 @@ public sealed class ServiceBus : IBus
 	public ServiceBus(IBusFactory factory, IMessageConvention convention, ILoggerFactory logger)
 	{
 		_logger = logger.CreateLogger<ServiceBus>();
-		_dispatcher = factory.CreateDispatcher();
+		_transport = factory.CreateDispatcher();
 		_convention = convention;
 	}
 
@@ -64,7 +64,7 @@ public sealed class ServiceBus : IBus
 			Authorization = context?.Authorization,
 		};
 		metadataSetter?.Invoke(pack.Metadata);
-		return _dispatcher.PublishAsync(pack, cancellationToken);
+		return _transport.PublishAsync(pack, cancellationToken);
 	}
 
 	/// <inheritdoc />
@@ -93,7 +93,7 @@ public sealed class ServiceBus : IBus
 
 		metadataSetter?.Invoke(pack.Metadata);
 
-		return _dispatcher.SendAsync(pack, cancellationToken)
+		return _transport.SendAsync(pack, cancellationToken)
 		                  .ContinueWith(task => task.WaitAndUnwrapException(cancellationToken), cancellationToken);
 	}
 
@@ -123,7 +123,7 @@ public sealed class ServiceBus : IBus
 
 		metadataSetter?.Invoke(pack.Metadata);
 
-		return _dispatcher.SendAsync(pack, cancellationToken)
+		return _transport.SendAsync(pack, cancellationToken)
 		                  .ContinueWith(task =>
 		                  {
 			                  task.WaitAndUnwrapException();
@@ -158,7 +158,7 @@ public sealed class ServiceBus : IBus
 
 		metadataSetter?.Invoke(pack.Metadata);
 
-		return _dispatcher.SendAsync(pack, cancellationToken)
+		return _transport.SendAsync(pack, cancellationToken)
 		                  .ContinueWith(task =>
 		                  {
 			                  task.WaitAndUnwrapException();

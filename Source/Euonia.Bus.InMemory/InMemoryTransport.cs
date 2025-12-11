@@ -5,7 +5,7 @@ namespace Nerosoft.Euonia.Bus.InMemory;
 /// <summary>
 /// 
 /// </summary>
-public class InMemoryDispatcher : DisposableObject, IDispatcher
+public class InMemoryTransport : DisposableObject, ITransport
 {
 	/// <inheritdoc />
 	public event EventHandler<MessageDeliveredEventArgs> Delivered;
@@ -13,10 +13,10 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 	private readonly IIdentityProvider _identity;
 
 	/// <summary>
-	/// Initialize a new instance of <see cref="InMemoryDispatcher"/>
+	/// Initialize a new instance of <see cref="InMemoryTransport"/>
 	/// </summary>
 	/// <param name="provider"></param>
-	public InMemoryDispatcher(IServiceProvider provider)
+	public InMemoryTransport(IServiceProvider provider)
 	{
 		_identity = provider.GetService<IIdentityProvider>();
 	}

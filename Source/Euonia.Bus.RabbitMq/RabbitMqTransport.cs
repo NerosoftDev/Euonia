@@ -10,26 +10,26 @@ using RabbitMQ.Client.Exceptions;
 namespace Nerosoft.Euonia.Bus.RabbitMq;
 
 /// <summary>
-/// The <see cref="IDispatcher"/> implementation using RabbitMQ.
+/// The <see cref="ITransport"/> implementation using RabbitMQ.
 /// </summary>
-public class RabbitMqDispatcher : IDispatcher
+public class RabbitMqTransport : ITransport
 {
 	/// <inheritdoc />
 	public event EventHandler<MessageDeliveredEventArgs> Delivered;
 
 	private readonly RabbitMqMessageBusOptions _options;
 	private readonly IPersistentConnection _connection;
-	private readonly ILogger<RabbitMqDispatcher> _logger;
+	private readonly ILogger<RabbitMqTransport> _logger;
 
 	/// <summary>
-	/// Initialize a new instance of <see cref="RabbitMqDispatcher"/>.
+	/// Initialize a new instance of <see cref="RabbitMqTransport"/>.
 	/// </summary>
 	/// <param name="connection"></param>
 	/// <param name="options"></param>
 	/// <param name="logger"></param>
-	public RabbitMqDispatcher(IPersistentConnection connection, IOptions<RabbitMqMessageBusOptions> options, ILoggerFactory logger)
+	public RabbitMqTransport(IPersistentConnection connection, IOptions<RabbitMqMessageBusOptions> options, ILoggerFactory logger)
 	{
-		_logger = logger.CreateLogger<RabbitMqDispatcher>();
+		_logger = logger.CreateLogger<RabbitMqTransport>();
 		_connection = connection;
 		_options = options.Value;
 	}

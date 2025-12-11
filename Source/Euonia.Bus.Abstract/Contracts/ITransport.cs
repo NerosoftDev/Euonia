@@ -3,7 +3,7 @@
 /// <summary>
 /// 
 /// </summary>
-public interface IDispatcher
+public interface ITransport
 {
 	/// <summary>
 	/// Occurs when [message dispatched].
