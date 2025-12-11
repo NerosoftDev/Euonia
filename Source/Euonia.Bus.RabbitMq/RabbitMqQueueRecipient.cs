@@ -56,14 +56,14 @@ public abstract class RabbitMqQueueRecipient : DisposableObject
 	// 	Channel.BasicAck(deliveryTag, false);
 	// }
 
-	internal abstract void Start(string channel);
+	internal abstract Task StartAsync(string channel);
 
 	/// <summary>
 	/// 
 	/// </summary>
 	/// <param name="sender"></param>
 	/// <param name="args"></param>
-	protected abstract void HandleMessageReceived(object sender, BasicDeliverEventArgs args);
+	protected abstract Task HandleMessageReceivedAsync(object sender, BasicDeliverEventArgs args);
 
 	/// <summary>
 	/// 

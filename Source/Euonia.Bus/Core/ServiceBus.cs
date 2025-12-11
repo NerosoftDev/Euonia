@@ -159,13 +159,13 @@ public sealed class ServiceBus : IBus
 		metadataSetter?.Invoke(pack.Metadata);
 
 		return _transport.SendAsync(pack, cancellationToken)
-		                  .ContinueWith(task =>
-		                  {
-			                  task.WaitAndUnwrapException();
-			                  var result = task.Result;
-			                  callback?.Invoke(result);
-			                  return result;
-		                  }, cancellationToken);
+		                 .ContinueWith(task =>
+		                 {
+			                 task.WaitAndUnwrapException();
+			                 var result = task.Result;
+			                 callback?.Invoke(result);
+			                 return result;
+		                 }, cancellationToken);
 	}
 
 	private RequestContext GetRequestContext()

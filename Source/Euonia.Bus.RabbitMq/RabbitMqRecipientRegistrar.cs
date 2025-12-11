@@ -44,7 +44,7 @@ public sealed class RabbitMqRecipientRegistrar : IRecipientRegistrar
 				throw new MessageTypeException($"The message type {registration.MessageType.AssemblyQualifiedName} is not a queue/topic/request type.");
 			}
 
-			recipient.Start(registration.Channel);
+			await recipient.StartAsync(registration.Channel);
 		}
 
 		await Task.CompletedTask;

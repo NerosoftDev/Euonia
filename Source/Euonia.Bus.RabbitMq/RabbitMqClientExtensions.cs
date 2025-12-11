@@ -5,53 +5,56 @@ namespace Nerosoft.Euonia.Bus.RabbitMq;
 
 internal static class RabbitMqClientExtensions
 {
-	/// <summary>
-	/// Checks if the queue exists.
-	/// </summary>
 	/// <param name="channel"></param>
-	/// <param name="queueName"></param>
-	/// <returns></returns>
-	public static bool ExistsQueue(this IModel channel, string queueName)
+	extension(IChannel channel)
 	{
-		//var queueDeclareOk = channel.QueueDeclarePassive(queueName);
-		//if (queueDeclareOk.MessageCount > 0)
-		//{
-		//	throw new InvalidOperationException($"Queue '{queueName}' is not empty.");
-		//}
-
-		try
+		/// <summary>
+		/// Checks if the queue exists.
+		/// </summary>
+		/// <param name="queueName"></param>
+		/// <returns></returns>
+		public async Task<bool> ExistsQueueAsync(string queueName)
 		{
-			var queueDeclare = channel.QueueDeclarePassive(queueName);
+			//var queueDeclareOk = channel.QueueDeclarePassive(queueName);
+			//if (queueDeclareOk.MessageCount > 0)
+			//{
+			//	throw new InvalidOperationException($"Queue '{queueName}' is not empty.");
+			//}
 
-			return queueDeclare?.ConsumerCount > 0;
-		}
-		catch (OperationInterruptedException exception)
-		{
-			if (exception.ShutdownReason.ReplyCode == 404)
+			try
 			{
-				return false;
-				//throw new InvalidOperationException("No consumer found for the channel.", exception);
+				var queueDeclare = await channel.QueueDeclarePassiveAsync(queueName);
+
+				return queueDeclare?.ConsumerCount > 0;
 			}
-
-			throw;
-		}
-	}
-
-	public static QueueDeclareOk DeclareQueuePassively(this IModel channel, string queueName)
-	{
-		try
-		{
-			return channel.QueueDeclarePassive(queueName);
-		}
-		catch (OperationInterruptedException exception)
-		{
-			if (exception.ShutdownReason.ReplyCode == 404)
+			catch (OperationInterruptedException exception)
 			{
-				return null;
-				//throw new InvalidOperationException("No consumer found for the channel.", exception);
-			}
+				if (exception.ShutdownReason.ReplyCode == 404)
+				{
+					return false;
+					//throw new InvalidOperationException("No consumer found for the channel.", exception);
+				}
 
-			throw;
+				throw;
+			}
+		}
+
+		public Task<QueueDeclareOk> DeclareQueuePassivelyAsync(string queueName)
+		{
+			try
+			{
+				return channel.QueueDeclarePassiveAsync(queueName);
+			}
+			catch (OperationInterruptedException exception)
+			{
+				if (exception.ShutdownReason.ReplyCode == 404)
+				{
+					return null;
+					//throw new InvalidOperationException("No consumer found for the channel.", exception);
+				}
+
+				throw;
+			}
 		}
 	}
 }
