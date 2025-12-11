@@ -31,7 +31,6 @@
         <Project Path="Source/Euonia.Business/Euonia.Business.csproj" />
         <Project Path="Source/Euonia.Core/Euonia.Core.csproj" />
         <Project Path="Source/Euonia.Grpc/Euonia.Grpc.csproj" />
-        <Project Path="Source/Euonia.Hosting.Serilog/Euonia.Hosting.Serilog.csproj" />
         <Project Path="Source/Euonia.Hosting/Euonia.Hosting.csproj" />
         <Project Path="Source/Euonia.Linq/Euonia.Linq.csproj" />
         <Project Path="Source/Euonia.Modularity/Euonia.Modularity.csproj" />
