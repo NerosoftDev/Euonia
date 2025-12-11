@@ -8,7 +8,7 @@ namespace Nerosoft.Euonia.Bus.InMemory;
 public class InMemoryDispatcher : DisposableObject, IDispatcher
 {
 	/// <inheritdoc />
-	public event EventHandler<MessageDispatchedEventArgs> Delivered;
+	public event EventHandler<MessageDeliveredEventArgs> Delivered;
 
 	private readonly IIdentityProvider _identity;
 
@@ -31,7 +31,7 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 			Aborted = cancellationToken
 		};
 		WeakReferenceMessenger.Default.Send(pack, message.Channel);
-		Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, context));
+		Delivered?.Invoke(this, new MessageDeliveredEventArgs(message.Data, context));
 		await Task.CompletedTask;
 	}
 
@@ -64,7 +64,7 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 
 		StrongReferenceMessenger.Default.UnsafeSend(pack, message.Channel);
 
-		Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, context));
+		Delivered?.Invoke(this, new MessageDeliveredEventArgs(message.Data, context));
 
 		await taskCompletion.Task;
 	}
@@ -100,7 +100,7 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 		};
 
 		StrongReferenceMessenger.Default.UnsafeSend(pack, message.Channel);
-		Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, context));
+		Delivered?.Invoke(this, new MessageDeliveredEventArgs(message.Data, context));
 
 		return await taskCompletion.Task;
 	}

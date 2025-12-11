@@ -8,7 +8,7 @@ public interface IDispatcher
 	/// <summary>
 	/// Occurs when [message dispatched].
 	/// </summary>
-	event EventHandler<MessageDispatchedEventArgs> Delivered;
+	event EventHandler<MessageDeliveredEventArgs> Delivered;
 
 	/// <summary>
 	/// Publishes the specified message.

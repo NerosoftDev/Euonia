@@ -15,7 +15,7 @@ namespace Nerosoft.Euonia.Bus.RabbitMq;
 public class RabbitMqDispatcher : IDispatcher
 {
 	/// <inheritdoc />
-	public event EventHandler<MessageDispatchedEventArgs> Delivered;
+	public event EventHandler<MessageDeliveredEventArgs> Delivered;
 
 	private readonly RabbitMqMessageBusOptions _options;
 	private readonly IPersistentConnection _connection;
@@ -60,7 +60,7 @@ public class RabbitMqDispatcher : IDispatcher
 			            channel.ExchangeDeclare(_options.ExchangeName, _options.ExchangeType);
 			            channel.BasicPublish(_options.ExchangeName, $"{_options.TopicName}${message.Channel}$", props, messageBody);
 
-			            Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
+			            Delivered?.Invoke(this, new MessageDeliveredEventArgs(message.Data, null));
 		            });
 	}
 
@@ -101,7 +101,7 @@ public class RabbitMqDispatcher : IDispatcher
 			            channel.BasicPublish("", requestQueueName, props, messageBody);
 			            channel.BasicConsume(consumer, responseQueueName, true);
 
-			            Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
+			            Delivered?.Invoke(this, new MessageDeliveredEventArgs(message.Data, null));
 		            });
 
 		await task.Task;
@@ -165,7 +165,7 @@ public class RabbitMqDispatcher : IDispatcher
 			            channel.BasicPublish("", requestQueueName, props, messageBody);
 			            channel.BasicConsume(consumer, responseQueueName, true);
 
-			            Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, null));
+			            Delivered?.Invoke(this, new MessageDeliveredEventArgs(message.Data, null));
 		            });
 
 		var result = await task.Task;
