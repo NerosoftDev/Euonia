@@ -30,4 +30,4 @@ jobs:
       run: dotnet restore Euonia.slnx
     
     - name: Build
-      run: dotnet build Euonia.slnx --configuration ${{ matrix.configuration }} --no-restore
+      run: dotnet build Euonia.Build.slnx --configuration ${{ matrix.configuration }} --no-restore
