@@ -16,6 +16,8 @@ public class HandlerContext : IHandlerContext
 	/// </summary>
 	public event EventHandler<MessageSubscribedEventArgs> MessageSubscribed;
 
+	private readonly ConcurrentDictionary<MethodInfo, Expression[]> _argumentCache = new();
+	
 	private readonly ConcurrentDictionary<string, List<MessageHandlerFactory>> _handlerContainer = new();
 	private readonly IServiceProvider _provider;
 	private readonly ILogger<HandlerContext> _logger;
@@ -68,7 +70,7 @@ public class HandlerContext : IHandlerContext
 
 			return (message, context, token) =>
 			{
-				var arguments = GetArguments(registration.Method, message, context, token);
+				var arguments = _argumentCache.GetOrAdd(registration.Method, method => GetArguments(method, message, context, token));
 				var expression = Expression.Call(Expression.Constant(handler), registration.Method, arguments);
 
 				return Expression.Lambda<Func<Task>>(expression).Compile()();
@@ -124,7 +126,7 @@ public class HandlerContext : IHandlerContext
 			catch (Exception exception)
 			{
 				_logger?.LogError(exception, "Error occurred while handling message {Id}", context.MessageId);
-				if (_convention.IsRequestType(message.GetType()) || _convention.IsCommandType(message.GetType()))
+				if (_convention.IsRequestType(message.GetType()) || _convention.IsUnicastType(message.GetType()))
 				{
 					// Swallow the exception for request/response and queue messages
 					throw;

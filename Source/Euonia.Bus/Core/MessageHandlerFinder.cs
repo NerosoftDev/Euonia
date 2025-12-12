@@ -23,18 +23,26 @@ internal class MessageHandlerFinder
 		return Find(types.AsEnumerable());
 	}
 
-	private static IEnumerable<MessageRegistration> Resolve(Type type)
+	/// <summary>
+	/// Extract message registrations from the specified handler type.
+	/// </summary>
+	/// <param name="handlerType"></param>
+	/// <returns></returns>
+	/// <exception cref="InvalidOperationException"></exception>
+	private static IEnumerable<MessageRegistration> Resolve(Type handlerType)
 	{
-		if (!type.IsClass || type.IsInterface || type.IsAbstract)
+		if (!handlerType.IsClass || handlerType.IsInterface || handlerType.IsAbstract)
 		{
 			return Enumerable.Empty<MessageRegistration>();
 		}
 
 		var registrations = new List<MessageRegistration>();
 
-		var methods = type.GetMethods(BINDING_FLAGS).Where(method => method.HasAttribute<SubscribeAttribute>());
+		var methods = handlerType.GetMethods(BINDING_FLAGS)
+		                         .Where(method => method.HasAttribute<SubscribeAttribute>())
+		                         .ToList();
 
-		if (methods.Any())
+		if (methods.Count > 0)
 		{
 			foreach (var method in methods)
 			{
@@ -65,22 +73,28 @@ internal class MessageHandlerFinder
 				foreach (var attribute in attributes)
 				{
 					var channel = attribute.Name.DefaultIfNullOrWhiteSpace(MessageCache.Default.GetOrAddChannel(firstParameter.ParameterType));
-					var registration = new MessageRegistration(channel, firstParameter.ParameterType, type, method);
+					var registration = new MessageRegistration(channel, firstParameter.ParameterType, handlerType, method);
 					registrations.Add(registration);
 				}
 			}
 		}
 
-		var interfaces = type.GetInterfaces().Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IHandler<>));
-		if (interfaces.Any())
+		// Extract IHandler<> interfaces from the handler type
+		var interfaces = handlerType.GetInterfaces()
+		                            .Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IHandler<>))
+		                            .ToList();
+		if (interfaces.Count > 0)
 		{
 			foreach (var @interface in interfaces)
 			{
 				var messageType = @interface.GetGenericArguments()[0];
-				var method = @interface.GetMethod(nameof(IHandler<object>.HandleAsync), BINDING_FLAGS, null, new[] { messageType, typeof(MessageContext), typeof(CancellationToken) }, null);
-				var registration = new MessageRegistration(MessageCache.Default.GetOrAddChannel(messageType), messageType, type, method);
+				var method = handlerType.GetMethod(nameof(IHandler<>.HandleAsync), BINDING_FLAGS, null, [messageType, typeof(MessageContext), typeof(CancellationToken)], null);
+				var registration = new MessageRegistration(MessageCache.Default.GetOrAddChannel(messageType), messageType, handlerType, method);
 				registrations.Add(registration);
 			}
+		}
+
+		{
 		}
 
 		return registrations;

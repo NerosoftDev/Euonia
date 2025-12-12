@@ -26,9 +26,19 @@ public static class ServiceCollectionExtensions
 			services.TryAddSingleton<IHandlerContext>(provider =>
 			{
 				var context = new HandlerContext(provider);
+
+				var registerMethod = typeof(HandlerContext).GetMethod(nameof(HandlerContext.Register), 2, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly,[]);
+
 				foreach (var registration in configurator.Registrations)
 				{
-					context.Register(registration);
+					if (registration.HandlerType.IsAssignableTo(typeof(IHandler<>).MakeGenericType(registration.MessageType)))
+					{
+						registerMethod?.MakeGenericMethod(registration.MessageType, registration.HandlerType).Invoke(context, null);
+					}
+					else
+					{
+						context.Register(registration);
+					}
 				}
 
 				return context;
