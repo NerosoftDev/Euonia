@@ -1,8 +1,4 @@
-﻿#if !NET8_0_OR_GREATER
-using System.Runtime.Serialization;
-#endif
-
-namespace Nerosoft.Euonia.Bus;
+﻿namespace Nerosoft.Euonia.Bus;
 
 /// <summary>
 /// Represent the exception was thrown by message bus.
@@ -51,20 +47,4 @@ public class MessageBusException : Exception
 	/// </summary>
 	/// <value>The type of the message.</value>
 	public virtual object MessageContext => _message;
-
-#if !NET8_0_OR_GREATER
-	/// <inheritdoc />
-	public MessageBusException(SerializationInfo info, StreamingContext context)
-		: base(info, context)
-	{
-		_message = info.GetValue(nameof(MessageContext), MessageContext.GetType());
-	}
-
-	/// <inheritdoc />
-	public override void GetObjectData(SerializationInfo info, StreamingContext context)
-	{
-		base.GetObjectData(info, context);
-		info.AddValue(nameof(MessageContext), _message, MessageContext.GetType());
-	}
-#endif
 }
