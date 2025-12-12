@@ -11,13 +11,13 @@ public class AttributeMessageConvention : IMessageConvention
 	public string Name { get; } = "Attribute decoration message convention";
 
 	/// <inheritdoc />
-	public bool IsCommandType(Type messageType)
+	public bool IsUnicastType(Type messageType)
 	{
 		return messageType.GetCustomAttribute<CommandAttribute>(false) != null;
 	}
 
 	/// <inheritdoc />
-	public bool IsEventType(Type messageType)
+	public bool IsMulticastType(Type messageType)
 	{
 		return messageType.GetCustomAttribute<EventAttribute>(false) != null;
 	}

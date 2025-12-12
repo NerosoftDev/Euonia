@@ -19,7 +19,6 @@ public sealed class InMemoryRecipientRegistrar : IRecipientRegistrar
 	/// <param name="convention"></param>
 	/// <param name="provider"></param>
 	/// <param name="options"></param>
-	/// 
 	public InMemoryRecipientRegistrar(IMessageConvention convention, IServiceProvider provider, IOptions<InMemoryBusOptions> options)
 	{
 		_options = options.Value;
@@ -34,12 +33,12 @@ public sealed class InMemoryRecipientRegistrar : IRecipientRegistrar
 
 		foreach (var registration in registrations)
 		{
-			if (_convention.IsCommandType(registration.MessageType))
+			if (_convention.IsUnicastType(registration.MessageType))
 			{
 				var recipient = GetRecipient<InMemoryQueueConsumer>();
 				StrongReferenceMessenger.Default.Register(recipient, registration.Channel);
 			}
-			else if (_convention.IsEventType(registration.MessageType))
+			else if (_convention.IsMulticastType(registration.MessageType))
 			{
 				var recipient = GetRecipient<InMemoryTopicSubscriber>();
 				WeakReferenceMessenger.Default.Register(recipient, registration.Channel);

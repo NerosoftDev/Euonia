@@ -38,8 +38,8 @@ public class Startup
 				{
 					builder.Add<DefaultMessageConvention>();
 					builder.Add<AttributeMessageConvention>();
-					builder.EvaluateQueue(t => t.Name.EndsWith("Command"));
-					builder.EvaluateTopic(t => t.Name.EndsWith("Event"));
+					builder.EvaluateUnicast(t => t.Name.EndsWith("Command"));
+					builder.EvaluateMulticast(t => t.Name.EndsWith("Event"));
 					builder.EvaluateRequest(t => t.Name.EndsWith("Request"));
 				});
 				config.UseRabbitMq(options =>

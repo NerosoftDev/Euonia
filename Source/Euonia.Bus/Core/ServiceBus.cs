@@ -49,7 +49,7 @@ public sealed class ServiceBus : IBus
 
 		var messageType = message.GetType();
 
-		if (!_convention.IsEventType(messageType))
+		if (!_convention.IsMulticastType(messageType))
 		{
 			throw new MessageTypeException("The message type is not an topic type.");
 		}
@@ -75,7 +75,7 @@ public sealed class ServiceBus : IBus
 
 		var messageType = message.GetType();
 
-		if (!_convention.IsCommandType(messageType))
+		if (!_convention.IsUnicastType(messageType))
 		{
 			throw new MessageTypeException("The message type is not a command type.");
 		}
@@ -105,7 +105,7 @@ public sealed class ServiceBus : IBus
 
 		var messageType = message.GetType();
 
-		if (!_convention.IsCommandType(messageType) && !_convention.IsRequestType(messageType))
+		if (!_convention.IsUnicastType(messageType) && !_convention.IsRequestType(messageType))
 		{
 			throw new MessageTypeException("The message type is not a command type or request type.");
 		}
