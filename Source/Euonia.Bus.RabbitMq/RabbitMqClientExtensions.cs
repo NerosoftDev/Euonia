@@ -29,7 +29,7 @@ internal static class RabbitMqClientExtensions
 			}
 			catch (OperationInterruptedException exception)
 			{
-				if (exception.ShutdownReason.ReplyCode == 404)
+				if (exception.ShutdownReason?.ReplyCode == 404)
 				{
 					return false;
 					//throw new InvalidOperationException("No consumer found for the channel.", exception);
@@ -47,7 +47,7 @@ internal static class RabbitMqClientExtensions
 			}
 			catch (OperationInterruptedException exception)
 			{
-				if (exception.ShutdownReason.ReplyCode == 404)
+				if (exception.ShutdownReason?.ReplyCode == 404)
 				{
 					return null;
 					//throw new InvalidOperationException("No consumer found for the channel.", exception);

@@ -60,9 +60,9 @@ public class DefaultPersistentConnection : DisposableObject, IPersistentConnecti
 
 			if (IsConnected)
 			{
-				_connection.ConnectionShutdownAsync += OnConnectionShutdown;
-				_connection.CallbackExceptionAsync += OnCallbackException;
-				_connection.ConnectionBlockedAsync += OnConnectionBlocked;
+				_connection.ConnectionShutdownAsync += OnConnectionShutdownAsync;
+				_connection.CallbackExceptionAsync += OnCallbackExceptionAsync;
+				_connection.ConnectionBlockedAsync += OnConnectionBlockedAsync;
 
 				_logger.LogInformation("RabbitMQ Client acquired a persistent connection to '{HostName}' and is subscribed to failure events", _connection.Endpoint.HostName);
 
@@ -89,7 +89,7 @@ public class DefaultPersistentConnection : DisposableObject, IPersistentConnecti
 		return await _connection.CreateChannelAsync();
 	}
 
-	private async Task OnConnectionBlocked(object sender, ConnectionBlockedEventArgs e)
+	private async Task OnConnectionBlockedAsync(object sender, ConnectionBlockedEventArgs e)
 	{
 		if (IsDisposed)
 		{
@@ -101,7 +101,7 @@ public class DefaultPersistentConnection : DisposableObject, IPersistentConnecti
 		await TryConnectAsync();
 	}
 
-	private async Task OnCallbackException(object sender, CallbackExceptionEventArgs e)
+	private async Task OnCallbackExceptionAsync(object sender, CallbackExceptionEventArgs e)
 	{
 		if (IsDisposed)
 		{
@@ -113,7 +113,7 @@ public class DefaultPersistentConnection : DisposableObject, IPersistentConnecti
 		await TryConnectAsync();
 	}
 
-	private async Task OnConnectionShutdown(object sender, ShutdownEventArgs reason)
+	private async Task OnConnectionShutdownAsync(object sender, ShutdownEventArgs reason)
 	{
 		if (IsDisposed)
 		{
@@ -137,9 +137,9 @@ public class DefaultPersistentConnection : DisposableObject, IPersistentConnecti
 
 		try
 		{
-			_connection.ConnectionShutdownAsync -= OnConnectionShutdown;
-			_connection.CallbackExceptionAsync -= OnCallbackException;
-			_connection.ConnectionBlockedAsync -= OnConnectionBlocked;
+			_connection.ConnectionShutdownAsync -= OnConnectionShutdownAsync;
+			_connection.CallbackExceptionAsync -= OnCallbackExceptionAsync;
+			_connection.ConnectionBlockedAsync -= OnConnectionBlockedAsync;
 			_connection.Dispose();
 		}
 		catch (IOException exception)
