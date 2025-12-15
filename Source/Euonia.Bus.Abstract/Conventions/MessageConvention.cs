@@ -14,6 +14,14 @@ public class MessageConvention : IMessageConvention
 	private readonly ConventionCache _requestConventionCache = new();
 
 	/// <summary>
+	/// Initializes a new instance of the <see cref="MessageConvention"/> class.
+	/// </summary>
+	public MessageConvention()
+	{
+		_conventions.Add(_defaultConvention);
+	}
+
+	/// <summary>
 	/// Determines whether the specified type is a command.
 	/// </summary>
 	/// <param name="messageType"></param>
@@ -77,7 +85,7 @@ public class MessageConvention : IMessageConvention
 	internal void DefineTypeConvention(Func<Type, MessageConventionType> convention)
 	{
 		ArgumentNullException.ThrowIfNull(convention);
-		
+
 		DefineUnicastTypeConvention(type => convention(type) == MessageConventionType.Unicast);
 		DefineMulticastTypeConvention(type => convention(type) == MessageConventionType.Multicast);
 		DefineRequestTypeConvention(type => convention(type) == MessageConventionType.Request);
