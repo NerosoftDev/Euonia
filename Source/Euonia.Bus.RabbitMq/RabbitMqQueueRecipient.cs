@@ -25,7 +25,7 @@ public abstract class RabbitMqQueueRecipient : DisposableObject
 	/// <param name="factory"></param>
 	/// <param name="options"></param>
 	/// 
-	protected RabbitMqQueueRecipient(IPersistentConnection factory, IOptions<RabbitMqMessageBusOptions> options)
+	protected RabbitMqQueueRecipient(IPersistentConnection factory, IOptions<RabbitMqBusOptions> options)
 	{
 		Options = options.Value;
 		Connection = factory;
@@ -39,7 +39,7 @@ public abstract class RabbitMqQueueRecipient : DisposableObject
 	/// <summary>
 	/// Gets the RabbitMQ message bus options.
 	/// </summary>
-	protected virtual RabbitMqMessageBusOptions Options { get; }
+	protected virtual RabbitMqBusOptions Options { get; }
 
 	/// <summary>
 	/// 

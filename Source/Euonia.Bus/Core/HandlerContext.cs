@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Nerosoft.Euonia.Bus;
 
@@ -17,7 +18,7 @@ public class HandlerContext : IHandlerContext
 	public event EventHandler<MessageSubscribedEventArgs> MessageSubscribed;
 
 	private readonly ConcurrentDictionary<MethodInfo, Expression[]> _argumentCache = new();
-	
+
 	private readonly ConcurrentDictionary<string, List<MessageHandlerFactory>> _handlerContainer = new();
 	private readonly IServiceProvider _provider;
 	private readonly ILogger<HandlerContext> _logger;
@@ -30,7 +31,7 @@ public class HandlerContext : IHandlerContext
 	public HandlerContext(IServiceProvider provider)
 	{
 		_provider = provider;
-		_logger = provider.GetService<ILoggerFactory>()?.CreateLogger<HandlerContext>();
+		_logger = provider.GetService<ILoggerFactory>()?.CreateLogger<HandlerContext>() ?? new NullLogger<HandlerContext>();
 		_convention = provider.GetService<IMessageConvention>() ?? new MessageConvention();
 	}
 
@@ -105,35 +106,52 @@ public class HandlerContext : IHandlerContext
 			return;
 		}
 
-		using var scope = _provider.GetRequiredService<IServiceScopeFactory>().CreateScope();
-
-		if (!_handlerContainer.TryGetValue(channel, out var factories) || factories == null || factories.Count == 0)
+		using (var scope = _provider.GetRequiredService<IServiceScopeFactory>().CreateScope())
 		{
-			_logger?.LogWarning("No handler registered for message {Id} on channel {Channel}", context.MessageId, channel);
-			throw new InvalidOperationException($"No handler registered for message {context.MessageId} on channel {channel}");
+			if (!_handlerContainer.TryGetValue(channel, out var factories) || factories == null || factories.Count == 0)
+			{
+				_logger.LogWarning("No handler registered for message {Id} on channel {Channel}", context.MessageId, channel);
+				throw new InvalidOperationException($"No handler registered for message {context.MessageId} on channel {channel}");
+			}
+
+			// Get handler instance from service provider using Expression Tree
+			_logger?.LogInformation("Message {Id} is being handled", context.MessageId);
+
+			if (factories.Count == 1)
+			{
+				var factory = factories.First();
+				await ExecuteHandler(scope, factory, cancellationToken);
+			}
+			else
+			{
+				await Parallel.ForEachAsync(factories, cancellationToken, async (factory, token) =>
+				{
+					await ExecuteHandler(scope, factory, token);
+				});
+			}
+
+			_logger!.LogInformation("Message {Id} was completed handled", context.MessageId);
 		}
 
-		// Get handler instance from service provider using Expression Tree
-		_logger?.LogInformation("Message {Id} is being handled", context.MessageId);
+		return;
 
-		await Parallel.ForEachAsync(factories, cancellationToken, async (factory, token) =>
+		async ValueTask ExecuteHandler(IServiceScope scope, MessageHandlerFactory factory, CancellationToken cancellation)
 		{
 			try
 			{
 				var handler = factory(scope.ServiceProvider);
-				await handler(message, context, token);
+				await handler(message, context, cancellation);
 			}
 			catch (Exception exception)
 			{
-				_logger?.LogError(exception, "Error occurred while handling message {Id}", context.MessageId);
+				_logger.LogError(exception, "Error occurred while handling message {Id}", context.MessageId);
 				if (_convention.IsRequestType(message.GetType()) || _convention.IsUnicastType(message.GetType()))
 				{
 					// Swallow the exception for request/response and queue messages
 					throw;
 				}
 			}
-		});
-		_logger?.LogInformation("Message {Id} was completed handled", context.MessageId);
+		}
 	}
 
 	#endregion
@@ -199,41 +217,41 @@ public class HandlerContext : IHandlerContext
 			case 0:
 				break;
 			case 1:
-				{
-					var parameterType = parameterInfos[0].ParameterType;
+			{
+				var parameterType = parameterInfos[0].ParameterType;
 
-					if (parameterType == typeof(MessageContext))
-					{
-						arguments[0] = Expression.Constant(context);
-					}
-					else if (parameterType == typeof(CancellationToken))
-					{
-						arguments[0] = Expression.Constant(cancellationToken);
-					}
-					else
-					{
-						arguments[0] = Expression.Constant(message);
-					}
+				if (parameterType == typeof(MessageContext))
+				{
+					arguments[0] = Expression.Constant(context);
 				}
+				else if (parameterType == typeof(CancellationToken))
+				{
+					arguments[0] = Expression.Constant(cancellationToken);
+				}
+				else
+				{
+					arguments[0] = Expression.Constant(message);
+				}
+			}
 				break;
 			case 2:
 			case 3:
+			{
+				arguments[0] ??= Expression.Constant(message);
+
+				for (var index = 1; index < parameterInfos.Length; index++)
 				{
-					arguments[0] ??= Expression.Constant(message);
-
-					for (var index = 1; index < parameterInfos.Length; index++)
+					if (parameterInfos[index].ParameterType == typeof(MessageContext))
 					{
-						if (parameterInfos[index].ParameterType == typeof(MessageContext))
-						{
-							arguments[index] = Expression.Constant(context);
-						}
+						arguments[index] = Expression.Constant(context);
+					}
 
-						if (parameterInfos[index].ParameterType == typeof(CancellationToken))
-						{
-							arguments[index] = Expression.Constant(cancellationToken);
-						}
+					if (parameterInfos[index].ParameterType == typeof(CancellationToken))
+					{
+						arguments[index] = Expression.Constant(cancellationToken);
 					}
 				}
+			}
 				break;
 			default:
 				return null;

@@ -1,12 +1,18 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Nerosoft.Euonia.Bus.InMemory;
 
 /// <summary>
-/// 
+/// The <see cref="ITransport"/> implementation using in-memory messaging.
 /// </summary>
 public class InMemoryTransport : DisposableObject, ITransport
 {
+	/// <summary>
+	/// Gets the transport name.
+	/// </summary>
+	public string Name { get; }
+
 	/// <inheritdoc />
 	public event EventHandler<MessageDeliveredEventArgs> Delivered;
 
@@ -16,8 +22,11 @@ public class InMemoryTransport : DisposableObject, ITransport
 	/// Initialize a new instance of <see cref="InMemoryTransport"/>
 	/// </summary>
 	/// <param name="provider"></param>
-	public InMemoryTransport(IServiceProvider provider)
+	/// <param name="options"></param>
+	public InMemoryTransport(IServiceProvider provider, IOptions<InMemoryBusOptions> options)
 	{
+		var opts = options.Value;
+		Name = opts.TransportName ?? nameof(InMemoryTransport);
 		_identity = provider.GetService<IIdentityProvider>();
 	}
 
@@ -73,7 +82,7 @@ public class InMemoryTransport : DisposableObject, ITransport
 	public async Task<TResponse> SendAsync<TMessage, TResponse>(RoutedMessage<TMessage, TResponse> message, CancellationToken cancellationToken = default)
 		where TMessage : class
 	{
-		var context = new MessageContext(message, authorization => _identity?.GetIdentity(authorization));
+		using var context = new MessageContext(message, authorization => _identity?.GetIdentity(authorization));
 		var pack = new MessagePack(message, context)
 		{
 			Aborted = cancellationToken
@@ -86,23 +95,35 @@ public class InMemoryTransport : DisposableObject, ITransport
 			cancellationToken.Register(() => taskCompletion.TrySetCanceled(), false);
 		}
 
-		context.Responded += (_, args) =>
-		{
-			taskCompletion.TrySetResult((TResponse)args.Result);
-		};
-		context.Failed += (_, exception) =>
-		{
-			taskCompletion.TrySetException(exception);
-		};
-		context.Completed += (_, _) =>
-		{
-			taskCompletion.TryCompleteFromCompletedTask(Task.FromResult(default(TResponse)));
-		};
+		context.Responded += OnResponded;
+		context.Failed += OnFailed;
+		context.Completed += OnCompleted;
 
 		StrongReferenceMessenger.Default.UnsafeSend(pack, message.Channel);
 		Delivered?.Invoke(this, new MessageDeliveredEventArgs(message.Data, context));
 
-		return await taskCompletion.Task;
+		var result = await taskCompletion.Task;
+		context.Responded -= OnResponded;
+		context.Failed -= OnFailed;
+		context.Completed -= OnCompleted;
+		return result;
+
+		void OnResponded(object sender, MessageRepliedEventArgs args)
+		{
+			Console.WriteLine($@"Message '{message.MessageId}' responded with result: {args.Result}");
+			taskCompletion.TrySetResult((TResponse)args.Result);
+		}
+
+		void OnFailed(object sender, Exception exception)
+		{
+			taskCompletion.TrySetException(exception);
+		}
+
+		void OnCompleted(object sender, MessageHandledEventArgs args)
+		{
+			Console.WriteLine($@"Message '{message.MessageId}' completed");
+			taskCompletion.TryCompleteFromCompletedTask(Task.FromResult(default(TResponse)));
+		}
 	}
 
 	/// <inheritdoc />

@@ -29,7 +29,7 @@ public class DefaultPersistentConnection : DisposableObject, IPersistentConnecti
 	/// <param name="connectionFactory"></param>
 	/// <param name="logger"></param>
 	/// <param name="options"></param>
-	public DefaultPersistentConnection(IConnectionFactory connectionFactory, ILoggerFactory logger, IOptions<RabbitMqMessageBusOptions> options)
+	public DefaultPersistentConnection(IConnectionFactory connectionFactory, ILoggerFactory logger, IOptions<RabbitMqBusOptions> options)
 	{
 		_connectionFactory = connectionFactory;
 		_logger = logger.CreateLogger<DefaultPersistentConnection>();

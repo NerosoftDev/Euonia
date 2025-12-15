@@ -42,14 +42,14 @@ public class Startup
 					builder.EvaluateMulticast(t => t.Name.EndsWith("Event"));
 					builder.EvaluateRequest(t => t.Name.EndsWith("Request"));
 				});
-				config.UseRabbitMq(options =>
-				{
-					options.Connection = "amqp://127.0.0.1";
-					options.QueueName = "nerosoft.euonia.test.command";
-					options.TopicName = "nerosoft.euonia.test.event";
-					options.ExchangeName = $"nerosoft.euonia.test.exchange.{options.ExchangeType}";
-					options.RoutingKey = "*";
-				});
+				// config.UseRabbitMq(options =>
+				// {
+				// 	options.Connection = "amqp://127.0.0.1";
+				// 	options.QueueName = "nerosoft.euonia.test.command";
+				// 	options.TopicName = "nerosoft.euonia.test.event";
+				// 	options.ExchangeName = $"nerosoft.euonia.test.exchange.{options.ExchangeType}";
+				// 	options.RoutingKey = "*";
+				// });
 			});
 		}
 	}

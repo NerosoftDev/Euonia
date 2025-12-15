@@ -9,6 +9,7 @@ public sealed class RabbitMqRecipientRegistrar : IRecipientRegistrar
 {
 	private readonly IMessageConvention _convention;
 	private readonly IServiceProvider _provider;
+	private readonly ITransportStrategy _strategy;
 
 	/// <summary>
 	/// Initialize a new instance of <see cref="RabbitMqRecipientRegistrar"/>.
@@ -19,6 +20,7 @@ public sealed class RabbitMqRecipientRegistrar : IRecipientRegistrar
 	{
 		_convention = convention;
 		_provider = provider;
+		_strategy = provider.GetKeyedService<ITransportStrategy>(typeof(RabbitMqTransport));
 	}
 
 	/// <inheritdoc/>
@@ -26,6 +28,12 @@ public sealed class RabbitMqRecipientRegistrar : IRecipientRegistrar
 	{
 		foreach (var registration in registrations)
 		{
+			// Check if the strategy allows inbound handling for the message type
+			if (_strategy != null && !_strategy.Inbound(registration.MessageType))
+			{
+				return;
+			}
+
 			RabbitMqQueueRecipient recipient;
 			if (_convention.IsUnicastType(registration.MessageType))
 			{

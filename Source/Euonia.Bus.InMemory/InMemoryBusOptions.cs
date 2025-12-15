@@ -6,6 +6,11 @@
 public class InMemoryBusOptions
 {
 	/// <summary>
+	/// Gets or sets the transport name.
+	/// </summary>
+	public string TransportName { get; set; } = "inmemory-transport";
+
+	/// <summary>
 	/// 
 	/// </summary>
 	public bool LazyInitialize { get; set; } = true;
@@ -22,4 +27,9 @@ public class InMemoryBusOptions
 	/// <c>true</c> if the subscriber should create for each message channel; otherwise, <c>false</c>. default is <c>false</c>.
 	/// </value>
 	public bool MultipleSubscriberInstance { get; set; }
+
+	/// <summary>
+	/// Gets or sets a value indicating whether this instance is default transport.
+	/// </summary>
+	public bool IsDefaultTransport { get; set; }
 }

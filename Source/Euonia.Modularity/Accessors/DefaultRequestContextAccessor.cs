@@ -7,7 +7,9 @@ public class DefaultRequestContextAccessor
 {
 	private static readonly AsyncLocal<RequestContext> _context = new();
 
-	/// <inheritdoc/>
+	/// <summary>
+	/// Gets or sets the current request context instance.
+	/// </summary>
 	public RequestContext Context
 	{
 		get => _context.Value;

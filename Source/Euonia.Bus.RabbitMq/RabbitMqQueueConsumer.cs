@@ -21,7 +21,7 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 	/// <param name="handler"></param>
 	/// <param name="options"></param>
 	/// <param name="logger"></param>
-	public RabbitMqQueueConsumer(IPersistentConnection connection, IHandlerContext handler, IOptions<RabbitMqMessageBusOptions> options, ILoggerFactory logger)
+	public RabbitMqQueueConsumer(IPersistentConnection connection, IHandlerContext handler, IOptions<RabbitMqBusOptions> options, ILoggerFactory logger)
 		: base(connection, options)
 	{
 		_handler = handler;
@@ -36,7 +36,7 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 	/// <param name="options"></param>
 	/// <param name="logger"></param>
 	/// <param name="identity"></param>
-	public RabbitMqQueueConsumer(IPersistentConnection connection, IHandlerContext handler, IOptions<RabbitMqMessageBusOptions> options, ILoggerFactory logger, IIdentityProvider identity)
+	public RabbitMqQueueConsumer(IPersistentConnection connection, IHandlerContext handler, IOptions<RabbitMqBusOptions> options, ILoggerFactory logger, IIdentityProvider identity)
 		: this(connection, handler, options, logger)
 	{
 		_identity = identity;

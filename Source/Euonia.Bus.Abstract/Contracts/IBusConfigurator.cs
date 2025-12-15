@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Nerosoft.Euonia.Bus;
 
@@ -9,77 +8,34 @@ namespace Nerosoft.Euonia.Bus;
 public interface IBusConfigurator
 {
 	/// <summary>
-	/// Get the service collection.
-	/// </summary>
-	IServiceCollection Service { get; }
-
-	/// <summary>
 	/// Get the message handle registrations.
 	/// </summary>
 	IReadOnlyList<MessageRegistration> Registrations { get; }
 
 	/// <summary>
-	/// Set the service bus factory.
+	/// Gets the transports with configured strategies.
 	/// </summary>
-	/// <typeparam name="TFactory"></typeparam>
-	/// <returns></returns>
-	IBusConfigurator SetFactory<TFactory>()
-		where TFactory : class, IBusFactory;
+	IReadOnlyList<Type> StrategyAssignedTypes { get; }
 
 	/// <summary>
-	/// Set the service bus factory.
+	/// Register the message handlers.
 	/// </summary>
-	/// <param name="factory"></param>
-	/// <typeparam name="TFactory"></typeparam>
+	/// <param name="assemblies"></param>
 	/// <returns></returns>
-	IBusConfigurator SetFactory<TFactory>(TFactory factory)
-		where TFactory : class, IBusFactory;
-
-	/// <summary>
-	/// Set the service bus factory.
-	/// </summary>
-	/// <param name="factory"></param>
-	/// <typeparam name="TFactory"></typeparam>
-	/// <returns></returns>
-	IBusConfigurator SetFactory<TFactory>(Func<IServiceProvider, TFactory> factory)
-		where TFactory : class, IBusFactory;
-
-	/// <summary>
-	/// Set the message store provider.
-	/// </summary>
-	/// <typeparam name="TStore"></typeparam>
-	/// <returns></returns>
-	IBusConfigurator SetMessageStore<TStore>()
-		where TStore : class, IMessageStore;
-
-	/// <summary>
-	/// Set the message store provider.
-	/// </summary>
-	/// <param name="store"></param>
-	/// <typeparam name="TStore"></typeparam>
-	/// <returns></returns>
-	IBusConfigurator SetMessageStore<TStore>(Func<IServiceProvider, TStore> store)
-		where TStore : class, IMessageStore;
-
-	/// <summary>
-    /// Register the message handlers.
-    /// </summary>
-    /// <param name="assemblies"></param>
-    /// <returns></returns>
 	IBusConfigurator RegisterHandlers(params Assembly[] assemblies);
 
 	/// <summary>
-    /// Register the message handlers.
-    /// </summary>
-    /// <param name="typesFactory"></param>
-    /// <returns></returns>
+	/// Register the message handlers.
+	/// </summary>
+	/// <param name="typesFactory"></param>
+	/// <returns></returns>
 	IBusConfigurator RegisterHandlers(Func<IEnumerable<Type>> typesFactory);
 
 	/// <summary>
-    /// Register the message handlers.
-    /// </summary>
-    /// <param name="types"></param>
-    /// <returns></returns>
+	/// Register the message handlers.
+	/// </summary>
+	/// <param name="types"></param>
+	/// <returns></returns>
 	IBusConfigurator RegisterHandlers(IEnumerable<Type> types);
 
 	/// <summary>
@@ -98,26 +54,17 @@ public interface IBusConfigurator
 		where T : class, IIdentityProvider;
 
 	/// <summary>
-	/// Sets the message serializer.
-	/// </summary>
-	/// <typeparam name="TSerializer"></typeparam>
-	/// <returns></returns>
-	IBusConfigurator SetSerializer<TSerializer>()
-		where TSerializer : class, IMessageSerializer;
-
-	/// <summary>
-	/// Sets the message serializer.
-	/// </summary>
-	/// <param name="serializer"></param>
-	/// <typeparam name="TSerializer"></typeparam>
-	/// <returns></returns>
-	IBusConfigurator SetSerializer<TSerializer>(TSerializer serializer)
-		where TSerializer : class, IMessageSerializer;
-
-	/// <summary>
 	/// Sets the message convention.
 	/// </summary>
 	/// <param name="configure"></param>
 	/// <returns></returns>
 	IBusConfigurator SetConventions(Action<MessageConventionBuilder> configure);
+
+	/// <summary>
+	/// Sets the message handling strategies.
+	/// </summary>
+	/// <param name="transport"></param>
+	/// <param name="configure"></param>
+	/// <returns></returns>
+	IBusConfigurator SetStrategies(Type transport, Action<TransportStrategyBuilder> configure);
 }

@@ -12,6 +12,7 @@ public sealed class InMemoryRecipientRegistrar : IRecipientRegistrar
 	private readonly InMemoryBusOptions _options;
 	private readonly IMessageConvention _convention;
 	private readonly IServiceProvider _provider;
+	private readonly ITransportStrategy _strategy;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="InMemoryRecipientRegistrar"/>.
@@ -24,6 +25,7 @@ public sealed class InMemoryRecipientRegistrar : IRecipientRegistrar
 		_options = options.Value;
 		_convention = convention;
 		_provider = provider;
+		_strategy = _provider.GetKeyedService<ITransportStrategy>(typeof(InMemoryTransport));
 	}
 
 	/// <inheritdoc/>
@@ -33,6 +35,14 @@ public sealed class InMemoryRecipientRegistrar : IRecipientRegistrar
 
 		foreach (var registration in registrations)
 		{
+			if (!_options.IsDefaultTransport)
+			{
+				if (_strategy == null || !_strategy.Inbound(registration.MessageType))
+				{
+					continue;
+				}
+			}
+
 			if (_convention.IsUnicastType(registration.MessageType))
 			{
 				var recipient = GetRecipient<InMemoryQueueConsumer>();

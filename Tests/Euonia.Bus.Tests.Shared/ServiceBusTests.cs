@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Diagnostics;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nerosoft.Euonia.Bus.Tests.Commands;
 
@@ -53,6 +54,7 @@ public class ServiceBusTests
 		else
 		{
 			var result = await _provider.GetService<IBus>().SendAsync(new FooCreateCommand(), new SendOptions { Channel = "foo.create" }, null, (int i) => Console.Write(i));
+			Debug.WriteLine(result);
 			Assert.Equal(1, result);
 		}
 	}

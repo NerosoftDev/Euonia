@@ -3,8 +3,13 @@
 /// <summary>
 /// The RabbitMQ based message bus options definition.
 /// </summary>
-public class RabbitMqMessageBusOptions
+public class RabbitMqBusOptions
 {
+	/// <summary>
+	/// Gets or sets the transport name.
+	/// </summary>
+	public string TransportName { get; set; } = "rabbitmq-transport";
+
 	/// <summary>
 	/// Gets or sets the RabbitMQ connection string.
 	/// <example>amqp://user:password@host:port</example>

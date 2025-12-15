@@ -17,9 +17,14 @@ public class RabbitMqTransport : ITransport
 	/// <inheritdoc />
 	public event EventHandler<MessageDeliveredEventArgs> Delivered;
 
-	private readonly RabbitMqMessageBusOptions _options;
+	private readonly RabbitMqBusOptions _options;
 	private readonly IPersistentConnection _connection;
 	private readonly ILogger<RabbitMqTransport> _logger;
+
+	/// <summary>
+	/// Gets the transport name.
+	/// </summary>
+	public string Name { get; }
 
 	/// <summary>
 	/// Initialize a new instance of <see cref="RabbitMqTransport"/>.
@@ -27,11 +32,12 @@ public class RabbitMqTransport : ITransport
 	/// <param name="connection"></param>
 	/// <param name="options"></param>
 	/// <param name="logger"></param>
-	public RabbitMqTransport(IPersistentConnection connection, IOptions<RabbitMqMessageBusOptions> options, ILoggerFactory logger)
+	public RabbitMqTransport(IPersistentConnection connection, IOptions<RabbitMqBusOptions> options, ILoggerFactory logger)
 	{
 		_logger = logger.CreateLogger<RabbitMqTransport>();
 		_connection = connection;
 		_options = options.Value;
+		Name = _options.TransportName ?? nameof(RabbitMqTransport);
 	}
 
 	/// <inheritdoc />
