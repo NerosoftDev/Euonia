@@ -37,7 +37,7 @@ public sealed class InMemoryRecipientRegistrar : IRecipientRegistrar
 		{
 			if (!_options.IsDefaultTransport)
 			{
-				if (_strategy == null || !_strategy.Inbound(registration.MessageType))
+				if (_strategy == null || !_strategy.Incoming(registration.MessageType))
 				{
 					continue;
 				}

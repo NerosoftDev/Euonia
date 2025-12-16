@@ -28,8 +28,8 @@ public sealed class RabbitMqRecipientRegistrar : IRecipientRegistrar
 	{
 		foreach (var registration in registrations)
 		{
-			// Check if the strategy allows inbound handling for the message type
-			if (_strategy != null && !_strategy.Inbound(registration.MessageType))
+			// Check if the strategy allows incoming handling for the message type
+			if (_strategy != null && !_strategy.Incoming(registration.MessageType))
 			{
 				return;
 			}

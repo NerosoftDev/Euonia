@@ -31,7 +31,7 @@ public class AttributeTransportStrategy : ITransportStrategy
 	/// </summary>
 	/// <param name="messageType"></param>
 	/// <returns></returns>
-	public bool Outbound(Type messageType)
+	public bool Outgoing(Type messageType)
 	{
 		var attribute = messageType.GetCustomAttribute<DispatchInAttribute>();
 
@@ -43,7 +43,7 @@ public class AttributeTransportStrategy : ITransportStrategy
 	/// </summary>
 	/// <param name="messageType"></param>
 	/// <returns></returns>
-	public bool Inbound(Type messageType)
+	public bool Incoming(Type messageType)
 	{
 		var attribute = messageType.GetCustomAttribute<ReceiveInAttribute>();
 

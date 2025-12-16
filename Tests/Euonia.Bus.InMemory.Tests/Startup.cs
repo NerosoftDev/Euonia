@@ -50,8 +50,8 @@ public class Startup
 			      .SetStrategies(typeof(InMemoryTransport), builder =>
 			      {
 				      builder.Add(new AttributeTransportStrategy(["inmemory"]));
-				      builder.EvaluateInbound(type => type.Name.EndsWith("Command"));
-				      builder.EvaluateOutbound(type => type.Name.EndsWith("Command"));
+				      builder.EvaluateIncoming(type => type.Name.EndsWith("Command"));
+				      builder.EvaluateOutgoing(type => type.Name.EndsWith("Command"));
 			      });
 			// config.UseInMemory(options =>
 			// {

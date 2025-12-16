@@ -15,11 +15,11 @@ public class TransportStrategyBuilder
 	/// </summary>
 	/// <param name="strategy"></param>
 	/// <returns></returns>
-	public TransportStrategyBuilder EvaluateOutbound(Func<Type, bool> strategy)
+	public TransportStrategyBuilder EvaluateOutgoing(Func<Type, bool> strategy)
 	{
 		ArgumentNullException.ThrowIfNull(strategy);
 
-		Strategy.DefineOutboundStrategy(strategy);
+		Strategy.DefineOutgoingStrategy(strategy);
 		return this;
 	}
 
@@ -28,11 +28,11 @@ public class TransportStrategyBuilder
 	/// </summary>
 	/// <param name="strategy"></param>
 	/// <returns></returns>
-	public TransportStrategyBuilder EvaluateInbound(Func<Type, bool> strategy)
+	public TransportStrategyBuilder EvaluateIncoming(Func<Type, bool> strategy)
 	{
 		ArgumentNullException.ThrowIfNull(strategy);
 
-		Strategy.DefineInboundStrategy(strategy);
+		Strategy.DefineIncomingStrategy(strategy);
 		return this;
 	}
 

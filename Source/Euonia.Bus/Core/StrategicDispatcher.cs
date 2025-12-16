@@ -41,7 +41,7 @@ internal class StrategicDispatcher : IDispatcher
 			foreach (var type in _configurator.StrategyAssignedTypes)
 			{
 				var strategy = _serviceProvider.GetKeyedService<ITransportStrategy>(type);
-				if (strategy.Outbound(messageType))
+				if (strategy.Outgoing(messageType))
 				{
 					list.Add(type);
 				}
