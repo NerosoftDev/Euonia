@@ -47,7 +47,7 @@ public class Startup
 				      builder.EvaluateMulticast(t => t.Name.EndsWith("Event"));
 				      builder.EvaluateRequest(t => t.Name.EndsWith("Request"));
 			      })
-			      .SetStrategies(typeof(InMemoryTransport), builder =>
+			      .SetStrategy(typeof(InMemoryTransport), builder =>
 			      {
 				      builder.Add(new AttributeTransportStrategy(["inmemory"]));
 				      builder.EvaluateIncoming(type => type.Name.EndsWith("Command"));
