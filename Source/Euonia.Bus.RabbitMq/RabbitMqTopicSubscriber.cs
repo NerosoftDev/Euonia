@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Reflection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -59,17 +60,18 @@ public class RabbitMqTopicSubscriber : RabbitMqQueueRecipient, ITopicSubscriber
 	{
 		Channel = await Connection.CreateChannelAsync();
 
-		string queueName;
-		if (string.IsNullOrWhiteSpace(Options.TopicName))
-		{
-			await Channel.ExchangeDeclareAsync(channel, Options.ExchangeType);
-			queueName = await Channel.QueueDeclareAsync().ContinueWith(task => task.Result.QueueName);
-		}
-		else
-		{
-			await Channel.QueueDeclareAsync(Options.TopicName, true, false, false, null);
-			queueName = Options.TopicName;
-		}
+		var exchangePrefix = string.Collapse(Options.ExchangeName, Constants.DefaultExchangeName);
+		var exchangeName = $"{exchangePrefix}:{channel}";
+
+		// Declare Fanout exchange and queue for topic subscriber.
+		// All messages published to the exchange will be routed to all queues bound to the exchange.
+		await Channel.ExchangeDeclareAsync(exchangeName, ExchangeType.Fanout);
+
+		// Each subscriber gets its own queue to receive messages,
+		// all instances of the same subscriber will share the same queue.
+		var subscriptionId = string.Collapse(Options.SubscriptionId, Assembly.GetEntryAssembly()?.FullName, channel);
+		var queueName = await Channel.QueueDeclareAsync($"{exchangeName}@{subscriptionId}", true, false, false)
+		                             .ContinueWith(task => task.Result.QueueName);
 
 		Consumer = new AsyncEventingBasicConsumer(Channel);
 		Consumer.ReceivedAsync += HandleMessageReceivedAsync;

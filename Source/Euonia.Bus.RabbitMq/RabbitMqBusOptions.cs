@@ -32,12 +32,6 @@ public class RabbitMqBusOptions
 	public string TopicName { get; set; }
 
 	/// <summary>
-	/// Gets or sets the exchange type.
-	/// Values: fanout, direct, headers, topic
-	/// </summary>
-	public string ExchangeType { get; set; } = RabbitMQ.Client.ExchangeType.Fanout;
-
-	/// <summary>
 	/// 
 	/// </summary>
 	public string RoutingKey { get; set; } = "*";
@@ -51,4 +45,9 @@ public class RabbitMqBusOptions
 	/// 
 	/// </summary>
 	public int MaxFailureRetries { get; set; } = 3;
+
+	/// <summary>
+	/// Gets or sets the subscription identifier.
+	/// </summary>
+	public string SubscriptionId { get; set; }
 }

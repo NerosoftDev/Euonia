@@ -63,8 +63,11 @@ public class RabbitMqTransport : ITransport
 		            {
 			            var messageBody = await SerializeAsync(message, cancellationToken);
 
-			            await channel.ExchangeDeclareAsync(_options.ExchangeName, _options.ExchangeType, cancellationToken: cancellationToken);
-			            await channel.BasicPublishAsync(_options.ExchangeName, $"{_options.TopicName}${message.Channel}$", true, props, messageBody, cancellationToken: cancellationToken);
+			            var exchangePrefix = string.Collapse(_options.ExchangeName, Constants.DefaultExchangeName);
+			            var exchangeName = $"{exchangePrefix}:{message.Channel}";
+
+			            await channel.ExchangeDeclareAsync(exchangeName, ExchangeType.Fanout, cancellationToken: cancellationToken);
+			            await channel.BasicPublishAsync(exchangeName, $"{exchangeName}@*", true, props, messageBody, cancellationToken: cancellationToken);
 
 			            Delivered?.Invoke(this, new MessageDeliveredEventArgs(message.Data, null));
 		            });
@@ -75,25 +78,27 @@ public class RabbitMqTransport : ITransport
 	{
 		var task = new TaskCompletionSource<dynamic>();
 
-		var requestQueueName = $"{_options.QueueName}${message.Channel}$";
+		var requestQueueName = $"{string.Collapse(_options.QueueName, Constants.DefaultQueueName)}:{message.Channel}$";
 
 		await using var channel = await _connection.CreateChannelAsync();
 
 		await CheckQueueAsync(channel, requestQueueName);
 
-		var responseQueueName = (await channel.QueueDeclareAsync(cancellationToken: cancellationToken)).QueueName;
+		var responseQueueName = await channel.QueueDeclareAsync(cancellationToken: cancellationToken).ContinueWith(t => t.Result.QueueName, cancellationToken);
 		var consumer = new AsyncEventingBasicConsumer(channel);
 
 		consumer.ReceivedAsync += OnReceived;
 
 		var typeName = message.GetTypeName();
 
-		var props = new BasicProperties();
+		var props = new BasicProperties
+		{
+			Type = typeName,
+			CorrelationId = message.CorrelationId,
+			ReplyTo = responseQueueName
+		};
 		props.Headers ??= new Dictionary<string, object>();
 		props.Headers[Constants.MessageHeaders.MessageType] = typeName;
-		props.Type = typeName;
-		props.CorrelationId = message.CorrelationId;
-		props.ReplyTo = responseQueueName;
 
 		await Policy.Handle<SocketException>()
 		            .Or<BrokerUnreachableException>()
@@ -141,7 +146,7 @@ public class RabbitMqTransport : ITransport
 	{
 		var task = new TaskCompletionSource<TResponse>();
 
-		var requestQueueName = $"{_options.QueueName}${message.Channel}$";
+		var requestQueueName = $"{string.Collapse(_options.QueueName, Constants.DefaultQueueName)}:{message.Channel}$";
 
 		await using var channel = await _connection.CreateChannelAsync();
 
@@ -154,12 +159,15 @@ public class RabbitMqTransport : ITransport
 
 		var typeName = message.GetTypeName();
 
-		var props = new BasicProperties();
+		var props = new BasicProperties
+		{
+			Type = typeName,
+			CorrelationId = message.CorrelationId,
+			ReplyTo = responseQueueName
+		};
 		props.Headers ??= new Dictionary<string, object>();
 		props.Headers[Constants.MessageHeaders.MessageType] = typeName;
-		props.Type = typeName;
-		props.CorrelationId = message.CorrelationId;
-		props.ReplyTo = responseQueueName;
+
 
 		await Policy.Handle<SocketException>()
 		            .Or<BrokerUnreachableException>()
@@ -189,7 +197,15 @@ public class RabbitMqTransport : ITransport
 
 			var body = args.Body.ToArray();
 			var response = JsonConvert.DeserializeObject<RabbitMqReply<TResponse>>(Encoding.UTF8.GetString(body), Constants.SerializerSettings);
-			task.SetResult(response.Result);
+			if (response.IsSuccess)
+			{
+				task.SetResult(response.Result);
+			}
+			else
+			{
+				task.SetException(response.Error);
+			}
+
 			await Task.CompletedTask;
 		}
 	}

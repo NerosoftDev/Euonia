@@ -57,11 +57,11 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 
 	internal override async Task StartAsync(string channel)
 	{
-		var queueName = $"{Options.QueueName}${channel}$";
+		var queueName = $"{string.Collapse(Options.QueueName, Constants.DefaultQueueName)}:{channel}$";
 
 		Channel = await Connection.CreateChannelAsync();
 
-		await Channel.QueueDeclareAsync(queueName, true, false, false, null);
+		await Channel.QueueDeclareAsync(queueName, true, false, false);
 		await Channel.BasicQosAsync(0, 1, false);
 
 		Consumer = new AsyncEventingBasicConsumer(Channel);
