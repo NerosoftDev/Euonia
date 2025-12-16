@@ -70,31 +70,32 @@ public interface IBus
 	/// <param name="cancellationToken"></param>
 	/// <returns></returns>
 	Task SendAsync<TMessage>(TMessage message, SendOptions options, Action<MessageMetadata> metadataSetter = null, CancellationToken cancellationToken = default)
-		where TMessage : class => SendAsync<TMessage, Unit>(message, options, metadataSetter, null, cancellationToken);
+		where TMessage : class => SendAsync<TMessage, Unit>(message, null, options, metadataSetter, cancellationToken);
 
 	/// <summary>
 	/// Sends the specified message.
 	/// </summary>
 	/// <param name="message"></param>
-	/// <param name="cancellationToken"></param>
-	/// <typeparam name="TMessage"></typeparam>
-	/// <typeparam name="TResult"></typeparam>
-	/// <returns></returns>
-	Task<TResult> SendAsync<TMessage, TResult>(TMessage message, CancellationToken cancellationToken = default)
-		where TMessage : class => SendAsync<TMessage, TResult>(message, new SendOptions(), null, null, cancellationToken);
-
-	/// <summary>
-	/// Sends the specified message.
-	/// </summary>
-	/// <typeparam name="TMessage"></typeparam>
-	/// <typeparam name="TResult"></typeparam>
-	/// <param name="message"></param>
-	/// <param name="options"></param>
-	/// <param name="metadataSetter"></param>
 	/// <param name="callback"></param>
 	/// <param name="cancellationToken"></param>
+	/// <typeparam name="TMessage"></typeparam>
+	/// <typeparam name="TResult"></typeparam>
 	/// <returns></returns>
-	Task<TResult> SendAsync<TMessage, TResult>(TMessage message, SendOptions options, Action<MessageMetadata> metadataSetter = null, Action<TResult> callback = null, CancellationToken cancellationToken = default)
+	Task SendAsync<TMessage, TResult>(TMessage message, Action<TResult> callback, CancellationToken cancellationToken = default)
+		where TMessage : class => SendAsync(message, callback, new SendOptions(), null, cancellationToken);
+
+	/// <summary>
+	/// Sends the specified message.
+	/// </summary>
+	/// <typeparam name="TMessage"></typeparam>
+	/// <typeparam name="TResult"></typeparam>
+	/// <param name="message"></param>
+	/// <param name="callback"></param>
+	/// <param name="options"></param>
+	/// <param name="metadataSetter"></param>
+	/// <param name="cancellationToken"></param>
+	/// <returns></returns>
+	Task SendAsync<TMessage, TResult>(TMessage message, Action<TResult> callback, SendOptions options, Action<MessageMetadata> metadataSetter = null, CancellationToken cancellationToken = default)
 		where TMessage : class;
 
 	/// <summary>
@@ -104,7 +105,7 @@ public interface IBus
 	/// <param name="message"></param>
 	/// <param name="cancellationToken"></param>
 	/// <returns></returns>
-	Task<TResult> CallAsync<TResult>(IRequest<TResult> message, CancellationToken cancellationToken = default) => CallAsync(message, new SendOptions(), null, cancellationToken);
+	Task<TResult> CallAsync<TResult>(IRequest<TResult> message, CancellationToken cancellationToken = default) => CallAsync(message, new CallOptions(), null, cancellationToken);
 
 	/// <summary>
 	/// Sends the specified message.
@@ -115,5 +116,5 @@ public interface IBus
 	/// <param name="metadataSetter"></param>
 	/// <param name="cancellationToken"></param>
 	/// <returns></returns>
-	Task<TResult> CallAsync<TResult>(IRequest<TResult> message, SendOptions options, Action<MessageMetadata> metadataSetter = null, CancellationToken cancellationToken = default);
+	Task<TResult> CallAsync<TResult>(IRequest<TResult> message, CallOptions options, Action<MessageMetadata> metadataSetter = null, CancellationToken cancellationToken = default);
 }

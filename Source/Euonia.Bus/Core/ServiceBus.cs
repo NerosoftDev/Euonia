@@ -85,7 +85,7 @@ public sealed class ServiceBus : IBus
 	}
 
 	/// <inheritdoc />
-	public async Task<TResult> SendAsync<TMessage, TResult>(TMessage message, SendOptions options, Action<MessageMetadata> metadataSetter = null, Action<TResult> callback = null, CancellationToken cancellationToken = default)
+	public async Task SendAsync<TMessage, TResult>(TMessage message, Action<TResult> callback = null, SendOptions options = null, Action<MessageMetadata> metadataSetter = null, CancellationToken cancellationToken = default)
 		where TMessage : class
 	{
 		options ??= new SendOptions();
@@ -114,21 +114,19 @@ public sealed class ServiceBus : IBus
 
 		var transport = (ITransport)_provider.GetRequiredService(transports.First());
 
-		var result = await transport.SendAsync(pack, cancellationToken)
-		                            .ContinueWith(task =>
-		                            {
-			                            task.WaitAndUnwrapException();
-			                            var result = task.Result;
-			                            callback?.Invoke(result);
-			                            return result;
-		                            }, cancellationToken);
-		return result;
+		await transport.SendAsync(pack, cancellationToken)
+		               .ContinueWith(task =>
+		               {
+			               task.WaitAndUnwrapException();
+			               var result = task.Result;
+			               callback?.Invoke(result);
+		               }, cancellationToken);
 	}
 
 	/// <inheritdoc />
-	public async Task<TResult> CallAsync<TResult>(IRequest<TResult> message, SendOptions options, Action<MessageMetadata> metadataSetter = null, CancellationToken cancellationToken = default)
+	public async Task<TResult> CallAsync<TResult>(IRequest<TResult> message, CallOptions options, Action<MessageMetadata> metadataSetter = null, CancellationToken cancellationToken = default)
 	{
-		options ??= new SendOptions();
+		options ??= new CallOptions();
 
 		var messageType = message.GetType();
 
