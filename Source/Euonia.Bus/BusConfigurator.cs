@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 // ReSharper disable MemberCanBePrivate.Global
 
@@ -12,10 +13,21 @@ namespace Nerosoft.Euonia.Bus;
 /// </summary>
 public class BusConfigurator : IBusConfigurator
 {
+	private readonly IServiceCollection _services;
+
 	/// <summary>
 	/// Holds discovered message handler registrations.
 	/// </summary>
 	private readonly List<MessageRegistration> _registrations = [];
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="BusConfigurator"/> class.
+	/// </summary>
+	/// <param name="services"></param>
+	public BusConfigurator(IServiceCollection services)
+	{
+		_services = services;
+	}
 
 	/// <summary>
 	/// Builder used to configure message naming and discovery conventions.
@@ -26,11 +38,6 @@ public class BusConfigurator : IBusConfigurator
 	/// Builders for transport-specific strategies keyed by transport type.
 	/// </summary>
 	internal ConcurrentDictionary<Type, TransportStrategyBuilder> StrategyBuilders { get; } = new();
-
-	/// <summary>
-	/// Factory that resolves or creates an <see cref="IIdentityProvider"/> from an <see cref="IServiceProvider"/>.
-	/// </summary>
-	internal Func<IServiceProvider, IIdentityProvider> IdentityProviderFactory { get; set; } = null!;
 
 	/// <summary>
 	/// Read-only list of registered message handler registrations.
@@ -111,7 +118,7 @@ public class BusConfigurator : IBusConfigurator
 	/// <returns>The current <see cref="IBusConfigurator"/> for fluent configuration.</returns>
 	public IBusConfigurator SetIdentityProvider(IdentityAccessor accessor)
 	{
-		IdentityProviderFactory = _ => new DefaultIdentityProvider(accessor);
+		_services.TryAddSingleton<IIdentityProvider>(_ => new DefaultIdentityProvider(accessor));
 		return this;
 	}
 
@@ -124,7 +131,7 @@ public class BusConfigurator : IBusConfigurator
 	public IBusConfigurator SetIdentityProvider<T>()
 		where T : class, IIdentityProvider
 	{
-		IdentityProviderFactory = ActivatorUtilities.GetServiceOrCreateInstance<T>;
+		_services.TryAddSingleton<IIdentityProvider, T>();
 		return this;
 	}
 }

@@ -17,7 +17,7 @@ public static class ServiceCollectionExtensions
 	/// <returns></returns>
 	public static IBusConfigurator AddServiceBus(this IServiceCollection services, Action<BusConfigurator> config = null)
 	{
-		var configurator = Singleton<BusConfigurator>.Get(() => new BusConfigurator());
+		var configurator = Singleton<BusConfigurator>.Get(() => new BusConfigurator(services));
 
 		config?.Invoke(configurator);
 
@@ -53,11 +53,6 @@ public static class ServiceCollectionExtensions
 
 			return context;
 		});
-
-		if (configurator.IdentityProviderFactory != null)
-		{
-			services.TryAddSingleton(provider => configurator.IdentityProviderFactory(provider));
-		}
 
 		services.TryAddSingleton<IMessageConvention>(_ => configurator.ConventionBuilder.Convention);
 		foreach (var (name, builder) in configurator.StrategyBuilders)
