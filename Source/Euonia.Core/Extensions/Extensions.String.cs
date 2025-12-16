@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 public static partial class Extensions
 {
 	/// <summary>
-	/// Adds a char to end of given string if it does not ends with the char.
+	/// Adds a char to end of given string if it does not end with the char.
 	/// </summary>
 	public static string EnsureEndsWith(this string source, char c, StringComparison comparisonType = StringComparison.Ordinal)
 	{
@@ -347,12 +347,12 @@ public static partial class Extensions
 				case UnicodeCategory.UppercaseLetter:
 				case UnicodeCategory.TitlecaseLetter:
 					if (previousCategory == UnicodeCategory.SpaceSeparator ||
-						previousCategory == UnicodeCategory.LowercaseLetter ||
-						previousCategory != UnicodeCategory.DecimalDigitNumber &&
-						previousCategory != null &&
-						currentIndex > 0 &&
-						currentIndex + 1 < source.Length &&
-						char.IsLower(source[currentIndex + 1]))
+					    previousCategory == UnicodeCategory.LowercaseLetter ||
+					    previousCategory != UnicodeCategory.DecimalDigitNumber &&
+					    previousCategory != null &&
+					    currentIndex > 0 &&
+					    currentIndex + 1 < source.Length &&
+					    char.IsLower(source[currentIndex + 1]))
 					{
 						builder.Append('_');
 					}
@@ -389,38 +389,38 @@ public static partial class Extensions
 	/// Converts string to enum value.
 	/// </summary>
 	/// <typeparam name="T">Type of enum</typeparam>
-	/// <param name="value">String value to convert</param>
+	/// <param name="source">String value to convert</param>
 	/// <returns>Returns enum object</returns>
-	public static T ToEnum<T>(this string value)
+	public static T ToEnum<T>(this string source)
 		where T : struct
 	{
-		Check.EnsureNotNull(value, nameof(value));
-		return (T)Enum.Parse(typeof(T), value);
+		Check.EnsureNotNull(source, nameof(source));
+		return (T)Enum.Parse(typeof(T), source);
 	}
 
 	/// <summary>
 	/// Converts string to enum value.
 	/// </summary>
 	/// <typeparam name="T">Type of enum</typeparam>
-	/// <param name="value">String value to convert</param>
+	/// <param name="source">String value to convert</param>
 	/// <param name="ignoreCase">Ignore case</param>
 	/// <returns>Returns enum object</returns>
-	public static T ToEnum<T>(this string value, bool ignoreCase)
+	public static T ToEnum<T>(this string source, bool ignoreCase)
 		where T : struct
 	{
-		Check.EnsureNotNull(value, nameof(value));
-		return (T)Enum.Parse(typeof(T), value, ignoreCase);
+		Check.EnsureNotNull(source, nameof(source));
+		return (T)Enum.Parse(typeof(T), source, ignoreCase);
 	}
 
 	/// <summary>
 	/// 
 	/// </summary>
-	/// <param name="value"></param>
+	/// <param name="source"></param>
 	/// <returns></returns>
-	public static string ToMd5(this string value)
+	public static string ToMd5(this string source)
 	{
 		using var md5 = MD5.Create();
-		var inputBytes = Encoding.UTF8.GetBytes(value);
+		var inputBytes = Encoding.UTF8.GetBytes(source);
 		var hashBytes = md5.ComputeHash(inputBytes);
 
 		var sb = new StringBuilder();
@@ -835,7 +835,33 @@ public static partial class Extensions
 		{
 			return string.Empty;
 		}
+
 		var plainTextBytes = Encoding.UTF8.GetBytes(source);
 		return System.Convert.ToBase64String(plainTextBytes);
+	}
+
+	/// <summary>
+	/// Decoding the given Base64 string and returns a new string.
+	/// </summary>
+	/// <param name="???"></param>
+	extension(string)
+	{
+		/// <summary>
+		/// Collapses the given string parts into a single string by returning the first non-null and non-empty string.
+		/// </summary>
+		/// <param name="parts"></param>
+		/// <returns></returns>
+		public static string Collapse(params string[] parts)
+		{
+			foreach (var part in parts)
+			{
+				if (!string.IsNullOrEmpty(part))
+				{
+					return part;
+				}
+			}
+
+			return string.Empty;
+		}
 	}
 }
