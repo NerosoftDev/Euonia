@@ -1,4 +1,5 @@
 ﻿using System.Net.Sockets;
+using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -78,7 +79,7 @@ public class RabbitMqTransport : ITransport
 	{
 		var task = new TaskCompletionSource<dynamic>();
 
-		var requestQueueName = $"{string.Collapse(_options.QueueName, Constants.DefaultQueueName)}:{message.Channel}$";
+		var requestQueueName = GetQueueName(message.Channel);
 
 		await using var channel = await _connection.CreateChannelAsync();
 
@@ -146,7 +147,7 @@ public class RabbitMqTransport : ITransport
 	{
 		var task = new TaskCompletionSource<TResponse>();
 
-		var requestQueueName = $"{string.Collapse(_options.QueueName, Constants.DefaultQueueName)}:{message.Channel}$";
+		var requestQueueName = GetQueueName(message.Channel);
 
 		await using var channel = await _connection.CreateChannelAsync();
 
@@ -208,6 +209,13 @@ public class RabbitMqTransport : ITransport
 
 			await Task.CompletedTask;
 		}
+	}
+	
+	private string GetQueueName(string channel)
+	{
+		var subscriptionId = string.Collapse(_options.SubscriptionId, Assembly.GetEntryAssembly()?.FullName, channel);
+		var requestQueueName = $"{string.Collapse(_options.QueueName, Constants.DefaultQueueName)}:{channel}@{subscriptionId}";
+		return requestQueueName;
 	}
 
 	private static async Task CheckQueueAsync(IChannel channel, string requestQueueName)

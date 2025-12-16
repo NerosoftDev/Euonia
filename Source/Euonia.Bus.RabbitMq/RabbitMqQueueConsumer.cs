@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Reflection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -57,7 +58,8 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 
 	internal override async Task StartAsync(string channel)
 	{
-		var queueName = $"{string.Collapse(Options.QueueName, Constants.DefaultQueueName)}:{channel}$";
+		var subscriptionId = string.Collapse(Options.SubscriptionId, Assembly.GetEntryAssembly()?.FullName, channel);
+		var queueName = $"{string.Collapse(Options.QueueName, Constants.DefaultQueueName)}:{channel}@{subscriptionId}";
 
 		Channel = await Connection.CreateChannelAsync();
 
