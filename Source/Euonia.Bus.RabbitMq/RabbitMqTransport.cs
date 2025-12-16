@@ -156,7 +156,7 @@ public class RabbitMqTransport : ITransport
 		var responseQueueName = (await channel.QueueDeclareAsync(cancellationToken: cancellationToken)).QueueName;
 		var consumer = new AsyncEventingBasicConsumer(channel);
 
-		consumer.ReceivedAsync += OnReceived;
+		consumer.ReceivedAsync += OnReceivedAsync;
 
 		var typeName = message.GetTypeName();
 
@@ -168,8 +168,7 @@ public class RabbitMqTransport : ITransport
 		};
 		props.Headers ??= new Dictionary<string, object>();
 		props.Headers[Constants.MessageHeaders.MessageType] = typeName;
-
-
+		
 		await Policy.Handle<SocketException>()
 		            .Or<BrokerUnreachableException>()
 		            .WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(1), (exception, _, retryCount, _) =>
@@ -186,10 +185,10 @@ public class RabbitMqTransport : ITransport
 		            });
 
 		var result = await task.Task;
-		consumer.ReceivedAsync -= OnReceived;
+		consumer.ReceivedAsync -= OnReceivedAsync;
 		return result;
 
-		async Task OnReceived(object sender, BasicDeliverEventArgs args)
+		async Task OnReceivedAsync(object sender, BasicDeliverEventArgs args)
 		{
 			if (args.BasicProperties.CorrelationId != message.CorrelationId)
 			{
@@ -197,6 +196,7 @@ public class RabbitMqTransport : ITransport
 			}
 
 			var body = args.Body.ToArray();
+			
 			var response = JsonConvert.DeserializeObject<RabbitMqReply<TResponse>>(Encoding.UTF8.GetString(body), Constants.SerializerSettings);
 			if (response.IsSuccess)
 			{
@@ -211,6 +211,11 @@ public class RabbitMqTransport : ITransport
 		}
 	}
 	
+	/// <summary>
+	/// Builds the queue name for the specified channel.
+	/// </summary>
+	/// <param name="channel">The channel name.</param>
+	/// <returns>The queue name.</returns>
 	private string GetQueueName(string channel)
 	{
 		var subscriptionId = string.Collapse(_options.SubscriptionId, Assembly.GetEntryAssembly()?.FullName, channel);

@@ -85,40 +85,6 @@ public sealed class ServiceBus : IBus
 	}
 
 	/// <inheritdoc />
-	public Task SendAsync<TMessage>(TMessage message, SendOptions options, Action<MessageMetadata> metadataSetter = null, CancellationToken cancellationToken = default)
-		where TMessage : class
-	{
-		options ??= new SendOptions();
-
-		var messageType = message.GetType();
-
-		if (!_convention.IsUnicastType(messageType))
-		{
-			throw new MessageTypeException("The message type is not a command type.");
-		}
-
-		var context = _requestAccessor?.Context;
-
-		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel(messageType);
-		var pack = new RoutedMessage<TMessage>(message, channelName)
-		{
-			MessageId = options.MessageId ?? ObjectId.NewGuid(GuidType.SequentialAsString).ToString(),
-			CorrelationId = options.CorrelationId ?? ObjectId.NewGuid(GuidType.SequentialAsString).ToString(),
-			RequestTraceId = context?.TraceIdentifier ?? options.RequestTraceId ?? ObjectId.NewGuid(GuidType.SequentialAsString).ToString("N"),
-			Authorization = context?.Authorization,
-		};
-
-		metadataSetter?.Invoke(pack.Metadata);
-
-		var transports = _dispatcher.Determine(messageType);
-
-		var transport = (ITransport)_provider.GetRequiredService(transports.First());
-
-		return transport.SendAsync(pack, cancellationToken)
-		                .ContinueWith(task => task.WaitAndUnwrapException(cancellationToken), cancellationToken);
-	}
-
-	/// <inheritdoc />
 	public async Task<TResult> SendAsync<TMessage, TResult>(TMessage message, SendOptions options, Action<MessageMetadata> metadataSetter = null, Action<TResult> callback = null, CancellationToken cancellationToken = default)
 		where TMessage : class
 	{
@@ -160,7 +126,7 @@ public sealed class ServiceBus : IBus
 	}
 
 	/// <inheritdoc />
-	public async Task<TResult> RequestAsync<TResult>(IRequest<TResult> message, SendOptions options, Action<MessageMetadata> metadataSetter = null, Action<TResult> callback = null, CancellationToken cancellationToken = default)
+	public async Task<TResult> CallAsync<TResult>(IRequest<TResult> message, SendOptions options, Action<MessageMetadata> metadataSetter = null, CancellationToken cancellationToken = default)
 	{
 		options ??= new SendOptions();
 
@@ -192,9 +158,7 @@ public sealed class ServiceBus : IBus
 		                            .ContinueWith(task =>
 		                            {
 			                            task.WaitAndUnwrapException();
-			                            var result = task.Result;
-			                            callback?.Invoke(result);
-			                            return result;
+			                            return task.Result;
 		                            }, cancellationToken);
 		return result;
 	}
