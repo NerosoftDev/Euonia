@@ -2,8 +2,10 @@
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Nerosoft.Euonia.Bus.RabbitMq;
+using Nerosoft.Euonia.Modularity;
 
 namespace Nerosoft.Euonia.Bus.Tests;
 
@@ -17,8 +19,14 @@ public class Startup
 		           {
 			           builder.AddJsonFile("appsettings.json");
 		           })
-		           .ConfigureServices((_, _) =>
+		           .ConfigureServices((context, services) =>
 		           {
+			           services.TryAddScoped<DefaultRequestContextAccessor>();
+			           services.TryAddScoped<DelegateRequestContextAccessor>(_ =>
+			           {
+				           return () => new RequestContext();
+			           });
+			           services.AddModularityApplication<HostModule>(context.Configuration);
 			           // Register service here.
 		           });
 	}
@@ -41,6 +49,11 @@ public class Startup
 					builder.EvaluateUnicast(t => t.Name.EndsWith("Command"));
 					builder.EvaluateMulticast(t => t.Name.EndsWith("Event"));
 					builder.EvaluateRequest(t => t.Name.EndsWith("Request"));
+				});
+				config.SetStrategies(typeof(RabbitMqTransport), builder =>
+				{
+					builder.EvaluateOutgoing(e => true);
+					builder.EvaluateIncoming(e => true);
 				});
 				// config.UseRabbitMq(options =>
 				// {

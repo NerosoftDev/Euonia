@@ -25,6 +25,7 @@ public class ServiceBusTests
 		}
 		else
 		{
+			await Task.Delay(1000);
 			var result = await _provider.GetService<IBus>().SendAsync<UserCreateCommand, int>(new UserCreateCommand());
 			Assert.Equal(1, result);
 		}
@@ -68,6 +69,7 @@ public class ServiceBusTests
 		}
 		else
 		{
+			await Task.Delay(1000);
 			var result = await _provider.GetService<IBus>().RequestAsync<int>(new FooCreateCommand(), new SendOptions { Channel = "foo.create" });
 			Assert.Equal(1, result);
 		}
@@ -82,6 +84,7 @@ public class ServiceBusTests
 		}
 		else
 		{
+			await Task.Delay(1000);
 			await Assert.ThrowsAnyAsync<MessageDeliverException>(async () =>
 			{
 				var _ = await _provider.GetService<IBus>().RequestAsync<int>(new FooCreateCommand());
@@ -98,6 +101,7 @@ public class ServiceBusTests
 		}
 		else
 		{
+			await Task.Delay(1000);
 			await Assert.ThrowsAnyAsync<NotFoundException>(async () =>
 			{
 				await _provider.GetService<IBus>().SendAsync(new FooDeleteCommand());
