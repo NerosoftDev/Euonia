@@ -154,7 +154,11 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 			return;
 		}
 
-		Consumer.ReceivedAsync -= HandleMessageReceivedAsync;
+		if (Consumer != null)
+		{
+			Consumer.ReceivedAsync -= HandleMessageReceivedAsync;
+		}
+
 		Channel?.Dispose();
 		Connection?.Dispose();
 	}

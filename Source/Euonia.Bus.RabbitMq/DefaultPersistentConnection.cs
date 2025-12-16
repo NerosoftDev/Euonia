@@ -137,6 +137,11 @@ public class DefaultPersistentConnection : DisposableObject, IPersistentConnecti
 
 		try
 		{
+			if (_connection == null)
+			{
+				return;
+			}
+
 			_connection.ConnectionShutdownAsync -= OnConnectionShutdownAsync;
 			_connection.CallbackExceptionAsync -= OnCallbackExceptionAsync;
 			_connection.ConnectionBlockedAsync -= OnConnectionBlockedAsync;

@@ -49,11 +49,12 @@ public static class ServiceCollectionExtensions
 			services.TryAddSingleton<IPersistentConnection, DefaultPersistentConnection>();
 
 			// Registers RabbitMQ transport-related services.
-			services.TryAddSingleton<RabbitMqTransport>();
-			services.TryAddTransient<IRecipientRegistrar, RabbitMqRecipientRegistrar>();
 			services.TryAddTransient<RabbitMqQueueConsumer>();
 			services.TryAddTransient<RabbitMqTopicSubscriber>();
-
+			services.TryAddSingleton<RabbitMqTransport>();
+			services.TryAddSingleton<ITransport>(provider => provider.GetService<RabbitMqTransport>());
+			services.TryAddTransient<IRecipientRegistrar, RabbitMqRecipientRegistrar>();
+			
 			return services;
 		}
 
