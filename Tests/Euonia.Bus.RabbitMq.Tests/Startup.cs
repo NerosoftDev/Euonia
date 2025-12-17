@@ -36,7 +36,13 @@ public class Startup
 	// ConfigureServices(HostBuilderContext hostBuilderContext, IServiceCollection services)
 	public void ConfigureServices(IServiceCollection services, HostBuilderContext hostBuilderContext)
 	{
-		var preventUnitTest = hostBuilderContext.Configuration.GetValue<bool>("PreventRunTests");
+		bool preventUnitTest;
+
+#if DEBUG
+		preventUnitTest = false;
+#else
+		preventUnitTest = hostBuilderContext.Configuration.GetValue<bool>("PreventRunTests");
+#endif
 		if (!preventUnitTest)
 		{
 			services.AddServiceBus(config =>
