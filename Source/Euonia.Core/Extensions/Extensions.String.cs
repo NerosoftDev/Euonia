@@ -732,7 +732,7 @@ public static partial class Extensions
 		/// Returns a value if the string is null or white space.
 		/// </summary>
 		/// <param name="default">The string to return if source string is null or white space.</param>
-		/// <returns>The <paramref name="source"/> or <paramref name="default"/>.</returns>
+		/// <returns>The source string or <paramref name="default"/>.</returns>
 		public string DefaultIfNullOrWhiteSpace([NotNull] string @default)
 		{
 			return string.IsNullOrWhiteSpace(source) ? @default : source;
