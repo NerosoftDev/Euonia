@@ -19,8 +19,8 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore Euonia.slnx
     - name: Build
-      run: dotnet build Euonia.sln --no-restore --configuration Release
+      run: dotnet build Euonia.slnx --no-restore --configuration Release
     - name: Pack
-      run: dotnet pack Euonia.sln -c Release -o artifacts/ 
+      run: dotnet pack Euonia.slnx -c Release -o artifacts/ 
     - name: Publish NuGet
       run: dotnet nuget push artifacts/*.nupkg --api-key ${{secrets.NUGET_API}} --source https://api.nuget.org/v3/index.json --skip-duplicate
