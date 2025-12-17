@@ -43,10 +43,10 @@ To get started with Euonia.Bus, follow these steps:
     });
    ```
 
-2. **Configure the Bus**: In your application's configuration file (e.g., appsettings.json), add the necessary settings for the message bus.
+3. **Configure the Bus**: In your application's configuration file (e.g., appsettings.json), add the necessary settings for the message bus.
 
-3. **Add Module Dependency**: Add the required transport module dependency in your service module.
+4. **Add Module Dependency**: Add the required transport module dependency in your service module.
 
-4. **Implement Message Handlers**: Create message handler classes to process incoming messages.
+5. **Implement Message Handlers**: Create message handler classes to process incoming messages.
 
-5. **Run Your Application**: Start your application, and it will now use Euonia.Bus for message-based communication.
+6. **Run Your Application**: Start your application, and it will now use Euonia.Bus for message-based communication.
