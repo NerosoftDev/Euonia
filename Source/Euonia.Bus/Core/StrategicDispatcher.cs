@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Nerosoft.Euonia.Bus;
@@ -13,6 +14,7 @@ internal class StrategicDispatcher : IDispatcher
 	private readonly IMessageConvention _messageConvention;
 	private readonly IServiceProvider _serviceProvider;
 	private readonly IBusConfigurator _configurator;
+	private readonly string _defaultTransport;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="StrategicDispatcher"/> class.
@@ -20,11 +22,13 @@ internal class StrategicDispatcher : IDispatcher
 	/// <param name="serviceProvider"></param>
 	/// <param name="messageConvention"></param>
 	/// <param name="configurator"></param>
-	public StrategicDispatcher(IServiceProvider serviceProvider, IMessageConvention messageConvention, IBusConfigurator configurator)
+	/// <param name="configuration"></param>
+	public StrategicDispatcher(IServiceProvider serviceProvider, IMessageConvention messageConvention, IBusConfigurator configurator, IConfiguration configuration)
 	{
 		_messageConvention = messageConvention;
 		_serviceProvider = serviceProvider;
 		_configurator = configurator;
+		_defaultTransport = string.Collapse(configuration.GetValue<string>(Constants.DefaultTransportSection), _configurator.DefaultTransport);
 	}
 
 	/// <summary>
@@ -53,7 +57,14 @@ internal class StrategicDispatcher : IDispatcher
 		switch (transportTypes.Count)
 		{
 			case 0:
-				throw new MessageTypeException("No transport is configured for the message type.");
+				if (string.IsNullOrEmpty(_defaultTransport))
+				{
+					throw new MessageTypeException("No transport is configured for the message type.");
+				}
+
+				transportTypes = new List<string> { _defaultTransport };
+				break;
+
 			case > 1 when !_messageConvention.IsMulticastType(messageType):
 				throw new MessageTypeException("Multiple transports are configured for a unicast message type.");
 		}
