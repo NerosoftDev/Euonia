@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Nerosoft.Euonia.Bus;
@@ -20,10 +21,12 @@ public static class ServiceCollectionExtensions
 		/// <summary>
 		/// Adds the RabbitMQ bus services to the service collection.
 		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="configuration"></param>
 		/// <param name="configureOptions"></param>
 		/// <returns></returns>
 		/// <exception cref="InvalidOperationException"></exception>
-		public IServiceCollection AddRabbitMqBus(Action<RabbitMqBusOptions> configureOptions = null)
+		public IServiceCollection AddRabbitMqBus(string name, IConfiguration configuration, Action<RabbitMqBusOptions> configureOptions = null)
 		{
 			if (configureOptions != null)
 			{
@@ -52,22 +55,9 @@ public static class ServiceCollectionExtensions
 			services.TryAddTransient<RabbitMqQueueConsumer>();
 			services.TryAddTransient<RabbitMqTopicSubscriber>();
 			services.TryAddSingleton<RabbitMqTransport>();
-			services.TryAddSingleton<ITransport>(provider => provider.GetService<RabbitMqTransport>());
+			services.TryAddKeyedSingleton<ITransport>(name, (provider, _) => provider.GetService<RabbitMqTransport>());
 			services.TryAddTransient<IRecipientRegistrar, RabbitMqRecipientRegistrar>();
-			
-			return services;
-		}
 
-		/// <summary>
-		/// Adds a RabbitMQ bus handle strategy to the service collection.
-		/// </summary>
-		/// <param name="configure"></param>
-		/// <returns></returns>
-		public IServiceCollection AddRabbitMqBusStrategy(Action<TransportStrategyBuilder> configure)
-		{
-			var builder = new TransportStrategyBuilder();
-			configure(builder);
-			services.AddKeyedSingleton<ITransportStrategy>(typeof(RabbitMqTransport), (_, _) => builder.Strategy);
 			return services;
 		}
 	}

@@ -37,7 +37,7 @@ public class BusConfigurator : IBusConfigurator
 	/// <summary>
 	/// Builders for transport-specific strategies keyed by transport type.
 	/// </summary>
-	internal ConcurrentDictionary<Type, TransportStrategyBuilder> StrategyBuilders { get; } = new();
+	internal ConcurrentDictionary<string, TransportStrategyBuilder> StrategyBuilders { get; } = new();
 
 	/// <summary>
 	/// Read-only list of registered message handler registrations.
@@ -47,7 +47,12 @@ public class BusConfigurator : IBusConfigurator
 	/// <summary>
 	/// Types for which a transport strategy has been configured.
 	/// </summary>
-	public IReadOnlyList<Type> StrategyAssignedTypes => StrategyBuilders.Keys.ToList();
+	public IReadOnlyList<string> StrategyAssignedTypes => StrategyBuilders.Keys.ToList();
+
+	/// <summary>
+	/// Name of the default transport used when no specific transport is assigned by strategy.
+	/// </summary>
+	public string DefaultTransport { get; private set; } = string.Empty;
 
 	/// <summary>
 	/// Scans the provided assemblies for handler types and registers them.
@@ -98,7 +103,7 @@ public class BusConfigurator : IBusConfigurator
 	/// <param name="transport">Transport type to configure.</param>
 	/// <param name="configure">Action that configures the <see cref="TransportStrategyBuilder"/> for the transport.</param>
 	/// <returns>The current <see cref="IBusConfigurator"/> for fluent configuration.</returns>
-	public IBusConfigurator SetStrategy(Type transport, Action<TransportStrategyBuilder> configure)
+	public IBusConfigurator SetStrategy(string transport, Action<TransportStrategyBuilder> configure)
 	{
 		if (configure != null)
 		{
@@ -132,6 +137,17 @@ public class BusConfigurator : IBusConfigurator
 		where T : class, IIdentityProvider
 	{
 		_services.TryAddSingleton<IIdentityProvider, T>();
+		return this;
+	}
+
+	/// <summary>
+	/// Sets the default transport to be used when no specific transport strategy is assigned.
+	/// </summary>
+	/// <param name="name"></param>
+	/// <returns></returns>
+	public IBusConfigurator SetDefaultTransport(string name)
+	{
+		DefaultTransport = name;
 		return this;
 	}
 }

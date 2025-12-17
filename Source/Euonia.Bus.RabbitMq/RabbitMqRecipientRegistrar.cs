@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Nerosoft.Euonia.Bus.RabbitMq;
 
@@ -10,28 +11,34 @@ public sealed class RabbitMqRecipientRegistrar : IRecipientRegistrar
 	private readonly IMessageConvention _convention;
 	private readonly IServiceProvider _provider;
 	private readonly ITransportStrategy _strategy;
+	private readonly RabbitMqBusOptions _options;
 
 	/// <summary>
 	/// Initialize a new instance of <see cref="RabbitMqRecipientRegistrar"/>.
 	/// </summary>
 	/// <param name="convention"></param>
 	/// <param name="provider"></param>
-	public RabbitMqRecipientRegistrar(IMessageConvention convention, IServiceProvider provider)
+	/// <param name="options"></param>
+	public RabbitMqRecipientRegistrar(IMessageConvention convention, IServiceProvider provider, IOptions<RabbitMqBusOptions> options)
 	{
 		_convention = convention;
 		_provider = provider;
-		_strategy = provider.GetKeyedService<ITransportStrategy>(typeof(RabbitMqTransport));
+		_options = options.Value;
+		_strategy = provider.GetKeyedService<ITransportStrategy>(_options.Name);
 	}
 
 	/// <inheritdoc/>
-	public async Task RegisterAsync(IEnumerable<MessageRegistration> registrations, CancellationToken cancellationToken = default)
+	public async Task RegisterAsync(IEnumerable<MessageRegistration> registrations, string defaultTransport, CancellationToken cancellationToken = default)
 	{
 		foreach (var registration in registrations)
 		{
-			// Check if the strategy allows incoming handling for the message type
-			if (_strategy != null && !_strategy.Incoming(registration.MessageType))
+			if (!string.Equals(defaultTransport, _options.Name, StringComparison.CurrentCultureIgnoreCase))
 			{
-				return;
+				// Check if the strategy allows incoming handling for the message type
+				if (_strategy != null && !_strategy.Incoming(registration.MessageType))
+				{
+					return;
+				}
 			}
 
 			RabbitMqQueueRecipient recipient;

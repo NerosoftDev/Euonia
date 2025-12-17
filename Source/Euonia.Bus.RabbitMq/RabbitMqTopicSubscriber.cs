@@ -60,7 +60,7 @@ public class RabbitMqTopicSubscriber : RabbitMqQueueRecipient, ITopicSubscriber
 	{
 		Channel = await Connection.CreateChannelAsync();
 
-		var exchangePrefix = string.Collapse(Options.ExchangeName, Constants.DefaultExchangeName);
+		var exchangePrefix = string.Collapse(Options.ExchangeNamePrefix, Constants.DefaultExchangeNamePrefix);
 		var exchangeName = $"{exchangePrefix}:{channel}";
 
 		// Declare Fanout exchange and queue for topic subscriber.

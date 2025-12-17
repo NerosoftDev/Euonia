@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace Nerosoft.Euonia.Bus;
@@ -10,16 +11,19 @@ public class RecipientActivator : BackgroundService
 {
 	private readonly IServiceProvider _provider;
 	private readonly IBusConfigurator _configurator;
+	private readonly string _defaultTransport;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="RecipientActivator"/> class.
 	/// </summary>
 	/// <param name="provider"></param>
 	/// <param name="configurator"></param>
-	public RecipientActivator(IServiceProvider provider, IBusConfigurator configurator)
+	/// <param name="configuration"></param>
+	public RecipientActivator(IServiceProvider provider, IBusConfigurator configurator, IConfiguration configuration)
 	{
 		_provider = provider;
 		_configurator = configurator;
+		_defaultTransport = string.Collapse(configuration.GetValue<string>("ServiceBus:DefaultTransport"), configurator.DefaultTransport);
 	}
 
 	/// <inheritdoc/>
@@ -29,6 +33,6 @@ public class RecipientActivator : BackgroundService
 
 		var registrars = _provider.GetServices<IRecipientRegistrar>();
 
-		return Task.WhenAll(registrars.Select(x => x.RegisterAsync(registrations, stoppingToken)));
+		return Task.WhenAll(registrars.Select(x => x.RegisterAsync(registrations, _defaultTransport, stoppingToken)));
 	}
 }

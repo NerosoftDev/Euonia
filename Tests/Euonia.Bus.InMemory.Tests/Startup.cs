@@ -16,19 +16,19 @@ public class Startup
 	public void ConfigureHost(IHostBuilder hostBuilder)
 	{
 		hostBuilder.ConfigureAppConfiguration(builder =>
-		           {
-			           builder.AddJsonFile("appsettings.json");
-		           })
-		           .ConfigureServices((context, services) =>
-		           {
-			           services.TryAddScoped<DefaultRequestContextAccessor>();
-			           services.TryAddScoped<DelegateRequestContextAccessor>(_ =>
-			           {
-				           return () => new RequestContext();
-			           });
-			           services.AddModularityApplication<HostModule>(context.Configuration);
-			           // Register service here.
-		           });
+				   {
+					   builder.AddJsonFile("appsettings.json");
+				   })
+				   .ConfigureServices((context, services) =>
+				   {
+					   services.TryAddScoped<DefaultRequestContextAccessor>();
+					   services.TryAddScoped<DelegateRequestContextAccessor>(_ =>
+					   {
+						   return () => new RequestContext();
+					   });
+					   services.AddModularityApplication<HostModule>(context.Configuration);
+					   // Register service here.
+				   });
 	}
 
 	// ConfigureServices(IServiceCollection services)
@@ -40,19 +40,19 @@ public class Startup
 		{
 			config.RegisterHandlers(Assembly.GetExecutingAssembly());
 			config.SetConventions(builder =>
-			      {
-				      builder.Add<DefaultMessageConvention>();
-				      builder.Add<AttributeMessageConvention>();
-				      builder.EvaluateUnicast(t => t.Name.EndsWith("Command"));
-				      builder.EvaluateMulticast(t => t.Name.EndsWith("Event"));
-				      builder.EvaluateRequest(t => t.Name.EndsWith("Request"));
-			      })
-			      .SetStrategy(typeof(InMemoryTransport), builder =>
-			      {
-				      builder.Add(new AttributeTransportStrategy(["inmemory"]));
-				      builder.EvaluateIncoming(type => type.Name.EndsWith("Command"));
-				      builder.EvaluateOutgoing(type => type.Name.EndsWith("Command"));
-			      });
+				  {
+					  builder.Add<DefaultMessageConvention>();
+					  builder.Add<AttributeMessageConvention>();
+					  builder.EvaluateUnicast(t => t.Name.EndsWith("Command"));
+					  builder.EvaluateMulticast(t => t.Name.EndsWith("Event"));
+					  builder.EvaluateRequest(t => t.Name.EndsWith("Request"));
+				  })
+				  .SetStrategy("inmemory", builder =>
+				  {
+					  builder.Add(new AttributeTransportStrategy(["inmemory"]));
+					  builder.EvaluateIncoming(type => type.Name.EndsWith("Command"));
+					  builder.EvaluateOutgoing(type => type.Name.EndsWith("Command"));
+				  });
 			// config.UseInMemory(options =>
 			// {
 			// 	options.IsDefaultTransport = true;
