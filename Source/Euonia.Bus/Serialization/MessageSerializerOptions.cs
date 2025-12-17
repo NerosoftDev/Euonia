@@ -3,7 +3,7 @@
 /// <summary>
 /// The message serializer settings.
 /// </summary>
-public class MessageSerializerSettings
+public class MessageSerializerOptions
 {
 	/// <summary>
 	/// Gets or sets a value indicating how to handle reference loops.
@@ -19,6 +19,11 @@ public class MessageSerializerSettings
 	/// Gets or sets the encoding.
 	/// </summary>
 	public Encoding Encoding { get; set; } = Encoding.UTF8;
+
+	/// <summary>
+	/// Gets or sets a value indicating whether to ignore null values during serialization.
+	/// </summary>
+	public bool IgnoreNullValues { get; set; } = true;
 
 	/// <summary>
 	/// Defines how to handle reference loop during deserialization.

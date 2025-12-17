@@ -13,32 +13,36 @@ public sealed class ServiceBus : IBus
 
 	private readonly IDispatcher _dispatcher;
 	private readonly IMessageConvention _convention;
-	private readonly IServiceAccessor _serviceAccessor;
+	private readonly IRequestContextAccessor _requestAccessor;
+	private readonly IServiceProvider _provider;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ServiceBus"/> class.
 	/// </summary>
-	/// <param name="factory"></param>
+	/// <param name="dispatcher"></param>
+	/// <param name="provider"></param>
 	/// <param name="convention"></param>
 	/// <param name="logger"></param>
-	public ServiceBus(IBusFactory factory, IMessageConvention convention, ILoggerFactory logger)
+	public ServiceBus(IDispatcher dispatcher, IServiceProvider provider, IMessageConvention convention, ILoggerFactory logger)
 	{
 		_logger = logger.CreateLogger<ServiceBus>();
-		_dispatcher = factory.CreateDispatcher();
+		_dispatcher = dispatcher;
 		_convention = convention;
+		_provider = provider;
 	}
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ServiceBus"/> class.
 	/// </summary>
-	/// <param name="factory"></param>
+	/// <param name="dispatcher"></param>
+	/// <param name="provider"></param>
 	/// <param name="convention"></param>
 	/// <param name="logger"></param>
-	/// <param name="serviceAccessor"></param>
-	public ServiceBus(IBusFactory factory, IMessageConvention convention, ILoggerFactory logger, IServiceAccessor serviceAccessor)
-		: this(factory, convention, logger)
+	/// <param name="requestAccessor"></param>
+	public ServiceBus(IDispatcher dispatcher, IServiceProvider provider, IMessageConvention convention, ILoggerFactory logger, IRequestContextAccessor requestAccessor)
+		: this(dispatcher, provider, convention, logger)
 	{
-		_serviceAccessor = serviceAccessor;
+		_requestAccessor = requestAccessor;
 	}
 
 	/// <inheritdoc />
@@ -49,12 +53,12 @@ public sealed class ServiceBus : IBus
 
 		var messageType = message.GetType();
 
-		if (!_convention.IsEventType(messageType))
+		if (!_convention.IsMulticastType(messageType))
 		{
 			throw new MessageTypeException("The message type is not an topic type.");
 		}
 
-		var context = GetRequestContext();
+		var context = _requestAccessor?.Context;
 
 		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel(messageType);
 		var pack = new RoutedMessage<TMessage>(message, channelName)
@@ -64,53 +68,36 @@ public sealed class ServiceBus : IBus
 			Authorization = context?.Authorization,
 		};
 		metadataSetter?.Invoke(pack.Metadata);
-		return _dispatcher.PublishAsync(pack, cancellationToken);
-	}
 
-	/// <inheritdoc />
-	public Task SendAsync<TMessage>(TMessage message, SendOptions options, Action<MessageMetadata> metadataSetter = null, CancellationToken cancellationToken = default)
-		where TMessage : class
-	{
-		options ??= new SendOptions();
+		var transports = _dispatcher.Determine(messageType);
 
-		var messageType = message.GetType();
+		var tasks = new List<Task>();
 
-		if (!_convention.IsCommandType(messageType))
+		foreach (var type in transports)
 		{
-			throw new MessageTypeException("The message type is not a command type.");
+			_logger.LogDebug("Publishing message of type {MessageType} to transport {TransportType} on channel {ChannelName} with MessageId {MessageId}.",
+				messageType.FullName, type.FullName, channelName, pack.MessageId);
+			var transport = (ITransport)_provider.GetRequiredService(type);
+			tasks.Add(transport.PublishAsync(pack, cancellationToken));
 		}
 
-		var context = GetRequestContext();
-
-		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel(messageType);
-		var pack = new RoutedMessage<TMessage>(message, channelName)
-		{
-			MessageId = options.MessageId ?? ObjectId.NewGuid(GuidType.SequentialAsString).ToString(),
-			CorrelationId = options.CorrelationId ?? ObjectId.NewGuid(GuidType.SequentialAsString).ToString(),
-			RequestTraceId = context?.TraceIdentifier ?? options.RequestTraceId ?? ObjectId.NewGuid(GuidType.SequentialAsString).ToString("N"),
-			Authorization = context?.Authorization,
-		};
-
-		metadataSetter?.Invoke(pack.Metadata);
-
-		return _dispatcher.SendAsync(pack, cancellationToken)
-		                  .ContinueWith(task => task.WaitAndUnwrapException(cancellationToken), cancellationToken);
+		return Task.WhenAll(tasks);
 	}
 
 	/// <inheritdoc />
-	public Task<TResult> SendAsync<TMessage, TResult>(TMessage message, SendOptions options, Action<MessageMetadata> metadataSetter = null, Action<TResult> callback = null, CancellationToken cancellationToken = default)
+	public async Task SendAsync<TMessage, TResult>(TMessage message, Action<TResult> callback = null, SendOptions options = null, Action<MessageMetadata> metadataSetter = null, CancellationToken cancellationToken = default)
 		where TMessage : class
 	{
 		options ??= new SendOptions();
 
 		var messageType = message.GetType();
 
-		if (!_convention.IsCommandType(messageType) && !_convention.IsRequestType(messageType))
+		if (!_convention.IsUnicastType(messageType) && !_convention.IsRequestType(messageType))
 		{
 			throw new MessageTypeException("The message type is not a command type or request type.");
 		}
 
-		var context = GetRequestContext();
+		var context = _requestAccessor?.Context;
 
 		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel(messageType);
 		var pack = new RoutedMessage<TMessage, TResult>(message, channelName)
@@ -123,20 +110,23 @@ public sealed class ServiceBus : IBus
 
 		metadataSetter?.Invoke(pack.Metadata);
 
-		return _dispatcher.SendAsync(pack, cancellationToken)
-		                  .ContinueWith(task =>
-		                  {
-			                  task.WaitAndUnwrapException();
-			                  var result = task.Result;
-			                  callback?.Invoke(result);
-			                  return result;
-		                  }, cancellationToken);
+		var transports = _dispatcher.Determine(messageType);
+
+		var transport = (ITransport)_provider.GetRequiredService(transports.First());
+
+		await transport.SendAsync(pack, cancellationToken)
+		               .ContinueWith(task =>
+		               {
+			               task.WaitAndUnwrapException();
+			               var result = task.Result;
+			               callback?.Invoke(result);
+		               }, cancellationToken);
 	}
 
 	/// <inheritdoc />
-	public Task<TResult> RequestAsync<TResult>(IRequest<TResult> message, SendOptions options, Action<MessageMetadata> metadataSetter = null, Action<TResult> callback = null, CancellationToken cancellationToken = default)
+	public async Task<TResult> CallAsync<TResult>(IRequest<TResult> message, CallOptions options, Action<MessageMetadata> metadataSetter = null, CancellationToken cancellationToken = default)
 	{
-		options ??= new SendOptions();
+		options ??= new CallOptions();
 
 		var messageType = message.GetType();
 
@@ -145,7 +135,7 @@ public sealed class ServiceBus : IBus
 			throw new MessageTypeException("The message type is not a queue type.");
 		}
 
-		var context = GetRequestContext();
+		var context = _requestAccessor?.Context;
 
 		var channelName = options.Channel ?? MessageCache.Default.GetOrAddChannel(messageType);
 		var pack = new RoutedMessage<IRequest<TResult>, TResult>(message, channelName)
@@ -158,41 +148,16 @@ public sealed class ServiceBus : IBus
 
 		metadataSetter?.Invoke(pack.Metadata);
 
-		return _dispatcher.SendAsync(pack, cancellationToken)
-		                  .ContinueWith(task =>
-		                  {
-			                  task.WaitAndUnwrapException();
-			                  var result = task.Result;
-			                  callback?.Invoke(result);
-			                  return result;
-		                  }, cancellationToken);
-	}
+		var transports = _dispatcher.Determine(messageType);
 
-	private RequestContext GetRequestContext()
-	{
-		if (_serviceAccessor == null)
-		{
-			_logger.LogWarning("The IServiceAccessor is not available in the ServiceBus.");
-			return null;
-		}
+		var transport = (ITransport)_provider.GetRequiredService(transports.First());
 
-		if (_serviceAccessor.ServiceProvider == null)
-		{
-			_logger.LogWarning("The IServiceProvider is not available in the ServiceBus.");
-			return null;
-		}
-
-		var accessor = _serviceAccessor.ServiceProvider.GetService<IRequestContextAccessor>();
-		
-		if (accessor == null)
-		{
-			_logger.LogWarning("The IRequestContextAccessor is not registered in the IoC container.");
-			return null;
-		}
-
-		{
-		}
-
-		return accessor.Context;
+		var result = await transport.SendAsync(pack, cancellationToken)
+		                            .ContinueWith(task =>
+		                            {
+			                            task.WaitAndUnwrapException();
+			                            return task.Result;
+		                            }, cancellationToken);
+		return result;
 	}
 }

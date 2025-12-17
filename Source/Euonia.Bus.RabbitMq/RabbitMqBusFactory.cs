@@ -5,20 +5,20 @@
 /// </summary>
 public class RabbitMqBusFactory : IBusFactory
 {
-	private readonly RabbitMqDispatcher _dispatcher;
+	private readonly RabbitMqTransport _transport;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="RabbitMqBusFactory"/> class.
 	/// </summary>
-	/// <param name="dispatcher"></param>
-	public RabbitMqBusFactory(RabbitMqDispatcher dispatcher)
+	/// <param name="transport"></param>
+	public RabbitMqBusFactory(RabbitMqTransport transport)
 	{
-		_dispatcher = dispatcher;
+		_transport = transport;
 	}
 
 	/// <inheritdoc />
-	public IDispatcher CreateDispatcher()
+	public ITransport CreateDispatcher()
 	{
-		return _dispatcher;
+		return _transport;
 	}
 }

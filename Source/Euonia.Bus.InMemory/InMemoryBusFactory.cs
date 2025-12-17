@@ -5,20 +5,20 @@
 /// </summary>
 public class InMemoryBusFactory : IBusFactory
 {
-	private readonly InMemoryDispatcher _dispatcher;
+	private readonly InMemoryTransport _transport;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="InMemoryBusFactory"/> class.
 	/// </summary>
-	/// <param name="dispatcher"></param>
-	public InMemoryBusFactory(InMemoryDispatcher dispatcher)
+	/// <param name="transport"></param>
+	public InMemoryBusFactory(InMemoryTransport transport)
 	{
-		_dispatcher = dispatcher;
+		_transport = transport;
 	}
 
 	/// <inheritdoc />
-	public IDispatcher CreateDispatcher()
+	public ITransport CreateDispatcher()
 	{
-		return _dispatcher;
+		return _transport;
 	}
 }

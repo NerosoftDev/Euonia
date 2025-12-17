@@ -9,20 +9,23 @@ namespace Nerosoft.Euonia.Bus;
 public class RecipientActivator : BackgroundService
 {
 	private readonly IServiceProvider _provider;
+	private readonly IBusConfigurator _configurator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="RecipientActivator"/> class.
 	/// </summary>
 	/// <param name="provider"></param>
-	public RecipientActivator(IServiceProvider provider)
+	/// <param name="configurator"></param>
+	public RecipientActivator(IServiceProvider provider, IBusConfigurator configurator)
 	{
 		_provider = provider;
+		_configurator = configurator;
 	}
 
 	/// <inheritdoc/>
 	protected override Task ExecuteAsync(CancellationToken stoppingToken)
 	{
-		var registrations = Singleton<BusConfigurator>.Instance.Registrations;
+		var registrations = _configurator.Registrations;
 
 		var registrars = _provider.GetServices<IRecipientRegistrar>();
 

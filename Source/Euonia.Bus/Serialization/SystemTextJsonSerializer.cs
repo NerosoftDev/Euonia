@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.Options;
 
 namespace Nerosoft.Euonia.Bus;
 
@@ -8,18 +9,29 @@ namespace Nerosoft.Euonia.Bus;
 /// </summary>
 public class SystemTextJsonSerializer : IMessageSerializer
 {
+	private readonly JsonSerializerOptions _options;
+
+	/// <summary>
+	/// Initialize a new instance of <see cref="SystemTextJsonSerializer"/>
+	/// </summary>
+	/// <param name="options"></param>
+	public SystemTextJsonSerializer(IOptions<JsonSerializerOptions> options)
+	{
+		_options = options.Value;
+	}
+
 	/// <inheritdoc />
 	public async Task<byte[]> SerializeAsync<T>(T message, CancellationToken cancellationToken = default)
 	{
 		await using var stream = new MemoryStream();
-		await JsonSerializer.SerializeAsync(stream, message, cancellationToken: cancellationToken);
+		await JsonSerializer.SerializeAsync(stream, message, _options, cancellationToken: cancellationToken);
 		return stream.ToArray();
 	}
 
 	/// <inheritdoc />
 	public async Task<T> DeserializeAsync<T>(Stream stream, CancellationToken cancellationToken = default)
 	{
-		return await JsonSerializer.DeserializeAsync<T>(stream, cancellationToken: cancellationToken);
+		return await JsonSerializer.DeserializeAsync<T>(stream, _options, cancellationToken: cancellationToken);
 	}
 
 	/// <inheritdoc />
@@ -32,25 +44,25 @@ public class SystemTextJsonSerializer : IMessageSerializer
 	/// <inheritdoc />
 	public T Deserialize<T>(byte[] bytes)
 	{
-		return JsonSerializer.Deserialize<T>(Encoding.UTF8.GetString(bytes));
+		return JsonSerializer.Deserialize<T>(Encoding.UTF8.GetString(bytes), _options);
 	}
 
 	/// <inheritdoc />
 	public T Deserialize<T>(string json)
 	{
-		return JsonSerializer.Deserialize<T>(json);
+		return JsonSerializer.Deserialize<T>(json, _options);
 	}
 
 	/// <inheritdoc />
 	public T Deserialize<T>(Stream stream)
 	{
-		return JsonSerializer.Deserialize<T>(stream);
+		return JsonSerializer.Deserialize<T>(stream, _options);
 	}
 
 	/// <inheritdoc />
 	public string Serialize<T>(T obj)
 	{
-		return JsonSerializer.Serialize(obj);
+		return JsonSerializer.Serialize(obj, _options);
 	}
 
 	/// <inheritdoc />
@@ -62,25 +74,6 @@ public class SystemTextJsonSerializer : IMessageSerializer
 	/// <inheritdoc />
 	public object Deserialize(string json, Type type)
 	{
-		return JsonSerializer.Deserialize(json, type);
-	}
-
-	// ReSharper disable once UnusedMember.Local
-	private static JsonSerializerOptions ConvertSettings(MessageSerializerSettings settings)
-	{
-		if (settings == null)
-		{
-			return default;
-		}
-
-		var options = new JsonSerializerOptions();
-		options.ReferenceHandler = settings.ReferenceLoop switch
-		{
-			MessageSerializerSettings.ReferenceLoopStrategy.Ignore => ReferenceHandler.IgnoreCycles,
-			MessageSerializerSettings.ReferenceLoopStrategy.Preserve => ReferenceHandler.Preserve,
-			_ => options.ReferenceHandler
-		};
-
-		return options;
+		return JsonSerializer.Deserialize(json, type, _options);
 	}
 }

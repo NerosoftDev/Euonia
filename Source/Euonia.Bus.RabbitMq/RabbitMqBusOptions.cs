@@ -3,8 +3,13 @@
 /// <summary>
 /// The RabbitMQ based message bus options definition.
 /// </summary>
-public class RabbitMqMessageBusOptions
+public class RabbitMqBusOptions
 {
+	/// <summary>
+	/// Gets or sets the transport name.
+	/// </summary>
+	public string TransportName { get; set; } = "rabbitmq-transport";
+
 	/// <summary>
 	/// Gets or sets the RabbitMQ connection string.
 	/// <example>amqp://user:password@host:port</example>
@@ -27,12 +32,6 @@ public class RabbitMqMessageBusOptions
 	public string TopicName { get; set; }
 
 	/// <summary>
-	/// Gets or sets the exchange type.
-	/// Values: fanout, direct, headers, topic
-	/// </summary>
-	public string ExchangeType { get; set; } = RabbitMQ.Client.ExchangeType.Fanout;
-
-	/// <summary>
 	/// 
 	/// </summary>
 	public string RoutingKey { get; set; } = "*";
@@ -46,4 +45,9 @@ public class RabbitMqMessageBusOptions
 	/// 
 	/// </summary>
 	public int MaxFailureRetries { get; set; } = 3;
+
+	/// <summary>
+	/// Gets or sets the subscription identifier.
+	/// </summary>
+	public string SubscriptionId { get; set; }
 }

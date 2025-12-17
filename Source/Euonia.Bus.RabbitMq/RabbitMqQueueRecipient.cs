@@ -25,7 +25,7 @@ public abstract class RabbitMqQueueRecipient : DisposableObject
 	/// <param name="factory"></param>
 	/// <param name="options"></param>
 	/// 
-	protected RabbitMqQueueRecipient(IPersistentConnection factory, IOptions<RabbitMqMessageBusOptions> options)
+	protected RabbitMqQueueRecipient(IPersistentConnection factory, IOptions<RabbitMqBusOptions> options)
 	{
 		Options = options.Value;
 		Connection = factory;
@@ -39,7 +39,7 @@ public abstract class RabbitMqQueueRecipient : DisposableObject
 	/// <summary>
 	/// Gets the RabbitMQ message bus options.
 	/// </summary>
-	protected virtual RabbitMqMessageBusOptions Options { get; }
+	protected virtual RabbitMqBusOptions Options { get; }
 
 	/// <summary>
 	/// 
@@ -56,14 +56,14 @@ public abstract class RabbitMqQueueRecipient : DisposableObject
 	// 	Channel.BasicAck(deliveryTag, false);
 	// }
 
-	internal abstract void Start(string channel);
+	internal abstract Task StartAsync(string channel);
 
 	/// <summary>
 	/// 
 	/// </summary>
 	/// <param name="sender"></param>
 	/// <param name="args"></param>
-	protected abstract void HandleMessageReceived(object sender, BasicDeliverEventArgs args);
+	protected abstract Task HandleMessageReceivedAsync(object sender, BasicDeliverEventArgs args);
 
 	/// <summary>
 	/// 

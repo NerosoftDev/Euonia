@@ -2,8 +2,10 @@
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Nerosoft.Euonia.Bus.RabbitMq;
+using Nerosoft.Euonia.Modularity;
 
 namespace Nerosoft.Euonia.Bus.Tests;
 
@@ -17,8 +19,14 @@ public class Startup
 		           {
 			           builder.AddJsonFile("appsettings.json");
 		           })
-		           .ConfigureServices((_, _) =>
+		           .ConfigureServices((context, services) =>
 		           {
+			           services.TryAddScoped<DefaultRequestContextAccessor>();
+			           services.TryAddScoped<DelegateRequestContextAccessor>(_ =>
+			           {
+				           return () => new RequestContext();
+			           });
+			           services.AddModularityApplication<HostModule>(context.Configuration);
 			           // Register service here.
 		           });
 	}
@@ -28,7 +36,13 @@ public class Startup
 	// ConfigureServices(HostBuilderContext hostBuilderContext, IServiceCollection services)
 	public void ConfigureServices(IServiceCollection services, HostBuilderContext hostBuilderContext)
 	{
-		var preventUnitTest = hostBuilderContext.Configuration.GetValue<bool>("PreventRunTests");
+		bool preventUnitTest;
+
+#if DEBUG
+		preventUnitTest = false;
+#else
+		preventUnitTest = hostBuilderContext.Configuration.GetValue<bool>("PreventRunTests");
+#endif
 		if (!preventUnitTest)
 		{
 			services.AddServiceBus(config =>
@@ -38,18 +52,23 @@ public class Startup
 				{
 					builder.Add<DefaultMessageConvention>();
 					builder.Add<AttributeMessageConvention>();
-					builder.EvaluateQueue(t => t.Name.EndsWith("Command"));
-					builder.EvaluateTopic(t => t.Name.EndsWith("Event"));
+					builder.EvaluateUnicast(t => t.Name.EndsWith("Command"));
+					builder.EvaluateMulticast(t => t.Name.EndsWith("Event"));
 					builder.EvaluateRequest(t => t.Name.EndsWith("Request"));
 				});
-				config.UseRabbitMq(options =>
+				config.SetStrategy(typeof(RabbitMqTransport), builder =>
 				{
-					options.Connection = "amqp://127.0.0.1";
-					options.QueueName = "nerosoft.euonia.test.command";
-					options.TopicName = "nerosoft.euonia.test.event";
-					options.ExchangeName = $"nerosoft.euonia.test.exchange.{options.ExchangeType}";
-					options.RoutingKey = "*";
+					builder.EvaluateOutgoing(e => true);
+					builder.EvaluateIncoming(e => true);
 				});
+				// config.UseRabbitMq(options =>
+				// {
+				// 	options.Connection = "amqp://127.0.0.1";
+				// 	options.QueueName = "nerosoft.euonia.test.command";
+				// 	options.TopicName = "nerosoft.euonia.test.event";
+				// 	options.ExchangeName = $"nerosoft.euonia.test.exchange.{options.ExchangeType}";
+				// 	options.RoutingKey = "*";
+				// });
 			});
 		}
 	}

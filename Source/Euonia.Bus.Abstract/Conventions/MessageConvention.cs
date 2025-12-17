@@ -3,15 +3,23 @@
 namespace Nerosoft.Euonia.Bus;
 
 /// <summary>
-/// 
+/// The built-in message convention.
 /// </summary>
 public class MessageConvention : IMessageConvention
 {
 	private readonly OverridableMessageConvention _defaultConvention = new(new DefaultMessageConvention());
-	private readonly List<IMessageConvention> _conventions = new();
-	private readonly ConventionCache _topicConventionCache = new();
-	private readonly ConventionCache _queueConventionCache = new();
+	private readonly List<IMessageConvention> _conventions = [];
+	private readonly ConventionCache _multicastConventionCache = new();
+	private readonly ConventionCache _unicastConventionCache = new();
 	private readonly ConventionCache _requestConventionCache = new();
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="MessageConvention"/> class.
+	/// </summary>
+	public MessageConvention()
+	{
+		_conventions.Add(_defaultConvention);
+	}
 
 	/// <summary>
 	/// Determines whether the specified type is a command.
@@ -19,14 +27,14 @@ public class MessageConvention : IMessageConvention
 	/// <param name="messageType"></param>
 	/// <returns></returns>
 	/// <exception cref="ArgumentNullException"></exception>
-	public bool IsCommandType(Type messageType)
+	public bool IsUnicastType(Type messageType)
 	{
 		ArgumentNullException.ThrowIfNull(messageType);
 
-		return _topicConventionCache.Apply(messageType, handle =>
+		return _multicastConventionCache.Apply(messageType, handle =>
 		{
 			var t = Type.GetTypeFromHandle(handle);
-			return _conventions.Any(x => x.IsCommandType(t));
+			return _conventions.Any(x => x.IsUnicastType(t));
 		});
 	}
 
@@ -36,14 +44,14 @@ public class MessageConvention : IMessageConvention
 	/// <param name="messageType"></param>
 	/// <returns></returns>
 	/// <exception cref="ArgumentNullException"></exception>
-	public bool IsEventType(Type messageType)
+	public bool IsMulticastType(Type messageType)
 	{
 		ArgumentNullException.ThrowIfNull(messageType);
 
-		return _queueConventionCache.Apply(messageType, handle =>
+		return _unicastConventionCache.Apply(messageType, handle =>
 		{
 			var t = Type.GetTypeFromHandle(handle);
-			return _conventions.Any(x => x.IsEventType(t));
+			return _conventions.Any(x => x.IsMulticastType(t));
 		});
 	}
 
@@ -59,14 +67,14 @@ public class MessageConvention : IMessageConvention
 		});
 	}
 
-	internal void DefineQueueTypeConvention(Func<Type, bool> convention)
+	internal void DefineUnicastTypeConvention(Func<Type, bool> convention)
 	{
-		_defaultConvention.DefineQueueType(convention);
+		_defaultConvention.DefineUnicastType(convention);
 	}
 
-	internal void DefineTopicTypeConvention(Func<Type, bool> convention)
+	internal void DefineMulticastTypeConvention(Func<Type, bool> convention)
 	{
-		_defaultConvention.DefineTopicType(convention);
+		_defaultConvention.DefineMulticastType(convention);
 	}
 
 	internal void DefineRequestTypeConvention(Func<Type, bool> convention)
@@ -76,6 +84,11 @@ public class MessageConvention : IMessageConvention
 
 	internal void DefineTypeConvention(Func<Type, MessageConventionType> convention)
 	{
+		ArgumentNullException.ThrowIfNull(convention);
+
+		DefineUnicastTypeConvention(type => convention(type) == MessageConventionType.Unicast);
+		DefineMulticastTypeConvention(type => convention(type) == MessageConventionType.Multicast);
+		DefineRequestTypeConvention(type => convention(type) == MessageConventionType.Request);
 	}
 
 	internal void Add(params IMessageConvention[] conventions)

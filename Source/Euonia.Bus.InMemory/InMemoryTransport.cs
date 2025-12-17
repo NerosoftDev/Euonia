@@ -1,24 +1,38 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Nerosoft.Euonia.Bus.InMemory;
 
 /// <summary>
-/// 
+/// The <see cref="ITransport"/> implementation using in-memory messaging.
 /// </summary>
-public class InMemoryDispatcher : DisposableObject, IDispatcher
+public class InMemoryTransport : DisposableObject, ITransport
 {
+	/// <summary>
+	/// Gets the transport name.
+	/// </summary>
+	public string Name { get; }
+
 	/// <inheritdoc />
-	public event EventHandler<MessageDispatchedEventArgs> Delivered;
+	public event EventHandler<MessageDeliveredEventArgs> Delivered;
 
 	private readonly IIdentityProvider _identity;
 
+	private readonly ILogger<InMemoryTransport> _logger;
+
 	/// <summary>
-	/// Initialize a new instance of <see cref="InMemoryDispatcher"/>
+	/// Initialize a new instance of <see cref="InMemoryTransport"/>
 	/// </summary>
 	/// <param name="provider"></param>
-	public InMemoryDispatcher(IServiceProvider provider)
+	/// <param name="options"></param>
+	/// <param name="logger"></param>
+	public InMemoryTransport(IServiceProvider provider, IOptions<InMemoryBusOptions> options, ILoggerFactory logger)
 	{
+		var opts = options.Value;
+		Name = opts.TransportName ?? nameof(InMemoryTransport);
 		_identity = provider.GetService<IIdentityProvider>();
+		_logger = logger.CreateLogger<InMemoryTransport>();
 	}
 
 	/// <inheritdoc />
@@ -31,7 +45,7 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 			Aborted = cancellationToken
 		};
 		WeakReferenceMessenger.Default.Send(pack, message.Channel);
-		Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, context));
+		Delivered?.Invoke(this, new MessageDeliveredEventArgs(message.Data, context));
 		await Task.CompletedTask;
 	}
 
@@ -47,7 +61,7 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 
 		var taskCompletion = new TaskCompletionSource();
 
-		if (cancellationToken != default)
+		if (cancellationToken != CancellationToken.None)
 		{
 			cancellationToken.Register(() => taskCompletion.SetCanceled(cancellationToken));
 		}
@@ -64,7 +78,7 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 
 		StrongReferenceMessenger.Default.UnsafeSend(pack, message.Channel);
 
-		Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, context));
+		Delivered?.Invoke(this, new MessageDeliveredEventArgs(message.Data, context));
 
 		await taskCompletion.Task;
 	}
@@ -73,7 +87,7 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 	public async Task<TResponse> SendAsync<TMessage, TResponse>(RoutedMessage<TMessage, TResponse> message, CancellationToken cancellationToken = default)
 		where TMessage : class
 	{
-		var context = new MessageContext(message, authorization => _identity?.GetIdentity(authorization));
+		using var context = new MessageContext(message, authorization => _identity?.GetIdentity(authorization));
 		var pack = new MessagePack(message, context)
 		{
 			Aborted = cancellationToken
@@ -81,28 +95,41 @@ public class InMemoryDispatcher : DisposableObject, IDispatcher
 
 		// See https://stackoverflow.com/questions/18760252/timeout-an-async-method-implemented-with-taskcompletionsource
 		var taskCompletion = new TaskCompletionSource<TResponse>();
-		if (cancellationToken != default)
+		if (cancellationToken != CancellationToken.None)
 		{
 			cancellationToken.Register(() => taskCompletion.TrySetCanceled(), false);
 		}
 
-		context.Responded += (_, args) =>
-		{
-			taskCompletion.TrySetResult((TResponse)args.Result);
-		};
-		context.Failed += (_, exception) =>
-		{
-			taskCompletion.TrySetException(exception);
-		};
-		context.Completed += (_, _) =>
-		{
-			taskCompletion.TryCompleteFromCompletedTask(Task.FromResult(default(TResponse)));
-		};
+		context.Responded += OnResponded;
+		context.Failed += OnFailed;
+		context.Completed += OnCompleted;
 
 		StrongReferenceMessenger.Default.UnsafeSend(pack, message.Channel);
-		Delivered?.Invoke(this, new MessageDispatchedEventArgs(message.Data, context));
+		Delivered?.Invoke(this, new MessageDeliveredEventArgs(message.Data, context));
 
-		return await taskCompletion.Task;
+		var result = await taskCompletion.Task;
+		context.Responded -= OnResponded;
+		context.Failed -= OnFailed;
+		context.Completed -= OnCompleted;
+		return result;
+
+		void OnResponded(object sender, MessageRepliedEventArgs args)
+		{
+			_logger.LogDebug("Message '{MessageId}' responded with result: {Result}", message.MessageId, args.Result);
+			taskCompletion.TrySetResult((TResponse)args.Result);
+		}
+
+		void OnFailed(object sender, Exception exception)
+		{
+			_logger.LogError(exception, "Message '{MessageId}' failed with exception", message.MessageId);
+			taskCompletion.TrySetException(exception);
+		}
+
+		void OnCompleted(object sender, MessageHandledEventArgs args)
+		{
+			_logger.LogDebug("Message '{MessageId}' completed", message.MessageId);
+			taskCompletion.TryCompleteFromCompletedTask(Task.FromResult(default(TResponse)));
+		}
 	}
 
 	/// <inheritdoc />

@@ -477,6 +477,47 @@ public static class Reflect
 		return genericMethod.Invoke(method.IsStatic ? null : obj, parameters);
 	}
 
+	/// <summary>
+	/// Tries to get the property value.
+	/// </summary>
+	/// <param name="obj"></param>
+	/// <param name="propertyName"></param>
+	/// <param name="value"></param>
+	/// <typeparam name="T"></typeparam>
+	/// <returns></returns>
+	public static bool TryGetPropertyValue<T>(object obj, string propertyName, out T value)
+	{
+		value = default!;
+		var property = obj.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance);
+		if (property == null || property.PropertyType != typeof(T))
+		{
+			return false;
+		}
+
+		value = (T)property.GetValue(obj);
+		return true;
+	}
+
+	/// <summary>
+	/// Tries to get the property value.
+	/// </summary>
+	/// <param name="obj"></param>
+	/// <param name="propertyName"></param>
+	/// <param name="value"></param>
+	/// <returns></returns>
+	public static bool TryGetPropertyValue(object obj, string propertyName, out object value)
+	{
+		value = null!;
+		var property = obj.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance);
+		if (property == null)
+		{
+			return false;
+		}
+
+		value = property.GetValue(obj);
+		return true;
+	}
+
 	#region Public Static Methods
 
 	/// <summary>

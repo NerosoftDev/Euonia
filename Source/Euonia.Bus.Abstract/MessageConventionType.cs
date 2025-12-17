@@ -6,21 +6,22 @@
 public enum MessageConventionType
 {
 	/// <summary>
-	/// 
+	/// None
 	/// </summary>
 	None,
 
 	/// <summary>
-	/// 
+	/// Unicast
 	/// </summary>
-	Queue,
-	/// <summary>
-	/// 
-	/// </summary>
-	Topic,
+	Unicast,
 
 	/// <summary>
-	/// 
+	/// Multicast
+	/// </summary>
+	Multicast,
+
+	/// <summary>
+	/// Request
 	/// </summary>
 	Request,
 }
