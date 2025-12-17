@@ -17,7 +17,7 @@ jobs:
       with:
         dotnet-version: 10.0.x
     - name: Restore dependencies
-      run: dotnet restore Euonia.sln
+      run: dotnet restore Euonia.slnx
     - name: Build
       run: dotnet build Euonia.sln --no-restore --configuration Release
     - name: Pack
