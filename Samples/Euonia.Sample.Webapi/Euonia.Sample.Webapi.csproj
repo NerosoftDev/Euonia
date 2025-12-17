@@ -4,6 +4,10 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+        <PackageReference Include="Serilog" />
+        <PackageReference Include="Serilog.AspNetCore" />
+        <PackageReference Include="Serilog.Enrichers.Environment" />
+        <PackageReference Include="Serilog.Sinks.File" />
         <PackageReference Include="Swashbuckle.AspNetCore" />
     </ItemGroup>
 
@@ -11,7 +15,6 @@
         <ProjectReference Include="..\..\Source\Euonia.Application\Euonia.Application.csproj" />
         <ProjectReference Include="..\..\Source\Euonia.Business\Euonia.Business.csproj" />
         <ProjectReference Include="..\..\Source\Euonia.Domain\Euonia.Domain.csproj" />
-        <ProjectReference Include="..\..\Source\Euonia.Hosting.Serilog\Euonia.Hosting.Serilog.csproj" />
         <ProjectReference Include="..\..\Source\Euonia.Hosting\Euonia.Hosting.csproj" />
         <ProjectReference Include="..\..\Source\Euonia.Modularity\Euonia.Modularity.csproj" />
     </ItemGroup>

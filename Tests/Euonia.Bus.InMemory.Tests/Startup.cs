@@ -2,8 +2,10 @@
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Nerosoft.Euonia.Bus.InMemory;
+using Nerosoft.Euonia.Modularity;
 
 namespace Nerosoft.Euonia.Bus.Tests;
 
@@ -17,8 +19,14 @@ public class Startup
 		           {
 			           builder.AddJsonFile("appsettings.json");
 		           })
-		           .ConfigureServices((_, services) =>
+		           .ConfigureServices((context, services) =>
 		           {
+			           services.TryAddScoped<DefaultRequestContextAccessor>();
+			           services.TryAddScoped<DelegateRequestContextAccessor>(_ =>
+			           {
+				           return () => new RequestContext();
+			           });
+			           services.AddModularityApplication<HostModule>(context.Configuration);
 			           // Register service here.
 		           });
 	}
@@ -32,17 +40,24 @@ public class Startup
 		{
 			config.RegisterHandlers(Assembly.GetExecutingAssembly());
 			config.SetConventions(builder =>
-			{
-				builder.Add<DefaultMessageConvention>();
-				builder.Add<AttributeMessageConvention>();
-				builder.EvaluateQueue(t => t.Name.EndsWith("Command"));
-				builder.EvaluateTopic(t => t.Name.EndsWith("Event"));
-				builder.EvaluateRequest(t => t.Name.EndsWith("Request"));
-			});
-			config.UseInMemory(options =>
-			{
-				options.MultipleSubscriberInstance = false;
-			});
+			      {
+				      builder.Add<DefaultMessageConvention>();
+				      builder.Add<AttributeMessageConvention>();
+				      builder.EvaluateUnicast(t => t.Name.EndsWith("Command"));
+				      builder.EvaluateMulticast(t => t.Name.EndsWith("Event"));
+				      builder.EvaluateRequest(t => t.Name.EndsWith("Request"));
+			      })
+			      .SetStrategy(typeof(InMemoryTransport), builder =>
+			      {
+				      builder.Add(new AttributeTransportStrategy(["inmemory"]));
+				      builder.EvaluateIncoming(type => type.Name.EndsWith("Command"));
+				      builder.EvaluateOutgoing(type => type.Name.EndsWith("Command"));
+			      });
+			// config.UseInMemory(options =>
+			// {
+			// 	options.IsDefaultTransport = true;
+			// 	options.MultipleSubscriberInstance = false;
+			// });
 		});
 	}
 

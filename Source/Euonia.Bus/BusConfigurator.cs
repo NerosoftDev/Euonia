@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Collections.Concurrent;
+using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -7,165 +8,84 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace Nerosoft.Euonia.Bus;
 
 /// <summary>
-/// The message bus configurator.
+/// Configures the message bus by registering handlers, setting conventions,
+/// assigning transport strategies and configuring identity providers.
 /// </summary>
 public class BusConfigurator : IBusConfigurator
 {
-	private readonly List<MessageRegistration> _registrations = new();
+	private readonly IServiceCollection _services;
 
+	/// <summary>
+	/// Holds discovered message handler registrations.
+	/// </summary>
+	private readonly List<MessageRegistration> _registrations = [];
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="BusConfigurator"/> class.
+	/// </summary>
+	/// <param name="services"></param>
+	public BusConfigurator(IServiceCollection services)
+	{
+		_services = services;
+	}
+
+	/// <summary>
+	/// Builder used to configure message naming and discovery conventions.
+	/// </summary>
 	internal MessageConventionBuilder ConventionBuilder { get; } = new();
 
 	/// <summary>
-	/// Gets the message handle registrations.
+	/// Builders for transport-specific strategies keyed by transport type.
+	/// </summary>
+	internal ConcurrentDictionary<Type, TransportStrategyBuilder> StrategyBuilders { get; } = new();
+
+	/// <summary>
+	/// Read-only list of registered message handler registrations.
 	/// </summary>
 	public IReadOnlyList<MessageRegistration> Registrations => _registrations;
 
 	/// <summary>
-	/// Initialize a new instance of <see cref="BusConfigurator"/>
+	/// Types for which a transport strategy has been configured.
 	/// </summary>
-	/// <param name="service"></param>
-	public BusConfigurator(IServiceCollection service)
-	{
-		Service = service;
-	}
-
-	/// <inheritdoc />
-	public IServiceCollection Service { get; }
+	public IReadOnlyList<Type> StrategyAssignedTypes => StrategyBuilders.Keys.ToList();
 
 	/// <summary>
-	/// Sets the bus factory.
+	/// Scans the provided assemblies for handler types and registers them.
 	/// </summary>
-	/// <typeparam name="TFactory"></typeparam>
-	/// <returns></returns>
-	public IBusConfigurator SetFactory<TFactory>()
-		where TFactory : class, IBusFactory
-	{
-		Service.TryAddSingleton<IBusFactory, TFactory>();
-		return this;
-	}
-
-	/// <summary>
-	/// Sets the bus factory.
-	/// </summary>
-	/// <param name="factory"></param>
-	/// <typeparam name="TFactory"></typeparam>
-	/// <returns></returns>
-	public IBusConfigurator SetFactory<TFactory>(TFactory factory)
-		where TFactory : class, IBusFactory
-	{
-		Service.TryAddSingleton<IBusFactory>(factory);
-		return this;
-	}
-
-	/// <summary>
-	/// Sets the message serializer.
-	/// </summary>
-	/// <param name="factory"></param>
-	/// <typeparam name="TFactory"></typeparam>
-	/// <returns></returns>
-	public IBusConfigurator SetFactory<TFactory>(Func<IServiceProvider, TFactory> factory)
-		where TFactory : class, IBusFactory
-	{
-		Service.TryAddSingleton<IBusFactory>(factory);
-		return this;
-	}
-
-	/// <summary>
-	/// Sets the message serializer.
-	/// </summary>
-	/// <typeparam name="TSerializer"></typeparam>
-	/// <returns></returns>
-	public IBusConfigurator SetSerializer<TSerializer>()
-		where TSerializer : class, IMessageSerializer
-	{
-		Service.TryAddSingleton<IMessageSerializer, TSerializer>();
-		return this;
-	}
-
-	/// <summary>
-	/// Sets the message serializer.
-	/// </summary>
-	/// <param name="serializer"></param>
-	/// <typeparam name="TSerializer"></typeparam>
-	/// <returns></returns>
-	public IBusConfigurator SetSerializer<TSerializer>(TSerializer serializer)
-		where TSerializer : class, IMessageSerializer
-	{
-		Service.TryAddSingleton<IMessageSerializer>(serializer);
-		return this;
-	}
-
-	/// <summary>
-	/// Sets the message store provider.
-	/// </summary>
-	/// <typeparam name="TStore"></typeparam>
-	/// <returns></returns>
-	public IBusConfigurator SetMessageStore<TStore>()
-		where TStore : class, IMessageStore
-	{
-		Service.TryAddTransient<IMessageStore, TStore>();
-		return this;
-	}
-
-	/// <summary>
-	/// Sets the message store provider.
-	/// </summary>
-	/// <param name="store"></param>
-	/// <typeparam name="TStore"></typeparam>
-	/// <returns></returns>
-	public IBusConfigurator SetMessageStore<TStore>(Func<IServiceProvider, TStore> store)
-		where TStore : class, IMessageStore
-	{
-		Service.TryAddTransient<IMessageStore>(store);
-		return this;
-	}
-
-	/// <summary>
-	/// Register the message handlers.
-	/// </summary>
-	/// <param name="assemblies"></param>
-	/// <returns></returns>
+	/// <param name="assemblies">Assemblies to scan for message handlers.</param>
+	/// <returns>The current <see cref="IBusConfigurator"/> for fluent configuration.</returns>
 	public IBusConfigurator RegisterHandlers(params Assembly[] assemblies)
 	{
 		return RegisterHandlers(() => assemblies.SelectMany(assembly => assembly.DefinedTypes));
 	}
 
 	/// <summary>
-	/// Register the message handlers.
+	/// Registers handler types returned from a factory function.
 	/// </summary>
-	/// <param name="typesFactory"></param>
-	/// <returns></returns>
+	/// <param name="typesFactory">Factory that provides handler types to register.</param>
+	/// <returns>The current <see cref="IBusConfigurator"/> for fluent configuration.</returns>
 	public IBusConfigurator RegisterHandlers(Func<IEnumerable<Type>> typesFactory)
 	{
 		return RegisterHandlers(typesFactory());
 	}
 
 	/// <summary>
-	/// Register the message handlers.
+	/// Registers the specified handler types with the bus configuration.
 	/// </summary>
-	/// <param name="types"></param>
-	/// <returns></returns>
+	/// <param name="types">Collection of handler types to register.</param>
+	/// <returns>The current <see cref="IBusConfigurator"/> for fluent configuration.</returns>
 	public IBusConfigurator RegisterHandlers(IEnumerable<Type> types)
 	{
 		var registrations = MessageHandlerFinder.Find(types).ToList();
-		
-		var handlerTypes = registrations.Select(x => x.HandlerType)
-		                                .Distinct()
-		                                .ToList();
-		foreach (var handlerType in handlerTypes)
-		{
-			Service.TryAddScoped(handlerType);
-		}
-
 		_registrations.AddRange(registrations);
 		return this;
 	}
 
 	/// <summary>
-	/// Sets the message convention.
+	/// Applies message conventions using the provided configuration action.
 	/// </summary>
-	/// <param name="configure"></param>
-	/// <returns></returns>
+	/// <param name="configure">Action that configures the <see cref="MessageConventionBuilder"/>.</param>
+	/// <returns>The current <see cref="IBusConfigurator"/> for fluent configuration.</returns>
 	public IBusConfigurator SetConventions(Action<MessageConventionBuilder> configure)
 	{
 		configure?.Invoke(ConventionBuilder);
@@ -173,25 +93,45 @@ public class BusConfigurator : IBusConfigurator
 	}
 
 	/// <summary>
-	/// Register the message identity provider.
+	/// Configures a transport strategy for a given transport type.
 	/// </summary>
-	/// <param name="accessor"></param>
-	/// <returns></returns>
-	public IBusConfigurator SetIdentityProvider(IdentityAccessor accessor)
+	/// <param name="transport">Transport type to configure.</param>
+	/// <param name="configure">Action that configures the <see cref="TransportStrategyBuilder"/> for the transport.</param>
+	/// <returns>The current <see cref="IBusConfigurator"/> for fluent configuration.</returns>
+	public IBusConfigurator SetStrategy(Type transport, Action<TransportStrategyBuilder> configure)
 	{
-		Service.TryAddSingleton<IIdentityProvider>(_ => new DefaultIdentityProvider(accessor));
+		if (configure != null)
+		{
+			var builder = StrategyBuilders.GetOrAdd(transport, _ => new TransportStrategyBuilder());
+			configure(builder);
+		}
+
+		{
+		}
 		return this;
 	}
 
 	/// <summary>
-	/// Register the message identity provider.
+	/// Sets a concrete identity accessor instance to be wrapped by the default identity provider.
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	/// <returns></returns>
+	/// <param name="accessor">Identity accessor that provides caller identity information.</param>
+	/// <returns>The current <see cref="IBusConfigurator"/> for fluent configuration.</returns>
+	public IBusConfigurator SetIdentityProvider(IdentityAccessor accessor)
+	{
+		_services.TryAddSingleton<IIdentityProvider>(_ => new DefaultIdentityProvider(accessor));
+		return this;
+	}
+
+	/// <summary>
+	/// Configures the identity provider by specifying an implementation type that implements <see cref="IIdentityProvider"/>.
+	/// The provider will be resolved from the <see cref="IServiceProvider"/> or created if missing.
+	/// </summary>
+	/// <typeparam name="T">Identity provider implementation type.</typeparam>
+	/// <returns>The current <see cref="IBusConfigurator"/> for fluent configuration.</returns>
 	public IBusConfigurator SetIdentityProvider<T>()
 		where T : class, IIdentityProvider
 	{
-		Service.TryAddSingleton<IIdentityProvider, T>();
+		_services.TryAddSingleton<IIdentityProvider, T>();
 		return this;
 	}
 }

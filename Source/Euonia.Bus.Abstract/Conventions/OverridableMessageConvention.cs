@@ -3,7 +3,7 @@
 internal class OverridableMessageConvention : IMessageConvention
 {
 	private readonly IMessageConvention _innerConvention;
-	private Func<Type, bool> _isCommandType, _isEventType, _isRequestType;
+	private Func<Type, bool> _isUnicastType, _isMulticastType, _isRequestType;
 
 	public OverridableMessageConvention(IMessageConvention innerConvention)
 	{
@@ -12,14 +12,14 @@ internal class OverridableMessageConvention : IMessageConvention
 
 	public string Name => $"Override with {_innerConvention.Name}";
 
-	bool IMessageConvention.IsCommandType(Type messageType)
+	bool IMessageConvention.IsUnicastType(Type messageType)
 	{
-		return IsQueueType(messageType);
+		return IsUnicastType(messageType);
 	}
 
-	bool IMessageConvention.IsEventType(Type messageType)
+	bool IMessageConvention.IsMulticastType(Type messageType)
 	{
-		return IsTopicType(messageType);
+		return IsMulticastType(messageType);
 	}
 
 	bool IMessageConvention.IsRequestType(Type messageType)
@@ -27,16 +27,16 @@ internal class OverridableMessageConvention : IMessageConvention
 		return IsRequestType(messageType);
 	}
 
-	public Func<Type, bool> IsQueueType
+	public Func<Type, bool> IsUnicastType
 	{
-		get => _isCommandType ?? _innerConvention.IsCommandType;
-		set => _isCommandType = value;
+		get => _isUnicastType ?? _innerConvention.IsUnicastType;
+		set => _isUnicastType = value;
 	}
 
-	public Func<Type, bool> IsTopicType
+	public Func<Type, bool> IsMulticastType
 	{
-		get => _isEventType ?? _innerConvention.IsEventType;
-		set => _isEventType = value;
+		get => _isMulticastType ?? _innerConvention.IsMulticastType;
+		set => _isMulticastType = value;
 	}
 
 	public Func<Type, bool> IsRequestType
@@ -45,14 +45,14 @@ internal class OverridableMessageConvention : IMessageConvention
 		set => _isRequestType = value;
 	}
 
-	public void DefineQueueType(Func<Type, bool> convention)
+	public void DefineUnicastType(Func<Type, bool> convention)
 	{
-		_isCommandType = convention;
+		_isUnicastType = convention;
 	}
 
-	public void DefineTopicType(Func<Type, bool> convention)
+	public void DefineMulticastType(Func<Type, bool> convention)
 	{
-		_isEventType = convention;
+		_isMulticastType = convention;
 	}
 	
 	public void DefineRequestType(Func<Type, bool> convention)

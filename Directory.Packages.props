@@ -2,63 +2,62 @@
     <PropertyGroup>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
         <EnablePackageVersionOverride>true</EnablePackageVersionOverride>
-        <ExtensionsPackageVersion>10.0.0</ExtensionsPackageVersion>
+        <ExtensionsPackageVersion>10.0.1</ExtensionsPackageVersion>
         <GrpcAspNetCoreVersion>2.71.0</GrpcAspNetCoreVersion>
         <QuartzVersion>3.15.1</QuartzVersion>
     </PropertyGroup>
     <PropertyGroup>
-        <EntityFrameworkCoreVersion9>9.0.11</EntityFrameworkCoreVersion9>
-        <EntityFrameworkCoreVersion10>10.0.0</EntityFrameworkCoreVersion10>
-        <EntityFrameworkCoreVersion11>11.0.0</EntityFrameworkCoreVersion11>
+        <EntityFrameworkCoreVersionPrevious>9.0.11</EntityFrameworkCoreVersionPrevious>
+        <EntityFrameworkCoreVersionCurrent>10.0.1</EntityFrameworkCoreVersionCurrent>
+        <EntityFrameworkCoreVersionNext>11.0.0</EntityFrameworkCoreVersionNext>
     </PropertyGroup>
     <PropertyGroup>
-        <AspNetCoreVersion9>9.0.11</AspNetCoreVersion9>
-        <AspNetCoreVersion10>10.0.0</AspNetCoreVersion10>
-        <AspNetCoreVersion11>11.0.0</AspNetCoreVersion11>
+        <AspNetCoreVersionPrevious>9.0.11</AspNetCoreVersionPrevious>
+        <AspNetCoreVersionCurrent>10.0.1</AspNetCoreVersionCurrent>
+        <AspNetCoreVersionNext>11.0.0</AspNetCoreVersionNext>
     </PropertyGroup>
     <ItemGroup>
         <PackageVersion Include="Apache.NMS.ActiveMQ" Version="2.2.0" />
         <PackageVersion Include="Autofac" Version="9.0.0" />
         <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="10.0.0" />
         <PackageVersion Include="Autofac.Extras.DynamicProxy" Version="7.1.0" />
-        <PackageVersion Include="AutoMapper" Version="15.1.0" />
+        <PackageVersion Include="AutoMapper" Version="16.0.0" />
         <PackageVersion Include="Azure.Storage.Blobs" Version="12.26.0" />
         <PackageVersion Include="Castle.Core" Version="5.2.1" />
         <PackageVersion Include="Consul" Version="1.6.10.9" />
-        <PackageVersion Include="FluentValidation" Version="12.1.0" />
-        <PackageVersion Include="IdentityModel" Version="7.0.0" />
-        <PackageVersion Include="IdentityModel.AspNetCore.OAuth2Introspection" Version="6.2.0" />
+        <PackageVersion Include="FluentValidation" Version="12.1.1" />
+        <PackageVersion Include="Duende.IdentityModel" Version="8.0.0" />
+        <PackageVersion Include="Duende.AspNetCore.Authentication.OAuth2Introspection" Version="7.0.0" />
         <PackageVersion Include="Mapster" Version="7.4.0" />
         <PackageVersion Include="Mapster.DependencyInjection" Version="1.0.1" />
         <PackageVersion Include="MediatR" Version="12.1.1" />
         <PackageVersion Include="MediatR.Contracts" Version="2.0.1" />
-        <PackageVersion Include="mongocsharpdriver" Version="2.30.0" />
+        <PackageVersion Include="MongoDB.Driver" Version="3.5.2" />
         <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
         <PackageVersion Include="Polly" Version="8.6.5" />
         <PackageVersion Include="protobuf-net" Version="3.1.33" />
         <PackageVersion Include="Quartz" Version="$(QuartzVersion)" />
         <PackageVersion Include="Quartz.Extensions.DependencyInjection" Version="$(QuartzVersion)" />
         <PackageVersion Include="Quartz.Extensions.Hosting" Version="$(QuartzVersion)" />
-        <PackageVersion Include="RabbitMQ.Client" Version="6.8.1" />
+        <PackageVersion Include="RabbitMQ.Client" Version="7.2.0" />
         <PackageVersion Include="Refit" Version="6.3.2" />
         <PackageVersion Include="Refit.HttpClientFactory" Version="6.3.2" />
         <PackageVersion Include="Refit.Newtonsoft.Json" Version="6.3.2" />
         <PackageVersion Include="Serilog" Version="4.3.0" />
         <PackageVersion Include="Serilog.AspNetCore" Version="10.0.0" />
         <PackageVersion Include="Serilog.Enrichers.Environment" Version="3.0.1" />
-        <PackageVersion Include="Serilog.Sinks.Elasticsearch" Version="10.0.0" />
         <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />
         <PackageVersion Include="StackExchange.Redis" Version="2.10.1" />
         <PackageVersion Include="Swashbuckle.AspNetCore" Version="10.0.1" />
-        <PackageVersion Include="System.Collections.Immutable" Version="10.0.0" />
+        <PackageVersion Include="System.Collections.Immutable" Version="10.0.1" />
         <PackageVersion Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
         <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
         <PackageVersion Include="System.Interactive" Version="7.0.0" />
-        <PackageVersion Include="System.Diagnostics.PerformanceCounter" Version="10.0.0" />
+        <PackageVersion Include="System.Diagnostics.PerformanceCounter" Version="10.0.1" />
         <PackageVersion Include="System.Reactive" Version="6.1.0" />
-        <PackageVersion Include="System.Runtime.Caching" Version="10.0.0" />
+        <PackageVersion Include="System.Runtime.Caching" Version="10.0.1" />
         <PackageVersion Include="System.Runtime.Loader" Version="4.3.0" />
-        <PackageVersion Include="System.Text.Json" Version="10.0.0" />
+        <PackageVersion Include="System.Text.Json" Version="10.0.1" />
         <PackageVersion Include="Winton.Extensions.Configuration.Consul" Version="3.2.0" />
         <PackageVersion Include="ZooKeeperNetEx" Version="3.4.12.4" />
     </ItemGroup>
@@ -80,46 +79,46 @@
     </ItemGroup>
     <!-- Microsoft.EntityFrameworkCore -->
     <ItemGroup Condition="'$(TargetFramework)'=='net9.0'">
-        <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="[$(EntityFrameworkCoreVersion9),$(EntityFrameworkCoreVersion10))" />
-        <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="[$(EntityFrameworkCoreVersion9),$(EntityFrameworkCoreVersion10))" />
-        <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="[$(EntityFrameworkCoreVersion9),$(EntityFrameworkCoreVersion10))" />
-        <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="[$(EntityFrameworkCoreVersion9),$(EntityFrameworkCoreVersion10))">
+        <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="[$(EntityFrameworkCoreVersionPrevious),$(EntityFrameworkCoreVersionCurrent))" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="[$(EntityFrameworkCoreVersionPrevious),$(EntityFrameworkCoreVersionCurrent))" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="[$(EntityFrameworkCoreVersionPrevious),$(EntityFrameworkCoreVersionCurrent))" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="[$(EntityFrameworkCoreVersionPrevious),$(EntityFrameworkCoreVersionCurrent))">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageVersion>
-        <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="[$(EntityFrameworkCoreVersion9),$(EntityFrameworkCoreVersion10))" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="[$(EntityFrameworkCoreVersionPrevious),$(EntityFrameworkCoreVersionCurrent))" />
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)'=='net10.0'">
-        <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="[$(EntityFrameworkCoreVersion10),$(EntityFrameworkCoreVersion11))" />
-        <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="[$(EntityFrameworkCoreVersion10),$(EntityFrameworkCoreVersion11))" />
-        <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="[$(EntityFrameworkCoreVersion10),$(EntityFrameworkCoreVersion11))" />
-        <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="[$(EntityFrameworkCoreVersion10),$(EntityFrameworkCoreVersion11))">
+        <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="[$(EntityFrameworkCoreVersionCurrent),$(EntityFrameworkCoreVersionNext))" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="[$(EntityFrameworkCoreVersionCurrent),$(EntityFrameworkCoreVersionNext))" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="[$(EntityFrameworkCoreVersionCurrent),$(EntityFrameworkCoreVersionNext))" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="[$(EntityFrameworkCoreVersionCurrent),$(EntityFrameworkCoreVersionNext))">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageVersion>
-        <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="[$(EntityFrameworkCoreVersion10),$(EntityFrameworkCoreVersion11))" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="[$(EntityFrameworkCoreVersionCurrent),$(EntityFrameworkCoreVersionNext))" />
     </ItemGroup>
     <!-- Microsoft.AspNetCore -->
     <ItemGroup Condition="$(TargetFramework.Contains('netstandard'))">
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)'=='net9.0'">
-        <PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="[$(AspNetCoreVersion9),$(AspNetCoreVersion10))" />
-        <PackageVersion Include="Microsoft.AspNetCore.Connections.Abstractions" Version="[$(AspNetCoreVersion9),$(AspNetCoreVersion10))" />
-        <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="[$(AspNetCoreVersion9),$(AspNetCoreVersion10))" />
-        <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="[$(AspNetCoreVersion9),$(AspNetCoreVersion10))" />
-        <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="[$(AspNetCoreVersion9),$(AspNetCoreVersion10))" />
+        <PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="[$(AspNetCoreVersionPrevious),$(AspNetCoreVersionCurrent))" />
+        <PackageVersion Include="Microsoft.AspNetCore.Connections.Abstractions" Version="[$(AspNetCoreVersionPrevious),$(AspNetCoreVersionCurrent))" />
+        <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="[$(AspNetCoreVersionPrevious),$(AspNetCoreVersionCurrent))" />
+        <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="[$(AspNetCoreVersionPrevious),$(AspNetCoreVersionCurrent))" />
+        <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="[$(AspNetCoreVersionPrevious),$(AspNetCoreVersionCurrent))" />
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)'=='net10.0'">
-        <PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="[$(AspNetCoreVersion10),$(AspNetCoreVersion11))" />
-        <PackageVersion Include="Microsoft.AspNetCore.Connections.Abstractions" Version="[$(AspNetCoreVersion10),$(AspNetCoreVersion11))" />
-        <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="[$(AspNetCoreVersion10),$(AspNetCoreVersion11))" />
-        <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="[$(AspNetCoreVersion10),$(AspNetCoreVersion11))" />
-        <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="[$(AspNetCoreVersion10),$(AspNetCoreVersion11))" />
+        <PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="[$(AspNetCoreVersionCurrent),$(AspNetCoreVersionNext))" />
+        <PackageVersion Include="Microsoft.AspNetCore.Connections.Abstractions" Version="[$(AspNetCoreVersionCurrent),$(AspNetCoreVersionNext))" />
+        <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="[$(AspNetCoreVersionCurrent),$(AspNetCoreVersionNext))" />
+        <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="[$(AspNetCoreVersionCurrent),$(AspNetCoreVersionNext))" />
+        <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="[$(AspNetCoreVersionCurrent),$(AspNetCoreVersionNext))" />
     </ItemGroup>
     <!-- Grpc -->
     <ItemGroup>
         <PackageVersion Include="Google.Api.CommonProtos" Version="2.12.0" />
-        <PackageVersion Include="Google.Protobuf" Version="3.33.1" />
+        <PackageVersion Include="Google.Protobuf" Version="3.33.2" />
         <PackageVersion Include="Grpc" Version="2.46.6" />
         <PackageVersion Include="Grpc.AspNetCore" Version="$(GrpcAspNetCoreVersion)" />
         <PackageVersion Include="Grpc.AspNetCore.HealthChecks" Version="$(GrpcAspNetCoreVersion)" />

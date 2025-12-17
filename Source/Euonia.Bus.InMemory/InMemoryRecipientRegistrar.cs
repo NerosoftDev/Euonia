@@ -12,6 +12,7 @@ public sealed class InMemoryRecipientRegistrar : IRecipientRegistrar
 	private readonly InMemoryBusOptions _options;
 	private readonly IMessageConvention _convention;
 	private readonly IServiceProvider _provider;
+	private readonly ITransportStrategy _strategy;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="InMemoryRecipientRegistrar"/>.
@@ -19,12 +20,12 @@ public sealed class InMemoryRecipientRegistrar : IRecipientRegistrar
 	/// <param name="convention"></param>
 	/// <param name="provider"></param>
 	/// <param name="options"></param>
-	/// 
 	public InMemoryRecipientRegistrar(IMessageConvention convention, IServiceProvider provider, IOptions<InMemoryBusOptions> options)
 	{
 		_options = options.Value;
 		_convention = convention;
 		_provider = provider;
+		_strategy = _provider.GetKeyedService<ITransportStrategy>(typeof(InMemoryTransport));
 	}
 
 	/// <inheritdoc/>
@@ -34,12 +35,20 @@ public sealed class InMemoryRecipientRegistrar : IRecipientRegistrar
 
 		foreach (var registration in registrations)
 		{
-			if (_convention.IsCommandType(registration.MessageType))
+			if (!_options.IsDefaultTransport)
+			{
+				if (_strategy == null || !_strategy.Incoming(registration.MessageType))
+				{
+					continue;
+				}
+			}
+
+			if (_convention.IsUnicastType(registration.MessageType))
 			{
 				var recipient = GetRecipient<InMemoryQueueConsumer>();
 				StrongReferenceMessenger.Default.Register(recipient, registration.Channel);
 			}
-			else if (_convention.IsEventType(registration.MessageType))
+			else if (_convention.IsMulticastType(registration.MessageType))
 			{
 				var recipient = GetRecipient<InMemoryTopicSubscriber>();
 				WeakReferenceMessenger.Default.Register(recipient, registration.Channel);

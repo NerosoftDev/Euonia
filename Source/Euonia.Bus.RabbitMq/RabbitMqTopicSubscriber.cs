@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Reflection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -13,6 +14,7 @@ public class RabbitMqTopicSubscriber : RabbitMqQueueRecipient, ITopicSubscriber
 	private readonly IIdentityProvider _identity;
 	private readonly IHandlerContext _handler;
 	private readonly ILogger<RabbitMqTopicSubscriber> _logger;
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="RabbitMqTopicSubscriber"/> class.
 	/// </summary>
@@ -20,7 +22,7 @@ public class RabbitMqTopicSubscriber : RabbitMqQueueRecipient, ITopicSubscriber
 	/// <param name="handler"></param>
 	/// <param name="options"></param>
 	/// <param name="logger"></param>
-	public RabbitMqTopicSubscriber(IPersistentConnection connection, IHandlerContext handler, IOptions<RabbitMqMessageBusOptions> options, ILoggerFactory logger)
+	public RabbitMqTopicSubscriber(IPersistentConnection connection, IHandlerContext handler, IOptions<RabbitMqBusOptions> options, ILoggerFactory logger)
 		: base(connection, options)
 	{
 		_handler = handler;
@@ -35,7 +37,7 @@ public class RabbitMqTopicSubscriber : RabbitMqQueueRecipient, ITopicSubscriber
 	/// <param name="options"></param>
 	/// <param name="logger"></param>
 	/// <param name="identity"></param>
-	public RabbitMqTopicSubscriber(IPersistentConnection connection, IHandlerContext handler, IOptions<RabbitMqMessageBusOptions> options, ILoggerFactory logger, IIdentityProvider identity)
+	public RabbitMqTopicSubscriber(IPersistentConnection connection, IHandlerContext handler, IOptions<RabbitMqBusOptions> options, ILoggerFactory logger, IIdentityProvider identity)
 		: this(connection, handler, options, logger)
 	{
 		_identity = identity;
@@ -47,43 +49,39 @@ public class RabbitMqTopicSubscriber : RabbitMqQueueRecipient, ITopicSubscriber
 	/// <summary>
 	/// Gets the RabbitMQ message channel.
 	/// </summary>
-	private IModel Channel { get; set; }
+	private IChannel Channel { get; set; }
 
 	/// <summary>
 	/// Gets the RabbitMQ consumer instance.
 	/// </summary>
-	private EventingBasicConsumer Consumer { get; set; }
+	private AsyncEventingBasicConsumer Consumer { get; set; }
 
-	internal override void Start(string channel)
+	internal override async Task StartAsync(string channel)
 	{
-		if (!Connection.IsConnected)
-		{
-			Connection.TryConnect();
-		}
+		Channel = await Connection.CreateChannelAsync();
 
-		Channel = Connection.CreateChannel();
+		var exchangePrefix = string.Collapse(Options.ExchangeName, Constants.DefaultExchangeName);
+		var exchangeName = $"{exchangePrefix}:{channel}";
 
-		string queueName;
-		if (string.IsNullOrWhiteSpace(Options.TopicName))
-		{
-			Channel.ExchangeDeclare(channel, Options.ExchangeType);
-			queueName = Channel.QueueDeclare().QueueName;
-		}
-		else
-		{
-			Channel.QueueDeclare(Options.TopicName, true, false, false, null);
-			queueName = Options.TopicName;
-		}
+		// Declare Fanout exchange and queue for topic subscriber.
+		// All messages published to the exchange will be routed to all queues bound to the exchange.
+		await Channel.ExchangeDeclareAsync(exchangeName, ExchangeType.Fanout);
 
-		Consumer = new EventingBasicConsumer(Channel);
-		Consumer.Received += HandleMessageReceived;
+		// Each subscriber gets its own queue to receive messages,
+		// all instances of the same subscriber will share the same queue.
+		var subscriptionId = string.Collapse(Options.SubscriptionId, Assembly.GetEntryAssembly()?.FullName, channel);
+		var queueName = await Channel.QueueDeclareAsync($"{exchangeName}@{subscriptionId}", true, false, false)
+		                             .ContinueWith(task => task.Result.QueueName);
 
-		Channel.QueueBind(queueName, channel, Options.RoutingKey ?? "*");
-		Channel.BasicConsume(string.Empty, Options.AutoAck, Consumer);
+		Consumer = new AsyncEventingBasicConsumer(Channel);
+		Consumer.ReceivedAsync += HandleMessageReceivedAsync;
+
+		await Channel.QueueBindAsync(queueName, channel, Options.RoutingKey ?? "*");
+		await Channel.BasicConsumeAsync(string.Empty, Options.AutoAck, Consumer);
 	}
 
 	/// <inheritdoc />
-	protected override async void HandleMessageReceived(object sender, BasicDeliverEventArgs args)
+	protected override async Task HandleMessageReceivedAsync(object sender, BasicDeliverEventArgs args)
 	{
 		var type = MessageTypeCache.GetMessageType(args.BasicProperties.Type);
 
@@ -97,7 +95,7 @@ public class RabbitMqTopicSubscriber : RabbitMqQueueRecipient, ITopicSubscriber
 
 		if (!Options.AutoAck)
 		{
-			Channel.BasicAck(args.DeliveryTag, false);
+			await Channel.BasicAckAsync(args.DeliveryTag, false);
 		}
 
 		OnMessageAcknowledged(new MessageAcknowledgedEventArgs(message.Data, context));
@@ -124,7 +122,7 @@ public class RabbitMqTopicSubscriber : RabbitMqQueueRecipient, ITopicSubscriber
 			return;
 		}
 
-		Consumer.Received -= HandleMessageReceived;
+		Consumer.ReceivedAsync -= HandleMessageReceivedAsync;
 		Channel?.Dispose();
 	}
 }

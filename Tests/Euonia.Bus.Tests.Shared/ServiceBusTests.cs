@@ -8,10 +8,12 @@ public class ServiceBusTests
 {
 	private readonly IServiceProvider _provider;
 	private readonly bool _preventRunTests;
+	private readonly IBus _bus;
 
 	public ServiceBusTests(IServiceProvider provider, IConfiguration configuration)
 	{
 		_provider = provider;
+		_bus = provider.GetService<IBus>();
 		_preventRunTests = configuration.GetValue<bool>("PreventRunTests");
 	}
 
@@ -24,8 +26,12 @@ public class ServiceBusTests
 		}
 		else
 		{
-			var result = await _provider.GetService<IBus>().SendAsync<UserCreateCommand, int>(new UserCreateCommand());
-			Assert.Equal(1, result);
+			await Task.Delay(1000);
+			await _bus.SendAsync(new UserCreateCommand(), (int result) =>
+			{
+				ArgumentOutOfRangeException.ThrowIfNegative(result);
+				Assert.Equal(1, result);
+			});
 		}
 	}
 
@@ -52,8 +58,7 @@ public class ServiceBusTests
 		}
 		else
 		{
-			var result = await _provider.GetService<IBus>().SendAsync(new FooCreateCommand(), new SendOptions { Channel = "foo.create" }, null, (int i) => Console.Write(i));
-			Assert.Equal(1, result);
+			await _bus.SendAsync(new FooCreateCommand(), (int result) => Assert.Equal(1, result), new SendOptions { Channel = "foo.create" });
 		}
 	}
 
@@ -66,7 +71,8 @@ public class ServiceBusTests
 		}
 		else
 		{
-			var result = await _provider.GetService<IBus>().RequestAsync<int>(new FooCreateCommand(), new SendOptions { Channel = "foo.create" });
+			await Task.Delay(1000);
+			var result = await _bus.CallAsync(new FooCreateCommand(), new CallOptions { Channel = "foo.create" });
 			Assert.Equal(1, result);
 		}
 	}
@@ -80,9 +86,10 @@ public class ServiceBusTests
 		}
 		else
 		{
+			await Task.Delay(1000);
 			await Assert.ThrowsAnyAsync<MessageDeliverException>(async () =>
 			{
-				var _ = await _provider.GetService<IBus>().RequestAsync<int>(new FooCreateCommand());
+				var _ = await _bus.CallAsync(new FooCreateCommand());
 			});
 		}
 	}
@@ -96,9 +103,10 @@ public class ServiceBusTests
 		}
 		else
 		{
+			await Task.Delay(1000);
 			await Assert.ThrowsAnyAsync<NotFoundException>(async () =>
 			{
-				await _provider.GetService<IBus>().SendAsync(new FooDeleteCommand());
+				await _bus.SendAsync(new FooDeleteCommand());
 			});
 		}
 	}

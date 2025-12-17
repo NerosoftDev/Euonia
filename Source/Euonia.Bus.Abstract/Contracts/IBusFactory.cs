@@ -9,5 +9,5 @@ public interface IBusFactory
 	/// Create a new message dispatcher
 	/// </summary>
 	/// <returns></returns>
-	IDispatcher CreateDispatcher();
+	ITransport CreateDispatcher();
 }

@@ -8,26 +8,26 @@ public class MessageConventionBuilder
 	internal MessageConvention Convention { get; } = new();
 
 	/// <summary>
-	/// 
+	/// Evaluate unicast type convention.
 	/// </summary>
 	/// <param name="convention"></param>
 	/// <returns></returns>
-	public MessageConventionBuilder EvaluateQueue(Func<Type, bool> convention)
+	public MessageConventionBuilder EvaluateUnicast(Func<Type, bool> convention)
 	{
 		ArgumentAssert.ThrowIfNull(convention);
-		Convention.DefineQueueTypeConvention(convention);
+		Convention.DefineUnicastTypeConvention(convention);
 		return this;
 	}
 
 	/// <summary>
-	/// 
+	/// Evaluate multicast type convention.
 	/// </summary>
 	/// <param name="convention"></param>
 	/// <returns></returns>
-	public MessageConventionBuilder EvaluateTopic(Func<Type, bool> convention)
+	public MessageConventionBuilder EvaluateMulticast(Func<Type, bool> convention)
 	{
 		ArgumentAssert.ThrowIfNull(convention);
-		Convention.DefineTopicTypeConvention(convention);
+		Convention.DefineMulticastTypeConvention(convention);
 		return this;
 	}
 
@@ -40,6 +40,18 @@ public class MessageConventionBuilder
 	{
 		ArgumentAssert.ThrowIfNull(convention);
 		Convention.DefineRequestTypeConvention(convention);
+		return this;
+	}
+	
+	/// <summary>
+	/// Evaluate message type convention.
+	/// </summary>
+	/// <param name="convention"></param>
+	/// <returns></returns>
+	public MessageConventionBuilder Evaluate(Func<Type, MessageConventionType> convention)
+	{
+		ArgumentAssert.ThrowIfNull(convention);
+		Convention.DefineTypeConvention(convention);
 		return this;
 	}
 

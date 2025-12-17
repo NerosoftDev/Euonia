@@ -75,13 +75,13 @@ public class MongoRepository<TContext, TEntity, TKey> : Repository<TContext, TEn
 	/// <inheritdoc />
 	public override Task<List<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>> handle, CancellationToken cancellationToken = default)
 	{
-		return ((IMongoQueryable<TEntity>)BuildQuery(predicate, handle)).ToListAsync(cancellationToken);
+		return BuildQuery(predicate, handle).ToListAsync(cancellationToken);
 	}
 
 	/// <inheritdoc />
 	public override Task<List<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>> handle, int offset, int count, CancellationToken cancellationToken = default)
 	{
-		return ((IMongoQueryable<TEntity>)BuildQuery(predicate, handle)).Skip(offset).Take(count).ToListAsync(cancellationToken);
+		return BuildQuery(predicate, handle).Skip(offset).Take(count).ToListAsync(cancellationToken);
 	}
 
 	/// <inheritdoc />
@@ -101,7 +101,7 @@ public class MongoRepository<TContext, TEntity, TKey> : Repository<TContext, TEn
 	/// <inheritdoc />
 	public override Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>> handle, CancellationToken cancellationToken = default)
 	{
-		return ((IMongoQueryable<TEntity>)BuildQuery(predicate, handle)).AnyAsync(predicate, cancellationToken);
+		return BuildQuery(predicate, handle).AnyAsync(predicate, cancellationToken);
 	}
 
 	/// <inheritdoc />

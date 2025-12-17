@@ -1,14 +1,19 @@
 ﻿namespace Nerosoft.Euonia.Bus;
 
 /// <summary>
-/// 
+/// Represents a transport mechanism for message delivery.
 /// </summary>
-public interface IDispatcher
+public interface ITransport
 {
+	/// <summary>
+	/// Gets the name of the transport.
+	/// </summary>
+	public string Name { get; }
+
 	/// <summary>
 	/// Occurs when [message dispatched].
 	/// </summary>
-	event EventHandler<MessageDispatchedEventArgs> Delivered;
+	event EventHandler<MessageDeliveredEventArgs> Delivered;
 
 	/// <summary>
 	/// Publishes the specified message.

@@ -9,7 +9,7 @@ public class DefaultMessageConvention : IMessageConvention
 	public string Name => "Default Message Convention";
 
 	/// <inheritdoc />
-	public bool IsCommandType(Type messageType)
+	public bool IsUnicastType(Type messageType)
 	{
 		ArgumentNullException.ThrowIfNull(messageType);
 		
@@ -17,7 +17,7 @@ public class DefaultMessageConvention : IMessageConvention
 	}
 
 	/// <inheritdoc />
-	public bool IsEventType(Type messageType)
+	public bool IsMulticastType(Type messageType)
 	{
 		ArgumentNullException.ThrowIfNull(messageType);
 

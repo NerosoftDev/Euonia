@@ -125,21 +125,21 @@ public abstract class MongoDbContext
         return await collection.FindAsync(filter, options, cancellationToken);
     }
 
-    /// <summary>
-    /// Gets model of specified type by filter.
-    /// </summary>
-    /// <param name="filter"></param>
-    /// <param name="options"></param>
-    /// <param name="cancellationToken"></param>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
-    public async Task<IAsyncCursor<T>> FindAsync<T>(QueryDocument filter, FindOptions<T> options, CancellationToken cancellationToken = default)
-    {
-        var type = typeof(T);
-        var profile = _container.GetProfile<T>();
-        var collection = Database.GetCollection<T>(profile.CollectionName ?? type.Name, _collectionSettings);
-        return await collection.FindAsync(filter, options, cancellationToken);
-    }
+    // /// <summary>
+    // /// Gets model of specified type by filter.
+    // /// </summary>
+    // /// <param name="filter"></param>
+    // /// <param name="options"></param>
+    // /// <param name="cancellationToken"></param>
+    // /// <typeparam name="T"></typeparam>
+    // /// <returns></returns>
+    // public async Task<IAsyncCursor<T>> FindAsync<T>(QueryDocument filter, FindOptions<T> options, CancellationToken cancellationToken = default)
+    // {
+    //     var type = typeof(T);
+    //     var profile = _container.GetProfile<T>();
+    //     var collection = Database.GetCollection<T>(profile.CollectionName ?? type.Name, _collectionSettings);
+    //     return await collection.FindAsync(filter, options, cancellationToken);
+    // }
 
     /// <summary>
     /// Finds models of specified type by filter.

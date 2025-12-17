@@ -10,4 +10,4 @@ public delegate Task MessageHandler<in TMessage>(TMessage message, MessageContex
 /// <summary>
 /// 
 /// </summary>
-public delegate Task MessageHandler(object message, MessageContext context, CancellationToken cancellationToken = default);
+public delegate Task<object> MessageHandler(object message, MessageContext context, CancellationToken cancellationToken = default);
