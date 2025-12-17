@@ -14,11 +14,7 @@ public class ServiceBusTests
 	{
 		_provider = provider;
 		_bus = provider.GetService<IBus>();
-#if DEBUG
-		_preventRunTests = false;
-#else
 		_preventRunTests = configuration.GetValue<bool>("PreventRunTests");
-#endif
 	}
 
 	[Fact]
