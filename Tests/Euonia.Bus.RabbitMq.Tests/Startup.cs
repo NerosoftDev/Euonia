@@ -50,7 +50,7 @@ public class Startup
 					builder.EvaluateMulticast(t => t.Name.EndsWith("Event"));
 					builder.EvaluateRequest(t => t.Name.EndsWith("Request"));
 				});
-				config.SetStrategy(typeof(RabbitMqTransport), builder =>
+				config.SetStrategy("rabbitmq", builder =>
 				{
 					builder.EvaluateOutgoing(e => true);
 					builder.EvaluateIncoming(e => true);

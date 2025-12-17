@@ -25,17 +25,17 @@ public sealed class InMemoryRecipientRegistrar : IRecipientRegistrar
 		_options = options.Value;
 		_convention = convention;
 		_provider = provider;
-		_strategy = _provider.GetKeyedService<ITransportStrategy>(typeof(InMemoryTransport));
+		_strategy = _provider.GetKeyedService<ITransportStrategy>(_options.Name);
 	}
 
 	/// <inheritdoc/>
-	public async Task RegisterAsync(IEnumerable<MessageRegistration> registrations, CancellationToken cancellationToken = default)
+	public async Task RegisterAsync(IEnumerable<MessageRegistration> registrations, string defaultTransport, CancellationToken cancellationToken = default)
 	{
 		var recipients = new ConcurrentDictionary<Type, InMemoryRecipient>();
 
 		foreach (var registration in registrations)
 		{
-			if (!_options.IsDefaultTransport)
+			if (!string.Equals(defaultTransport, _options.Name, StringComparison.CurrentCultureIgnoreCase))
 			{
 				if (_strategy == null || !_strategy.Incoming(registration.MessageType))
 				{

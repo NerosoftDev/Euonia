@@ -30,7 +30,7 @@ public class InMemoryTransport : DisposableObject, ITransport
 	public InMemoryTransport(IServiceProvider provider, IOptions<InMemoryBusOptions> options, ILoggerFactory logger)
 	{
 		var opts = options.Value;
-		Name = opts.TransportName ?? nameof(InMemoryTransport);
+		Name = opts.Name ?? nameof(InMemoryTransport);
 		_identity = provider.GetService<IIdentityProvider>();
 		_logger = logger.CreateLogger<InMemoryTransport>();
 	}

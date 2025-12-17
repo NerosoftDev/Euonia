@@ -8,7 +8,7 @@ namespace Nerosoft.Euonia.Bus;
 /// </summary>
 internal class StrategicDispatcher : IDispatcher
 {
-	private readonly ConcurrentDictionary<Type, IReadOnlyList<Type>> _transportCache = new();
+	private readonly ConcurrentDictionary<Type, IReadOnlyList<string>> _transportCache = new();
 
 	private readonly IMessageConvention _messageConvention;
 	private readonly IServiceProvider _serviceProvider;
@@ -33,11 +33,11 @@ internal class StrategicDispatcher : IDispatcher
 	/// <param name="messageType"></param>
 	/// <returns></returns>
 	/// <exception cref="MessageTypeException"></exception>
-	public IEnumerable<Type> Determine(Type messageType)
+	public IEnumerable<string> Determine(Type messageType)
 	{
 		var transportTypes = _transportCache.GetOrAdd(messageType, _ =>
 		{
-			var list = new List<Type>();
+			var list = new List<string>();
 			foreach (var type in _configurator.StrategyAssignedTypes)
 			{
 				var strategy = _serviceProvider.GetKeyedService<ITransportStrategy>(type);
