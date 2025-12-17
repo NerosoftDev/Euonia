@@ -168,7 +168,7 @@ public class RabbitMqTransport : ITransport
 		};
 		props.Headers ??= new Dictionary<string, object>();
 		props.Headers[Constants.MessageHeaders.MessageType] = typeName;
-		
+
 		await Policy.Handle<SocketException>()
 		            .Or<BrokerUnreachableException>()
 		            .WaitAndRetryAsync(_options.MaxFailureRetries, _ => TimeSpan.FromSeconds(1), (exception, _, retryCount, _) =>
@@ -196,21 +196,36 @@ public class RabbitMqTransport : ITransport
 			}
 
 			var body = args.Body.ToArray();
-			
-			var response = JsonConvert.DeserializeObject<RabbitMqReply<TResponse>>(Encoding.UTF8.GetString(body), Constants.SerializerSettings);
-			if (response.IsSuccess)
+
+			if (typeof(TResponse).IsIn(typeof(Unit), typeof(Task), typeof(ValueTask), typeof(void)))
 			{
-				task.SetResult(response.Result);
+				var response = JsonConvert.DeserializeObject<RabbitMqReply<object>>(Encoding.UTF8.GetString(body), Constants.SerializerSettings);
+				if (response.IsSuccess)
+				{
+					task.SetResult(default);
+				}
+				else
+				{
+					task.SetException(response.Error);
+				}
 			}
 			else
 			{
-				task.SetException(response.Error);
+				var response = JsonConvert.DeserializeObject<RabbitMqReply<TResponse>>(Encoding.UTF8.GetString(body), Constants.SerializerSettings);
+				if (response.IsSuccess)
+				{
+					task.SetResult(response.Result);
+				}
+				else
+				{
+					task.SetException(response.Error);
+				}
 			}
 
 			await Task.CompletedTask;
 		}
 	}
-	
+
 	/// <summary>
 	/// Builds the queue name for the specified channel.
 	/// </summary>

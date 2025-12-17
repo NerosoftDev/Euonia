@@ -118,7 +118,7 @@ public class RabbitMqQueueConsumer : RabbitMqQueueRecipient, IQueueConsumer
 			var replyProps = new BasicProperties();
 			replyProps.Headers ??= new Dictionary<string, object>();
 			replyProps.CorrelationId = props.CorrelationId;
-			replyProps.Type = reply.Result.GetType().Name;
+			replyProps.Type = reply.Result?.GetType()?.Name;
 
 			var response = SerializeMessage(reply);
 			await Channel.BasicPublishAsync(string.Empty, props.ReplyTo!, true, replyProps, response);

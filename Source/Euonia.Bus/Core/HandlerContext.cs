@@ -39,17 +39,19 @@ public class HandlerContext : IHandlerContext
 	/// Register a message handler type for the message type <typeparamref name="TMessage"/>.
 	/// </summary>
 	/// <typeparam name="TMessage">The message type to handle. Must be a reference type.</typeparam>
+	/// <typeparam name="TResponse"></typeparam>
 	/// <typeparam name="THandler">The handler type that implements <see cref="IHandler{TMessage}"/>.</typeparam>
-	internal virtual void Register<TMessage, THandler>()
+	internal virtual void Register<TMessage, TResponse, THandler>()
 		where TMessage : class
-		where THandler : IHandler<TMessage>
+		where THandler : IHandler<TMessage, TResponse>
 	{
 		var channel = MessageCache.Default.GetOrAddChannel<TMessage>();
 
 		MessageHandler Handling(IServiceProvider provider)
 		{
 			var handler = provider.GetService<THandler>();
-			return (message, context, token) => handler.HandleAsync((TMessage)message, context, token);
+			return (message, context, token) => handler.HandleAsync((TMessage)message, context, token)
+			                                           .ContinueWith(task => (object)task.Result, token);
 		}
 
 		ConcurrentDictionarySafeRegister(channel, Handling, _handlerContainer);
@@ -69,10 +71,10 @@ public class HandlerContext : IHandlerContext
 
 			return (message, context, token) =>
 			{
-				var arguments = GetArguments(registration.Method, message, context, token); //_argumentCache.GetOrAdd(registration.Method, method => GetArguments(method, message, context, token));
-				var expression = Expression.Call(Expression.Constant(handler), registration.Method, arguments);
+				var arguments = GetArguments(registration.Method, message, context, token);
+				var expression = MethodInvokerBuilder.BuildCallExpression(handler, registration.Method, arguments);
 
-				return Expression.Lambda<Func<Task>>(expression).Compile()();
+				return Expression.Lambda<Func<Task<object>>>(expression).Compile()();
 			};
 		}
 
@@ -118,7 +120,31 @@ public class HandlerContext : IHandlerContext
 			if (factories.Count == 1)
 			{
 				var factory = factories.First();
-				await ExecuteHandler(scope, factory, cancellationToken);
+				await ExecuteHandler(scope, factory, cancellationToken)
+				      .AsTask()
+				      .ContinueWith(task =>
+				      {
+					      if (!task.IsCompletedSuccessfully)
+					      {
+						      switch (task.Exception)
+						      {
+							      case null:
+								      context.Failure(new InternalServerErrorException());
+								      break;
+							      case var aggEx when aggEx.InnerExceptions.Count == 1:
+								      context.Failure(aggEx.InnerExceptions[0]);
+								      break;
+							      default:
+								      context.Failure(task.Exception.GetBaseException());
+								      break;
+						      }
+					      }
+					      //else if (Reflect.TryGetPropertyValue(task, "Result", out var result))
+					      else if (task.Result is not Unit)
+					      {
+						      context.Response(task.Result);
+					      }
+				      }, cancellationToken);
 			}
 			else
 			{
@@ -133,12 +159,12 @@ public class HandlerContext : IHandlerContext
 
 		return;
 
-		async ValueTask ExecuteHandler(IServiceScope scope, MessageHandlerFactory factory, CancellationToken cancellation)
+		async ValueTask<object> ExecuteHandler(IServiceScope scope, MessageHandlerFactory factory, CancellationToken cancellation)
 		{
 			try
 			{
 				var handler = factory(scope.ServiceProvider);
-				await handler(message, context, cancellation);
+				return await handler(message, context, cancellation);
 			}
 			catch (Exception exception)
 			{
@@ -148,6 +174,8 @@ public class HandlerContext : IHandlerContext
 					// Swallow the exception for request/response and queue messages
 					throw;
 				}
+
+				return ValueTask.FromResult(exception);
 			}
 		}
 	}

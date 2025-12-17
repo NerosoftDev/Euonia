@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Nerosoft.Euonia.Bus.InMemory;
@@ -18,16 +19,20 @@ public class InMemoryTransport : DisposableObject, ITransport
 
 	private readonly IIdentityProvider _identity;
 
+	private readonly ILogger<InMemoryTransport> _logger;
+
 	/// <summary>
 	/// Initialize a new instance of <see cref="InMemoryTransport"/>
 	/// </summary>
 	/// <param name="provider"></param>
 	/// <param name="options"></param>
-	public InMemoryTransport(IServiceProvider provider, IOptions<InMemoryBusOptions> options)
+	/// <param name="logger"></param>
+	public InMemoryTransport(IServiceProvider provider, IOptions<InMemoryBusOptions> options, ILoggerFactory logger)
 	{
 		var opts = options.Value;
 		Name = opts.TransportName ?? nameof(InMemoryTransport);
 		_identity = provider.GetService<IIdentityProvider>();
+		_logger = logger.CreateLogger<InMemoryTransport>();
 	}
 
 	/// <inheritdoc />
@@ -110,18 +115,19 @@ public class InMemoryTransport : DisposableObject, ITransport
 
 		void OnResponded(object sender, MessageRepliedEventArgs args)
 		{
-			Console.WriteLine($@"Message '{message.MessageId}' responded with result: {args.Result}");
+			_logger.LogDebug("Message '{MessageId}' responded with result: {Result}", message.MessageId, args.Result);
 			taskCompletion.TrySetResult((TResponse)args.Result);
 		}
 
 		void OnFailed(object sender, Exception exception)
 		{
+			_logger.LogError(exception, "Message '{MessageId}' failed with exception", message.MessageId);
 			taskCompletion.TrySetException(exception);
 		}
 
 		void OnCompleted(object sender, MessageHandledEventArgs args)
 		{
-			Console.WriteLine($@"Message '{message.MessageId}' completed");
+			_logger.LogDebug("Message '{MessageId}' completed", message.MessageId);
 			taskCompletion.TryCompleteFromCompletedTask(Task.FromResult(default(TResponse)));
 		}
 	}

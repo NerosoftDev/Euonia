@@ -81,14 +81,14 @@ internal class MessageHandlerFinder
 
 		// Extract IHandler<> interfaces from the handler type
 		var interfaces = handlerType.GetInterfaces()
-		                            .Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IHandler<>))
+		                            .Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IHandler<,>))
 		                            .ToList();
 		if (interfaces.Count > 0)
 		{
 			foreach (var @interface in interfaces)
 			{
 				var messageType = @interface.GetGenericArguments()[0];
-				var method = handlerType.GetMethod(nameof(IHandler<>.HandleAsync), BINDING_FLAGS, null, [messageType, typeof(MessageContext), typeof(CancellationToken)], null);
+				var method = handlerType.GetMethod(nameof(IHandler<,>.HandleAsync), BINDING_FLAGS, null, [messageType, typeof(MessageContext), typeof(CancellationToken)], null);
 				var registration = new MessageRegistration(MessageCache.Default.GetOrAddChannel(messageType), messageType, handlerType, method);
 				registrations.Add(registration);
 			}

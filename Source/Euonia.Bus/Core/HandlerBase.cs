@@ -18,7 +18,12 @@ public abstract class HandlerBase<TMessage> : IHandler<TMessage>
 	{
 		return typeof(TMessage) == messageType;
 	}
-	
+
+	Task IHandler<TMessage>.HandleAsync(TMessage message, MessageContext context, CancellationToken cancellationToken)
+	{
+		return HandleAsync(message, context, cancellationToken);
+	}
+
 	/// <summary>
 	/// Handles the asynchronous.
 	/// </summary>
@@ -26,5 +31,5 @@ public abstract class HandlerBase<TMessage> : IHandler<TMessage>
 	/// <param name="messageContext">The message context.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns></returns>
-	public abstract Task HandleAsync(TMessage message, MessageContext messageContext, CancellationToken cancellationToken = default);
+	public abstract Task<Unit> HandleAsync(TMessage message, MessageContext messageContext, CancellationToken cancellationToken = default);
 }

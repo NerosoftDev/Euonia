@@ -37,13 +37,19 @@ public static class ServiceCollectionExtensions
 		{
 			var context = new HandlerContext(provider);
 
-			var registerMethod = typeof(HandlerContext).GetMethod(nameof(HandlerContext.Register), 2, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, []);
+			var registerMethod = typeof(HandlerContext).GetMethod(nameof(HandlerContext.Register), 3, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, []);
 
 			foreach (var registration in configurator.Registrations)
 			{
-				if (registration.HandlerType.IsAssignableTo(typeof(IHandler<>).MakeGenericType(registration.MessageType)))
+				Type responseType = null;
+				if (registration.Method.ReturnType.IsGenericType && registration.Method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
 				{
-					registerMethod?.MakeGenericMethod(registration.MessageType, registration.HandlerType).Invoke(context, null);
+					responseType = registration.Method.ReturnType.GenericTypeArguments[0];
+				}
+
+				if (responseType != null && registration.HandlerType.IsAssignableTo(typeof(IHandler<,>).MakeGenericType(registration.MessageType, responseType)))
+				{
+					registerMethod?.MakeGenericMethod(registration.MessageType, responseType, registration.HandlerType).Invoke(context, null);
 				}
 				else
 				{
