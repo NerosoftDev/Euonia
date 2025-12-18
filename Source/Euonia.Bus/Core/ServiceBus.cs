@@ -112,7 +112,12 @@ public sealed class ServiceBus : IBus
 
 		var transports = _dispatcher.Determine(messageType);
 
-		var transport = _provider.GetKeyedService<ITransport>(transports.First());
+		var transportName = transports!.First();
+
+		_logger.LogDebug("Publishing message of type {MessageType} to transport {TransportType} on channel {ChannelName} with MessageId {MessageId}.",
+			messageType.FullName, transportName, channelName, pack.MessageId);
+
+		var transport = _provider.GetKeyedService<ITransport>(transportName);
 
 		await transport.SendAsync(pack, cancellationToken)
 		               .ContinueWith(task =>
@@ -150,7 +155,12 @@ public sealed class ServiceBus : IBus
 
 		var transports = _dispatcher.Determine(messageType);
 
-		var transport = _provider.GetKeyedService<ITransport>(transports.First());
+		var transportName = transports!.First();
+
+		_logger.LogDebug("Publishing message of type {MessageType} to transport {TransportType} on channel {ChannelName} with MessageId {MessageId}.",
+			messageType.FullName, transportName, channelName, pack.MessageId);
+
+		var transport = _provider.GetKeyedService<ITransport>(transportName);
 
 		var result = await transport.SendAsync(pack, cancellationToken)
 		                            .ContinueWith(task =>
