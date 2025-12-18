@@ -94,7 +94,7 @@ public abstract class PipelineBase : IPipeline
 	public virtual IPipeline UseOf(Type contextType, bool useAheadOfOthers = false)
 	{
 		IPipeline pipeline = this;
-		var attributes = contextType.GetCustomAttributes<PipelineBehaviorAttribute>(false).ToList();
+		var attributes = contextType.GetCustomAttributes<PipelineBehaviorAttribute>(true).ToList();
 		if (useAheadOfOthers)
 		{
 			for (var index = 0; index < attributes.Count; index++)
@@ -270,7 +270,7 @@ public abstract class PipelineBase<TRequest, TResponse> : IPipeline<TRequest, TR
 	public virtual IPipeline<TRequest, TResponse> UseOf(Type contextType, bool useAheadOfOthers = false)
 	{
 		IPipeline<TRequest, TResponse> pipeline = this;
-		var attributes = contextType.GetCustomAttributes<PipelineBehaviorAttribute>(false).ToList();
+		var attributes = contextType.GetCustomAttributes<PipelineBehaviorAttribute>(true).ToList();
 		if (useAheadOfOthers)
 		{
 			for (var index = 0; index < attributes.Count; index++)

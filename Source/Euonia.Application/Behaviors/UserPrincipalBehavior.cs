@@ -8,19 +8,19 @@ namespace Nerosoft.Euonia.Application;
 /// <summary>
 /// A pipeline behavior that adds the user principal to the command metadata.
 /// </summary>
-public class UserPrincipalBehavior : IPipelineBehavior<IRoutedMessage, CommandResponse>
+public class UserPrincipalBehavior<TResponse> : IPipelineBehavior<IRoutedMessage, TResponse>
 {
 	private readonly UserPrincipal _user;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="UserPrincipalBehavior"/> class.
+	/// Initializes a new instance of the <see cref="UserPrincipalBehavior{TResponse}"/> class.
 	/// </summary>
 	public UserPrincipalBehavior()
 	{
 	}
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="UserPrincipalBehavior"/> class.
+	/// Initializes a new instance of the <see cref="UserPrincipalBehavior{TResponse}"/> class.
 	/// </summary>
 	/// <param name="user"></param>
 	public UserPrincipalBehavior(UserPrincipal user)
@@ -29,7 +29,7 @@ public class UserPrincipalBehavior : IPipelineBehavior<IRoutedMessage, CommandRe
 	}
 
 	/// <inheritdoc />
-	public async Task<CommandResponse> HandleAsync(IRoutedMessage context, PipelineDelegate<IRoutedMessage, CommandResponse> next)
+	public async Task<TResponse> HandleAsync(IRoutedMessage context, PipelineDelegate<IRoutedMessage, TResponse> next)
 	{
 		if (_user is { IsAuthenticated: true })
 		{
