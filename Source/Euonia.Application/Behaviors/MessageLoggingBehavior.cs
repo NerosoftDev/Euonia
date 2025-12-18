@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
+using Nerosoft.Euonia.Bus;
 using Nerosoft.Euonia.Pipeline;
 
-namespace Nerosoft.Euonia.Bus;
+namespace Nerosoft.Euonia.Application;
 
 /// <summary>
 /// Logs the routed messages.

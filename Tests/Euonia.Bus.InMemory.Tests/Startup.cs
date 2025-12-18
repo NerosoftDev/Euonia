@@ -4,9 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using Nerosoft.Euonia.Bus.InMemory;
 using Nerosoft.Euonia.Modularity;
-using Nerosoft.Euonia.Pipeline;
 
 namespace Nerosoft.Euonia.Bus.Tests;
 
@@ -41,7 +39,6 @@ public class Startup
 	// ConfigureServices(HostBuilderContext hostBuilderContext, IServiceCollection services)
 	public void ConfigureServices(IServiceCollection services, HostBuilderContext hostBuilderContext)
 	{
-		services.AddSingleton(typeof(IPipelineBehavior<,>), typeof(MessageLoggingBehavior<,>));
 		services.AddEuoniaBus(config =>
 		{
 			config.RegisterHandlers(Assembly.GetExecutingAssembly());

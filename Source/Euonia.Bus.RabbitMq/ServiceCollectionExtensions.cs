@@ -55,9 +55,16 @@ public static class ServiceCollectionExtensions
 			services.TryAddTransient<RabbitMqQueueConsumer>();
 			services.TryAddTransient<RabbitMqTopicSubscriber>();
 			services.TryAddSingleton<RabbitMqTransport>();
-			services.TryAddKeyedSingleton<ITransport>(name, (provider, _) => provider.GetService<RabbitMqTransport>());
-			services.TryAddTransient<IRecipientRegistrar, RabbitMqRecipientRegistrar>();
 
+			if (!services.Any(descriptor => descriptor.ServiceType == typeof(ITransport) && descriptor.ServiceKey is string key && key == name))
+			{
+				services.TryAddKeyedSingleton<ITransport>(name, (provider, _) => provider.GetService<RabbitMqTransport>());
+			}
+
+			if (!services.IsAddedImplementation<IRecipientRegistrar, RabbitMqRecipientRegistrar>())
+			{
+				services.AddTransient<IRecipientRegistrar, RabbitMqRecipientRegistrar>();
+			}
 			return services;
 		}
 	}

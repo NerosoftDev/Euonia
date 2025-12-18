@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Nerosoft.Euonia.Bus;
+using Nerosoft.Euonia.Pipeline;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -30,7 +31,9 @@ public static class ServiceCollectionExtensions
 		{
 			services.TryAddTransient(handlerType);
 		}
+
 		services.AddPipeline();
+
 		services.AddSingleton<IBusConfigurator>(_ => configurator);
 
 		services.TryAddSingleton<IHandlerContext>(provider =>
@@ -63,7 +66,7 @@ public static class ServiceCollectionExtensions
 		services.TryAddSingleton<IMessageConvention>(_ => configurator.ConventionBuilder.Convention);
 		foreach (var (name, builder) in configurator.StrategyBuilders)
 		{
-			services.TryAddKeyedSingleton<ITransportStrategy>(name, (_, _) => builder.Strategy);
+			services.AddKeyedSingleton<ITransportStrategy>(name, (_, _) => builder.Strategy);
 		}
 
 		services.TryAddTransient<IBus, MessageBus>();
@@ -72,4 +75,15 @@ public static class ServiceCollectionExtensions
 
 		return configurator;
 	}
+
+	//public static IServiceCollection AddPipeline(this IServiceCollection services)
+	//{
+	//	services.AddPipelineBehaviors(
+	//		typeof(ExceptionHandlingBehavior<,>),
+	//		typeof(ValidationBehavior<,>)
+	//	);
+	//	return services;
+	//}
+
+	
 }
