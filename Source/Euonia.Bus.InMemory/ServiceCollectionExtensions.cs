@@ -41,10 +41,6 @@ public static class ServiceCollectionExtensions
 			{
 				services.AddKeyedSingleton<ITransport>(name, (provider, _) => provider.GetRequiredService<InMemoryTransport>());
 			}
-			//{
-			//	throw new InvalidOperationException("An IBus service is already registered. Multiple bus instances are not supported.");
-			//}
-
 
 			// Registers the in-memory recipient registrar as a transient service
 			// implementing the IRecipientRegistrar interface.
