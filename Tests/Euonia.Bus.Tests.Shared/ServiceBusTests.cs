@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Reactive.Subjects;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nerosoft.Euonia.Bus.Tests.Commands;
 
@@ -27,11 +28,13 @@ public class ServiceBusTests
 		else
 		{
 			await Task.Delay(1000);
-			await _bus.SendAsync(new UserCreateCommand(), null, (int result) =>
+			var subject = new Subject<int>();
+			subject.Subscribe(result =>
 			{
 				ArgumentOutOfRangeException.ThrowIfNegative(result);
 				Assert.Equal(1, result);
 			});
+			await _bus.SendAsync(new UserCreateCommand(), null, subject);
 		}
 	}
 
@@ -58,7 +61,14 @@ public class ServiceBusTests
 		}
 		else
 		{
-			await _bus.SendAsync(new FooCreateCommand(), null, (int result) => Assert.Equal(1, result), new SendOptions { Channel = "foo.create" });
+			await Task.Delay(1000);
+			var subject = new Subject<int>();
+			subject.Subscribe(result =>
+			{
+				ArgumentOutOfRangeException.ThrowIfNegative(result);
+				Assert.Equal(1, result);
+			});
+			await _bus.SendAsync(new FooCreateCommand(), null, subject, new SendOptions { Channel = "foo.create" });
 		}
 	}
 
