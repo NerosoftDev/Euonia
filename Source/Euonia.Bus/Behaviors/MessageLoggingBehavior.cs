@@ -6,23 +6,24 @@ namespace Nerosoft.Euonia.Bus;
 /// <summary>
 /// Logs the routed messages.
 /// </summary>
-public sealed class MessageLoggingBehavior : IPipelineBehavior<IRoutedMessage>
+public sealed class MessageLoggingBehavior<TMessage, TResponse> : IPipelineBehavior<TMessage, TResponse>
+	where TMessage : class, IRoutedMessage
 {
-	private readonly ILogger<MessageLoggingBehavior> _logger;
+	private readonly ILogger<MessageLoggingBehavior<TMessage, TResponse>> _logger;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="MessageLoggingBehavior"/> class.
+	/// Initializes a new instance of the <see cref="MessageLoggingBehavior{TMessage, TResponse}"/> class.
 	/// </summary>
 	/// <param name="logger">The logger service factory.</param>
 	public MessageLoggingBehavior(ILoggerFactory logger)
 	{
-		_logger = logger.CreateLogger<MessageLoggingBehavior>();
+		_logger = logger.CreateLogger<MessageLoggingBehavior<TMessage, TResponse>>();
 	}
 
 	/// <inheritdoc />
-	public async Task HandleAsync(IRoutedMessage context, PipelineDelegate<IRoutedMessage> next)
+	public async Task<TResponse> HandleAsync(TMessage context, PipelineDelegate<TMessage, TResponse> next)
 	{
 		_logger.LogInformation("Message {Id} - {FullName}: {Context}", context.MessageId, context.GetType().FullName, context);
-		await next(context);
+		return await next(context);
 	}
 }
