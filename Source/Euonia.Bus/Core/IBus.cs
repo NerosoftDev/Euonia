@@ -1,4 +1,5 @@
-﻿using Nerosoft.Euonia.Bus;
+﻿using System.Reactive.Subjects;
+using Nerosoft.Euonia.Bus;
 
 /// <summary>
 /// Defines the core message bus interface for publishing, sending, and calling messages.
@@ -109,7 +110,7 @@ public interface IBus
 	/// <param name="callback">Action to process the result received from the handler.</param>
 	/// <param name="cancellationToken">Token to cancel the send operation.</param>
 	/// <returns>A task that represents the asynchronous send operation.</returns>
-	Task SendAsync<TMessage, TResult>(TMessage message, Action<PipelineMessage<IRoutedMessage, TResult>> behavior, Action<TResult> callback, CancellationToken cancellationToken = default)
+	Task SendAsync<TMessage, TResult>(TMessage message, Action<PipelineMessage<IRoutedMessage, TResult>> behavior, Subject<TResult> callback, CancellationToken cancellationToken = default)
 		where TMessage : class
 	{
 		return SendAsync(message, behavior, callback, new SendOptions(), null, cancellationToken);
@@ -127,7 +128,7 @@ public interface IBus
 	/// <param name="metadataSetter">Optional action to configure message metadata.</param>
 	/// <param name="cancellationToken">Token to cancel the send operation.</param>
 	/// <returns>A task that represents the asynchronous send operation.</returns>
-	Task SendAsync<TMessage, TResult>(TMessage message, Action<PipelineMessage<IRoutedMessage, TResult>> behavior, Action<TResult> callback, SendOptions options, Action<MessageMetadata> metadataSetter = null, CancellationToken cancellationToken = default)
+	Task SendAsync<TMessage, TResult>(TMessage message, Action<PipelineMessage<IRoutedMessage, TResult>> behavior, Subject<TResult> callback, SendOptions options, Action<MessageMetadata> metadataSetter = null, CancellationToken cancellationToken = default)
 		where TMessage : class;
 
 	/// <summary>

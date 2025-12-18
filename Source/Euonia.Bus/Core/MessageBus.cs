@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Reactive.Subjects;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -109,7 +110,7 @@ public sealed class MessageBus : IBus
 		await Task.WhenAll(tasks);
 	}
 
-	public async Task SendAsync<TMessage, TResult>(TMessage message, Action<PipelineMessage<IRoutedMessage, TResult>> behavior, Action<TResult> callback = null, SendOptions options = null, Action<MessageMetadata> metadataSetter = null, CancellationToken cancellationToken = default)
+	public async Task SendAsync<TMessage, TResult>(TMessage message, Action<PipelineMessage<IRoutedMessage, TResult>> behavior, Subject<TResult> callback = null, SendOptions options = null, Action<MessageMetadata> metadataSetter = null, CancellationToken cancellationToken = default)
 		where TMessage : class
 	{
 		options ??= new SendOptions();
@@ -179,8 +180,27 @@ public sealed class MessageBus : IBus
 					   .ContinueWith(task =>
 					   {
 						   task.WaitAndUnwrapException();
-						   var result = task.Result;
-						   callback?.Invoke(result);
+						   if (task.IsFaulted)
+						   {
+							   if (callback != null)
+							   {
+								   callback?.OnError(task.Exception.GetBaseException());
+							   }
+							   else
+							   {
+								   throw task.Exception;
+							   }
+						   }
+						   else
+						   {
+							   callback?.OnNext(task.Result);
+						   }
+
+						   if (task.IsCanceled)
+						   {
+							   callback?.OnCompleted();
+						   }
+
 					   }, cancellationToken);
 	}
 
