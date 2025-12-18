@@ -8,19 +8,20 @@ namespace Nerosoft.Euonia.Application;
 /// <summary>
 /// A pipeline behavior that adds the bearer token to the command metadata.
 /// </summary>
-public class BearerTokenBehavior<TResponse> : IPipelineBehavior<IRoutedMessage, TResponse>
+public class BearerTokenBehavior<TMessage, TResponse> : IPipelineBehavior<TMessage, TResponse>
+	where TMessage : class, IRoutedMessage
 {
 	private readonly IRequestContextAccessor _contextAccessor;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="BearerTokenBehavior{TResponse}"/> class.
+	/// Initializes a new instance of the <see cref="BearerTokenBehavior{TMessage, TResponse}"/> class.
 	/// </summary>
 	public BearerTokenBehavior()
 	{
 	}
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="BearerTokenBehavior{TResponse}"/> class.
+	/// Initializes a new instance of the <see cref="BearerTokenBehavior{TMessage, TResponse}"/> class.
 	/// </summary>
 	/// <param name="contextAccessor"></param>
 	public BearerTokenBehavior(IRequestContextAccessor contextAccessor)
@@ -29,7 +30,7 @@ public class BearerTokenBehavior<TResponse> : IPipelineBehavior<IRoutedMessage, 
 	}
 
 	/// <inheritdoc />
-	public async Task<TResponse> HandleAsync(IRoutedMessage context, PipelineDelegate<IRoutedMessage, TResponse> next)
+	public async Task<TResponse> HandleAsync(TMessage context, PipelineDelegate<TMessage, TResponse> next)
 	{
 		if (_contextAccessor?.Context?.RequestHeaders.TryGetValue("Authorization", out var value) == true)
 		{
