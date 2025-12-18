@@ -15,7 +15,7 @@ internal class Constants
 	/// </summary>
 	public const long MaximumSequence = long.MaxValue;
 
-	public const string ConfigurationSection = "ServiceBus";
+	public const string ConfigurationSection = "EuoniaBus";
 
 	public const string DeadLetterTransport = "DeadLetter";
 

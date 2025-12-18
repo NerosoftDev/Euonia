@@ -21,7 +21,7 @@ To get started with Euonia.Bus, follow these steps:
 
 2. **Register Services**: In your application's, register the necessary services for the message bus.
    ```csharp
-    services.AddServiceBus(config =>
+    services.AddEuoniaBus(config =>
     {
         // Configure the message conventions to determine the message types
     	config.SetConventions(builder =>

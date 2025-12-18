@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using Nerosoft.Euonia.Bus.InMemory;
 using Nerosoft.Euonia.Modularity;
 
 namespace Nerosoft.Euonia.Bus.Tests;
@@ -21,6 +20,10 @@ public class Startup
 				   })
 				   .ConfigureServices((context, services) =>
 				   {
+					   services.Configure<MessageBusOptions>(options =>
+					   {
+						   options.EnablePipelineBehaviors = true;
+					   });
 					   services.TryAddScoped<DefaultRequestContextAccessor>();
 					   services.TryAddScoped<DelegateRequestContextAccessor>(_ =>
 					   {
@@ -36,7 +39,7 @@ public class Startup
 	// ConfigureServices(HostBuilderContext hostBuilderContext, IServiceCollection services)
 	public void ConfigureServices(IServiceCollection services, HostBuilderContext hostBuilderContext)
 	{
-		services.AddServiceBus(config =>
+		services.AddEuoniaBus(config =>
 		{
 			config.RegisterHandlers(Assembly.GetExecutingAssembly());
 			config.SetConventions(builder =>
@@ -47,9 +50,9 @@ public class Startup
 					  builder.EvaluateMulticast(t => t.Name.EndsWith("Event"));
 					  builder.EvaluateRequest(t => t.Name.EndsWith("Request"));
 				  })
-				  .SetStrategy("inmemory", builder =>
+				  .SetStrategy("InMemory", builder =>
 				  {
-					  builder.Add(new AttributeTransportStrategy(["inmemory"]));
+					  builder.Add(new AttributeTransportStrategy(["InMemory"]));
 					  builder.EvaluateIncoming(type => type.Name.EndsWith("Command"));
 					  builder.EvaluateOutgoing(type => type.Name.EndsWith("Command"));
 				  });

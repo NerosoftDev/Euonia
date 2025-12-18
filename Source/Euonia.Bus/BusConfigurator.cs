@@ -2,6 +2,7 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Nerosoft.Euonia.Pipeline;
 
 // ReSharper disable MemberCanBePrivate.Global
 
@@ -148,6 +149,31 @@ public class BusConfigurator : IBusConfigurator
 	public IBusConfigurator SetDefaultTransport(string name)
 	{
 		DefaultTransport = name;
+		return this;
+	}
+
+	/// <summary>
+	/// Adds a pipeline behavior for routed messages with a response.
+	/// </summary>
+	/// <typeparam name="TBehavior"></typeparam>
+	/// <typeparam name="TResponse"></typeparam>
+	/// <returns></returns>
+	public IBusConfigurator AddPipelineBehavior<TBehavior, TResponse>()
+		where TBehavior : class, IPipelineBehavior<IRoutedMessage, TResponse>
+	{
+		_services.AddTransient<IPipelineBehavior<IRoutedMessage, TResponse>, TBehavior>();
+		return this;
+	}
+
+	/// <summary>
+	/// Adds a pipeline behavior for routed messages.
+	/// </summary>
+	/// <typeparam name="TBehavior"></typeparam>
+	/// <returns></returns>
+	public IBusConfigurator AddPipelineBehavior<TBehavior>()
+		where TBehavior : class, IPipelineBehavior<IRoutedMessage>
+	{
+		_services.AddTransient<IPipelineBehavior<IRoutedMessage>, TBehavior>();
 		return this;
 	}
 }

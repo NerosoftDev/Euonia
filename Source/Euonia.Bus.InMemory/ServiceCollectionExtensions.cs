@@ -37,12 +37,17 @@ public static class ServiceCollectionExtensions
 			// Registers the in-memory transport as a singleton service.
 			services.TryAddSingleton<InMemoryTransport>();
 
-			services.TryAddKeyedSingleton<ITransport>(name, (provider, _) => provider.GetRequiredService<InMemoryTransport>());
+			if (!services.Any(descriptor => descriptor.ServiceType == typeof(ITransport) && descriptor.ServiceKey is string key && key == name))
+			{
+				services.AddKeyedSingleton<ITransport>(name, (provider, _) => provider.GetRequiredService<InMemoryTransport>());
+			}
 
 			// Registers the in-memory recipient registrar as a transient service
 			// implementing the IRecipientRegistrar interface.
-			services.AddTransient<IRecipientRegistrar, InMemoryRecipientRegistrar>();
-
+			if (!services.IsAddedImplementation<IRecipientRegistrar, InMemoryRecipientRegistrar>())
+			{
+				services.AddTransient<IRecipientRegistrar, InMemoryRecipientRegistrar>();
+			}
 			return services;
 		}
 	}

@@ -2,6 +2,7 @@
 using Castle.DynamicProxy;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Nerosoft.Euonia.Application;
+using Nerosoft.Euonia.Pipeline;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -96,4 +97,19 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
+
+	private static IServiceCollection AddPipelineBehaviors(this IServiceCollection services, params Type[] behaviorTypes)
+	{
+		foreach (var behaviorType in behaviorTypes)
+		{
+			var interfaces = behaviorType.GetInterfaces()
+										.Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IPipelineBehavior<,>))
+										.ToList();
+			foreach (var @interface in interfaces)
+			{
+				services.AddSingleton(@interface, behaviorType);
+			}
+		}
+		return services;
+	}
 }

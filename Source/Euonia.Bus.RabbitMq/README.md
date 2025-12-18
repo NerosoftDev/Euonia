@@ -20,13 +20,13 @@ To get started with the RabbitMQ transport in Euonia.Bus, follow these steps:
    ```bash
    dotnet add package Euonia.Bus.RabbitMq
    ```
-2. **Configure the Transport**: In your application's configuration file (e.g., appsettings.json), add the RabbitMQ transport settings under the `ServiceBus` section:
+2. **Configure the Transport**: In your application's configuration file (e.g., appsettings.json), add the RabbitMQ transport settings under the `EuoniaBus` section:
 ```json
 {
-  "ServiceBus": {
+  "EuoniaBus": {
     "RabbitMq": {
       "Enabled": true,
-      "Name": "rabbitmq",
+      "Name": "RabbitMq",
       "Connection": "amqp://user:password@host:port",
       "ExchangeNamePrefix": "$nerosoft.euonia.exchange",
       "QueueNamePrefix": "$nerosoft.euonia.queue",
@@ -53,11 +53,11 @@ public class YourServiceModule : ModuleContextBase
 ```
 4. **Add Incoming/Outgoing Strategy**: Implement the necessary message handling strategies for incoming and outgoing messages.
 ```csharp
-services.AddServiceBus(config =>
+services.AddEuoniaBus(config =>
 {
-    config.SetStrategy("rabbitmq", builder =>
+    config.SetStrategy("RabbitMq", builder =>
     {
-        builder.Add(new AttributeTransportStrategy(["rabbitmq"]));
+        builder.Add(new AttributeTransportStrategy(["RabbitMq"]));
         builder.Add<DistributedMessageTransportStrategy>();
         builder.EvaluateOutgoing(e => true);
         builder.EvaluateIncoming(e => true);
