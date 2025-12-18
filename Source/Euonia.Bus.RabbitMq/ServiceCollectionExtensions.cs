@@ -58,7 +58,7 @@ public static class ServiceCollectionExtensions
 
 			if (!services.Any(descriptor => descriptor.ServiceType == typeof(ITransport) && descriptor.ServiceKey is string key && key == name))
 			{
-				services.TryAddKeyedSingleton<ITransport>(name, (provider, _) => provider.GetService<RabbitMqTransport>());
+				services.AddKeyedSingleton<ITransport>(name, (provider, _) => provider.GetService<RabbitMqTransport>());
 			}
 
 			if (!services.IsAddedImplementation<IRecipientRegistrar, RabbitMqRecipientRegistrar>())
