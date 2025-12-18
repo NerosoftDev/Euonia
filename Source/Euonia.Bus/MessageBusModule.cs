@@ -6,12 +6,12 @@ namespace Nerosoft.Euonia.Bus;
 /// <summary>
 /// The service bus module.
 /// </summary>
-public class ServiceBusModule : ModuleContextBase
+public class MessageBusModule : ModuleContextBase
 {
 	/// <inheritdoc />
 	public override void ConfigureServices(ServiceConfigurationContext context)
 	{
-		context.Services.AddServiceBus();
+		context.Services.AddEuoniaBus();
 	}
 
 	/// <inheritdoc />

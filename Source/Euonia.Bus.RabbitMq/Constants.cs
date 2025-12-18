@@ -4,9 +4,9 @@ namespace Nerosoft.Euonia.Bus.RabbitMq;
 
 internal class Constants
 {
-	public const string DefaultTransportName = "rabbitmq";
+	public const string DefaultTransportName = "RabbitMq";
 
-	public const string ConfigurationSection = "ServiceBus:RabbitMq";
+	public const string ConfigurationSection = "EuoniaBus:RabbitMq";
 
 	public const string DefaultExchangeNamePrefix = "$nerosoft.euonia.exchange";
 	public const string DefaultQueueNamePrefix = "$nerosoft.euonia.queue";

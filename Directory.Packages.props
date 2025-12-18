@@ -82,6 +82,8 @@
         <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="[$(EntityFrameworkCoreVersionPrevious),$(EntityFrameworkCoreVersionCurrent))" />
         <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="[$(EntityFrameworkCoreVersionPrevious),$(EntityFrameworkCoreVersionCurrent))" />
         <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="[$(EntityFrameworkCoreVersionPrevious),$(EntityFrameworkCoreVersionCurrent))" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="[$(EntityFrameworkCoreVersionPrevious),$(EntityFrameworkCoreVersionCurrent))" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="[$(EntityFrameworkCoreVersionPrevious),$(EntityFrameworkCoreVersionCurrent))" />
         <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="[$(EntityFrameworkCoreVersionPrevious),$(EntityFrameworkCoreVersionCurrent))">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -92,6 +94,8 @@
         <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="[$(EntityFrameworkCoreVersionCurrent),$(EntityFrameworkCoreVersionNext))" />
         <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="[$(EntityFrameworkCoreVersionCurrent),$(EntityFrameworkCoreVersionNext))" />
         <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="[$(EntityFrameworkCoreVersionCurrent),$(EntityFrameworkCoreVersionNext))" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="[$(EntityFrameworkCoreVersionPrevious),$(EntityFrameworkCoreVersionCurrent))" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="[$(EntityFrameworkCoreVersionPrevious),$(EntityFrameworkCoreVersionCurrent))" />
         <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="[$(EntityFrameworkCoreVersionCurrent),$(EntityFrameworkCoreVersionNext))">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

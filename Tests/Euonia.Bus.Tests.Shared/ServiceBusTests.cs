@@ -27,7 +27,7 @@ public class ServiceBusTests
 		else
 		{
 			await Task.Delay(1000);
-			await _bus.SendAsync(new UserCreateCommand(), (int result) =>
+			await _bus.SendAsync(new UserCreateCommand(), null, (int result) =>
 			{
 				ArgumentOutOfRangeException.ThrowIfNegative(result);
 				Assert.Equal(1, result);
@@ -58,7 +58,7 @@ public class ServiceBusTests
 		}
 		else
 		{
-			await _bus.SendAsync(new FooCreateCommand(), (int result) => Assert.Equal(1, result), new SendOptions { Channel = "foo.create" });
+			await _bus.SendAsync(new FooCreateCommand(), null, (int result) => Assert.Equal(1, result), new SendOptions { Channel = "foo.create" });
 		}
 	}
 
@@ -72,7 +72,7 @@ public class ServiceBusTests
 		else
 		{
 			await Task.Delay(1000);
-			var result = await _bus.CallAsync(new FooCreateCommand(), new CallOptions { Channel = "foo.create" });
+			var result = await _bus.CallAsync(new FooCreateCommand(), null, new CallOptions { Channel = "foo.create" });
 			Assert.Equal(1, result);
 		}
 	}
@@ -89,7 +89,7 @@ public class ServiceBusTests
 			await Task.Delay(1000);
 			await Assert.ThrowsAnyAsync<MessageDeliverException>(async () =>
 			{
-				var _ = await _bus.CallAsync(new FooCreateCommand());
+				var _ = await _bus.CallAsync(new FooCreateCommand(), null);
 			});
 		}
 	}
@@ -106,7 +106,7 @@ public class ServiceBusTests
 			await Task.Delay(1000);
 			await Assert.ThrowsAnyAsync<NotFoundException>(async () =>
 			{
-				await _bus.SendAsync(new FooDeleteCommand());
+				await _bus.SendAsync(new FooDeleteCommand(), null);
 			});
 		}
 	}

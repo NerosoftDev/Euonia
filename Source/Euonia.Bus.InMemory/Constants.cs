@@ -8,10 +8,10 @@ internal static class Constants
 	/// <summary>
 	/// The default name for the In-Memory transport.
 	/// </summary>
-	public const string DefaultTransportName = "inmemory";
+	public const string DefaultTransportName = "InMemory";
 
 	/// <summary>
 	/// The configuration section name for In-Memory Bus settings.
 	/// </summary>
-	public const string ConfigurationSection = "ServiceBus:InMemory";
+	public const string ConfigurationSection = "EuoniaBus:InMemory";
 }

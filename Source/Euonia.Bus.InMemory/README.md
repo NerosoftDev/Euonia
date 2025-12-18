@@ -17,12 +17,12 @@ To get started with the In-Memory transport in Euonia.Bus, follow these steps:
    dotnet add package Euonia.Bus.InMemory
    ```
 
-2. **Configure the In-Memory Transport**: In your application's configuration file (e.g., appsettings.json), add the In-Memory transport settings under the `ServiceBus` section:
+2. **Configure the In-Memory Transport**: In your application's configuration file (e.g., appsettings.json), add the In-Memory transport settings under the `EuoniaBus` section:
    ```json
    {
-     "ServiceBus": {
+     "EuoniaBus": {
        "InMemory": {
-         "Name": "inmemory"
+         "Name": "InMemory"
        }
      }
    }
@@ -42,11 +42,11 @@ To get started with the In-Memory transport in Euonia.Bus, follow these steps:
 
 4. **Add Incoming/Outgoing Strategy**: Implement the necessary message handling strategies for incoming and outgoing messages.
    ```csharp
-   services.AddServiceBus(config =>
+   services.AddEuoniaBus(config =>
    {
-       config.SetStrategy("inmemory", builder =>
+       config.SetStrategy("InMemory", builder =>
        {
-           builder.Add(new AttributeTransportStrategy(["inmemory"]));
+           builder.Add(new AttributeTransportStrategy(["InMemory"]));
            builder.Add<LocalMessageTransportStrategy>();
            builder.EvaluateOutgoing(e => true);
            builder.EvaluateIncoming(e => true);

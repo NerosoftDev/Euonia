@@ -15,22 +15,22 @@ public static class ServiceCollectionExtensions
 	/// <param name="config"></param>
 	/// <param name="services">The <see cref="IServiceCollection"/> inatance.</param>
 	/// <returns></returns>
-	public static IBusConfigurator AddServiceBus(this IServiceCollection services, Action<BusConfigurator> config = null)
+	public static IBusConfigurator AddEuoniaBus(this IServiceCollection services, Action<BusConfigurator> config = null)
 	{
 		var configurator = Singleton<BusConfigurator>.Get(() => new BusConfigurator(services));
 
 		config?.Invoke(configurator);
 
 		var handlerTypes = configurator.Registrations
-		                               .Select(t => t.HandlerType)
-		                               .Distinct()
-		                               .ToList();
+									   .Select(t => t.HandlerType)
+									   .Distinct()
+									   .ToList();
 
 		foreach (var handlerType in handlerTypes)
 		{
 			services.TryAddTransient(handlerType);
 		}
-
+		services.AddPipeline();
 		services.AddSingleton<IBusConfigurator>(_ => configurator);
 
 		services.TryAddSingleton<IHandlerContext>(provider =>
@@ -66,7 +66,7 @@ public static class ServiceCollectionExtensions
 			services.TryAddKeyedSingleton<ITransportStrategy>(name, (_, _) => builder.Strategy);
 		}
 
-		services.TryAddTransient<IBus, ServiceBus>();
+		services.TryAddTransient<IBus, MessageBus>();
 		services.TryAddSingleton<IDispatcher, StrategicDispatcher>();
 		services.AddHostedService<RecipientActivator>();
 
