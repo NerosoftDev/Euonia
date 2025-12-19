@@ -16,17 +16,6 @@ namespace Nerosoft.Euonia.Application;
 public class ValidationBehavior<TMessage, TResponse> : IPipelineBehavior<TMessage, TResponse>
 	where TMessage : class, IRoutedMessage
 {
-	private readonly IValidator _validator;
-
-	/// <summary>
-	/// Initializes a new instance of the <see cref="ValidationBehavior{TMessage, TResponse}"/> class.
-	/// </summary>
-	/// <param name="validator">The validator used to validate message data.</param>
-	public ValidationBehavior(IValidator validator)
-	{
-		_validator = validator;
-	}
-
 	/// <summary>
 	/// Handles the message by validating its data and then invoking the next behavior in the pipeline.
 	/// </summary>
@@ -36,7 +25,7 @@ public class ValidationBehavior<TMessage, TResponse> : IPipelineBehavior<TMessag
 	/// <exception cref="ValidationException">Thrown when validation fails.</exception>
 	public async Task<TResponse> HandleAsync(TMessage context, PipelineDelegate<TMessage, TResponse> next)
 	{
-		await _validator.ValidateAsync(context.Data);
+		await Validator.ValidateAsync(context.Data);
 		return await next(context);
 	}
 }

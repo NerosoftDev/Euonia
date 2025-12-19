@@ -53,15 +53,22 @@ public class DefaultValidator : IValidator
 	public Task ValidateAsync<T>(T item) where T : class
 	{
 		var validator = _provider.GetService<IValidator<T>>();
-		return validator?.ValidateAsync(item)
-			.ContinueWith(task =>
-			{
-				if (task.Result.IsValid)
-				{
-					return;
-				}
-				var errors = task.Result.Errors.Select(error => new ValidationResult(error.PropertyName, error.ErrorMessage));
-				throw new ValidationException(string.Empty, errors);
-			});
+
+		if (validator == null)
+		{
+			return Task.CompletedTask;
+		}
+
+		return validator.ValidateAsync(item)
+		                .ContinueWith(task =>
+		                {
+			                if (task.Result.IsValid)
+			                {
+				                return;
+			                }
+
+			                var errors = task.Result.Errors.Select(error => new ValidationResult(error.PropertyName, error.ErrorMessage));
+			                throw new ValidationException(string.Empty, errors);
+		                });
 	}
 }

@@ -35,7 +35,7 @@ internal class UserApplicationService : BaseApplicationService, IUserApplication
 			() => tcs.TrySetResult(null)
 		);
 
-		await Bus.SendAsync(command, null, subject, cancellationToken);
+		await Bus.SendAsync(command, subject, cancellationToken);
 		return await tcs.Task;
 	}
 }
