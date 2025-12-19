@@ -42,13 +42,25 @@ public static partial class Extensions
 	}
 
 	/// <summary>
-	/// Gets the enum field description text from a resource manager.
+	/// Gets a localized description for the specified enum value.
 	/// </summary>
-	/// <param name="enum"></param>
-	/// <param name="resourceManager"></param>
-	/// <param name="resourceCulture"></param>
-	/// <returns></returns>
-	/// <exception cref="NullReferenceException"></exception>
+	/// <param name="enum">The enum value to retrieve the description for.</param>
+	/// <param name="resourceManager">
+	/// The <see cref="ResourceManager"/> used to look up localized strings.
+	/// The method will use the <see cref="DescriptionAttribute.Description"/> value as the resource key
+	/// when available; otherwise it will use the enum's <see cref="Enum.ToString"/> value as the key.
+	/// </param>
+	/// <param name="resourceCulture">
+	/// The <see cref="CultureInfo"/> to use when looking up the resource string.
+	/// Pass <c>null</c> to use the resource manager's default culture behavior.
+	/// </param>
+	/// <returns>
+	/// The localized description string if the resource manager contains a matching entry;
+	/// otherwise the result of the resource lookup (which may be <c>null</c>).
+	/// </returns>
+	/// <exception cref="NullReferenceException">
+	/// Thrown when the field corresponding to the provided enum value cannot be found on its type.
+	/// </exception>
 	public static string GetDescription(this Enum @enum, ResourceManager resourceManager, CultureInfo resourceCulture = null)
 	{
 		resourceCulture = resourceCulture ?? CultureInfo.CurrentCulture;
