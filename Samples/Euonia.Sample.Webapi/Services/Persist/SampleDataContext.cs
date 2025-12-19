@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Nerosoft.Euonia.Bus;
 using Nerosoft.Euonia.Modularity;
 
 namespace Nerosoft.Euonia.Sample.Persist;

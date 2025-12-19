@@ -187,8 +187,8 @@ public sealed class MessageBus : IBus
 	/// <typeparam name="TMessage">The type of message to send.</typeparam>
 	/// <typeparam name="TResult">The type of result expected from the message handler.</typeparam>
 	/// <param name="message">The message instance to send.</param>
-	/// <param name="behavior">Optional action to configure pipeline behaviors for this send operation.</param>
 	/// <param name="callback">Optional reactive subject to receive the result or errors asynchronously.</param>
+	/// <param name="behavior">Optional action to configure pipeline behaviors for this send operation.</param>
 	/// <param name="options">Send options including channel name, message identifiers, and correlation ID.</param>
 	/// <param name="metadataSetter">Optional action to configure message metadata.</param>
 	/// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
@@ -200,7 +200,7 @@ public sealed class MessageBus : IBus
 	/// optionally processes the message through a pipeline, and sends it to the first determined transport.
 	/// Results or exceptions are propagated through the callback subject if provided.
 	/// </remarks>
-	public async Task SendAsync<TMessage, TResult>(TMessage message, Action<PipelineMessage<IRoutedMessage, TResult>> behavior, Subject<TResult> callback = null, SendOptions options = null, Action<MessageMetadata> metadataSetter = null, CancellationToken cancellationToken = default)
+	public async Task SendAsync<TMessage, TResult>(TMessage message, Subject<TResult> callback, Action<PipelineMessage<IRoutedMessage, TResult>> behavior, SendOptions options, Action<MessageMetadata> metadataSetter = null, CancellationToken cancellationToken = default)
 		where TMessage : class
 	{
 		options ??= new SendOptions();

@@ -34,7 +34,7 @@ public class ServiceBusTests
 				ArgumentOutOfRangeException.ThrowIfNegative(result);
 				Assert.Equal(1, result);
 			});
-			await _bus.SendAsync(new UserCreateCommand(), null, subject);
+			await _bus.SendAsync(new UserCreateCommand(), subject, null);
 		}
 	}
 
@@ -68,7 +68,7 @@ public class ServiceBusTests
 				ArgumentOutOfRangeException.ThrowIfNegative(result);
 				Assert.Equal(1, result);
 			});
-			await _bus.SendAsync(new FooCreateCommand(), null, subject, new SendOptions { Channel = "foo.create" });
+			await _bus.SendAsync(new FooCreateCommand(), subject, null, new SendOptions { Channel = "foo.create" });
 		}
 	}
 
