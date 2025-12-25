@@ -1,19 +1,4 @@
 <Solution>
-    <Folder Name="/Samples/">
-        <Project Path="Samples/Euonia.Sample.Webapi/Euonia.Sample.Webapi.csproj" />
-        <File Path="Samples/common.props" />
-    </Folder>
-    <Folder Name="/Solution/">
-        <File Path=".editorconfig" />
-        <File Path="Directory.Packages.props" />
-        <File Path="NuGet.config" />
-        <File Path="README.md" />
-        <File Path="project.props" />
-    </Folder>
-    <Folder Name="/Source/">
-        <File Path="Source/common.props" />
-        <File Path="Source/resource.props" />
-    </Folder>
     <Folder Name="/Source/Bus/">
         <Project Path="Source/Euonia.Bus/Euonia.Bus.csproj" />
         <Project Path="Source/Euonia.Bus.Abstract/Euonia.Bus.Abstract.csproj" />
