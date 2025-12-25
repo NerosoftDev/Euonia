@@ -39,7 +39,7 @@ public class BusinessObjectFactory : IObjectFactory
 		var target = GetObjectInstance<TTarget>();
 		if (target is IEditableObject editable)
 		{
-			editable.MarkAsInsert();
+			editable.MarkAsNew();
 		}
 
 		try
@@ -115,9 +115,9 @@ public class BusinessObjectFactory : IObjectFactory
 		{
 			IEditableObject editableObject => editableObject.State switch
 			{
-				ObjectEditState.Insert => ObjectReflector.FindFactoryMethod<TTarget, FactoryInsertAttribute>([cancellationToken]),
-				ObjectEditState.Update => ObjectReflector.FindFactoryMethod<TTarget, FactoryUpdateAttribute>([cancellationToken]),
-				ObjectEditState.Delete => ObjectReflector.FindFactoryMethod<TTarget, FactoryDeleteAttribute>([cancellationToken]),
+				ObjectEditState.New => ObjectReflector.FindFactoryMethod<TTarget, FactoryInsertAttribute>([cancellationToken]),
+				ObjectEditState.Changed => ObjectReflector.FindFactoryMethod<TTarget, FactoryUpdateAttribute>([cancellationToken]),
+				ObjectEditState.Deleted => ObjectReflector.FindFactoryMethod<TTarget, FactoryDeleteAttribute>([cancellationToken]),
 				ObjectEditState.None => throw new InvalidOperationException(),
 				_ => throw new ArgumentOutOfRangeException(nameof(target), Resources.IDS_INVALID_STATE)
 			},

@@ -25,7 +25,7 @@ public class UserGeneralBusinessTests
 		business.Name = "admin";
 		var ex = await Assert.ThrowsAsync<ValidationException>(async () =>
 		{
-			business.MarkAsInsert();
+			business.MarkAsNew();
 			await business.SaveAsync(false, CancellationToken.None);
 		});
 		Assert.Equal(2, ex.Errors.Count());
@@ -37,7 +37,7 @@ public class UserGeneralBusinessTests
 	{
 		var business = await _factory.CreateAsync<UserGeneralBusiness>(CancellationToken.None);
 		business.Name = "admin";
-		business.MarkAsUpdate();
+		business.MarkAsChanged();
 		// var ex = await Record.ExceptionAsync(async () =>
 		// {
 		// 	await business.SaveAsync(false, CancellationToken.None);
@@ -54,7 +54,7 @@ public class UserGeneralBusinessTests
 	{
 		var business = await _factory.CreateAsync<UserGeneralBusiness>(CancellationToken.None);
 		business.Name = "admin";
-		business.MarkAsDelete(true);
+		business.MarkAsDeleted(true);
 		// var ex = await Record.ExceptionAsync(async () =>
 		// {
 		// 	await business.SaveAsync(false, CancellationToken.None);
@@ -71,7 +71,7 @@ public class UserGeneralBusinessTests
 	{
 		var business = await _factory.CreateAsync<UserGeneralBusiness>(CancellationToken.None);
 		business.Name = "admin";
-		business.MarkAsDelete();
+		business.MarkAsDeleted();
 		var exception = await Record.ExceptionAsync(async () =>
 		{
 			await business.SaveAsync(false, CancellationToken.None);

@@ -13,15 +13,15 @@ public enum ObjectEditState
     /// <summary>
     /// Insert
     /// </summary>
-    Insert,
+    New,
 
     /// <summary>
     /// Update
     /// </summary>
-    Update,
+    Changed,
 
     /// <summary>
     /// Delete
     /// </summary>
-    Delete,
+    Deleted,
 }

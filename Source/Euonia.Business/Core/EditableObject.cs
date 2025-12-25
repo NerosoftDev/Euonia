@@ -15,19 +15,19 @@ public abstract class EditableObject<T> : BusinessObject<T>, IOperableProperty, 
 	public ObjectEditState State { get; private set; } = ObjectEditState.None;
 
 	/// <summary>
-	/// Gets a value indicating whether the object is new to insert.
+	/// Gets a value indicating whether the object is new.
 	/// </summary>
-	public bool IsInsert => State == ObjectEditState.Insert;
+	public bool IsNew => State == ObjectEditState.New;
 
 	/// <summary>
 	/// Gets a value indicating whether the object has changed.
 	/// </summary>
-	public bool IsUpdate => State == ObjectEditState.Update;
+	public bool IsChanged => State == ObjectEditState.Changed;
 
 	/// <summary>
 	/// Gets a value indicating whether the object would be deleted.
 	/// </summary>
-	public bool IsDelete => State == ObjectEditState.Delete;
+	public bool IsDeleted => State == ObjectEditState.Deleted;
 
 	/// <summary>
 	/// Gets or sets a value indicating whether to check object rules on delete.
@@ -35,35 +35,97 @@ public abstract class EditableObject<T> : BusinessObject<T>, IOperableProperty, 
 	public bool CheckObjectRulesOnDelete { get; private set; }
 
 	/// <summary>
-	/// Mark the object state as <see cref="ObjectEditState.Insert"/>.
+	/// Mark the object state as <see cref="ObjectEditState.New"/>.
 	/// </summary>
-	public void MarkAsInsert()
+	public void MarkAsNew()
 	{
-		State = ObjectEditState.Insert;
+		State = ObjectEditState.New;
 	}
 
 	/// <summary>
-	/// Mark the object state as <see cref="ObjectEditState.Update"/>.
+	/// Mark the object state as <see cref="ObjectEditState.Changed"/>.
 	/// </summary>
-	public void MarkAsUpdate()
+	public void MarkAsChanged()
 	{
-		State = ObjectEditState.Update;
+		State = ObjectEditState.Changed;
 	}
 
 	/// <summary>
-	/// Mark the object state as <see cref="ObjectEditState.Delete"/>.
+	/// Mark the object state as <see cref="ObjectEditState.Deleted"/>.
 	/// </summary>
 	/// <param name="checkObjectRules"></param>
-	public void MarkAsDelete(bool checkObjectRules = false)
+	public void MarkAsDeleted(bool checkObjectRules = false)
 	{
-		State = ObjectEditState.Delete;
+		State = ObjectEditState.Deleted;
 		CheckObjectRulesOnDelete = checkObjectRules;
 	}
 
 	/// <summary>
-	/// 
+	/// Counter to track busy state.
 	/// </summary>
-	public bool IsBusy { get; internal set; }
+	private int _isBusyCounter;
+
+	/// <summary>
+	/// Gets a value indicating whether the object is busy.
+	/// </summary>
+	public virtual bool IsBusy => IsSelfBusy || (FieldManager != null && FieldManager.IsBusy());
+
+	/// <summary>
+	/// Gets a value indicating whether the object itself is busy.
+	/// </summary>
+	public virtual bool IsSelfBusy => _isBusyCounter > 0 || Rules.HasRunningRules;
+
+	private BusyChangedEventHandler _busyChanged;
+
+	/// <summary>
+	/// Event raised when the busy status changes.
+	/// </summary>
+	public event BusyChangedEventHandler BusyChanged
+	{
+		// add => _busyChanged += value;
+		// remove => _busyChanged -= value;
+		add => _busyChanged = (BusyChangedEventHandler)Delegate.Combine(_busyChanged, value);
+		remove => _busyChanged = (BusyChangedEventHandler)Delegate.Remove(_busyChanged, value);
+	}
+
+	/// <summary>
+	/// Raises the <see cref="BusyChanged"/> event.
+	/// </summary>
+	/// <param name="args"></param>
+	protected virtual void OnBusyChanged(BusyChangedEventArgs args)
+	{
+		_busyChanged?.Invoke(this, args);
+	}
+
+	/// <summary>
+	/// Marks the object as busy.
+	/// </summary>
+	protected virtual void MarkAsBusy()
+	{
+		var updatedValue = Interlocked.Increment(ref _isBusyCounter);
+
+		if (updatedValue == 1)
+		{
+			OnBusyChanged(new BusyChangedEventArgs(string.Empty, true));
+		}
+	}
+
+	/// <summary>
+	/// Marks the object as idle.
+	/// </summary>
+	protected virtual void MarkAsIdle()
+	{
+		var updatedValue = Interlocked.Decrement(ref _isBusyCounter);
+		switch (updatedValue)
+		{
+			case < 0:
+				_ = Interlocked.CompareExchange(ref _isBusyCounter, 0, updatedValue);
+				break;
+			case 0:
+				OnBusyChanged(new BusyChangedEventArgs("", false));
+				break;
+		}
+	}
 
 	#region ISavable implments
 
@@ -79,7 +141,7 @@ public abstract class EditableObject<T> : BusinessObject<T>, IOperableProperty, 
 	/// <summary>
 	/// Gets a value indicating whether the object is savable.
 	/// </summary>
-	public virtual bool IsSavable => IsValid && (HasChangedProperties || IsUpdate) && !IsBusy;
+	public virtual bool IsSavable => IsValid && (HasChangedProperties || IsChanged) && !IsBusy;
 
 	/// <summary>
 	/// Called when the object has been saved.
@@ -133,7 +195,7 @@ public abstract class EditableObject<T> : BusinessObject<T>, IOperableProperty, 
 		{
 			if (forceUpdate)
 			{
-				MarkAsUpdate();
+				MarkAsChanged();
 			}
 			else
 			{
@@ -141,7 +203,7 @@ public abstract class EditableObject<T> : BusinessObject<T>, IOperableProperty, 
 			}
 		}
 
-		if (!IsDelete || CheckObjectRulesOnDelete)
+		if (!IsDeleted || CheckObjectRulesOnDelete)
 		{
 			await Rules.CheckObjectRulesAsync(true, cancellationToken);
 			if (Rules.HasRunningRules)
@@ -159,13 +221,16 @@ public abstract class EditableObject<T> : BusinessObject<T>, IOperableProperty, 
 			}
 		}
 
-		if (!IsValid && (!IsDelete || CheckObjectRulesOnDelete))
+		if (!IsValid && (!IsDeleted || CheckObjectRulesOnDelete))
 		{
 			var errors = Rules.BrokenRules.Select(t => new ValidationResult(t.Property, t.Description));
 			throw new ValidationException("Object not valid for save.", errors);
 		}
 
+		MarkAsBusy();
 		var result = await BusinessContext.GetRequiredService<IObjectFactory>().SaveAsync((T)this, cancellationToken);
+		result?.MarkAsIdle();
+		MarkAsIdle();
 		OnSaved(result, null, userState);
 		return result;
 	}

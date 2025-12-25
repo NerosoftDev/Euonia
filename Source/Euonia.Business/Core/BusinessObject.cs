@@ -436,10 +436,8 @@ public abstract class BusinessObject : IBusinessObject, IHasRuleCheck, IDisposab
 
 	#region Fields
 
-	private FieldDataManager _fieldManager;
-
 	/// <inheritdoc/>
-	public FieldDataManager FieldManager => _fieldManager ??= new FieldDataManager(GetType());
+	public FieldDataManager FieldManager => field ??= new FieldDataManager(GetType());
 
 	#endregion
 

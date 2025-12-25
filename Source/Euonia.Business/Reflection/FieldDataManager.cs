@@ -246,4 +246,9 @@ public class FieldDataManager
             }
         }
     }
+
+    internal bool IsBusy()
+    {
+	    return _fieldData.Any(t => t.Value.IsBusy);
+    }
 }
