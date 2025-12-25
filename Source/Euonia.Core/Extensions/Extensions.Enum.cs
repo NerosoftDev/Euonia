@@ -7,7 +7,7 @@ using Nerosoft.Euonia.Reflection;
 public static partial class Extensions
 {
 	/// <summary>
-	/// 
+	/// Determines whether the specified enum is defined in the enum type.
 	/// </summary>
 	/// <param name="enum"></param>
 	/// <typeparam name="TEnum"></typeparam>
@@ -19,7 +19,7 @@ public static partial class Extensions
 	}
 
 	/// <summary>
-	/// Gets a attribute of <typeparamref name="T"/> on enum.
+	/// Gets an attribute of <typeparamref name="T"/> on enum.
 	/// </summary>
 	/// <typeparam name="T">The type of attribute.</typeparam>
 	/// <param name="enum"></param>
@@ -48,7 +48,7 @@ public static partial class Extensions
 	/// <param name="resourceManager">
 	/// The <see cref="ResourceManager"/> used to look up localized strings.
 	/// The method will use the <see cref="DescriptionAttribute.Description"/> value as the resource key
-	/// when available; otherwise it will use the enum's <see cref="Enum.ToString"/> value as the key.
+	/// when available; otherwise it will use the enum's <see cref="Enum.ToString()"/> value as the key.
 	/// </param>
 	/// <param name="resourceCulture">
 	/// The <see cref="CultureInfo"/> to use when looking up the resource string.
@@ -80,16 +80,16 @@ public static partial class Extensions
 	/// <summary>
 	/// 
 	/// </summary>
-	/// <param name="value"></param>
+	/// <param name="enum"></param>
 	/// <typeparam name="TEnum"></typeparam>
 	/// <returns></returns>
-	public static IEnumerable<TEnum> GetFlags<TEnum>(this Enum value)
+	public static IEnumerable<TEnum> GetFlags<TEnum>(this Enum @enum)
 		where TEnum : Enum
 	{
 		// ReSharper disable once LoopCanBeConvertedToQuery
-		foreach (Enum item in Enum.GetValues(value.GetType()))
+		foreach (Enum item in Enum.GetValues(@enum.GetType()))
 		{
-			if (value.HasFlag(item))
+			if (@enum.HasFlag(item))
 			{
 				yield return (TEnum)item;
 			}
@@ -99,27 +99,27 @@ public static partial class Extensions
 	/// <summary>
 	/// 
 	/// </summary>
-	/// <param name="value"></param>
+	/// <param name="enum"></param>
 	/// <returns></returns>
-	public static IEnumerable<Enum> GetFlags(this Enum value)
+	public static IEnumerable<Enum> GetFlags(this Enum @enum)
 	{
-		return GetFlags(value, Enum.GetValues(value.GetType()).Cast<Enum>().ToArray());
+		return GetFlags(@enum, Enum.GetValues(@enum.GetType()).Cast<Enum>().ToArray());
 	}
 
 	/// <summary>
 	/// 
 	/// </summary>
-	/// <param name="value"></param>
+	/// <param name="enum"></param>
 	/// <returns></returns>
-	public static IEnumerable<Enum> GetIndividualFlags(this Enum value)
+	public static IEnumerable<Enum> GetIndividualFlags(this Enum @enum)
 	{
-		return GetFlags(value, GetFlagValues(value.GetType()).ToArray());
+		return GetFlags(@enum, GetFlagValues(@enum.GetType()).ToArray());
 	}
 
 	// ReSharper disable once SuggestBaseTypeForParameter
-	private static IEnumerable<Enum> GetFlags(Enum value, Enum[] values)
+	private static IEnumerable<Enum> GetFlags(Enum @enum, Enum[] values)
 	{
-		var bits = System.Convert.ToUInt64(value);
+		var bits = System.Convert.ToUInt64(@enum);
 		var results = new List<Enum>();
 		for (var i = values.Length - 1; i >= 0; i--)
 		{
@@ -143,12 +143,12 @@ public static partial class Extensions
 			return Enumerable.Empty<Enum>();
 		}
 
-		if (System.Convert.ToUInt64(value) != 0L)
+		if (System.Convert.ToUInt64(@enum) != 0L)
 		{
 			return results.Reverse<Enum>();
 		}
 
-		if (bits == System.Convert.ToUInt64(value) && values.Length > 0 && System.Convert.ToUInt64(values[0]) == 0L)
+		if (bits == System.Convert.ToUInt64(@enum) && values.Length > 0 && System.Convert.ToUInt64(values[0]) == 0L)
 		{
 			return values.Take(1);
 		}
