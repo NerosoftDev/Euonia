@@ -2,7 +2,7 @@
 using Nerosoft.Euonia.Claims;
 using Nerosoft.Euonia.Domain;
 
-namespace Nerosoft.Euonia.Sample.Business;
+namespace Nerosoft.Euonia.Sample.Domain;
 
 /// <summary>
 /// Base class for command objects that require access to a lazy service provider and the current user principal.

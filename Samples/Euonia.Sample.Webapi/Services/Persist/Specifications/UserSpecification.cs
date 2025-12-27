@@ -1,5 +1,5 @@
 ﻿using Nerosoft.Euonia.Linq;
-using Nerosoft.Euonia.Sample.Domain.Aggregates;
+using Nerosoft.Euonia.Sample.Persist.Entities;
 
 namespace Nerosoft.Euonia.Sample.Persist.Specifications;
 
@@ -8,16 +8,16 @@ namespace Nerosoft.Euonia.Sample.Persist.Specifications;
 /// </summary>
 internal static class UserSpecification
 {
-	public static readonly Specification<User> All = new DirectSpecification<User>(t => t.Id != null);
+	public static readonly Specification<UserEntity> All = new DirectSpecification<UserEntity>(t => t.Id != null);
 
 	/// <summary>
 	/// Id equals <paramref name="id"/>.
 	/// </summary>
 	/// <param name="id"></param>
 	/// <returns></returns>
-	public static Specification<User> IdEquals(string id)
+	public static Specification<UserEntity> IdEquals(string id)
 	{
-		return new DirectSpecification<User>(t => t.Id == id);
+		return new DirectSpecification<UserEntity>(t => t.Id == id);
 	}
 
 	/// <summary>
@@ -25,9 +25,9 @@ internal static class UserSpecification
 	/// </summary>
 	/// <param name="id"></param>
 	/// <returns></returns>
-	public static Specification<User> IdNotEquals(string id)
+	public static Specification<UserEntity> IdNotEquals(string id)
 	{
-		return new DirectSpecification<User>(t => t.Id != id);
+		return new DirectSpecification<UserEntity>(t => t.Id != id);
 	}
 
 	/// <summary>
@@ -35,10 +35,10 @@ internal static class UserSpecification
 	/// </summary>
 	/// <param name="username"></param>
 	/// <returns></returns>
-	public static Specification<User> UsernameEquals(string username)
+	public static Specification<UserEntity> UsernameEquals(string username)
 	{
 		username = username.Normalize(TextCaseType.Lower);
-		return new DirectSpecification<User>(t => t.Username == username);
+		return new DirectSpecification<UserEntity>(t => t.Username == username);
 	}
 
 	/// <summary>
@@ -46,10 +46,10 @@ internal static class UserSpecification
 	/// </summary>
 	/// <param name="username"></param>
 	/// <returns></returns>
-	public static Specification<User> UsernameContains(string username)
+	public static Specification<UserEntity> UsernameContains(string username)
 	{
 		username = username.Normalize(TextCaseType.Lower);
-		return new DirectSpecification<User>(t => t.Username.Contains(username));
+		return new DirectSpecification<UserEntity>(t => t.Username.Contains(username));
 	}
 
 	/// <summary>
@@ -57,10 +57,10 @@ internal static class UserSpecification
 	/// </summary>
 	/// <param name="nickname"></param>
 	/// <returns></returns>
-	public static Specification<User> NicknameContains(string nickname)
+	public static Specification<UserEntity> NicknameContains(string nickname)
 	{
 		nickname = nickname.Normalize(TextCaseType.Lower);
-		return new DirectSpecification<User>(t => t.Nickname.ToLower().Contains(nickname));
+		return new DirectSpecification<UserEntity>(t => t.Nickname.ToLower().Contains(nickname));
 	}
 
 	/// <summary>
@@ -68,33 +68,33 @@ internal static class UserSpecification
 	/// </summary>
 	/// <param name="email"></param>
 	/// <returns></returns>
-	public static Specification<User> EmailEquals(string email)
+	public static Specification<UserEntity> EmailEquals(string email)
 	{
 		email = email.Normalize(TextCaseType.Lower);
-		return new DirectSpecification<User>(t => t.Email == email);
+		return new DirectSpecification<UserEntity>(t => t.Email == email);
 	}
 
-	public static Specification<User> EmailContains(string email)
+	public static Specification<UserEntity> EmailContains(string email)
 	{
 		email = email.Normalize(TextCaseType.Lower);
-		return new DirectSpecification<User>(t => t.Email.Contains(email));
+		return new DirectSpecification<UserEntity>(t => t.Email.Contains(email));
 	}
 
-	public static Specification<User> PhoneEquals(string phone)
+	public static Specification<UserEntity> PhoneEquals(string phone)
 	{
 		phone = phone.Normalize(TextCaseType.Lower);
-		return new DirectSpecification<User>(t => t.Phone == phone);
+		return new DirectSpecification<UserEntity>(t => t.Phone == phone);
 	}
 
-	public static Specification<User> PhoneContains(string phone)
+	public static Specification<UserEntity> PhoneContains(string phone)
 	{
 		phone = phone.Normalize(TextCaseType.Lower);
-		return new DirectSpecification<User>(t => t.Phone.Contains(phone));
+		return new DirectSpecification<UserEntity>(t => t.Phone.Contains(phone));
 	}
 
-	public static Specification<User> Matches(string keyword)
+	public static Specification<UserEntity> Matches(string keyword)
 	{
-		ISpecification<User>[] specifications =
+		ISpecification<UserEntity>[] specifications =
 		[
 			UsernameContains(keyword),
 			NicknameContains(keyword),
@@ -102,11 +102,11 @@ internal static class UserSpecification
 			PhoneContains(keyword)
 		];
 
-		return new CompositeSpecification<User>(PredicateOperator.OrElse, specifications);
+		return new CompositeSpecification<UserEntity>(PredicateOperator.OrElse, specifications);
 	}
 
-	public static Specification<User> HasRole(string name)
+	public static Specification<UserEntity> HasRole(string name)
 	{
-		return new DirectSpecification<User>(user => user.Roles.Any(role => role.Name == name));
+		return new DirectSpecification<UserEntity>(user => user.Roles.Any(role => role.Name == name));
 	}
 }

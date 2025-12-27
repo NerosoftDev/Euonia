@@ -3,7 +3,7 @@ using Nerosoft.Euonia.Business;
 using Nerosoft.Euonia.Domain;
 using Nerosoft.Euonia.Repository;
 
-namespace Nerosoft.Euonia.Sample.Business;
+namespace Nerosoft.Euonia.Sample.Domain;
 
 /// <summary>
 /// Base class for command handlers that encapsulates common execution patterns.

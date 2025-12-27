@@ -17,7 +17,7 @@ namespace Nerosoft.Euonia.Sample.Persist;
 /// <typeparam name="TKey">The type of the entity primary key. Must implement <see cref="IEquatable{TKey}"/>.</typeparam>
 internal abstract class BaseRepository<TContext, TEntity, TKey> : EfCoreRepository<TContext, TEntity, TKey>, IScopedDependency
 	where TContext : DataContextBase<TContext>
-	where TEntity : class, IEntity<TKey>
+	where TEntity : class, IPersistent<TKey>
 	where TKey : IEquatable<TKey>
 {
 	/// <summary>

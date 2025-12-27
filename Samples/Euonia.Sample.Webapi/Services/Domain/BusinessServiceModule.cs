@@ -1,6 +1,6 @@
 ﻿using Nerosoft.Euonia.Modularity;
 
-namespace Nerosoft.Euonia.Sample.Business;
+namespace Nerosoft.Euonia.Sample.Domain;
 
 /// <summary>
 /// Registers business-layer services for the business module.

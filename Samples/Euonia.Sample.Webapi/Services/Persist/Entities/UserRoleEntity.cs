@@ -1,26 +1,26 @@
-﻿using Nerosoft.Euonia.Domain;
+﻿using Nerosoft.Euonia.Repository;
 using Nerosoft.Euonia.Sample.Constants;
 
-namespace Nerosoft.Euonia.Sample.Domain.Aggregates;
+namespace Nerosoft.Euonia.Sample.Persist.Entities;
 
 /// <summary>
 /// Represents a role assigned to a user.
 /// </summary>
-public class UserRole : Entity<string>, IHasCreateTime
+public class UserRoleEntity : Persistent<string>, IHasCreateTime
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="UserRole"/> class.
+	/// Initializes a new instance of the <see cref="UserRoleEntity"/> class.
 	/// This constructor is private to enforce controlled creation of instances.
 	/// </summary>
-	private UserRole()
+	private UserRoleEntity()
 	{
 	}
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="UserRole"/> class with the specified name.
+	/// Initializes a new instance of the <see cref="UserRoleEntity"/> class with the specified name.
 	/// </summary>
 	/// <param name="name">The name of the role.</param>
-	private UserRole(string name)
+	private UserRoleEntity(string name)
 		: this()
 	{
 		Name = name;
@@ -44,14 +44,14 @@ public class UserRole : Entity<string>, IHasCreateTime
 	/// <summary>
 	/// Gets or sets the user associated with this role.
 	/// </summary>
-	public User User { get; set; }
+	public UserEntity UserEntity { get; set; }
 
 	/// <summary>
-	/// Creates a new instance of the <see cref="UserRole"/> class with the specified name.
+	/// Creates a new instance of the <see cref="UserRoleEntity"/> class with the specified name.
 	/// </summary>
 	/// <param name="name">The name of the role.</param>
-	/// <returns>A new instance of the <see cref="UserRole"/> class.</returns>
-	internal static UserRole Create(string name)
+	/// <returns>A new instance of the <see cref="UserRoleEntity"/> class.</returns>
+	internal static UserRoleEntity Create(string name)
 	{
 		name = name.Trim().ToLowerInvariant();
 		if (!RoleName.All.Contains(name))
@@ -62,6 +62,6 @@ public class UserRole : Entity<string>, IHasCreateTime
 		{
 		}
 
-		return new UserRole(name);
+		return new UserRoleEntity(name);
 	}
 }

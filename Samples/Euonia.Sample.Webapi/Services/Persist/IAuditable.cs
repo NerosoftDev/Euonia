@@ -1,6 +1,6 @@
-﻿using Nerosoft.Euonia.Domain;
+﻿using Nerosoft.Euonia.Repository;
 
-namespace Nerosoft.Euonia.Sample.Domain;
+namespace Nerosoft.Euonia.Sample.Persist;
 
 /// <summary>
 /// Represent the object has auditing properties with generic key type.

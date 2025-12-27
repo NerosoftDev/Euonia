@@ -1,7 +1,8 @@
 ﻿using Nerosoft.Euonia.Bus;
 using Nerosoft.Euonia.Business;
 using Nerosoft.Euonia.Repository;
-using Nerosoft.Euonia.Sample.Business.Actuators;
+using Nerosoft.Euonia.Sample.Domain;
+using Nerosoft.Euonia.Sample.Domain.Aggregates;
 using Nerosoft.Euonia.Sample.Domain.Commands;
 
 namespace Nerosoft.Euonia.Sample.Business.Handlers;
@@ -14,15 +15,14 @@ internal sealed class UserCommandHandler(IUnitOfWorkManager unitOfWork, IObjectF
 	{
 		return ExecuteAsync(async () =>
 		{
-			var business = await Factory.CreateAsync<UserGeneralBusiness>(cancellationToken);
-			business.Username = message.Username;
-			business.Password = message.Password;
+			var business = await Factory.CreateAsync<User>(message.Username, cancellationToken);
 			business.Nickname = message.Nickname;
 			business.Email = message.Email;
 			business.Phone = message.Phone;
-			business.MarkAsInsert();
+			business.SetPassword(message.Password);
+			business.MarkAsNew();
 			await business.SaveAsync(false, cancellationToken);
 			return business.Id;
-		}, context.Response);
+		}, context.Response, cancellationToken);
 	}
 }

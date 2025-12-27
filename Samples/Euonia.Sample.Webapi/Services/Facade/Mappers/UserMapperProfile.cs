@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Nerosoft.Euonia.Sample.Domain.Aggregates;
+using Nerosoft.Euonia.Sample.Persist.Entities;
 using Nerosoft.Euonia.Sample.Domain.Commands;
 using Nerosoft.Euonia.Sample.Domain.Dtos;
 
@@ -12,7 +12,7 @@ public class UserMapperProfile : Profile
 		CreateMap<UserCreateDto, UserCreateCommand>();
 		CreateMap<UserUpdateDto, UserUpdateCommand>();
 
-		CreateMap<User, UserDetailDto>();
-		CreateMap<User, UserListDto>();
+		CreateMap<UserEntity, UserDetailDto>();
+		CreateMap<UserEntity, UserListDto>();
 	}
 }

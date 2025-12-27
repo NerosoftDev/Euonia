@@ -1,13 +1,12 @@
 ﻿using System.Text.RegularExpressions;
 using Nerosoft.Euonia.Business;
-using Nerosoft.Euonia.Sample.Business.Actuators;
 
 namespace Nerosoft.Euonia.Sample.Business.Rules;
 
 /// <summary>
 /// Represents a rule to validate the strength of a user's password during creation or update.
 /// </summary>
-internal sealed class PasswordStrengthRule : RuleBase
+internal sealed class PasswordStrengthRule(IPropertyInfo property) : RuleBase(property)
 {
 	/// <summary>
 	/// The regular expression pattern used to validate password strength.
@@ -27,30 +26,32 @@ internal sealed class PasswordStrengthRule : RuleBase
 	/// <returns>A task that represents the asynchronous operation.</returns>
 	public override async Task ExecuteAsync(IRuleContext context, CancellationToken cancellationToken = default)
 	{
-		// Ensure the target object is of type UserGeneralBusiness.
-		if (context.Target is not UserGeneralBusiness target)
+		// Ensure the target object is of type IEditableObject.
+		if (context.Target is not IEditableObject target)
 		{
 			return;
 		}
 
+		var value = target.ReadProperty(Property)?.ToString();
+
 		// Validate the password during user creation.
-		if (target.IsInsert)
+		if (target.IsNew)
 		{
 			// Check if the password is null or whitespace.
-			if (string.IsNullOrWhiteSpace(target.Password))
+			if (string.IsNullOrWhiteSpace(value))
 			{
 				// Add an error result if the password is required but missing.
 				context.AddErrorResult("Password is required.");
 			}
 			// Check if the password matches the strength requirements.
-			else if (!Regex.IsMatch(target.Password, REGEX_PATTERN))
+			else if (!Regex.IsMatch(value, REGEX_PATTERN))
 			{
 				// Add an error result if the password does not meet the strength requirements.
 				context.AddErrorResult("Password does not meet strength requirements.");
 			}
 		}
 		// Validate the password during user updates.
-		else if (target.IsUpdate && target.ChangedProperties.Contains(UserGeneralBusiness.PasswordProperty) && !Regex.IsMatch(target.Password, REGEX_PATTERN))
+		else if (target.IsChanged && !string.IsNullOrEmpty(value) && !Regex.IsMatch(value, REGEX_PATTERN))
 		{
 			// Add an error result if the updated password does not meet the strength requirements.
 			context.AddErrorResult("Password does not meet strength requirements.");

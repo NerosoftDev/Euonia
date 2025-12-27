@@ -1,19 +1,19 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Nerosoft.Euonia.Repository;
-using Nerosoft.Euonia.Sample.Domain.Aggregates;
+using Nerosoft.Euonia.Sample.Persist.Entities;
 using Nerosoft.Euonia.Sample.Domain.Repositories;
 
 namespace Nerosoft.Euonia.Sample.Persist.Repositories;
 
 internal class UserRepository(IContextProvider provider)
-	: BaseRepository<SampleDataContext, User, string>(provider), IUserRepository
+	: BaseRepository<SampleDataContext, UserEntity, string>(provider), IUserRepository
 {
-	public Task<List<User>> FindAsync(Expression<Func<User, bool>> predicate, string[] properties, int skip, int take, CancellationToken cancellationToken = default)
+	public Task<List<UserEntity>> FindAsync(Expression<Func<UserEntity, bool>> predicate, string[] properties, int skip, int take, CancellationToken cancellationToken = default)
 	{
 		return FindAsync(predicate, Handle, cancellationToken);
 
-		IQueryable<User> Handle(IQueryable<User> query)
+		IQueryable<UserEntity> Handle(IQueryable<UserEntity> query)
 		{
 			if (properties?.Length > 0)
 			{
