@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace Nerosoft.Euonia.Business;
 
@@ -10,20 +12,20 @@ public class PropertyInfo<T> : IPropertyInfo
 {
 	/// <inheritdoc />
 	public PropertyInfo(string name)
-		: this(name, null)
+		: this(name, null, null)
 	{
 		Name = name;
 	}
 
 	/// <inheritdoc />
-	public PropertyInfo(string name, T defaultValue)
-		: this(name, null, defaultValue)
+	public PropertyInfo(string name, string friendlyName, T defaultValue)
+		: this(name, friendlyName, null, defaultValue)
 	{
 	}
 
 	/// <inheritdoc />
-	public PropertyInfo(string name, Type objectType)
-		: this(name, objectType, GetDefaultValue())
+	public PropertyInfo(string name, string friendlyName, Type objectType)
+		: this(name, friendlyName, objectType, GetDefaultValue())
 	{
 	}
 
@@ -31,17 +33,53 @@ public class PropertyInfo<T> : IPropertyInfo
 	/// Initializes a new instance of the <see cref="PropertyInfo{T}"/> class.
 	/// </summary>
 	/// <param name="name"></param>
+	/// <param name="friendlyName"></param>
 	/// <param name="objectType"></param>
 	/// <param name="defaultValue"></param>
-	public PropertyInfo(string name, Type objectType, T defaultValue)
+	public PropertyInfo(string name, string friendlyName, Type objectType, T defaultValue)
 	{
 		Name = name;
+		FriendlyName = friendlyName;
 		_propertyInfo = objectType?.GetProperty(name);
 		DefaultValue = defaultValue;
 	}
 
 	/// <inheritdoc />
 	public string Name { get; }
+
+	/// <summary>
+	/// Gets the friendly display name of the property.
+	/// </summary>
+	public string FriendlyName
+	{
+		get
+		{
+			if (string.IsNullOrWhiteSpace(field))
+			{
+				return field;
+			}
+
+			if (_propertyInfo != null)
+			{
+				var displayAttribute = _propertyInfo.GetCustomAttribute<DisplayAttribute>();
+				if (displayAttribute != null)
+				{
+					return displayAttribute.GetName() ?? Name;
+				}
+
+				var displayNameAttribute = _propertyInfo.GetCustomAttribute<DisplayNameAttribute>();
+				if (displayNameAttribute != null)
+				{
+					return displayNameAttribute.DisplayName;
+				}
+			}
+
+			{
+			}
+
+			return Name;
+		}
+	}
 
 	/// <inheritdoc />
 	public int CompareTo(object obj)
@@ -58,6 +96,11 @@ public class PropertyInfo<T> : IPropertyInfo
 	public virtual T DefaultValue { get; }
 
 	object IPropertyInfo.DefaultValue => DefaultValue;
+
+	/// <summary>
+	/// Gets a value indicating whether this property is a child object.
+	/// </summary>
+	public virtual bool IsChild => typeof(IBusinessObject).IsAssignableFrom(typeof(T));
 
 	private readonly PropertyInfo _propertyInfo;
 

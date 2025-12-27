@@ -20,9 +20,9 @@ public partial class CommonRule
         /// Initialize a new instance of <see cref="Required"/>.
         /// </summary>
         /// <param name="property"></param>
-        /// <param name="messageDelegate"></param>
-        public Required(IPropertyInfo property, Func<string> messageDelegate)
-            : base(property, messageDelegate)
+        /// <param name="messageFactory"></param>
+        public Required(IPropertyInfo property, Func<string> messageFactory)
+            : base(property, messageFactory)
         {
         }
 
@@ -34,7 +34,7 @@ public partial class CommonRule
                 var value = target.ReadProperty(Property);
                 if (value == null || string.IsNullOrWhiteSpace(value.ToString()))
                 {
-                    var message = string.Format(MessageDelegate(), Property.Name);
+                    var message = string.Format(MessageFactory(), Property.FriendlyName);
                     context.AddErrorResult(message);
                 }
             }

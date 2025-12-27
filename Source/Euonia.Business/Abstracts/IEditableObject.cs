@@ -3,13 +3,13 @@
 /// <summary>
 /// Represents an object which can be edited.
 /// </summary>
-public interface IEditableObject : ITrackableObject
+public interface IEditableObject : IBusinessObject, ITrackableObject
 {
 	/// <summary>
 	/// Gets the current object state.
 	/// </summary>
 	ObjectEditState State { get; }
-	
+
 	/// <summary>
 	/// Gets a value indicating whether to check object rules on delete.
 	/// </summary>

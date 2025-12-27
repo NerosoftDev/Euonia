@@ -20,6 +20,9 @@ public class BusinessContext
 		User = contextAccessor.ServiceProvider.GetService<UserPrincipal>();
 	}
 
+	/// <summary>
+	/// Get the BusinessContextAccessor object.
+	/// </summary>
 	internal BusinessContextAccessor ContextAccessor { get; }
 
 	/// <summary>
@@ -32,7 +35,10 @@ public class BusinessContext
 	/// </summary>
 	public UserPrincipal User { get; set; }
 
-	internal IServiceProvider CurrentServiceProvider => ContextAccessor.ServiceProvider;
+	/// <summary>
+	/// Get the current service provider.
+	/// </summary>
+	public IServiceProvider CurrentServiceProvider => ContextAccessor.ServiceProvider;
 
 	/// <summary>
 	/// Get the service object of the specified type.
