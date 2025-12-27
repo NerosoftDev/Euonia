@@ -1,7 +1,6 @@
 ﻿using System.Data;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
-using Nerosoft.Euonia.Domain;
 
 namespace Nerosoft.Euonia.Repository.Mongo;
 
@@ -96,36 +95,4 @@ public abstract class DataContextBase<TContext> : MongoDbContext, IRepositoryCon
 	{
 		return new List<object>();
 	}
-
-	/// <summary>
-	/// Publishes the domain events.
-	/// </summary>
-	/// <param name="events"></param>
-	protected virtual void PublishDomainEvents(IEnumerable<DomainEvent> events)
-	{
-		if (!EnabledPublishEvents)
-		{
-			return;
-		}
-
-		try
-		{
-			_ = Parallel.ForEachAsync(events, PublishEventAsync);
-		}
-		catch (Exception exception)
-		{
-			_logger.LogError(exception, "PublishDomainEvents Error");
-			Console.WriteLine(exception);
-		}
-	}
-
-	/// <summary>
-	/// Publishes the domain events asynchronously.
-	/// </summary>
-	/// <param name="event"></param>
-	/// <param name="cancellationToken"></param>
-	/// <typeparam name="TEvent"></typeparam>
-	/// <returns></returns>
-	protected abstract ValueTask PublishEventAsync<TEvent>(TEvent @event, CancellationToken cancellationToken = default)
-		where TEvent : IDomainEvent;
 }

@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using Nerosoft.Euonia.Domain;
 using Nerosoft.Euonia.Linq;
 
 namespace Nerosoft.Euonia.Repository;
@@ -243,7 +242,7 @@ public interface IRepository<TEntity> : IDisposable
 /// <typeparam name="TKey"></typeparam>
 public interface IRepository<TEntity, in TKey> : IRepository<TEntity>
 	where TKey : IEquatable<TKey>
-	where TEntity : class, IEntity<TKey>
+	where TEntity : class, IPersistent<TKey>
 {
 	/// <summary>
 	/// Gets an entity with the given primary key value asynchronously.
@@ -266,7 +265,7 @@ public interface IRepository<TEntity, in TKey> : IRepository<TEntity>
 	Task<TEntity> GetAsync(TKey key, Func<IQueryable<TEntity>, IQueryable<TEntity>> handle, CancellationToken cancellationToken = default)
 	{
 		ArgumentNullException.ThrowIfNull(key);
-		return GetAsync(PredicateBuilder.PropertyEqual<TEntity, TKey>(nameof(IEntity<TKey>.Id), key), handle, cancellationToken);
+		return GetAsync(PredicateBuilder.PropertyEqual<TEntity, TKey>(nameof(IPersistent<TKey>.Id), key), handle, cancellationToken);
 	}
 
 	/// <summary>
@@ -281,7 +280,7 @@ public interface IRepository<TEntity, in TKey> : IRepository<TEntity>
 	}
 
 	/// <summary>
-	/// Finds elemets in a sequence with the given primary key values asynchronously.
+	/// Finds elements in a sequence with the given primary key values asynchronously.
 	/// </summary>
 	/// <param name="keys"></param>
 	/// <param name="handle"></param>
@@ -294,7 +293,8 @@ public interface IRepository<TEntity, in TKey> : IRepository<TEntity>
 		{
 			return Task.FromResult(new List<TEntity>());
 		}
-		return FindAsync(PredicateBuilder.PropertyInRange<TEntity, TKey>(nameof(IEntity<TKey>.Id), keys.ToArray()), handle, cancellationToken);
+
+		return FindAsync(PredicateBuilder.PropertyInRange<TEntity, TKey>(nameof(IPersistent<>.Id), keys.ToArray()), handle, cancellationToken);
 	}
 }
 
@@ -306,7 +306,7 @@ public interface IRepository<TEntity, in TKey> : IRepository<TEntity>
 /// <typeparam name="TContext">The type of context.</typeparam>
 public interface IRepository<out TContext, TEntity, in TKey> : IRepository<TEntity, TKey>
 	where TKey : IEquatable<TKey>
-	where TEntity : class, IEntity<TKey>
+	where TEntity : class, IPersistent<TKey>
 	where TContext : class, IRepositoryContext
 {
 	/// <summary>

@@ -2,7 +2,6 @@
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using Nerosoft.Euonia.Domain;
 
 namespace Nerosoft.Euonia.Repository.Mongo;
 
@@ -14,7 +13,7 @@ namespace Nerosoft.Euonia.Repository.Mongo;
 /// <typeparam name="TKey"></typeparam>
 public class MongoRepository<TContext, TEntity, TKey> : Repository<TContext, TEntity, TKey>
 	where TKey : IEquatable<TKey>
-	where TEntity : class, IEntity<TKey>
+	where TEntity : class, IPersistent<TKey>
 	where TContext : MongoDbContext, IRepositoryContext
 {
 	/// <summary>

@@ -1,4 +1,4 @@
-﻿namespace Nerosoft.Euonia.Domain;
+﻿namespace Nerosoft.Euonia.Repository;
 
 /// <summary>
 /// Represents the object identifier would generate using SnowflakeId.

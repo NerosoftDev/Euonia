@@ -1,4 +1,4 @@
-﻿namespace Nerosoft.Euonia.Domain;
+﻿namespace Nerosoft.Euonia.Repository;
 
 /// <summary>
 /// Represented the entity is concurrency.
