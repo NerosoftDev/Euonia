@@ -44,7 +44,7 @@
         <Project Path="Source/Euonia.Repository.EfCore/Euonia.Repository.EfCore.csproj" />
         <Project Path="Source/Euonia.Repository.Mongo/Euonia.Repository.Mongo.csproj" />
         <Project Path="Source/Euonia.Repository/Euonia.Repository.csproj" />
-        <Project Path="Source/Euonia.Uow/Euonia.Uow.csproj" Id="3af200d8-7f58-4fa5-bf44-77d9987c6b40" />
+        <Project Path="Source/Euonia.Uow/Euonia.Uow.csproj" />
     </Folder>
     <Folder Name="/Source/Mapping/">
         <Project Path="Source/Euonia.Mapping/Euonia.Mapping.csproj" />
