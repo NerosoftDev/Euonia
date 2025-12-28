@@ -19,18 +19,4 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IContextFactory, DefaultContextFactory>();
         return services;
     }
-
-    /// <summary>
-    /// Add unit of work.
-    /// </summary>
-    /// <param name="services"></param>
-    /// <returns></returns>
-    public static IServiceCollection AddUnitOfWork(this IServiceCollection services)
-    {
-        services.AddTransient<IUnitOfWork, UnitOfWork>();
-        services.AddTransient<IContextFactory, UnitOfWorkContextFactory>();
-        services.AddSingleton<IUnitOfWorkAccessor, UnitOfWorkAccessor>();
-        services.AddSingleton<IUnitOfWorkManager, UnitOfWorkManager>();
-        return services;
-    }
 }
