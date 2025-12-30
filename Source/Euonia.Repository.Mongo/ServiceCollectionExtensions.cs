@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using Nerosoft.Euonia.Repository;
 using Nerosoft.Euonia.Repository.Mongo;
+using Nerosoft.Euonia.Uow;
 
 namespace Microsoft.Extensions.DependencyInjection;
 

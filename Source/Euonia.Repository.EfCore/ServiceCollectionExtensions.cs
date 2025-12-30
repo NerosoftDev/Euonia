@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Nerosoft.Euonia.Repository;
 using Nerosoft.Euonia.Repository.EfCore;
+using Nerosoft.Euonia.Uow;
 
 // ReSharper disable MemberCanBePrivate.Global
 
