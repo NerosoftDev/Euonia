@@ -69,21 +69,13 @@ public class UnitOfWorkContextFactory : IContextFactory
 		{
 			return (TContext)uowContext.Context;
 		}
-		else
-		{
-			var dbContext = unitOfWork.ServiceProvider.GetService<TContext>();
-			uowContext = new UnitOfWorkContext(dbContext);
-			unitOfWork.AddContext(key, uowContext);
-			return dbContext;
-		}
 
-		// var context = unitOfWork.Contexts.TryGetValue(key, out var ctx)
-		// 	? ctx as UnitOfWorkContext
-		// 	: null;
-		//
-		// context ??= unitOfWork.ServiceProvider.GetService<TContext>();
-		// unitOfWork.AddContext(context);
-		// return context;
+		var dbContext = unitOfWork.ServiceProvider.GetService<TContext>();
+
+		//var transaction = dbContext.GetConnection().BeginTransaction(unitOfWork.Options.IsolationLevel ?? IsolationLevel.Unspecified);
+		uowContext = new UnitOfWorkContext(dbContext);
+		unitOfWork.AddContext(key, uowContext);
+		return dbContext;
 	}
 
 	/// <inheritdoc />

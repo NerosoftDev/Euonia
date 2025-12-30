@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace Nerosoft.Euonia.Uow;
@@ -38,11 +37,11 @@ public sealed class UnitOfWork : UnitOfWorkBase, IUnitOfWork
 	/// <summary>
 	/// Initialize a new instance of <see cref="UnitOfWork"/>.
 	/// </summary>
-	/// <param name="factory"></param>
+	/// <param name="provider"></param>
 	/// <param name="options"></param>
-	public UnitOfWork(IServiceScopeFactory factory, IOptionsMonitor<UnitOfWorkOptions> options)
+	public UnitOfWork(IServiceProvider provider, IOptionsMonitor<UnitOfWorkOptions> options)
 	{
-		ServiceProvider = factory.CreateScope().ServiceProvider;
+		ServiceProvider = provider;
 		_defaultOptions = options.CurrentValue;
 	}
 
