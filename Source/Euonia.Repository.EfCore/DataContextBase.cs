@@ -73,6 +73,12 @@ public abstract class DataContextBase<TContext> : DbContext, IRepositoryContext
 	}
 
 	/// <inheritdoc />
+	public Task CommitAsync(CancellationToken cancellationToken = default)
+	{
+		return Database.CommitTransactionAsync(cancellationToken);
+	}
+
+	/// <inheritdoc />
 	public async Task RollbackAsync(CancellationToken cancellationToken = default)
 	{
 		await Database.RollbackTransactionAsync(cancellationToken);
