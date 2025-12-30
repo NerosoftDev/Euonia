@@ -1,5 +1,5 @@
 ﻿using Nerosoft.Euonia.Modularity;
-using Nerosoft.Euonia.Repository;
+using Nerosoft.Euonia.Uow;
 
 namespace Nerosoft.Euonia.Sample.Persist;
 
@@ -47,8 +47,8 @@ public class PersistServiceModule : ModuleContextBase
 	public override void ConfigureServices(ServiceConfigurationContext context)
 	{
 		context.Services
-			   .AddContextProvider()
-			   .AddUnitOfWork();
+		       .AddContextProvider()
+		       .AddUnitOfWork();
 
 		context.Services.AddDataContextFactory<SampleDataContext>();
 	}

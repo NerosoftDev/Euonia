@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection.Extensions;
-using Nerosoft.Euonia.Repository;
+﻿using Nerosoft.Euonia.Uow;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -16,7 +15,6 @@ public static class ServiceCollectionExtensions
 	public static IServiceCollection AddUnitOfWork(this IServiceCollection services)
 	{
 		services.AddTransient<IUnitOfWork, UnitOfWork>();
-		services.AddTransient<IContextFactory, UnitOfWorkContextFactory>();
 		services.AddSingleton<IUnitOfWorkAccessor, UnitOfWorkAccessor>();
 		services.AddSingleton<IUnitOfWorkManager, UnitOfWorkManager>();
 		return services;

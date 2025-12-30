@@ -1,6 +1,6 @@
 ﻿using Castle.DynamicProxy;
 
-namespace Nerosoft.Euonia.Repository;
+namespace Nerosoft.Euonia.Uow;
 
 /// <inheritdoc />
 public class UnitOfWorkInterceptor : IInterceptor
@@ -22,7 +22,7 @@ public class UnitOfWorkInterceptor : IInterceptor
         using (var uow = _manager.Begin())
         {
             invocation.Proceed();
-            uow.CommitAsync().Wait();
+            uow.CompleteAsync().Wait();
         }
     }
 }

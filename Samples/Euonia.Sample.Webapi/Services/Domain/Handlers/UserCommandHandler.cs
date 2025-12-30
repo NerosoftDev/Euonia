@@ -1,9 +1,9 @@
 ﻿using Nerosoft.Euonia.Bus;
 using Nerosoft.Euonia.Business;
-using Nerosoft.Euonia.Repository;
 using Nerosoft.Euonia.Sample.Domain;
 using Nerosoft.Euonia.Sample.Domain.Aggregates;
 using Nerosoft.Euonia.Sample.Domain.Commands;
+using Nerosoft.Euonia.Uow;
 
 namespace Nerosoft.Euonia.Sample.Business.Handlers;
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Nerosoft.Euonia.Repository;
+namespace Nerosoft.Euonia.Uow;
 
 /// <summary>
 /// 

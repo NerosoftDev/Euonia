@@ -1,92 +1,99 @@
-﻿namespace Nerosoft.Euonia.Repository;
+﻿namespace Nerosoft.Euonia.Uow;
 
 internal class ChildUnitOfWork : UnitOfWorkBase, IUnitOfWork
 {
-    public event EventHandler<UnitOfWorkEventArgs> Completed;
-    public event EventHandler<UnitOfWorkFailedEventArgs> Failed;
+	public event EventHandler<UnitOfWorkEventArgs> Completed;
+	public event EventHandler<UnitOfWorkFailedEventArgs> Failed;
 
-    /// <inheritdoc />
-    public Guid Id { get; } = Guid.NewGuid();
+	/// <inheritdoc />
+	public Guid Id { get; } = Guid.NewGuid();
 
-    /// <inheritdoc />
-    public Dictionary<string, object> Items => _parent.Items;
+	/// <inheritdoc />
+	public Dictionary<string, object> Items => _parent.Items;
 
-    public IReadOnlyDictionary<Type, IRepositoryContext> Contexts => _parent.Contexts;
+	public IReadOnlyDictionary<string, IUnitOfWorkContext> Contexts => _parent.Contexts;
 
-    public override IServiceProvider ServiceProvider => _parent.ServiceProvider;
+	public override IServiceProvider ServiceProvider => _parent.ServiceProvider;
 
-    public IUnitOfWork Outer => _parent.Outer;
-    public bool IsReserved => _parent.IsReserved;
-    public bool IsDisposed => _parent.IsDisposed;
-    public bool IsCompleted => _parent.IsCompleted;
+	public IUnitOfWorkOptions Options => _parent.Options;
 
-    public string ReservationName => _parent.ReservationName;
+	public IUnitOfWork Outer => _parent.Outer;
+	public bool IsReserved => _parent.IsReserved;
+	public bool IsDisposed => _parent.IsDisposed;
+	public bool IsCompleted => _parent.IsCompleted;
 
-    private readonly IUnitOfWork _parent;
+	public string ReservationName => _parent.ReservationName;
 
-    public ChildUnitOfWork(IUnitOfWork parent)
-    {
-        Check.EnsureNotNull(parent, nameof(parent));
+	private readonly IUnitOfWork _parent;
 
-        _parent = parent;
+	public ChildUnitOfWork(IUnitOfWork parent)
+	{
+		Check.EnsureNotNull(parent, nameof(parent));
 
-        _parent.Failed += (sender, args) =>
-        {
-            Failed?.Invoke(sender, args);
-        };
-        _parent.Disposed += InvokeDisposedEvent;
-        _parent.Completed += (sender, args) =>
-        {
-            Completed?.Invoke(sender, args);
-        };
-    }
+		_parent = parent;
 
-    public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        await _parent.SaveChangesAsync(cancellationToken);
-    }
+		_parent.Failed += (sender, args) =>
+		{
+			Failed?.Invoke(sender, args);
+		};
+		_parent.Disposed += InvokeDisposedEvent;
+		_parent.Completed += (sender, args) =>
+		{
+			Completed?.Invoke(sender, args);
+		};
+	}
 
-    public async Task RollbackAsync(CancellationToken cancellationToken = default)
-    {
-        await _parent.RollbackAsync(cancellationToken);
-    }
+	public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
+	{
+		await _parent.SaveChangesAsync(cancellationToken);
+	}
 
-    public async Task CommitAsync(CancellationToken cancellationToken = default)
-    {
-        await Task.CompletedTask;
-    }
+	public async Task RollbackAsync(CancellationToken cancellationToken = default)
+	{
+		await _parent.RollbackAsync(cancellationToken);
+	}
 
-    public void OnCompleted(Func<Task> handler)
-    {
-        _parent.OnCompleted(handler);
-    }
+	public async Task CompleteAsync(CancellationToken cancellationToken = default)
+	{
+		await Task.CompletedTask;
+	}
 
-    public void SetOuter(IUnitOfWork outer)
-    {
-        _parent.SetOuter(outer);
-    }
+	public void OnCompleted(Func<Task> handler)
+	{
+		_parent.OnCompleted(handler);
+	}
 
-    public void Initialize(UnitOfWorkOptions options)
-    {
-        _parent.Initialize(options);
-    }
+	public void SetOuter(IUnitOfWork outer)
+	{
+		_parent.SetOuter(outer);
+	}
 
-    public void Reserve(string reservationName)
-    {
-        _parent.Reserve(reservationName);
-    }
+	public void Initialize(UnitOfWorkOptions options)
+	{
+		_parent.Initialize(options);
+	}
 
-    public TContext CreateContext<TContext>(string connectionString) where TContext : IRepositoryContext
-    {
-        return _parent.CreateContext<TContext>(connectionString);
-    }
+	public void Reserve(string reservationName)
+	{
+		_parent.Reserve(reservationName);
+	}
 
-    public TContext CreateContext<TContext>() where TContext : IRepositoryContext
-    {
-        return _parent.CreateContext<TContext>();
-    }
+	public IUnitOfWorkContext FindContext(string key)
+	{
+		return _parent.FindContext(key);
+	}
 
-    protected override void Dispose(bool disposing)
-    {
-    }
+	public void AddContext(string key, IUnitOfWorkContext context)
+	{
+		_parent.AddContext(key, context);
+	}
+
+	public IUnitOfWorkContext GetOrAddContext(string key, Func<IUnitOfWorkContext> factory)
+	{
+		return _parent.GetOrAddContext(key, factory);
+	}
+
+	protected override void Dispose(bool disposing)
+	{
+	}
 }

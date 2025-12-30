@@ -8,15 +8,16 @@ namespace Microsoft.Extensions.DependencyInjection;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
-    /// <summary>
-    /// Adds default context provider.
-    /// </summary>
-    /// <param name="services"></param>
-    /// <returns></returns>
-    public static IServiceCollection AddContextProvider(this IServiceCollection services)
-    {
-        services.TryAddScoped<IContextProvider, DefaultContextProvider>();
-        services.AddTransient<IContextFactory, DefaultContextFactory>();
-        return services;
-    }
+	/// <summary>
+	/// Adds default context provider.
+	/// </summary>
+	/// <param name="services"></param>
+	/// <returns></returns>
+	public static IServiceCollection AddContextProvider(this IServiceCollection services)
+	{
+		services.TryAddScoped<IContextProvider, DefaultContextProvider>();
+		services.AddTransient<IContextFactory, DefaultContextFactory>();
+		services.AddTransient<IContextFactory, UnitOfWorkContextFactory>();
+		return services;
+	}
 }
