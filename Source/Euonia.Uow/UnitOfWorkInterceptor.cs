@@ -31,13 +31,13 @@ public class UnitOfWorkInterceptor : IInterceptor
 			using var scope = _factory.CreateScope();
 			var manager = scope.ServiceProvider.GetRequiredService<IUnitOfWorkManager>();
 
-			var isTransactional = FindValue<bool?>(queue =>
+			var isTransactional = PriorityValueFinder.Find<bool?>(queue =>
 			{
 				queue.Enqueue(() => attribute.IsTransactional, 1);
 				queue.Enqueue(() => scope.ServiceProvider.GetService<IOptions<UnitOfWorkOptions>>()?.Value.IsTransactional, 2);
 			}, t => t.HasValue) ?? false;
 
-			var timeout = FindValue<TimeSpan?>(queue =>
+			var timeout = PriorityValueFinder.Find<TimeSpan?>(queue =>
 			{
 				queue.Enqueue(() => attribute.Timeout, 1);
 				queue.Enqueue(() => scope.ServiceProvider.GetService<IOptions<UnitOfWorkOptions>>()?.Value.Timeout, 2);
@@ -50,33 +50,5 @@ public class UnitOfWorkInterceptor : IInterceptor
 
 			AsyncContext.Run(() => uow.CompleteAsync(cancellationToken));
 		}
-	}
-
-	private static TValue FindValue<TValue>(PriorityQueue<Func<TValue>, int> queue, Func<TValue, bool> predicate)
-	{
-		if (queue.Count == 0)
-		{
-			throw new InvalidOperationException("The queue is empty.");
-		}
-
-		while (queue.TryDequeue(out var valueFactory, out _))
-		{
-			var value = valueFactory();
-			if (predicate(value))
-			{
-				return value;
-			}
-		}
-
-		return default;
-	}
-
-	private static TValue FindValue<TValue>(Action<PriorityQueue<Func<TValue>, int>> factory, Func<TValue, bool> predicate)
-	{
-		var queue = new PriorityQueue<Func<TValue>, int>();
-		factory(queue);
-		var value = FindValue(queue, predicate);
-		queue.Clear();
-		return value;
 	}
 }
