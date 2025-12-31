@@ -17,7 +17,6 @@ public static class ServiceCollectionExtensions
 	{
 		services.TryAddScoped<IContextProvider, DefaultContextProvider>();
 		services.AddTransient<IContextFactory, DefaultContextFactory>();
-		services.AddTransient<IContextFactory, UnitOfWorkContextFactory>();
 		return services;
 	}
 }

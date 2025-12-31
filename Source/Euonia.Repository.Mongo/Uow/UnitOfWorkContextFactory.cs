@@ -3,12 +3,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nerosoft.Euonia.Uow;
 
-namespace Nerosoft.Euonia.Repository;
+namespace Nerosoft.Euonia.Repository.Mongo;
 
 /// <summary>
 /// The <see cref="IContextFactory"/> implementation used to create a <see cref="IRepositoryContext"/> instance.
 /// </summary>
-public class UnitOfWorkContextFactory : IContextFactory
+internal class UnitOfWorkContextFactory : IContextFactory
 {
 	private readonly IUnitOfWorkManager _manager;
 	private readonly IConfiguration _configuration;

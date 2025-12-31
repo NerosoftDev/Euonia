@@ -1,6 +1,6 @@
 using Nerosoft.Euonia.Uow;
 
-namespace Nerosoft.Euonia.Repository;
+namespace Nerosoft.Euonia.Repository.EfCore;
 
 internal class UnitOfWorkContext : IUnitOfWorkContext
 {
