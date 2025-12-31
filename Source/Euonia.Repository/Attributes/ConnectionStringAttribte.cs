@@ -4,7 +4,7 @@ namespace Nerosoft.Euonia.Repository;
 /// Indicates that a class is associated with a specific connection string.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-internal class ConnectionStringAttribute : Attribute
+public class ConnectionStringAttribute : Attribute
 {
 	/// <summary>
 	/// Gets or sets the connection name.
