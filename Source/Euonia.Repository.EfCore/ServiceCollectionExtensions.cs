@@ -1,6 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection;
+using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Nerosoft.Euonia.Repository;
 using Nerosoft.Euonia.Repository.EfCore;
+using Nerosoft.Euonia.Threading;
 
 // ReSharper disable MemberCanBePrivate.Global
 
@@ -11,6 +15,8 @@ namespace Microsoft.Extensions.DependencyInjection;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
+	private const string CONNECTION_STRING_PATTERN = @"^(?<provider>(?:\w|\-)+):\/\/(?<conn>.*)";
+
 	/// <param name="services"></param>
 	extension(IServiceCollection services)
 	{
@@ -115,6 +121,108 @@ public static class ServiceCollectionExtensions
 			}
 
 			return services;
+		}
+
+		/// <summary>
+		/// Adds a data context factory to the service collection with the specified connection string.
+		/// </summary>
+		/// <typeparam name="TContext"></typeparam>
+		/// <param name="connectionString"></param>
+		/// <param name="seeding"></param>
+		/// <returns></returns>
+		/// <exception cref="InvalidOperationException"></exception>
+		public IServiceCollection AddDataContextFactory<TContext>(string connectionString = null, Func<DbContext, bool, CancellationToken, Task> seeding = null)
+			where TContext : DataContextBase<TContext>
+		{
+			return services.AddDataContextFactory<TContext>(_ => connectionString, seeding);
+		}
+
+		/// <summary>
+		/// Adds a data context factory to the service collection with the specified connection string.
+		/// </summary>
+		/// <typeparam name="TContext"></typeparam>
+		/// <param name="connectionStringFactory"></param>
+		/// <param name="seeding"></param>
+		/// <returns></returns>
+		/// <exception cref="InvalidOperationException"></exception>
+		public IServiceCollection AddDataContextFactory<TContext>(Func<IServiceProvider, string> connectionStringFactory, Func<DbContext, bool, CancellationToken, Task> seeding = null)
+			where TContext : DataContextBase<TContext>
+		{
+			services.AddDbContextFactory<TContext>((provider, options) =>
+			{
+				var connectionString = connectionStringFactory?.Invoke(provider);
+
+				var connection = PriorityValueFinder.Find<string>(queue =>
+				{
+					queue.Enqueue(() => connectionString, 1);
+					queue.Enqueue(() =>
+					{
+						var attribute = typeof(TContext).GetCustomAttribute<ConnectionStringAttribute>();
+						return attribute?.Value;
+					}, 2);
+					queue.Enqueue(() =>
+					{
+						var attribute = typeof(TContext).GetCustomAttribute<ConnectionStringAttribute>();
+						if (attribute != null && !string.IsNullOrWhiteSpace(attribute.Name))
+						{
+							return provider.GetRequiredService<IConfiguration>().GetConnectionString(attribute.Name);
+						}
+
+						return null;
+					}, 3);
+					queue.Enqueue(() => provider.GetRequiredService<IConfiguration>().GetConnectionString(typeof(TContext).Name), 5);
+					queue.Enqueue(() => provider.GetRequiredService<IConfiguration>().GetConnectionString("Default"), 6);
+					queue.Enqueue(() =>
+					{
+						var connectionStringResolver = provider.GetService<IConnectionStringResolver<TContext>>();
+						return AsyncContext.Run(() => connectionStringResolver?.GetConnectionStringAsync());
+					}, 5);
+				}, t => !string.IsNullOrWhiteSpace(t));
+
+				if (string.IsNullOrWhiteSpace(connection))
+				{
+					throw new InvalidOperationException();
+				}
+
+				ConfigureDataContext(connectionString, provider, options, seeding);
+			});
+			return services;
+		}
+	}
+
+	/// <summary>
+	/// Configures the data context based on the provided connection string name.
+	/// </summary>
+	/// <param name="connectionString"></param>
+	/// <param name="provider"></param>
+	/// <param name="options"></param>
+	/// <param name="seeding"></param>
+	/// <exception cref="ArgumentException"></exception>
+	/// <exception cref="NotSupportedException"></exception>
+	private static void ConfigureDataContext(string connectionString, IServiceProvider provider, DbContextOptionsBuilder options, Func<DbContext, bool, CancellationToken, Task> seeding = null)
+	{
+		ArgumentException.ThrowIfNullOrWhiteSpace(connectionString);
+
+		var match = Regex.Match(connectionString, CONNECTION_STRING_PATTERN);
+		if (!match.Success)
+		{
+			throw new ArgumentException("Invalid connection string format.");
+		}
+
+		var databaseProvider = match.Groups["provider"].Value;
+		var connection = match.Groups["conn"].Value;
+
+		var configurer = provider.GetKeyedService<ConnectionConfigurator>(databaseProvider);
+		if (configurer == null)
+		{
+			throw new NotSupportedException($"The database provider '{databaseProvider}' is not supported.");
+		}
+
+		configurer(options, connection);
+
+		if (seeding != null)
+		{
+			options.UseAsyncSeeding(seeding);
 		}
 	}
 }

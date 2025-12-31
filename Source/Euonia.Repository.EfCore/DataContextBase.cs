@@ -1,6 +1,8 @@
 ﻿using System.Data;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Nerosoft.Euonia.Repository.EfCore;
@@ -108,6 +110,7 @@ public abstract class DataContextBase<TContext> : DbContext, IRepositoryContext
 		{
 			SetEntryValues(entries);
 		}
+
 		var result = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
 		return result;
 	}
@@ -123,13 +126,8 @@ public abstract class DataContextBase<TContext> : DbContext, IRepositoryContext
 	/// <inheritdoc />
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
-		foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-		{
-			//other automated configurations left out
-			if (typeof(ITombstone).IsAssignableFrom(entityType.ClrType))
-			{
-				entityType.SetTombstoneQueryFilter();
-			}
-		}
+		modelBuilder.ApplyConfigurationsFromAssembly(typeof(TContext).Assembly, type => type.GetCustomAttribute<DbContextAttribute>()?.ContextType == typeof(TContext));
+		modelBuilder.SetTombstoneQueryFilter();
+		base.OnModelCreating(modelBuilder);
 	}
 }
