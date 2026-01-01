@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Nerosoft.Euonia.Bus;
-using Nerosoft.Euonia.Pipeline;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -23,9 +22,9 @@ public static class ServiceCollectionExtensions
 		config?.Invoke(configurator);
 
 		var handlerTypes = configurator.Registrations
-									   .Select(t => t.HandlerType)
-									   .Distinct()
-									   .ToList();
+		                               .Select(t => t.HandlerType)
+		                               .Distinct()
+		                               .ToList();
 
 		foreach (var handlerType in handlerTypes)
 		{
@@ -84,6 +83,4 @@ public static class ServiceCollectionExtensions
 	//	);
 	//	return services;
 	//}
-
-	
 }

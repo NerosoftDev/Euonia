@@ -9,6 +9,14 @@ namespace Nerosoft.Euonia.Bus;
 public class MessageBusModule : ModuleContextBase
 {
 	/// <inheritdoc />
+	public override void AheadConfigureServices(ServiceConfigurationContext context)
+	{
+		context.Services.AddOptions<MessageBusOptions>()
+						.BindConfiguration(Constants.ConfigurationSection)
+						.Validate(_ => true);
+	}
+
+	/// <inheritdoc />
 	public override void ConfigureServices(ServiceConfigurationContext context)
 	{
 		context.Services.AddEuoniaBus();

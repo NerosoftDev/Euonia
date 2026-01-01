@@ -243,10 +243,7 @@ public sealed class MessageBus : IBus
 				}
 			}
 
-			if (behavior != null)
-			{
-				behavior(pipelineMessage);
-			}
+			behavior?.Invoke(pipelineMessage);
 
 			await pipelineMessage.ExecuteAsync();
 			pack = (RoutedMessage<TMessage, TResult>)pipelineMessage.Message;
@@ -274,7 +271,7 @@ public sealed class MessageBus : IBus
 						   {
 							   if (callback != null)
 							   {
-								   callback?.OnError(task.Exception.GetBaseException());
+								   callback.OnError(task.Exception.GetBaseException());
 							   }
 							   else
 							   {
