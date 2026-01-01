@@ -19,6 +19,7 @@ public class ApplicationModule : ModuleContextBase
 		context.Services.AddSingleton(typeof(IPipelineBehavior<,>), typeof(MessageLoggingBehavior<,>));
 		context.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 		context.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehavior<,>));
+		context.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(UnitOfWorkPipelineBehavior<,>));
 		context.Services.AddScoped(typeof(IUseCasePresenter<>), typeof(DefaultUseCasePresenter<>));
 	}
 }
