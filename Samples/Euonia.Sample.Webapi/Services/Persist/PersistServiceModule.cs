@@ -1,4 +1,6 @@
-﻿using Nerosoft.Euonia.Modularity;
+﻿using Microsoft.EntityFrameworkCore;
+using Nerosoft.Euonia.Modularity;
+using Nerosoft.Euonia.Repository.EfCore;
 using Nerosoft.Euonia.Uow;
 
 namespace Nerosoft.Euonia.Sample.Persist;
@@ -50,6 +52,9 @@ public class PersistServiceModule : ModuleContextBase
 		       .AddContextProvider()
 		       .AddUnitOfWork();
 
+		context.Services.AddKeyedSingleton<ConnectionConfigurator>("inmemory", (builder, connectionString) => builder.UseInMemoryDatabase(connectionString));
+		context.Services.AddKeyedSingleton<ConnectionConfigurator>("sqlite", (builder, connectionString) => builder.UseSqlite(connectionString));
+		context.Services.AddKeyedSingleton<ConnectionConfigurator>("sqlserver", (builder, connectionString) => builder.UseSqlServer(connectionString));
 		context.Services.AddDataContextFactory<SampleDataContext>();
 	}
 }

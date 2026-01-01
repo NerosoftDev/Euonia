@@ -31,47 +31,6 @@ internal static class ServiceCollectionExtensions
 	};
 
 	/// <summary>
-	/// Adds a data context factory to the service collection with the specified connection string.
-	/// </summary>
-	/// <typeparam name="TContext"></typeparam>
-	/// <param name="services"></param>
-	/// <param name="connectionString"></param>
-	/// <param name="seeding"></param>
-	/// <returns></returns>
-	/// <exception cref="InvalidOperationException"></exception>
-	public static IServiceCollection AddDataContextFactory<TContext>(this IServiceCollection services, string connectionString = null, Func<DbContext, bool, CancellationToken, Task> seeding = null)
-		where TContext : DataContextBase<TContext>
-	{
-		services.AddDbContextFactory<TContext>((provider, options) =>
-		{
-			var attribute = typeof(TContext).GetCustomAttribute<ConnectionStringAttribute>();
-			if (attribute == null)
-			{
-				throw new InvalidOperationException();
-			}
-
-			if (string.IsNullOrWhiteSpace(connectionString))
-			{
-				if (!string.IsNullOrWhiteSpace(attribute.Value))
-				{
-					connectionString = attribute.Value;
-				}
-				else if (!string.IsNullOrWhiteSpace(attribute.Name))
-				{
-					connectionString = provider.GetRequiredService<IConfiguration>().GetConnectionString(attribute.Name);
-				}
-				else
-				{
-					throw new InvalidOperationException();
-				}
-			}
-
-			ConfigureDataContext(connectionString, provider, options, seeding);
-		});
-		return services;
-	}
-
-	/// <summary>
 	/// Configures the data context based on the provided connection string name.
 	/// </summary>
 	/// <param name="connectionString"></param>
