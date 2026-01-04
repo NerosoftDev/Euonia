@@ -30,8 +30,7 @@ public static class ServiceCollectionExtensions
 		public IServiceCollection AddEfCoreRepository<TContext>(Action<DbContextOptionsBuilder> options, ServiceLifetime contextLifeTime = ServiceLifetime.Scoped)
 			where TContext : DbContext, IRepositoryContext
 		{
-			services.AddContextProvider()
-			        .AddUnitOfWork();
+			services.AddContextProvider();
 			services.AddDbContext<TContext>(options, contextLifeTime)
 			        .AddEfCoreRepository(contextLifeTime);
 
@@ -50,8 +49,7 @@ public static class ServiceCollectionExtensions
 			where TContextService : DbContext, IRepositoryContext
 			where TContextImplementation : TContextService
 		{
-			services.AddContextProvider()
-			        .AddUnitOfWork();
+			services.AddContextProvider();
 			services.AddDbContext<TContextService, TContextImplementation>(options, contextLifeTime)
 			        .AddEfCoreRepository(contextLifeTime);
 
@@ -68,8 +66,7 @@ public static class ServiceCollectionExtensions
 		public IServiceCollection AddEfCoreRepository<TContext>(Action<IServiceProvider, DbContextOptionsBuilder> options, ServiceLifetime contextLifeTime = ServiceLifetime.Scoped)
 			where TContext : DbContext, IRepositoryContext
 		{
-			services.AddContextProvider()
-			        .AddUnitOfWork();
+			services.AddContextProvider();
 			services.AddDbContext<DbContext, TContext>(options, contextLifeTime)
 			        .AddEfCoreRepository(contextLifeTime);
 
@@ -88,8 +85,7 @@ public static class ServiceCollectionExtensions
 			where TContextService : DbContext, IRepositoryContext
 			where TContextImplementation : TContextService
 		{
-			services.AddContextProvider()
-			        .AddUnitOfWork();
+			services.AddContextProvider();
 			services.AddDbContext<TContextService, TContextImplementation>(options, contextLifeTime)
 			        .AddEfCoreRepository(contextLifeTime);
 
