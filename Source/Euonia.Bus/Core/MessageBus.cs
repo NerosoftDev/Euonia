@@ -2,7 +2,6 @@
 using System.Reactive.Subjects;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Nerosoft.Euonia.Modularity;
 using Nerosoft.Euonia.Pipeline;
 
@@ -27,7 +26,7 @@ namespace Nerosoft.Euonia.Bus;
 /// </list>
 /// </para>
 /// </remarks>
-public sealed class MessageBus : IBus
+internal sealed class MessageBus : IBus
 {
 	/// <summary>
 	/// Logger instance for recording message bus operations and diagnostics.
@@ -38,11 +37,6 @@ public sealed class MessageBus : IBus
 	/// Dispatcher responsible for determining which transports to use for a given message type.
 	/// </summary>
 	private readonly IDispatcher _dispatcher;
-
-	/// <summary>
-	/// Convention provider that defines message type classifications (multicast, unicast, request).
-	/// </summary>
-	private readonly IMessageConvention _convention;
 
 	/// <summary>
 	/// Optional accessor for retrieving the current request context (e.g., HTTP request information).
@@ -57,28 +51,21 @@ public sealed class MessageBus : IBus
 	/// <summary>
 	/// Configuration options for the message bus, including default transport and pipeline settings.
 	/// </summary>
-	private readonly MessageBusOptions _options;
+	private readonly IMessageBusOptions _options;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="MessageBus"/> class.
 	/// </summary>
 	/// <param name="dispatcher">The dispatcher for determining message transports.</param>
 	/// <param name="provider">The service provider for dependency resolution.</param>
-	/// <param name="convention">The message convention for type classification.</param>
+	/// <param name="options">The message bus options.</param>
 	/// <param name="logger">The logger factory for creating loggers.</param>
-	/// <param name="options">The message bus options monitor.</param>
-	public MessageBus(IDispatcher dispatcher, IServiceProvider provider, IMessageConvention convention, ILoggerFactory logger, IOptionsMonitor<MessageBusOptions> options)
+	public MessageBus(IDispatcher dispatcher, IServiceProvider provider, IMessageBusOptions options, ILoggerFactory logger)
 	{
 		_logger = logger.CreateLogger<MessageBus>();
 		_dispatcher = dispatcher;
-		_convention = convention;
+		_options = options;
 		_provider = provider;
-		_options = options.CurrentValue;
-		options.OnChange(opt =>
-		{
-			_options.DefaultTransport = opt.DefaultTransport;
-			_options.EnablePipelineBehaviors = opt.EnablePipelineBehaviors;
-		});
 	}
 
 	/// <summary>
@@ -86,12 +73,11 @@ public sealed class MessageBus : IBus
 	/// </summary>
 	/// <param name="dispatcher">The dispatcher for determining message transports.</param>
 	/// <param name="provider">The service provider for dependency resolution.</param>
-	/// <param name="convention">The message convention for type classification.</param>
+	/// <param name="options">The message convention for type classification.</param>
 	/// <param name="logger">The logger factory for creating loggers.</param>
-	/// <param name="options">The message bus options monitor.</param>
 	/// <param name="requestAccessor">The accessor for retrieving current request context.</param>
-	public MessageBus(IDispatcher dispatcher, IServiceProvider provider, IMessageConvention convention, ILoggerFactory logger, IOptionsMonitor<MessageBusOptions> options, IRequestContextAccessor requestAccessor)
-		: this(dispatcher, provider, convention, logger, options)
+	public MessageBus(IDispatcher dispatcher, IServiceProvider provider, IMessageBusOptions options, ILoggerFactory logger, IRequestContextAccessor requestAccessor)
+		: this(dispatcher, provider, options, logger)
 	{
 		_requestAccessor = requestAccessor;
 	}
@@ -119,7 +105,7 @@ public sealed class MessageBus : IBus
 
 		var messageType = message.GetType();
 
-		if (!_convention.IsMulticastType(messageType))
+		if (!_options.Convention.IsMulticastType(messageType))
 		{
 			throw new MessageTypeException("The message type is not an multicast type.");
 		}
@@ -175,6 +161,7 @@ public sealed class MessageBus : IBus
 			{
 				throw new MessageTransportException($"The transport '{name}' is not registered.");
 			}
+
 			tasks.Add(transport.PublishAsync(pack, cancellationToken));
 		}
 
@@ -207,7 +194,7 @@ public sealed class MessageBus : IBus
 
 		var messageType = message.GetType();
 
-		if (!_convention.IsUnicastType(messageType))
+		if (!_options.Convention.IsUnicastType(messageType))
 		{
 			throw new MessageTypeException("The message type is not a unicast type.");
 		}
@@ -264,31 +251,30 @@ public sealed class MessageBus : IBus
 		}
 
 		await transport.SendAsync(pack, cancellationToken)
-					   .ContinueWith(task =>
-					   {
-						   task.WaitAndUnwrapException();
-						   if (task.IsFaulted)
-						   {
-							   if (callback != null)
-							   {
-								   callback.OnError(task.Exception.GetBaseException());
-							   }
-							   else
-							   {
-								   throw task.Exception;
-							   }
-						   }
-						   else
-						   {
-							   callback?.OnNext(task.Result);
-						   }
+		               .ContinueWith(task =>
+		               {
+			               task.WaitAndUnwrapException();
+			               if (task.IsFaulted)
+			               {
+				               if (callback != null)
+				               {
+					               callback.OnError(task.Exception.GetBaseException());
+				               }
+				               else
+				               {
+					               throw task.Exception;
+				               }
+			               }
+			               else
+			               {
+				               callback?.OnNext(task.Result);
+			               }
 
-						   if (task.IsCanceled)
-						   {
-							   callback?.OnCompleted();
-						   }
-
-					   }, cancellationToken);
+			               if (task.IsCanceled)
+			               {
+				               callback?.OnCompleted();
+			               }
+		               }, cancellationToken);
 	}
 
 	/// <summary>
@@ -314,7 +300,7 @@ public sealed class MessageBus : IBus
 
 		var messageType = message.GetType();
 
-		if (!_convention.IsRequestType(messageType))
+		if (!_options.Convention.IsRequestType(messageType))
 		{
 			throw new MessageTypeException("The message type is not a request type.");
 		}
@@ -373,11 +359,11 @@ public sealed class MessageBus : IBus
 		}
 
 		var result = await transport.SendAsync(pack, cancellationToken)
-									.ContinueWith(task =>
-									{
-										task.WaitAndUnwrapException();
-										return task.Result;
-									}, cancellationToken);
+		                            .ContinueWith(task =>
+		                            {
+			                            task.WaitAndUnwrapException();
+			                            return task.Result;
+		                            }, cancellationToken);
 		return result;
 	}
 
@@ -396,6 +382,7 @@ public sealed class MessageBus : IBus
 		{
 			return options.EnablePipelineBehaviors.Value;
 		}
+
 		return _options.EnablePipelineBehaviors;
 	}
 }
@@ -414,9 +401,9 @@ internal class MessageBusPipelineBehaviorTypeCache
 		return _cache.GetOrAdd(typeof(TResponse), _ =>
 		{
 			return provider.GetServices<IPipelineBehavior<IRoutedMessage, TResponse>>()
-				  .Select(b => b.GetType())
-				  .Distinct()
-				  .ToList();
+			               .Select(b => b.GetType())
+			               .Distinct()
+			               .ToList();
 		});
 	}
 }

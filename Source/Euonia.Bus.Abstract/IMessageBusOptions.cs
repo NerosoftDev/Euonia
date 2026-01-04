@@ -21,6 +21,9 @@ public interface IMessageBusOptions
 	/// <summary>
 	/// Gets the message convention used for naming and discovering messages and handlers.
 	/// </summary>
+	/// <value>
+	///	Convention provider that defines message type classifications (multicast, unicast, request).
+	/// </value>
 	IMessageConvention Convention { get; }
 
 	/// <summary>
