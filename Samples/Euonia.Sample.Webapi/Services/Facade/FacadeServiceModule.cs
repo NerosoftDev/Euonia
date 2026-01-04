@@ -5,6 +5,7 @@ using Nerosoft.Euonia.Bus.RabbitMq;
 using Nerosoft.Euonia.Modularity;
 using Nerosoft.Euonia.Sample.Domain;
 using Nerosoft.Euonia.Sample.Persist;
+using Nerosoft.Euonia.Uow;
 
 namespace Nerosoft.Euonia.Sample.Facade;
 
@@ -31,7 +32,7 @@ namespace Nerosoft.Euonia.Sample.Facade;
 /// </para>
 /// </remarks>
 /// <seealso cref="ModuleContextBase"/>
-[DependsOn(typeof(ApplicationModule))]
+[DependsOn(typeof(ApplicationModule), typeof(UnitOfWorkModule))]
 [DependsOn(typeof(PersistServiceModule), typeof(BusinessServiceModule), typeof(DomainServiceModule))]
 [DependsOn(typeof(InMemoryBusModule), typeof(RabbitMqBusModule))]
 public class FacadeServiceModule : ModuleContextBase

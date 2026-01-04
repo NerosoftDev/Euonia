@@ -20,6 +20,13 @@ To get started with Euonia.Uow, follow these steps:
    ```csharp
    service.AddUnitOfWork();
    ```
+   or
+   ```csharp
+   [DependsOn(typeof(UnitOfWorkModule))]
+   public class YourModule : ModuleContextBase
+   {
+   }
+   ```
 3. **Configure the Unit of Work**: Set up the Unit of Work in your application's configuration file (e.g., appsettings.json) if needed.
 4. **Implement Repositories**: Create repository classes that utilize the Unit of Work for database operations.
 5. **Use the Unit of Work**: In your application logic, use the Unit of Work to manage transactions.
