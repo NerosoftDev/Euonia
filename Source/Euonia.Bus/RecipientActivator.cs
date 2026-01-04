@@ -10,26 +10,24 @@ namespace Nerosoft.Euonia.Bus;
 public class RecipientActivator : BackgroundService
 {
 	private readonly IServiceProvider _provider;
-	private readonly IBusConfigurator _configurator;
 	private readonly string _defaultTransport;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="RecipientActivator"/> class.
 	/// </summary>
 	/// <param name="provider"></param>
-	/// <param name="configurator"></param>
+	/// <param name="options"></param>
 	/// <param name="configuration"></param>
-	public RecipientActivator(IServiceProvider provider, IBusConfigurator configurator, IConfiguration configuration)
+	public RecipientActivator(IServiceProvider provider, IMessageBusOptions options, IConfiguration configuration)
 	{
 		_provider = provider;
-		_configurator = configurator;
-		_defaultTransport = string.Collapse(configuration.GetValue<string>("ServiceBus:DefaultTransport"), configurator.DefaultTransport);
+		_defaultTransport = string.Collapse(configuration.GetValue<string>("Euonia:Bus:DefaultTransport"), options.DefaultTransport);
 	}
 
 	/// <inheritdoc/>
 	protected override Task ExecuteAsync(CancellationToken stoppingToken)
 	{
-		var registrations = _configurator.Registrations;
+		var registrations = HandlerRegistrar.Registrations;
 
 		var registrars = _provider.GetServices<IRecipientRegistrar>();
 

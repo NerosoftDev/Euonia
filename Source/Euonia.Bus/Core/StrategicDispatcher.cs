@@ -1,6 +1,4 @@
 using System.Collections.Concurrent;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Nerosoft.Euonia.Bus;
 
@@ -10,25 +8,15 @@ namespace Nerosoft.Euonia.Bus;
 internal class StrategicDispatcher : IDispatcher
 {
 	private readonly ConcurrentDictionary<Type, IReadOnlyList<string>> _transportCache = new();
-
-	private readonly IMessageConvention _messageConvention;
-	private readonly IServiceProvider _serviceProvider;
-	private readonly IBusConfigurator _configurator;
-	private readonly string _defaultTransport;
+	private readonly IMessageBusOptions _options;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="StrategicDispatcher"/> class.
 	/// </summary>
-	/// <param name="serviceProvider"></param>
-	/// <param name="messageConvention"></param>
-	/// <param name="configurator"></param>
-	/// <param name="configuration"></param>
-	public StrategicDispatcher(IServiceProvider serviceProvider, IMessageConvention messageConvention, IBusConfigurator configurator, IConfiguration configuration)
+	/// <param name="options"></param>
+	public StrategicDispatcher(IMessageBusOptions options)
 	{
-		_messageConvention = messageConvention;
-		_serviceProvider = serviceProvider;
-		_configurator = configurator;
-		_defaultTransport = string.Collapse(configuration.GetValue<string>(Constants.DefaultTransportSection), _configurator.DefaultTransport);
+		_options = options;
 	}
 
 	/// <summary>
@@ -42,9 +30,9 @@ internal class StrategicDispatcher : IDispatcher
 		var transportTypes = _transportCache.GetOrAdd(messageType, _ =>
 		{
 			var list = new List<string>();
-			foreach (var type in _configurator.StrategyAssignedTypes)
+			foreach (var type in _options.StrategyAssignedTypes)
 			{
-				var strategy = _serviceProvider.GetKeyedService<ITransportStrategy>(type);
+				var strategy = _options.GetStrategy(type);
 				if (strategy.Outgoing(messageType))
 				{
 					list.Add(type);
@@ -57,15 +45,15 @@ internal class StrategicDispatcher : IDispatcher
 		switch (transportTypes.Count)
 		{
 			case 0:
-				if (string.IsNullOrEmpty(_defaultTransport))
+				if (string.IsNullOrEmpty(_options.DefaultTransport))
 				{
 					throw new MessageTypeException("No transport is configured for the message type.");
 				}
 
-				transportTypes = new List<string> { _defaultTransport };
+				transportTypes = new List<string> { _options.DefaultTransport };
 				break;
 
-			case > 1 when !_messageConvention.IsMulticastType(messageType):
+			case > 1 when !_options.Convention.IsMulticastType(messageType):
 				throw new MessageTypeException("Multiple transports are configured for a unicast message type.");
 		}
 
