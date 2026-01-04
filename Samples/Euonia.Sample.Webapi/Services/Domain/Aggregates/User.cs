@@ -1,117 +1,70 @@
-﻿using Nerosoft.Euonia.Domain;
+﻿using Nerosoft.Euonia.Business;
+using Nerosoft.Euonia.Sample.Business.Rules;
 using Nerosoft.Euonia.Sample.Domain.Events;
-using Nerosoft.Euonia.Sample.Toolkit;
+using Nerosoft.Euonia.Sample.Domain.Repositories;
 
 namespace Nerosoft.Euonia.Sample.Domain.Aggregates;
 
-/// <summary>
-/// Represents a user aggregate in the domain.
-/// </summary>
-public sealed class User : Aggregate<string>, IHasCreateTime, IHasUpdateTime, ITombstone
+internal class User : EditableObjectBase<User, string>
 {
-	/// <summary>
-	/// Initializes a new instance of the <see cref="User"/> class.
-	/// </summary>
-	/// <remarks>
-	/// The constructor is required by Entity Framework, and should not be used directly.
-	/// </remarks>
-	private User()
+	public static readonly PropertyInfo<string> UsernameProperty = RegisterProperty<string>(p => p.Username);
+	public static readonly PropertyInfo<string> PasswordProperty = RegisterProperty<string>(p => p.Password);
+	public static readonly PropertyInfo<string> PasswordChangedTimeProperty = RegisterProperty<string>(p => p.PasswordChangedTime);
+	public static readonly PropertyInfo<string> NicknameProperty = RegisterProperty<string>(p => p.Nickname);
+	public static readonly PropertyInfo<string> EmailProperty = RegisterProperty<string>(p => p.Email);
+	public static readonly PropertyInfo<string> PhoneProperty = RegisterProperty<string>(p => p.Phone);
+	public static readonly PropertyInfo<string[]> RolesProperty = RegisterProperty<string[]>(p => p.Roles);
+
+	public string Username
 	{
+		get => GetProperty(UsernameProperty);
+		private set => SetProperty(UsernameProperty, value);
 	}
 
-	/// <summary>
-	/// Initializes a new user aggregate object.
-	/// </summary>
-	/// <param name="username">The username of the user.</param>
-	/// <param name="password">The password of the user.</param>
-	private User(string username, string password)
-		: this()
+	public string Password
 	{
-		Username = username;
-		SetPassword(password);
+		get => GetProperty(PasswordProperty);
+		private set => SetProperty(PasswordProperty, value);
 	}
 
-	/// <summary>
-	/// Gets or sets the username.
-	/// </summary>
-	public string Username { get; set; }
-
-	/// <summary>
-	/// Gets or sets the encrypted password.
-	/// </summary>
-	public string PasswordHash { get; set; }
-
-	/// <summary>
-	/// Gets or sets the salt used to encrypt the password.
-	/// </summary>
-	public string PasswordSalt { get; set; }
-
-	/// <summary>
-	/// Gets or sets the nickname.
-	/// </summary>
-	public string Nickname { get; set; }
-
-	/// <summary>
-	/// Gets or sets the email address.
-	/// </summary>
-	public string Email { get; set; }
-
-	/// <summary>
-	/// Gets or sets the phone number.
-	/// </summary>
-	public string Phone { get; set; }
-
-	/// <summary>
-	/// Gets or sets the count of failed access attempts.
-	/// </summary>
-	public int AccessFailedCount { get; set; }
-
-	/// <summary>
-	/// Gets or sets the lockout end time.
-	/// </summary>
-	public DateTime? LockoutEnd { get; set; }
-
-	/// <summary>
-	/// Gets or sets the creation time.
-	/// </summary>
-	public DateTime CreatedAt { get; set; }
-
-	/// <summary>
-	/// Gets or sets the update time.
-	/// </summary>
-	public DateTime UpdatedAt { get; set; }
-
-	/// <summary>
-	/// Gets or sets a value indicating whether this instance is deleted.
-	/// </summary>
-	public bool IsDeleted { get; set; }
-
-	/// <summary>
-	/// Gets or sets the delete time.
-	/// </summary>
-	public DateTime? DeletedAt { get; set; }
-
-	/// <summary>
-	/// Gets or sets the time when the password was last changed.
-	/// </summary>
-	public DateTime? PasswordChangedTime { get; set; }
-
-	/// <summary>
-	/// Gets or sets the roles associated with the user.
-	/// </summary>
-	public HashSet<UserRole> Roles { get; set; }
-
-
-	/// <summary>
-	/// Creates a new user instance.
-	/// </summary>
-	/// <param name="username">The username of the user.</param>
-	/// <param name="password">The password of the user.</param>
-	/// <returns>A new instance of the <see cref="User"/> class.</returns>
-	internal static User Create(string username, string password)
+	public DateTime? PasswordChangedTime
 	{
-		var entity = new User(username, password);
-		return entity;
+		get => GetProperty<DateTime?>(PasswordChangedTimeProperty);
+		private set => SetProperty(PasswordChangedTimeProperty, value);
+	}
+
+	public string Nickname
+	{
+		get => GetProperty(NicknameProperty);
+		set => SetProperty(NicknameProperty, value);
+	}
+
+	public string Email
+	{
+		get => GetProperty(EmailProperty);
+		set => SetProperty(EmailProperty, value);
+	}
+
+	public string Phone
+	{
+		get => GetProperty(PhoneProperty);
+		set => SetProperty(PhoneProperty, value);
+	}
+
+	public string[] Roles
+	{
+		get => GetProperty(RolesProperty);
+		private set => SetProperty(RolesProperty, value);
+	}
+
+	protected override void AddRules()
+	{
+		Rules.AddDataAnnotations();
+		Rules.AddRule(new UsernameCheckRule(UsernameProperty));
+		Rules.AddRule(new EmailAddressCheckRule(EmailProperty));
+		Rules.AddRule(new PhoneNumberCheckRule(PhoneProperty));
+		Rules.AddRule(new PasswordStrengthRule(PasswordProperty));
+		Rules.AddRule(new CommonRule.Required(UsernameProperty, "Username is required."));
 	}
 
 	/// <summary>
@@ -119,65 +72,18 @@ public sealed class User : Aggregate<string>, IHasCreateTime, IHasUpdateTime, IT
 	/// </summary>
 	/// <param name="password">The new password.</param>
 	/// <param name="actionType">The type of action triggering the password change.</param>
-	internal void SetPassword(string password, string actionType = null)
+	public void SetPassword(string password, string actionType = null)
 	{
-		var salt = RandomUtility.GenerateRandomString();
-		var hash = Cryptography.DES.Encrypt(password, Encoding.UTF8.GetBytes(salt));
-		PasswordHash = hash;
-		PasswordSalt = salt;
+		// var salt = RandomUtility.GenerateRandomString();
+		// var hash = Cryptography.DES.Encrypt(password, Encoding.UTF8.GetBytes(salt));
+		// PasswordHash = hash;
+		// PasswordSalt = salt;
+		Password = password;
 		PasswordChangedTime = DateTime.Now;
 		if (!string.IsNullOrWhiteSpace(actionType))
 		{
 			RaiseEvent(new UserPasswordChangedEvent(Id, actionType, PasswordChangedTime.Value));
 		}
-	}
-
-	/// <summary>
-	/// Sets the email address for the user.
-	/// </summary>
-	/// <param name="email">The email address to set.</param>
-	internal void SetEmail(string email)
-	{
-		Email = email.Normalize(TextCaseType.Lower);
-	}
-
-	/// <summary>
-	/// Sets the phone number for the user.
-	/// </summary>
-	/// <param name="phone">The phone number to set.</param>
-	internal void SetPhone(string phone)
-	{
-		Phone = phone;
-	}
-
-	/// <summary>
-	/// Sets the nickname for the user.
-	/// </summary>
-	/// <param name="nickname">The nickname to set.</param>
-	internal void SetNickname(string nickname)
-	{
-		Nickname = nickname;
-	}
-
-	/// <summary>
-	/// Increases the count of failed access attempts.
-	/// </summary>
-	internal void IncreaseAccessFailedCount()
-	{
-		AccessFailedCount++;
-		if (AccessFailedCount >= 10)
-		{
-			LockoutEnd = DateTime.Now.AddMinutes(30);
-		}
-	}
-
-	/// <summary>
-	/// Resets the count of failed access attempts.
-	/// </summary>
-	internal void ResetAccessFailedCount()
-	{
-		AccessFailedCount = 0;
-		LockoutEnd = null;
 	}
 
 	/// <summary>
@@ -191,27 +97,36 @@ public sealed class User : Aggregate<string>, IHasCreateTime, IHasUpdateTime, IT
 			return;
 		}
 
-		Roles ??= new HashSet<UserRole>();
-
-		Roles.RemoveWhere(t => !roles.Contains(t.Name, StringComparer.OrdinalIgnoreCase));
-
-		foreach (var role in roles)
-		{
-			if (Roles.Any(t => t.Name.Equals(role, StringComparison.OrdinalIgnoreCase)))
-			{
-				continue;
-			}
-
-			Roles.Add(UserRole.Create(role));
-		}
+		Roles = roles.Distinct().ToArray();
 	}
 
-	/// <summary>
-	/// Sets the lockout end time for the user.
-	/// </summary>
-	/// <param name="until">The lockout end time.</param>
-	internal void SetLockoutEnd(DateTime? until)
+	[FactoryCreate]
+	private async Task CreateAsync(string username, CancellationToken cancellationToken = default)
 	{
-		LockoutEnd = until;
+		Username = username;
+		await Task.CompletedTask;
+	}
+
+	[FactoryFetch]
+	private async Task FetchAsync(string id, CancellationToken cancellationToken = default)
+	{
+		var repository = BusinessContext.GetRequiredService<IUserRepository>();
+		var user = await repository.GetAsync(id, true, cancellationToken);
+		if (user == null)
+		{
+			throw new InvalidOperationException($"User with ID '{id}' not found.");
+		}
+
+		LoadProperty(IdProperty, user.Id);
+	}
+
+	[FactoryInsert]
+	protected override async Task InsertAsync(CancellationToken cancellationToken = default)
+	{
+	}
+
+	[FactoryUpdate]
+	protected override async Task UpdateAsync(CancellationToken cancellationToken = default)
+	{
 	}
 }

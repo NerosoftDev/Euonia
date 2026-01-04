@@ -1,13 +1,12 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using Nerosoft.Euonia.Domain;
 
 namespace Nerosoft.Euonia.Repository.EfCore;
 
 /// <inheritdoc />
 public class EfCoreRepository<TContext, TEntity, TKey> : Repository<TContext, TEntity, TKey>
 	where TKey : IEquatable<TKey>
-	where TEntity : class, IEntity<TKey>
+	where TEntity : class, IPersistent<TKey>
 	where TContext : DbContext, IRepositoryContext
 {
 	/// <summary>

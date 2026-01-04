@@ -9,24 +9,6 @@ namespace Nerosoft.Euonia.Bus;
 public interface IBusConfigurator
 {
 	/// <summary>
-	/// Gets the list of registered message handler registrations.
-	/// </summary>
-	IReadOnlyList<MessageRegistration> Registrations { get; }
-
-	/// <summary>
-	/// Gets the list of types for which a transport strategy has been assigned.
-	/// </summary>
-	IReadOnlyList<string> StrategyAssignedTypes { get; }
-
-	/// <summary>
-	/// Gets the name of the default transport that will be used when no specific transport is assigned to a message type by strategy.
-	/// </summary>
-	/// <value>
-	/// The default transport name.
-	/// </value>
-	string DefaultTransport { get; }
-
-	/// <summary>
 	/// Registers message handlers found in the provided assemblies.
 	/// </summary>
 	/// <param name="assemblies">Assemblies to scan for handler types.</param>
@@ -63,7 +45,7 @@ public interface IBusConfigurator
 	/// <typeparam name="T">The identity provider implementation type.</typeparam>
 	/// <returns>The current <see cref="IBusConfigurator"/> for fluent configuration.</returns>
 	IBusConfigurator SetIdentityProvider<T>()
-	 where T : class, IIdentityProvider;
+		where T : class, IIdentityProvider;
 
 	/// <summary>
 	/// Configures message conventions using the provided builder action.
@@ -80,11 +62,4 @@ public interface IBusConfigurator
 	/// <param name="configure">Action that configures the <see cref="TransportStrategyBuilder"/> for the transport.</param>
 	/// <returns>The current <see cref="IBusConfigurator"/> for fluent configuration.</returns>
 	IBusConfigurator SetStrategy(string transport, Action<TransportStrategyBuilder> configure);
-
-	/// <summary>
-	/// Sets the default transport strategy to be used when no specific transport is assigned.
-	/// </summary>
-	/// <param name="name"></param>
-	/// <returns></returns>
-	IBusConfigurator SetDefaultTransport(string name);
 }

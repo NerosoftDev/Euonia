@@ -39,7 +39,7 @@ public class DataAnnotationRule : RuleBase
             if (context.Target is IBusinessObject target)
             {
                 var value = target.ReadProperty(Property);
-                var validationContext = new ValidationContext(context.Target, target.GetServiceProvider(), null);
+                var validationContext = new ValidationContext(context.Target, target.BusinessContext.CurrentServiceProvider, null);
                 result = Attribute.GetValidationResult(value, validationContext);
             }
             else

@@ -38,12 +38,6 @@ public abstract class BusinessObject : IBusinessObject, IHasRuleCheck, IDisposab
 	}
 
 	/// <summary>
-	/// Gets the current service provider.
-	/// </summary>
-	/// <returns></returns>
-	public IServiceProvider GetServiceProvider() => BusinessContext?.CurrentServiceProvider;
-
-	/// <summary>
 	/// Handles the event when the BusinessContext is set.
 	/// </summary>
 	protected virtual void OnBusinessContextSet()
@@ -436,10 +430,8 @@ public abstract class BusinessObject : IBusinessObject, IHasRuleCheck, IDisposab
 
 	#region Fields
 
-	private FieldDataManager _fieldManager;
-
 	/// <inheritdoc/>
-	public FieldDataManager FieldManager => _fieldManager ??= new FieldDataManager(GetType());
+	public FieldDataManager FieldManager => field ??= new FieldDataManager(GetType());
 
 	#endregion
 

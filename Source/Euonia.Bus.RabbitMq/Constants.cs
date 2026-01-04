@@ -6,12 +6,12 @@ internal class Constants
 {
 	public const string DefaultTransportName = "RabbitMq";
 
-	public const string ConfigurationSection = "EuoniaBus:RabbitMq";
+	public const string ConfigurationSection = "Euonia:Bus:RabbitMq";
 
 	public const string DefaultExchangeNamePrefix = "$nerosoft.euonia.exchange";
 	public const string DefaultQueueNamePrefix = "$nerosoft.euonia.queue";
 	public const string DefaultTopicName = "$nerosoft.euonia.topic";
-	
+
 	public static readonly JsonSerializerSettings SerializerSettings = new()
 	{
 		ReferenceLoopHandling = ReferenceLoopHandling.Ignore,

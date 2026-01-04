@@ -1,14 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Nerosoft.Euonia.Sample.Domain.Aggregates;
+using Nerosoft.Euonia.Sample.Persist.Entities;
 
 namespace Nerosoft.Euonia.Sample.Persist.Configurations;
 
 [DbContext(typeof(SampleDataContext))]
-public class UserEntityConfiguration : IEntityTypeConfiguration<User>
+public class UserEntityConfiguration : IEntityTypeConfiguration<UserEntity>
 {
-	public void Configure(EntityTypeBuilder<User> builder)
+	public void Configure(EntityTypeBuilder<UserEntity> builder)
 	{
 		builder.ToTable("user");
 		builder.HasKey(x => x.Id);
@@ -21,37 +21,41 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
 		builder.ShortUniqueId();
 
 		builder.Property(x => x.Username)
-			   .HasColumnName("username")
-			   .IsRequired()
-			   .IsUnicode();
+		       .HasColumnName("username")
+		       .HasMaxLength(64)
+		       .IsRequired()
+		       .IsUnicode();
 
 		builder.Property(x => x.PasswordHash)
-			   .HasColumnName("password_hash");
+		       .HasColumnName("password_hash")
+		       .HasMaxLength(512);
 
 		builder.Property(x => x.PasswordSalt)
-			   .HasColumnName("password_salt");
+		       .HasColumnName("password_salt")
+		       .HasMaxLength(64);
 
 		builder.Property(x => x.Nickname)
-			   .HasColumnName("nickname")
-			   .IsUnicode();
+		       .HasColumnName("nickname")
+		       .HasMaxLength(32)
+		       .IsUnicode();
 
 		builder.Property(x => x.Email)
-			   .HasColumnName("email")
-			   .HasMaxLength(255);
+		       .HasColumnName("email")
+		       .HasMaxLength(255);
 
 		builder.Property(x => x.Phone)
-			   .HasColumnName("phone")
-			   .HasMaxLength(32);
+		       .HasColumnName("phone")
+		       .HasMaxLength(32);
 
 		builder.Property(x => x.AccessFailedCount)
-			   .HasColumnName("access_failed_count")
-			   .HasDefaultValue(0);
+		       .HasColumnName("access_failed_count")
+		       .HasDefaultValue(0);
 
 		builder.Property(x => x.LockoutEnd)
-			   .HasColumnName("lockout_end");
+		       .HasColumnName("lockout_end");
 
 		builder.Property(x => x.PasswordChangedTime)
-			   .HasColumnName("password_changed_at");
+		       .HasColumnName("password_changed_at");
 
 		builder.CreatedAtUtc();
 
@@ -60,8 +64,8 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
 		builder.ConfigureTombstoneProperty();
 
 		builder.HasMany(x => x.Roles)
-			   .WithOne(x => x.User)
-			   .HasForeignKey(x => x.UserId)
-			   .OnDelete(DeleteBehavior.Cascade);
+		       .WithOne(x => x.UserEntity)
+		       .HasForeignKey(x => x.UserId)
+		       .OnDelete(DeleteBehavior.Cascade);
 	}
 }

@@ -1,6 +1,5 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using Nerosoft.Euonia.Domain;
 
 namespace Nerosoft.Euonia.Repository.EfCore;
 
@@ -19,7 +18,7 @@ public static class RepositoryExtensions
 	/// <returns>Repository with the related data included.</returns>
 	public static IRepository<TEntity, TKey> Include<TEntity, TKey>(this IRepository<TEntity, TKey> repository, string property)
 		where TKey : IEquatable<TKey>
-		where TEntity : class, IEntity<TKey>
+		where TEntity : class, IPersistent<TKey>
 	{
 		repository.Actions.Add(query => query.Include(property));
 		return repository;
@@ -36,7 +35,7 @@ public static class RepositoryExtensions
 	/// <returns>Repository with the related data included.</returns>
 	public static IRepository<TEntity, TKey> IncludeIf<TEntity, TKey>(this IRepository<TEntity, TKey> repository, bool condition, string property)
 		where TKey : IEquatable<TKey>
-		where TEntity : class, IEntity<TKey>
+		where TEntity : class, IPersistent<TKey>
 	{
 		if (!condition)
 		{
@@ -57,7 +56,7 @@ public static class RepositoryExtensions
 	/// <returns>Repository with the related data included.</returns>
 	public static IRepository<TEntity, TKey> Include<TEntity, TKey>(this IRepository<TEntity, TKey> repository, params string[] properties)
 		where TKey : IEquatable<TKey>
-		where TEntity : class, IEntity<TKey>
+		where TEntity : class, IPersistent<TKey>
 	{
 		foreach (var property in properties)
 		{
@@ -78,7 +77,7 @@ public static class RepositoryExtensions
 	/// <returns>Repository with the related data included.</returns>
 	public static IRepository<TEntity, TKey> Include<TEntity, TKey, TProperty>(this IRepository<TEntity, TKey> repository, Expression<Func<TEntity, TProperty>> property)
 		where TKey : IEquatable<TKey>
-		where TEntity : class, IEntity<TKey>
+		where TEntity : class, IPersistent<TKey>
 	{
 		repository.Actions.Add(query => query.Include(property));
 		return repository;
@@ -96,7 +95,7 @@ public static class RepositoryExtensions
 	/// <returns>Repository with the related data included.</returns>
 	public static IRepository<TEntity, TKey> IncludeIf<TEntity, TKey, TProperty>(this IRepository<TEntity, TKey> repository, bool condition, Expression<Func<TEntity, TProperty>> property)
 		where TKey : IEquatable<TKey>
-		where TEntity : class, IEntity<TKey>
+		where TEntity : class, IPersistent<TKey>
 	{
 		if (!condition)
 		{
@@ -117,7 +116,7 @@ public static class RepositoryExtensions
 	/// <returns></returns>
 	public static IRepository<TEntity, TKey> Tracking<TEntity, TKey>(this IRepository<TEntity, TKey> repository, bool tracking = true)
 		where TKey : IEquatable<TKey>
-		where TEntity : class, IEntity<TKey>
+		where TEntity : class, IPersistent<TKey>
 	{
 		repository.Actions.Add(query => tracking ? query.AsTracking() : query.AsNoTracking());
 		return repository;
@@ -134,7 +133,7 @@ public static class RepositoryExtensions
 	/// <returns></returns>
 	public static TEntity Attach<TContext, TEntity, TKey>(this IRepository<TContext, TEntity, TKey> repository, TEntity entity)
 		where TKey : IEquatable<TKey>
-		where TEntity : class, IEntity<TKey>
+		where TEntity : class, IPersistent<TKey>
 		where TContext : class, IRepositoryContext
 	{
 		if (repository.Context is not DbContext context)

@@ -1,14 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Nerosoft.Euonia.Sample.Domain.Aggregates;
+using Nerosoft.Euonia.Sample.Persist.Entities;
 
 namespace Nerosoft.Euonia.Sample.Persist.Configurations;
 
 [DbContext(typeof(SampleDataContext))]
-public class UserRoleEntityConfiguration : IEntityTypeConfiguration<UserRole>
+public class UserRoleEntityConfiguration : IEntityTypeConfiguration<UserRoleEntity>
 {
-	public void Configure(EntityTypeBuilder<UserRole> builder)
+	public void Configure(EntityTypeBuilder<UserRoleEntity> builder)
 	{
 		builder.ToTable("user_role");
 		builder.HasKey(x => x.Id);
@@ -33,7 +33,7 @@ public class UserRoleEntityConfiguration : IEntityTypeConfiguration<UserRole>
 
 		builder.CreatedAtUtc();
 
-		builder.HasOne(x => x.User)
+		builder.HasOne(x => x.UserEntity)
 			   .WithMany(x => x.Roles)
 			   .HasForeignKey(x => x.UserId)
 			   .OnDelete(DeleteBehavior.Cascade);

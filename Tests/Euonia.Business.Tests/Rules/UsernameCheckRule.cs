@@ -3,7 +3,7 @@ using Nerosoft.Euonia.Business;
 
 namespace Nerosoft.Euonia.Core.Tests.Rules;
 
-[ExecuteOnState(ObjectEditState.Insert)]
+[ExecuteOnState(ObjectEditState.New)]
 public class UsernameCheckRule : RuleBase
 {
 	public override Task ExecuteAsync(IRuleContext context, CancellationToken cancellationToken = default)

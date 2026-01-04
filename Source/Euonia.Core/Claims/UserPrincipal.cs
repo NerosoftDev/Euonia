@@ -15,8 +15,6 @@ namespace Nerosoft.Euonia.Claims;
 /// </remarks>
 public class UserPrincipal
 {
-	private readonly ClaimsPrincipal _claims;
-
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UserPrincipal"/> class with the supplied claims principal.
 	/// </summary>
@@ -24,8 +22,13 @@ public class UserPrincipal
 	/// case most accessors will return <c>null</c> or <c>false</c> as appropriate.</param>
 	public UserPrincipal(ClaimsPrincipal claims)
 	{
-		_claims = claims;
+		Claims = claims;
 	}
+
+	/// <summary>
+	/// Gets the underlying <see cref="ClaimsPrincipal"/> instance.
+	/// </summary>
+	public ClaimsPrincipal Claims { get; }
 
 	/// <summary>
 	/// Gets the user's identifier (subject).
@@ -42,8 +45,8 @@ public class UserPrincipal
 	{
 		get
 		{
-			var claim = _claims.FindFirst(UserClaimTypes.Subject);
-			claim ??= _claims.FindFirst(ClaimTypes.NameIdentifier);
+			var claim = Claims.FindFirst(UserClaimTypes.Subject);
+			claim ??= Claims.FindFirst(ClaimTypes.NameIdentifier);
 			var subjectId = claim?.Value;
 			return subjectId;
 		}
@@ -56,7 +59,7 @@ public class UserPrincipal
 	/// The value of the claim identified by <see cref="UserClaimTypes.Name"/>, or <c>null</c> if the claim is missing
 	/// or if the underlying <see cref="ClaimsPrincipal"/> is <c>null</c>.
 	/// </value>
-	public string Username => _claims?.FindFirst(UserClaimTypes.Name)?.Value;
+	public string Username => Claims?.FindFirst(UserClaimTypes.Name)?.Value;
 
 	/// <summary>
 	/// Gets the user's code.
@@ -65,7 +68,7 @@ public class UserPrincipal
 	/// The value of the claim identified by <see cref="UserClaimTypes.Code"/>, or <c>null</c> if the claim is missing
 	/// or if the underlying <see cref="ClaimsPrincipal"/> is <c>null</c>.
 	/// </value>
-	public string Code => _claims?.FindFirst(UserClaimTypes.Code)?.Value;
+	public string Code => Claims?.FindFirst(UserClaimTypes.Code)?.Value;
 
 	/// <summary>
 	/// Gets the tenant identifier associated with the user.
@@ -74,7 +77,7 @@ public class UserPrincipal
 	/// The value of the claim identified by <see cref="UserClaimTypes.Tenant"/>. May be <c>null</c> if the claim or the
 	/// underlying <see cref="ClaimsPrincipal"/> is not present.
 	/// </value>
-	public string Tenant => _claims.FindFirst(UserClaimTypes.Tenant)?.Value;
+	public string Tenant => Claims.FindFirst(UserClaimTypes.Tenant)?.Value;
 
 	/// <summary>
 	/// Gets the user's roles as a sequence of role names.
@@ -85,14 +88,14 @@ public class UserPrincipal
 	/// Callers should tolerate an empty sequence or <c>null</c> depending on usage.
 	/// </remarks>
 	/// <value>An <see cref="IEnumerable{T}"/> of role names (claim values) or <c>null</c>.</value>
-	public IEnumerable<string> Roles => _claims?.FindAll(UserClaimTypes.Role).Select(t => t.Value);
+	public IEnumerable<string> Roles => Claims?.FindAll(UserClaimTypes.Role).Select(t => t.Value);
 
 	/// <summary>
 	/// Gets a value that indicates whether the user is authenticated.
 	/// </summary>
 	/// <value><c>true</c> when the underlying <see cref="ClaimsPrincipal"/>'s identity is authenticated; otherwise <c>false</c>.
 	/// If the underlying principal or identity is <c>null</c>, returns <c>false</c>.</value>
-	public bool IsAuthenticated => _claims?.Identity?.IsAuthenticated ?? false;
+	public bool IsAuthenticated => Claims?.Identity?.IsAuthenticated ?? false;
 
 	/// <summary>
 	/// Finds the first claim with the specified claim type.
@@ -103,7 +106,7 @@ public class UserPrincipal
 	/// </returns>
 	public Claim FindClaim(string claimType)
 	{
-		return _claims.FindFirst(claimType);
+		return Claims.FindFirst(claimType);
 	}
 
 	/// <summary>
@@ -115,7 +118,7 @@ public class UserPrincipal
 	/// </returns>
 	public Claim[] FindClaims(string claimType)
 	{
-		return _claims.FindAll(claimType).ToArray();
+		return Claims.FindAll(claimType).ToArray();
 	}
 
 	/// <summary>
@@ -127,7 +130,7 @@ public class UserPrincipal
 	/// </returns>
 	public Claim[] GetAllClaims()
 	{
-		return _claims.Claims.ToArray();
+		return Claims.Claims.ToArray();
 	}
 
 	/// <summary>
@@ -139,7 +142,7 @@ public class UserPrincipal
 	/// </returns>
 	public bool IsInRole(string role)
 	{
-		return IsAuthenticated && _claims.IsInRole(role);
+		return IsAuthenticated && Claims.IsInRole(role);
 	}
 
 	/// <summary>

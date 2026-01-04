@@ -16,15 +16,15 @@ public sealed class RabbitMqRecipientRegistrar : IRecipientRegistrar
 	/// <summary>
 	/// Initialize a new instance of <see cref="RabbitMqRecipientRegistrar"/>.
 	/// </summary>
-	/// <param name="convention"></param>
+	/// <param name="configurator"></param>
 	/// <param name="provider"></param>
 	/// <param name="options"></param>
-	public RabbitMqRecipientRegistrar(IMessageConvention convention, IServiceProvider provider, IOptions<RabbitMqBusOptions> options)
+	public RabbitMqRecipientRegistrar(IMessageBusOptions configurator, IServiceProvider provider, IOptions<RabbitMqBusOptions> options)
 	{
-		_convention = convention;
+		_convention = configurator.Convention;
 		_provider = provider;
 		_options = options.Value;
-		_strategy = provider.GetKeyedService<ITransportStrategy>(_options.Name);
+		_strategy = configurator.GetStrategy(_options.Name);
 	}
 
 	/// <inheritdoc/>

@@ -3,7 +3,7 @@
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
         <EnablePackageVersionOverride>true</EnablePackageVersionOverride>
         <ExtensionsPackageVersion>10.0.1</ExtensionsPackageVersion>
-        <GrpcAspNetCoreVersion>2.71.0</GrpcAspNetCoreVersion>
+        <GrpcAspNetCoreVersion>2.76.0</GrpcAspNetCoreVersion>
         <QuartzVersion>3.15.1</QuartzVersion>
     </PropertyGroup>
     <PropertyGroup>
@@ -48,7 +48,7 @@
         <PackageVersion Include="Serilog.Enrichers.Environment" Version="3.0.1" />
         <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />
         <PackageVersion Include="StackExchange.Redis" Version="2.10.1" />
-        <PackageVersion Include="Swashbuckle.AspNetCore" Version="10.0.1" />
+        <PackageVersion Include="Swashbuckle.AspNetCore" Version="10.1.0" />
         <PackageVersion Include="System.Collections.Immutable" Version="10.0.1" />
         <PackageVersion Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
         <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />

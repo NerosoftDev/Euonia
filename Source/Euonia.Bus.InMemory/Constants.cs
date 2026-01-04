@@ -13,5 +13,5 @@ internal static class Constants
 	/// <summary>
 	/// The configuration section name for In-Memory Bus settings.
 	/// </summary>
-	public const string ConfigurationSection = "EuoniaBus:InMemory";
+	public const string ConfigurationSection = "Euonia:Bus:InMemory";
 }

@@ -1,15 +1,12 @@
 ﻿using System.Diagnostics;
-using System.Reflection;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Nerosoft.Euonia.Bus;
 using Nerosoft.Euonia.Domain;
 using Nerosoft.Euonia.Modularity;
 using Nerosoft.Euonia.Repository;
 using Nerosoft.Euonia.Repository.EfCore;
-using Nerosoft.Euonia.Sample.Domain;
 
 namespace Nerosoft.Euonia.Sample.Persist;
 
@@ -45,14 +42,6 @@ internal abstract class DataContextWithBus<TContext> : DataContextBase<TContext>
 	/// Gets the DateTimeKind used for date and time values.
 	/// </summary>
 	protected override DateTimeKind DateTimeKind => DateTimeKind.Utc;
-
-	/// <inheritdoc/>
-	protected override void OnModelCreating(ModelBuilder modelBuilder)
-	{
-		modelBuilder.ApplyConfigurationsFromAssembly(typeof(TContext).Assembly, type => type.GetCustomAttribute<DbContextAttribute>()?.ContextType == typeof(TContext));
-		modelBuilder.SetTombstoneQueryFilter();
-		base.OnModelCreating(modelBuilder);
-	}
 
 	/// <inheritdoc />
 	public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)

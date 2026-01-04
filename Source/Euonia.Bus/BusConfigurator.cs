@@ -2,7 +2,6 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Nerosoft.Euonia.Pipeline;
 
 // ReSharper disable MemberCanBePrivate.Global
 
@@ -12,14 +11,9 @@ namespace Nerosoft.Euonia.Bus;
 /// Configures the message bus by registering handlers, setting conventions,
 /// assigning transport strategies and configuring identity providers.
 /// </summary>
-public class BusConfigurator : IBusConfigurator
+internal sealed class BusConfigurator : IBusConfigurator
 {
 	private readonly IServiceCollection _services;
-
-	/// <summary>
-	/// Holds discovered message handler registrations.
-	/// </summary>
-	private readonly List<MessageRegistration> _registrations = [];
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BusConfigurator"/> class.
@@ -39,21 +33,6 @@ public class BusConfigurator : IBusConfigurator
 	/// Builders for transport-specific strategies keyed by transport type.
 	/// </summary>
 	internal ConcurrentDictionary<string, TransportStrategyBuilder> StrategyBuilders { get; } = new();
-
-	/// <summary>
-	/// Read-only list of registered message handler registrations.
-	/// </summary>
-	public IReadOnlyList<MessageRegistration> Registrations => _registrations;
-
-	/// <summary>
-	/// Types for which a transport strategy has been configured.
-	/// </summary>
-	public IReadOnlyList<string> StrategyAssignedTypes => StrategyBuilders.Keys.ToList();
-
-	/// <summary>
-	/// Name of the default transport used when no specific transport is assigned by strategy.
-	/// </summary>
-	public string DefaultTransport { get; private set; } = string.Empty;
 
 	/// <summary>
 	/// Scans the provided assemblies for handler types and registers them.
@@ -82,8 +61,7 @@ public class BusConfigurator : IBusConfigurator
 	/// <returns>The current <see cref="IBusConfigurator"/> for fluent configuration.</returns>
 	public IBusConfigurator RegisterHandlers(IEnumerable<Type> types)
 	{
-		var registrations = MessageHandlerFinder.Find(types).ToList();
-		_registrations.AddRange(registrations);
+		HandlerRegistrar.RegisterHandlers(types);
 		return this;
 	}
 
@@ -138,42 +116,6 @@ public class BusConfigurator : IBusConfigurator
 		where T : class, IIdentityProvider
 	{
 		_services.TryAddSingleton<IIdentityProvider, T>();
-		return this;
-	}
-
-	/// <summary>
-	/// Sets the default transport to be used when no specific transport strategy is assigned.
-	/// </summary>
-	/// <param name="name"></param>
-	/// <returns></returns>
-	public IBusConfigurator SetDefaultTransport(string name)
-	{
-		DefaultTransport = name;
-		return this;
-	}
-
-	/// <summary>
-	/// Adds a pipeline behavior for routed messages with a response.
-	/// </summary>
-	/// <typeparam name="TBehavior"></typeparam>
-	/// <typeparam name="TResponse"></typeparam>
-	/// <returns></returns>
-	public IBusConfigurator AddPipelineBehavior<TBehavior, TResponse>()
-		where TBehavior : class, IPipelineBehavior<IRoutedMessage, TResponse>
-	{
-		_services.AddTransient<IPipelineBehavior<IRoutedMessage, TResponse>, TBehavior>();
-		return this;
-	}
-
-	/// <summary>
-	/// Adds a pipeline behavior for routed messages.
-	/// </summary>
-	/// <typeparam name="TBehavior"></typeparam>
-	/// <returns></returns>
-	public IBusConfigurator AddPipelineBehavior<TBehavior>()
-		where TBehavior : class, IPipelineBehavior<IRoutedMessage>
-	{
-		_services.AddTransient<IPipelineBehavior<IRoutedMessage>, TBehavior>();
 		return this;
 	}
 }
