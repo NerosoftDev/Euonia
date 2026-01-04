@@ -1,9 +1,9 @@
-﻿namespace Nerosoft.Euonia.Sample;
+namespace System;
 
 /// <summary>
 /// Provides utility methods for asserting exceptions in code execution.
 /// </summary>
-internal class ExceptionAssert
+public static class ExceptionAssert
 {
 	/// <summary>
 	/// Throws an exception to the specified type if the given condition is true.
