@@ -1,34 +1,32 @@
-﻿namespace Nerosoft.Euonia.Bus;
+namespace Nerosoft.Euonia.Bus;
 
 /// <summary>
 /// Configuration options for the message bus.
 /// </summary>
-public class MessageBusOptions : IMessageBusOptions
+public interface IMessageBusOptions
 {
-	private readonly BusConfigurator _configurator = Singleton<BusConfigurator>.Instance;
-
 	/// <summary>
 	/// Gets the name of the default transport that will be used when no specific transport is assigned to a message type by strategy.
 	/// </summary>
 	/// <value>
 	/// The default transport name.
 	/// </value>
-	public string DefaultTransport { get; set; }
+	string DefaultTransport { get; }
 
 	/// <summary>
-	/// Indicates whether to enable pipeline behaviors for message processing.
+	/// Gets a value indicates whether to enable pipeline behaviors for message processing.
 	/// </summary>
-	public bool EnablePipelineBehaviors { get; set; } = true;
-	
+	bool EnablePipelineBehaviors { get; }
+
 	/// <summary>
 	/// Gets the message convention used for naming and discovering messages and handlers.
 	/// </summary>
-	public IMessageConvention Convention => _configurator.ConventionBuilder.Convention;
+	IMessageConvention Convention { get; }
 
 	/// <summary>
 	/// Gets the list of types for which a transport strategy has been assigned.
 	/// </summary>
-	public IReadOnlyList<string> StrategyAssignedTypes => _configurator.StrategyBuilders.Keys.ToList();
+	IReadOnlyList<string> StrategyAssignedTypes { get; }
 
 	/// <summary>
 	/// Gets the transport strategy associated with the specified transport name.
@@ -37,8 +35,5 @@ public class MessageBusOptions : IMessageBusOptions
 	/// <returns>
 	/// An instance of <see cref="ITransportStrategy"/> representing the strategy associated with the specified transport name.
 	/// </returns>
-	public ITransportStrategy GetStrategy(string transport)
-	{
-		return _configurator.StrategyBuilders.GetOrDefault(transport)?.Strategy;
-	}
+	ITransportStrategy GetStrategy(string transport);
 }

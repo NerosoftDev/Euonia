@@ -1,10 +1,10 @@
-﻿namespace Nerosoft.Euonia.Sample.Persist;
+namespace Nerosoft.Euonia.Repository;
 
 /// <summary>
 /// Indicates that a class is associated with a specific connection string.
 /// </summary>
-[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
-internal class ConnectionStringAttribute : Attribute
+[AttributeUsage(AttributeTargets.Class, Inherited = false)]
+public class ConnectionStringAttribute : Attribute
 {
 	/// <summary>
 	/// Gets or sets the connection name.

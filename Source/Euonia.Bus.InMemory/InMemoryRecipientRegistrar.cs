@@ -17,15 +17,15 @@ public sealed class InMemoryRecipientRegistrar : IRecipientRegistrar
 	/// <summary>
 	/// Initializes a new instance of the <see cref="InMemoryRecipientRegistrar"/>.
 	/// </summary>
-	/// <param name="convention"></param>
+	/// <param name="configurator"></param>
 	/// <param name="provider"></param>
 	/// <param name="options"></param>
-	public InMemoryRecipientRegistrar(IMessageConvention convention, IServiceProvider provider, IOptions<InMemoryBusOptions> options)
+	public InMemoryRecipientRegistrar(IMessageBusOptions configurator, IServiceProvider provider, IOptions<InMemoryBusOptions> options)
 	{
 		_options = options.Value;
-		_convention = convention;
+		_convention = configurator.Convention;
 		_provider = provider;
-		_strategy = _provider.GetKeyedService<ITransportStrategy>(_options.Name);
+		_strategy = configurator.GetStrategy(_options.Name);
 	}
 
 	/// <inheritdoc/>

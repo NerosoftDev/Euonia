@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
 
-namespace Nerosoft.Euonia.Sample.Persist;
+namespace Nerosoft.Euonia.Repository.EfCore;
 
 /// <summary>
 /// Generates compact, short unique string identifiers for EF Core entities.
@@ -15,7 +15,7 @@ namespace Nerosoft.Euonia.Sample.Persist;
 /// The generator returns permanent values (not temporary) suitable for use as stable primary keys
 /// or unique business identifiers within the application's persistence layer.
 /// </remarks>
-internal class ShortUniqueIdValueGenerator : ValueGenerator<string>
+public class ShortUniqueIdValueGenerator : ValueGenerator<string>
 {
 	/// <summary>
 	/// Generates the next short unique identifier for the given entity entry.

@@ -3,9 +3,9 @@ using Nerosoft.Euonia.Bus;
 using Nerosoft.Euonia.Bus.InMemory;
 using Nerosoft.Euonia.Bus.RabbitMq;
 using Nerosoft.Euonia.Modularity;
-using Nerosoft.Euonia.Sample.Business;
 using Nerosoft.Euonia.Sample.Domain;
 using Nerosoft.Euonia.Sample.Persist;
+using Nerosoft.Euonia.Uow;
 
 namespace Nerosoft.Euonia.Sample.Facade;
 
@@ -21,7 +21,7 @@ namespace Nerosoft.Euonia.Sample.Facade;
 /// <para>- Act as a central registration point for application services.</para>
 /// <para>- Provide a place to add initialization logic related to application functionality.</para>
 /// Dependencies:
-/// <para>- Depends on <see cref="ApplicationModule"/>, <see cref="ContractServiceModule"/>,
+/// <para>- Depends on <see cref="ApplicationModule"/> to leverage core application services and infrastructure,
 ///   <see cref="PersistServiceModule"/>, <see cref="BusinessServiceModule"/>,
 ///   and <see cref="DomainServiceModule"/> to ensure required services are registered
 ///   before this module initializes.
@@ -32,14 +32,13 @@ namespace Nerosoft.Euonia.Sample.Facade;
 /// </para>
 /// </remarks>
 /// <seealso cref="ModuleContextBase"/>
-[DependsOn(typeof(ApplicationModule))]
+[DependsOn(typeof(ApplicationModule), typeof(UnitOfWorkModule))]
 [DependsOn(typeof(PersistServiceModule), typeof(BusinessServiceModule), typeof(DomainServiceModule))]
 [DependsOn(typeof(InMemoryBusModule), typeof(RabbitMqBusModule))]
 public class FacadeServiceModule : ModuleContextBase
 {
 	public override void AheadConfigureServices(ServiceConfigurationContext context)
 	{
-		
 	}
 
 	public override void ConfigureServices(ServiceConfigurationContext context)
@@ -49,19 +48,19 @@ public class FacadeServiceModule : ModuleContextBase
 		context.Services.AddEuoniaBus(config =>
 		{
 			config.RegisterHandlers([typeof(FacadeServiceModule).Assembly])
-				  .SetConventions(builder =>
-				  {
-					  builder.Add<DefaultMessageConvention>();
-					  builder.Add<AttributeMessageConvention>();
-					  builder.Add<DomainMessageConvention>();
-				  })
-				  .SetStrategy("InMemory", builder =>
-				  {
-					  builder.Add<LocalMessageTransportStrategy>();
-					  builder.EvaluateIncoming(_ => true);
-					  builder.EvaluateOutgoing(_ => true);
-				  });
-			config.SetIdentityProvider(jwt => JwtIdentityAccessor.Resolve(jwt, Configuration));
+			      .SetConventions(builder =>
+			      {
+				      builder.Add<DefaultMessageConvention>();
+				      builder.Add<AttributeMessageConvention>();
+				      builder.Add<DomainMessageConvention>();
+			      })
+			      .SetStrategy("InMemory", builder =>
+			      {
+				      builder.Add<LocalMessageTransportStrategy>();
+				      builder.EvaluateIncoming(_ => true);
+				      builder.EvaluateOutgoing(_ => true);
+			      })
+			      .SetIdentityProvider(jwt => JwtIdentityAccessor.Resolve(jwt, Configuration));
 		});
 	}
 }
