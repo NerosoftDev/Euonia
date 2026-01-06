@@ -11,14 +11,14 @@ public partial class CommonRule
 	public class Lambda : CommonRuleBase
 	{
 		/// <inheritdoc />
-		public Lambda(IPropertyInfo property, Func<object, IRuleContext, bool> handler, string message)
+		public Lambda(IPropertyInfo property, Func<object, IRuleContext, Task<bool>> handler, string message)
 			: base(property, message)
 		{
 			Handler = handler;
 		}
 
 		/// <inheritdoc />
-		public Lambda(IPropertyInfo property, Func<object, IRuleContext, bool> handler, Func<string> messageFactory)
+		public Lambda(IPropertyInfo property, Func<object, IRuleContext, Task<bool>> handler, Func<string> messageFactory)
 			: base(property, messageFactory)
 		{
 			Handler = handler;
@@ -27,7 +27,7 @@ public partial class CommonRule
 		/// <summary>
 		/// Gets the handler function.
 		/// </summary>
-		private Func<object, IRuleContext, bool> Handler { get; }
+		private Func<object, IRuleContext, Task<bool>> Handler { get; }
 
 		/// <inheritdoc />
 		public override async Task ExecuteAsync(IRuleContext context, CancellationToken cancellationToken = default)
@@ -36,15 +36,17 @@ public partial class CommonRule
 			{
 				var value = target.ReadProperty(Property);
 
-				var result = Handler(value, context);
+				var result = await Handler(value, context);
 
 				if (!result)
 				{
 					context.AddErrorResult(string.Format(MessageFactory(), Property.FriendlyName));
 				}
 			}
-
-			await Task.CompletedTask;
+			else
+			{
+				await Task.CompletedTask;
+			}
 		}
 	}
 
