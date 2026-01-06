@@ -15,7 +15,7 @@ public static class RulesExtensions
 		/// <param name="property"></param>
 		/// <param name="handler"></param>
 		/// <param name="message"></param>
-		public void AddRule<T>(IPropertyInfo property, Func<T, bool> handler, string message)
+		public void AddRule<T>(IPropertyInfo property, Func<T, Task<bool>> handler, string message)
 			where T : BusinessObject
 		{
 			var rule = new CommonRule.Lambda(property, (_, context) =>
@@ -39,7 +39,7 @@ public static class RulesExtensions
 		/// <param name="property"></param>
 		/// <param name="handler"></param>
 		/// <param name="message"></param>
-		public void AddRule<T>(IPropertyInfo property, Func<T, bool> handler, Func<string> message)
+		public void AddRule<T>(IPropertyInfo property, Func<T, Task<bool>> handler, Func<string> message)
 			where T : BusinessObject
 		{
 			var rule = new CommonRule.Lambda(property, (_, context) =>

@@ -329,7 +329,7 @@ public abstract class BusinessObject : IBusinessObject, IHasRuleCheck, IDisposab
 	/// Used to create an object that bypasses rule checks, allowing certain values to be set even if they are not strictly valid. 
 	/// The object also allows developers to check whether certain rules are being bypassed at any given time.
 	/// </summary>
-	protected internal class BypassRuleChecksObject : IDisposable
+	protected internal sealed class BypassRuleChecksObject : IDisposable
 	{
 		private BusinessObject _target;
 		private static readonly object _lock = new();
@@ -355,7 +355,7 @@ public abstract class BusinessObject : IBusinessObject, IHasRuleCheck, IDisposab
 		/// Disposes the object.
 		/// </summary>
 		/// <param name="dispose">Dispose flag.</param>
-		protected virtual void Dispose(bool dispose)
+		private void Dispose(bool dispose)
 		{
 			DeRef();
 		}
@@ -385,10 +385,7 @@ public abstract class BusinessObject : IBusinessObject, IHasRuleCheck, IDisposab
 		/// Gets the current reference count for this
 		/// object.
 		/// </summary>
-		public int RefCount
-		{
-			get { return _refCount; }
-		}
+		public int RefCount => _refCount;
 
 		private void AddRef()
 		{
@@ -706,8 +703,8 @@ public abstract class BusinessObject : IBusinessObject, IHasRuleCheck, IDisposab
 	/// <exception cref="SecurityException"></exception>
 	public bool CanReadProperty(IPropertyInfo property, bool throwOnFalse)
 	{
-		bool result = CanReadProperty(property);
-		if (throwOnFalse && result == false)
+		var result = CanReadProperty(property);
+		if (throwOnFalse && !result)
 		{
 			throw new SecurityException($"Property get not allowed. {property.Name}");
 		}
@@ -734,6 +731,8 @@ public abstract class BusinessObject : IBusinessObject, IHasRuleCheck, IDisposab
 			return true;
 		}
 
+		{
+		}
 		return CanReadProperty(propertyInfo, throwOnFalse);
 	}
 
@@ -820,7 +819,7 @@ public abstract class BusinessObject : IBusinessObject, IHasRuleCheck, IDisposab
 		_disposedValue = true;
 	}
 
-	// 仅当“Dispose(bool disposing)”拥有用于释放未托管资源的代码时才替代终结器
+	// Only override finalizer if 'Dispose(bool disposing)' has code to free unmanaged resources
 	/// <summary>
 	/// 
 	/// </summary>
