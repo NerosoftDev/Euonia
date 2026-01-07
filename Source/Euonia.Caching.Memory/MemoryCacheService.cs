@@ -5,10 +5,9 @@ namespace Nerosoft.Euonia.Caching.Memory;
 /// <summary>
 /// The implement of <see cref="ICacheService"/> with <see cref="Microsoft.Extensions.Caching.Memory"/>.
 /// </summary>
-public class MemoryCacheService : ICacheService
+public class MemoryCacheService : BaseCacheService, ICacheService
 {
 	private readonly MemoryCacheManager _manager;
-	private readonly string _prefix;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="MemoryCacheService"/> class.
@@ -17,21 +16,21 @@ public class MemoryCacheService : ICacheService
 	public MemoryCacheService(IOptions<MemoryCacheOptions> options)
 	{
 		_manager = new MemoryCacheManager(options.Value);
-		_prefix = options.Value.KeyPrefix;
+		KeyPrefix = options.Value.KeyPrefix;
 	}
 
 	/// <inheritdoc />
 	public TValue Get<TValue>(string key)
 	{
 		key = RewriteKey(key);
-		return _manager.Instance<TValue>().Get(key);
+		return GetCacheManager<TValue>().Get(key);
 	}
 
 	/// <inheritdoc />
 	public bool TryGet<TValue>(string key, out TValue value)
 	{
 		key = RewriteKey(key);
-		var result = _manager.Instance<TValue>().TryGetOrAdd(key, _ => null, out var cache);
+		var result = GetCacheManager<TValue>().TryGetOrAdd(key, _ => null, out var cache);
 		value = result ? cache.Value : default;
 		return result;
 	}
@@ -40,7 +39,7 @@ public class MemoryCacheService : ICacheService
 	public TValue GetOrAdd<TValue>(string key, Func<TValue> factory, TimeSpan? timeout = null)
 	{
 		key = RewriteKey(key);
-		var result = _manager.Instance<TValue>().GetOrAdd(key, _ =>
+		var result = GetCacheManager<TValue>().GetOrAdd(key, _ =>
 		{
 			var value = factory();
 			return GetCacheItem(key, value, timeout);
@@ -75,7 +74,7 @@ public class MemoryCacheService : ICacheService
 	{
 		key = RewriteKey(key);
 		var cacheItem = GetCacheItem(key, value, timeout);
-		return _manager.Instance<TValue>().AddOrUpdate(cacheItem, _ => value);
+		return GetCacheManager<TValue>().AddOrUpdate(cacheItem, _ => value);
 	}
 
 	/// <inheritdoc />
@@ -91,22 +90,23 @@ public class MemoryCacheService : ICacheService
 	{
 		RewriteKey(item.Key);
 
-		return _manager.Instance<TValue>().AddOrUpdate(item, _ => item.Value);
+		return GetCacheManager<TValue>().AddOrUpdate(item, _ => item.Value);
 	}
 
 	/// <inheritdoc />
 	public bool Remove<TValue>(string key)
 	{
 		key = RewriteKey(key);
-		return _manager.Instance<TValue>().Remove(key);
+		return GetCacheManager<TValue>().Remove(key);
 	}
 
+	/// <inheritdoc />
 	public async Task<Tuple<bool, TValue>> TryGetAsync<TValue>(string key, CancellationToken cancellationToken = default)
 	{
 		return await Task.Run(() =>
 		{
 			key = RewriteKey(key);
-			var result = _manager.Instance<TValue>().TryGetOrAdd(key, _ => null, out var cache);
+			var result = GetCacheManager<TValue>().TryGetOrAdd(key, _ => null, out var cache);
 			var value = result ? cache.Value : default;
 			return Tuple.Create(result, value);
 		}, cancellationToken);
@@ -121,7 +121,7 @@ public class MemoryCacheService : ICacheService
 			return value;
 		}
 		value = await factory();
-		var result = _manager.Instance<TValue>().GetOrAdd(key, _ => GetCacheItem(key, value, timeout));
+		var result = GetCacheManager<TValue>().GetOrAdd(key, _ => GetCacheItem(key, value, timeout));
 		return result.Value;
 	}
 
@@ -154,27 +154,9 @@ public class MemoryCacheService : ICacheService
 		return AddOrUpdate(item);
 	}
 
-	private string RewriteKey(string key)
+	/// <inheritdoc />
+	protected override ICacheManager<TValue> GetCacheManager<TValue>()
 	{
-		if (string.IsNullOrEmpty(_prefix))
-		{
-			return key;
-		}
-
-		return key.StartsWith($"{_prefix}.Cache.", StringComparison.OrdinalIgnoreCase) ? key : $"{_prefix}.Cache.{key}";
-	}
-
-	private static CacheItem<TValue> GetCacheItem<TValue>(string key, TValue value, TimeSpan? timeout)
-	{
-		CacheItem<TValue> item;
-		if (timeout > TimeSpan.Zero)
-		{
-			item = new CacheItem<TValue>(key, value, CacheExpirationMode.Absolute, timeout.Value);
-		}
-		else
-		{
-			item = new CacheItem<TValue>(key, value);
-		}
-		return item;
+		return _manager.Instance<TValue>();
 	}
 }
