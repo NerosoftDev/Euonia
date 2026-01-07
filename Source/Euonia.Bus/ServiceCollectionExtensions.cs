@@ -67,7 +67,7 @@ public static class ServiceCollectionExtensions
 
 			services.TryAddTransient<IMessageBusOptions>(provider =>
 			{
-				var options = provider.GetService<IOptionsSnapshot<MessageBusOptions>>();
+				var options = provider.CreateScope().ServiceProvider.GetService<IOptionsSnapshot<MessageBusOptions>>();
 				return options?.Value ?? new MessageBusOptions();
 			});
 			services.TryAddTransient<IBus, MessageBus>();

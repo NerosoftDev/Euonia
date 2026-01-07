@@ -39,6 +39,9 @@ public class FacadeServiceModule : ModuleContextBase
 {
 	public override void AheadConfigureServices(ServiceConfigurationContext context)
 	{
+		context.Services.AddOptions<MessageBusOptions>()
+		       .BindConfiguration("Euonia:Bus")
+		       .Validate(_ => true);
 	}
 
 	public override void ConfigureServices(ServiceConfigurationContext context)
