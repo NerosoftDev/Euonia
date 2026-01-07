@@ -6,7 +6,7 @@ namespace Nerosoft.Euonia.Repository.EfCore;
 /// <inheritdoc />
 public class EfCoreRepository<TContext, TEntity, TKey> : Repository<TContext, TEntity, TKey>
 	where TKey : IEquatable<TKey>
-	where TEntity : class, IPersistent<TKey>
+	where TEntity : class, IEntity<TKey>
 	where TContext : DbContext, IRepositoryContext
 {
 	/// <summary>

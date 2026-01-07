@@ -6,7 +6,7 @@ namespace Nerosoft.Euonia.Sample.Persist.Entities;
 /// <summary>
 /// Represents a role assigned to a user.
 /// </summary>
-public class UserRoleEntity : Persistent<string>, IHasCreateTime
+public class UserRoleEntity : Entity<string>, IHasCreateTime
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UserRoleEntity"/> class.

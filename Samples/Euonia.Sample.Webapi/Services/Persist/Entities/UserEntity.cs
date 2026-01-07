@@ -5,7 +5,7 @@ namespace Nerosoft.Euonia.Sample.Persist.Entities;
 /// <summary>
 /// Represents a user aggregate in the domain.
 /// </summary>
-public sealed class UserEntity : Persistent<string>, IHasCreateTime, IHasUpdateTime, ITombstone
+public sealed class UserEntity : Entity<string>, IHasCreateTime, IHasUpdateTime, ITombstone
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UserEntity"/> class.

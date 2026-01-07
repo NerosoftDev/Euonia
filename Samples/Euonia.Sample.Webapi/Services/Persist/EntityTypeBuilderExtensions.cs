@@ -74,7 +74,7 @@ internal static class EntityTypeBuilderExtensions
 	/// <typeparam name="TEntity"></typeparam>
 	/// <param name="builder"></param>
 	public static void SnowflakeId<TEntity>(this EntityTypeBuilder<TEntity> builder)
-		where TEntity : class, IPersistent<long>
+		where TEntity : class, IEntity<long>
 	{
 		builder.HasKey(t => t.Id);
 		builder.Property(t => t.Id)
@@ -90,7 +90,7 @@ internal static class EntityTypeBuilderExtensions
 	/// <param name="builder"></param>
 	/// <typeparam name="TEntity"></typeparam>
 	public static void ShortUniqueId<TEntity>(this EntityTypeBuilder<TEntity> builder)
-		where TEntity : class, IPersistent<string>
+		where TEntity : class, IEntity<string>
 	{
 		builder.HasKey(t => t.Id);
 		builder.Property(t => t.Id)

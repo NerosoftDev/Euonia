@@ -4,7 +4,7 @@ namespace Nerosoft.Euonia.Repository;
 /// Represents the base class for persistent entities with a typed identifier.
 /// </summary>
 /// <typeparam name="TKey"></typeparam>
-public abstract class Persistent<TKey> : Persistent, IPersistent<TKey>
+public abstract class Entity<TKey> : Entity, IEntity<TKey>
 	where TKey : IEquatable<TKey>
 {
 	/// <summary>
@@ -28,7 +28,7 @@ public abstract class Persistent<TKey> : Persistent, IPersistent<TKey>
 /// <summary>
 /// Represents the base class for persistent entities.
 /// </summary>
-public abstract class Persistent : IPersistent
+public abstract class Entity : IEntity
 {
 	/// <inheritdoc />
 	public abstract object[] GetKeys();
