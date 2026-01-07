@@ -10,7 +10,7 @@ namespace Nerosoft.Euonia.Repository;
 /// <typeparam name="TContext"></typeparam>
 public abstract class Repository<TContext, TEntity, TKey> : DisposableObject, IRepository<TContext, TEntity, TKey>
 	where TKey : IEquatable<TKey>
-	where TEntity : class, IPersistent<TKey>
+	where TEntity : class, IEntity<TKey>
 	where TContext : class, IRepositoryContext
 {
 	private readonly IContextProvider _provider;

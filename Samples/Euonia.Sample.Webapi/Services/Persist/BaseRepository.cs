@@ -13,11 +13,11 @@ namespace Nerosoft.Euonia.Sample.Persist;
 /// <see cref="EfCoreRepository{TContext, TEntity, TKey}"/> and exposes common helper methods.
 /// </summary>
 /// <typeparam name="TContext">The DbContext type deriving from <see cref="DataContextBase{TContext}"/>.</typeparam>
-/// <typeparam name="TEntity">The entity type managed by the repository. Must implement <see cref="IEntity{TKey}"/>.</typeparam>
+/// <typeparam name="TEntity">The entity type managed by the repository. Must implement <see cref="Euonia.Domain.IEntity{TKey}"/>.</typeparam>
 /// <typeparam name="TKey">The type of the entity primary key. Must implement <see cref="IEquatable{TKey}"/>.</typeparam>
 internal abstract class BaseRepository<TContext, TEntity, TKey> : EfCoreRepository<TContext, TEntity, TKey>, IScopedDependency
 	where TContext : DataContextBase<TContext>
-	where TEntity : class, IPersistent<TKey>
+	where TEntity : class, Repository.IEntity<TKey>
 	where TKey : IEquatable<TKey>
 {
 	/// <summary>
@@ -67,7 +67,7 @@ internal abstract class BaseRepository<TContext, TEntity, TKey> : EfCoreReposito
 	/// </returns>
 	public virtual Task<TEntity> GetAsync(TKey id, bool tracking, string[] properties, CancellationToken cancellationToken = default)
 	{
-		var predicate = PredicateBuilder.PropertyEqual<TEntity, TKey>(nameof(IEntity<TKey>.Id), id);
+		var predicate = PredicateBuilder.PropertyEqual<TEntity, TKey>(nameof(Euonia.Domain.IEntity<TKey>.Id), id);
 
 		//var lambda = predicate.Compile();
 		return GetAsync(predicate, tracking, properties, cancellationToken);
@@ -118,7 +118,7 @@ internal abstract class BaseRepository<TContext, TEntity, TKey> : EfCoreReposito
 	/// </returns>
 	public virtual Task<List<TEntity>> FindAsync(IEnumerable<TKey> ids, string[] properties, CancellationToken cancellationToken = default)
 	{
-		var predicate = PredicateBuilder.PropertyInRange<TEntity, TKey>(nameof(IEntity<TKey>.Id), ids.ToArray());
+		var predicate = PredicateBuilder.PropertyInRange<TEntity, TKey>(nameof(Euonia.Domain.IEntity<TKey>.Id), ids.ToArray());
 		return FindAsync(predicate, properties, cancellationToken);
 	}
 
@@ -196,7 +196,7 @@ internal abstract class BaseRepository<TContext, TEntity, TKey> : EfCoreReposito
 	/// <returns></returns>
 	public virtual async Task<Dictionary<TKey, string>> LookupAsync(IEnumerable<TKey> ids, Expression<Func<TEntity, KeyValuePair<TKey, string>>> selector, CancellationToken cancellationToken = default)
 	{
-		var predicate = PredicateBuilder.PropertyInRange<TEntity, TKey>(nameof(IEntity<TKey>.Id), ids.ToArray());
+		var predicate = PredicateBuilder.PropertyInRange<TEntity, TKey>(nameof(Euonia.Domain.IEntity<TKey>.Id), ids.ToArray());
 		var query = Context.Set<TEntity>().AsNoTracking()
 						   .Where(predicate)
 						   .Select(selector);

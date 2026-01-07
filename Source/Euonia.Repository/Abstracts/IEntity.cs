@@ -3,7 +3,7 @@
 /// <summary>
 /// Specifies the contract for entity.
 /// </summary>
-public interface IPersistent
+public interface IEntity
 {
     /// <summary>
     /// Returns an array of ordered keys for this entity.
@@ -16,7 +16,7 @@ public interface IPersistent
 /// Specifies the contract for entity with key of type <typeparamref name="TKey"/> .
 /// </summary>
 /// <typeparam name="TKey">The identifier type.</typeparam>
-public interface IPersistent<TKey> : IPersistent
+public interface IEntity<TKey> : IEntity
     where TKey : IEquatable<TKey>
 {
     /// <summary>
