@@ -29,7 +29,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Services\Domain\Actuators\" />
+        <Folder Include="Services\Domain\Actuators\" />
     </ItemGroup>
 
 </Project>
