@@ -176,7 +176,7 @@ public static class ServiceCollectionExtensions
 					throw new InvalidOperationException();
 				}
 
-				ConfigureDataContext(connectionString, provider, options, seeding);
+				ConfigureDataContext(connection, provider, options, seeding);
 			});
 			return services;
 		}
