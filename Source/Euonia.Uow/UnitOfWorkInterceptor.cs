@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Nerosoft.Euonia.Threading;
+// ReSharper disable AccessToDisposedClosure
 
 namespace Nerosoft.Euonia.Uow;
 
@@ -22,7 +23,7 @@ public class UnitOfWorkInterceptor : IInterceptor
 	/// <inheritdoc />
 	public void Intercept(IInvocation invocation)
 	{
-		if (UnitOfWorkHelper.IsUnitOfWorkMethod(invocation.Method, out var attribute))
+		if (!UnitOfWorkHelper.IsUnitOfWorkMethod(invocation.Method, out var attribute))
 		{
 			invocation.Proceed();
 		}
