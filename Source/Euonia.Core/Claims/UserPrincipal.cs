@@ -45,10 +45,17 @@ public class UserPrincipal
 	{
 		get
 		{
-			var claim = Claims.FindFirst(UserClaimTypes.Subject);
-			claim ??= Claims.FindFirst(ClaimTypes.NameIdentifier);
-			var subjectId = claim?.Value;
-			return subjectId;
+			return Claims?.Identity?.AuthenticationType switch
+			{
+				null or "Anonymous" => null,
+				// For JWT/Bearer, prefer the 'sub' claim
+				"Jwt" or "Bearer" => Claims.FindFirst(UserClaimTypes.Subject)?.Value,
+				// For Windows auth, prefer the NameIdentifier claim
+				"Windows" => Claims.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+				// For Cookie auth, prefer the NameIdentifier claim
+				"Cookies" => Claims.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+				_ => null
+			};
 		}
 	}
 
@@ -59,7 +66,23 @@ public class UserPrincipal
 	/// The value of the claim identified by <see cref="UserClaimTypes.Name"/>, or <c>null</c> if the claim is missing
 	/// or if the underlying <see cref="ClaimsPrincipal"/> is <c>null</c>.
 	/// </value>
-	public string Username => Claims?.FindFirst(UserClaimTypes.Name)?.Value;
+	public string Username
+	{
+		get
+		{
+			return Claims.Identity?.AuthenticationType switch
+			{
+				null or "Anonymous" => null,
+				// For JWT/Bearer, prefer the 'name' claim
+				"Jwt" or "Bearer" => Claims?.FindFirst(UserClaimTypes.Name)?.Value,
+				// For Windows auth, prefer the Name claim
+				"Windows" => Claims?.FindFirst(ClaimTypes.Name)?.Value,
+				// For Cookie auth, prefer the Name claim
+				"Cookies" => Claims?.FindFirst(ClaimTypes.Name)?.Value,
+				_ => null
+			};
+		}
+	}
 
 	/// <summary>
 	/// Gets the user's code.
@@ -168,7 +191,12 @@ public class UserPrincipal
 	/// </returns>
 	public bool IsInRoles(string role, string separator = ",")
 	{
+#if NET5_0_OR_GREATER
+		ArgumentNullException.ThrowIfNull(role);
+#else
 		ArgumentAssert.ThrowIfNull(role, nameof(role));
+#endif
+
 		var roles = role.Split(separator, StringSplitOptions.RemoveEmptyEntries);
 		return IsInRoles(roles);
 	}
