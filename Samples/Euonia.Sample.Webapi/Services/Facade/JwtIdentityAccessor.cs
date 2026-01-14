@@ -37,7 +37,6 @@ internal class JwtIdentityAccessor
 	/// prefix "Bearer ". Token validation is performed with <see cref="JwtSecurityTokenHandler"/>.
 	/// All validation exceptions are swallowed and an empty principal is returned on failure.
 	/// </remarks>
-
 	public static IPrincipal Resolve(string jwt, IConfiguration configuration)
 	{
 		var token = Regex.Match(jwt ?? "Bearer ", @"^Bearer\s+(.*)").Groups[1].Value;

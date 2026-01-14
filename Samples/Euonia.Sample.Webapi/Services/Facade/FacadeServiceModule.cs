@@ -62,8 +62,7 @@ public class FacadeServiceModule : ModuleContextBase
 				      builder.Add<LocalMessageTransportStrategy>();
 				      builder.EvaluateIncoming(_ => true);
 				      builder.EvaluateOutgoing(_ => true);
-			      })
-			      .SetIdentityProvider(jwt => JwtIdentityAccessor.Resolve(jwt, Configuration));
+			      });
 		});
 	}
 }
