@@ -136,7 +136,12 @@ public static class ServiceCollectionExtensions
 				                             .ToList();
 				foreach (var @interface in interfaces)
 				{
-					services.AddSingleton(@interface, behaviorType);
+					if (behaviorType.IsGenericType)
+					{
+						continue;
+					}
+
+					services.AddTransient(@interface, behaviorType);
 				}
 			}
 		}
