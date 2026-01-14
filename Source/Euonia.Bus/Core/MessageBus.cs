@@ -118,6 +118,7 @@ internal sealed class MessageBus : IBus
 			MessageId = options.MessageId ?? ObjectId.NewGuid(GuidType.SequentialAsString).ToString(),
 			RequestTraceId = context?.TraceIdentifier ?? options.RequestTraceId ?? ObjectId.NewGuid(GuidType.SequentialAsString).ToString("N"),
 			Authorization = context?.Authorization,
+			User = context?.User,
 		};
 
 		metadataSetter?.Invoke(pack.Metadata);
@@ -208,6 +209,7 @@ internal sealed class MessageBus : IBus
 			CorrelationId = options.CorrelationId ?? ObjectId.NewGuid(GuidType.SequentialAsString).ToString(),
 			RequestTraceId = context?.TraceIdentifier ?? options.RequestTraceId ?? ObjectId.NewGuid(GuidType.SequentialAsString).ToString("N"),
 			Authorization = context?.Authorization,
+			User = context?.User,
 		};
 
 		metadataSetter?.Invoke(pack.Metadata);
@@ -314,6 +316,7 @@ internal sealed class MessageBus : IBus
 			CorrelationId = options.CorrelationId ?? ObjectId.NewGuid(GuidType.SequentialAsString).ToString(),
 			RequestTraceId = context?.TraceIdentifier ?? options.RequestTraceId ?? ObjectId.NewGuid(GuidType.SequentialAsString).ToString("N"),
 			Authorization = context?.Authorization,
+			User = context?.User,
 		};
 
 		metadataSetter?.Invoke(pack.Metadata);

@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Nerosoft.Euonia.Bus;
@@ -22,11 +21,10 @@ public static class ServiceCollectionExtensions
 		/// Adds the RabbitMQ bus services to the service collection.
 		/// </summary>
 		/// <param name="name"></param>
-		/// <param name="configuration"></param>
 		/// <param name="configureOptions"></param>
 		/// <returns></returns>
 		/// <exception cref="InvalidOperationException"></exception>
-		public IServiceCollection AddRabbitMqBus(string name, IConfiguration configuration, Action<RabbitMqBusOptions> configureOptions = null)
+		public IServiceCollection AddRabbitMqBus(string name, Action<RabbitMqBusOptions> configureOptions = null)
 		{
 			if (configureOptions != null)
 			{
@@ -65,6 +63,7 @@ public static class ServiceCollectionExtensions
 			{
 				services.AddTransient<IRecipientRegistrar, RabbitMqRecipientRegistrar>();
 			}
+
 			return services;
 		}
 	}

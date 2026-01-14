@@ -24,7 +24,7 @@ public class RabbitMqBusModule : ModuleContextBase
 
 		if (enabled && !string.IsNullOrWhiteSpace(connection))
 		{
-			context.Services.AddRabbitMqBus(name, Configuration, null);
+			context.Services.AddRabbitMqBus(name);
 		}
 	}
 }

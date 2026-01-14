@@ -1,5 +1,6 @@
 ﻿using System.Net.Sockets;
 using System.Reflection;
+using System.Reflection.Metadata;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -281,7 +282,8 @@ public class RabbitMqTransport : ITransport
 		{
 			await using var jsonWriter = new JsonTextWriter(writer);
 
-			JsonSerializer.CreateDefault().Serialize(jsonWriter, message);
+			JsonSerializer.CreateDefault(Constants.SerializerSettings)
+			              .Serialize(jsonWriter, message);
 
 			await jsonWriter.FlushAsync(cancellationToken);
 			await writer.FlushAsync(cancellationToken);
