@@ -3,6 +3,7 @@ using Castle.DynamicProxy;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Nerosoft.Euonia.Application;
 using Nerosoft.Euonia.Pipeline;
+using Nerosoft.Euonia.Reflection;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -24,11 +25,20 @@ public static class ServiceCollectionExtensions
 			var context = new TService();
 			context.ConfigureServices(services);
 
-			if (context.AutoRegisterApplicationService)
+			if (context.AutoRegisterPipelineBehaviors || context.AutoRegisterApplicationService)
 			{
 				var assembly = Assembly.GetAssembly(typeof(TService));
+				var definedTypes = assembly!.DefinedTypes.ToArray();
 
-				services.AddApplicationService(assembly);
+				if (context.AutoRegisterApplicationService)
+				{
+					services.AddApplicationService(definedTypes);
+				}
+
+				if (context.AutoRegisterPipelineBehaviors)
+				{
+					services.AddPipelineBehaviors(definedTypes);
+				}
 			}
 
 			services.TryAddSingleton<IServiceContext>(_ => context);
@@ -46,8 +56,24 @@ public static class ServiceCollectionExtensions
 				return;
 			}
 
-			var definedTypes = assembly.DefinedTypes.ToArray();
+			var definedTypes = AssemblyHelper.GetDefinedTypes(assembly)
+			                                 .ToArray();
+
 			services.AddApplicationService(definedTypes);
+		}
+
+		/// <summary>
+		/// Register pipeline behaviors of module to <see cref="IServiceCollection"/>.
+		/// </summary>
+		/// <param name="assembly">The assembly which contains pipeline behaviors.</param>
+		public void AddPipelineBehaviors(Assembly assembly)
+		{
+			if (assembly == null)
+			{
+				return;
+			}
+
+			var definedTypes = assembly.DefinedTypes.ToArray();
 			services.AddPipelineBehaviors(definedTypes);
 		}
 
@@ -57,7 +83,7 @@ public static class ServiceCollectionExtensions
 		/// <param name="definedTypes">The application service types.</param>
 		/// <returns></returns>
 		/// <remarks>The application service type should inherit from <see cref="IApplicationService"/>.</remarks>
-		public void AddApplicationService(TypeInfo[] definedTypes)
+		private void AddApplicationService(TypeInfo[] definedTypes)
 		{
 			if (!definedTypes.Any())
 			{
