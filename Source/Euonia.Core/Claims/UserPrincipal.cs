@@ -53,7 +53,7 @@ public class UserPrincipal
 				// For Windows auth, prefer the NameIdentifier claim
 				"Windows" => Claims.FindFirst(ClaimTypes.NameIdentifier)?.Value,
 				// For Cookie auth, prefer the NameIdentifier claim
-				"Cookies" => Claims.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+				"Cookies" or "Cookie" => Claims.FindFirst(ClaimTypes.NameIdentifier)?.Value,
 				_ => null
 			};
 		}
@@ -78,7 +78,7 @@ public class UserPrincipal
 				// For Windows auth, prefer the Name claim
 				"Windows" => Claims?.FindFirst(ClaimTypes.Name)?.Value,
 				// For Cookie auth, prefer the Name claim
-				"Cookies" => Claims?.FindFirst(ClaimTypes.Name)?.Value,
+				"Cookies" or "Cookie" => Claims?.FindFirst(ClaimTypes.Name)?.Value,
 				_ => null
 			};
 		}
