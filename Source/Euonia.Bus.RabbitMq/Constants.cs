@@ -17,7 +17,13 @@ internal class Constants
 		ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
 		ConstructorHandling = ConstructorHandling.Default,
 		MetadataPropertyHandling = MetadataPropertyHandling.ReadAhead,
-		TypeNameHandling = TypeNameHandling.Auto
+		TypeNameHandling = TypeNameHandling.Auto,
+		Converters =
+		[
+			new ClaimsPrincipalJsonConverter(),
+			new ClaimsIdentityJsonConverter(),
+			new ClaimJsonConverter()
+		]
 	};
 
 	public class MessageHeaders
