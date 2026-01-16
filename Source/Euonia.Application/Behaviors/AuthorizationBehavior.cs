@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Nerosoft.Euonia.Bus;
-using Nerosoft.Euonia.Claims;
-using Nerosoft.Euonia.Domain;
 using Nerosoft.Euonia.Modularity;
 using Nerosoft.Euonia.Pipeline;
+using Nerosoft.Euonia.Security;
 
 namespace Nerosoft.Euonia.Application;
 

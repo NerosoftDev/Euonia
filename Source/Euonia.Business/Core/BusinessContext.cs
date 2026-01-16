@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 using Microsoft.Extensions.DependencyInjection;
-using Nerosoft.Euonia.Claims;
+using Nerosoft.Euonia.Security;
 
 namespace Nerosoft.Euonia.Business;
 

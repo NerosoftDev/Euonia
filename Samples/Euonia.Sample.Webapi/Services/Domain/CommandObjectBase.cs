@@ -1,5 +1,5 @@
 ﻿using Nerosoft.Euonia.Business;
-using Nerosoft.Euonia.Claims;
+using Nerosoft.Euonia.Security;
 using Nerosoft.Euonia.Domain;
 
 namespace Nerosoft.Euonia.Sample.Domain;
