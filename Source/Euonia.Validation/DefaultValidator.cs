@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using ValidationException = System.ValidationException;
 
 namespace Nerosoft.Euonia.Validation;
 

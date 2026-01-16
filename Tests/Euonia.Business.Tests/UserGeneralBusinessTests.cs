@@ -1,4 +1,5 @@
 using Nerosoft.Euonia.Business;
+using Nerosoft.Euonia.Validation;
 
 namespace Nerosoft.Euonia.Core.Tests;
 
@@ -65,7 +66,7 @@ public class UserGeneralBusinessTests
 		});
 		Assert.Equal("PermissionDenied", ex.Errors.FirstOrDefault()!.ErrorMessage);
 	}
-	
+
 	[Fact]
 	public async Task DeleteShouldNotFailDueToPermissionDenied_DisabledCheckObjectRuleOnDelete()
 	{

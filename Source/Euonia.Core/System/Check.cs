@@ -53,7 +53,6 @@ public static class Check
 	/// <param name="message"></param>
 	/// <typeparam name="T"></typeparam>
 	/// <returns></returns>
-	/// <exception cref="ValidationException"></exception>
 	public static T Ensure<T>(T value, [NotNull] Func<T, bool> action, string message)
 	{
 		var result = action(value);

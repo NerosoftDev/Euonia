@@ -1,4 +1,6 @@
-﻿namespace System;
+﻿using System.Runtime.Serialization;
+
+namespace Nerosoft.Euonia.Validation;
 
 /// <summary>
 /// Represents the exception that is thrown when given data is not valid.
