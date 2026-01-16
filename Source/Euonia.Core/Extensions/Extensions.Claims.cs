@@ -1,6 +1,6 @@
 ﻿using System.Security.Authentication;
 using System.Security.Claims;
-using Nerosoft.Euonia.Claims;
+using Nerosoft.Euonia.Security;
 
 /// <summary>
 /// Extension methods for <see cref="UserPrincipal"/> and <see cref="ClaimsPrincipal"/>.

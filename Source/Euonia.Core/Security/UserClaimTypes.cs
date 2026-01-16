@@ -2,7 +2,7 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
 
-namespace Nerosoft.Euonia.Claims;
+namespace Nerosoft.Euonia.Security;
 
 /// <summary>
 /// The types of user claims.

@@ -1,4 +1,4 @@
-﻿namespace System;
+﻿namespace Nerosoft.Euonia.Validation;
 
 /// <summary>
 /// The validation result.

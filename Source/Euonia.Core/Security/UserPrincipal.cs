@@ -3,7 +3,7 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace Nerosoft.Euonia.Claims;
+namespace Nerosoft.Euonia.Security;
 
 /// <summary>
 /// Represents a user's identity and provides typed accessors and helpers for common claim values.
