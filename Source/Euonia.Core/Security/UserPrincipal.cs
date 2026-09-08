@@ -49,12 +49,20 @@ public class UserPrincipal
 			{
 				null or "Anonymous" => null,
 				// 对于 JWT/Bearer，优先使用 'sub' 声明
-				"Jwt" or "Bearer" => Claims.FindFirst(UserClaimTypes.Subject)?.Value,
+				"Jwt" or "Bearer" or "JwtBearer" => Claims.FindFirst(UserClaimTypes.Subject)?.Value,
 				// 对于 Windows 身份验证，优先使用 NameIdentifier 声明
 				"Windows" => Claims.FindFirst(ClaimTypes.NameIdentifier)?.Value,
 				// 对于 Cookie 身份验证，优先使用 NameIdentifier 声明
 				"Cookies" or "Cookie" => Claims.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-				_ => null
+#if NET8_0_OR_GREATER
+				_ => PriorityValueFinder.Find<string>(queue =>
+				{
+					queue.Enqueue(() => Claims.FindFirst(UserClaimTypes.Subject)?.Value, 1);
+					queue.Enqueue(() => Claims.FindFirst(ClaimTypes.NameIdentifier)?.Value, 2);
+				}, value => !string.IsNullOrEmpty(value))
+#else
+				_ => (Claims.FindFirst(UserClaimTypes.Subject) ?? Claims.FindFirst(ClaimTypes.NameIdentifier))?.Value
+#endif
 			};
 		}
 	}
